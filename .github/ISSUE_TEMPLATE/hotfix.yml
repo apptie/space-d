@@ -1,0 +1,18 @@
+name: "Hotfix Request"
+description: "프로젝트에 대한 중요하고 빠르게 적용해야 하는 변경 요청"
+labels: "Hotfix"
+body:
+  - type: textarea
+    attributes:
+      label: 설명
+      description: 변경을 해야 하는 원인과 hotfix로 작업해야 하는 이유를 작성해주세요.
+      placeholder: 변경을 해야 하는 원인과 hotfix로 작업해야 하는 이유를 작성해주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 작업 내용
+      description: 변경 해야 하는 내용에 대한 Tasks를 작성해 주세요.
+      placeholder: 변경 해야 하는 내용에 대한 Tasks를 작성해 주세요.
+    validations:
+      required: true
