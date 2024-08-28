@@ -94,7 +94,8 @@ jacocoTestReport {
 							'**/common/**',
 							'**/infrastructure/**',
 							'**/event/**',
-							'**/embed/**'
+							'**/embed/**',
+							'**/global/**'
 					] + Qdomains)
 		}))
 	}
@@ -133,7 +134,8 @@ jacocoTestCoverageVerification {
 					'*.common.*',
 					'*.infrastructure.*',
 					'*.event.*',
-					'*.embed.*'
+					'*.embed.*',
+					'*.global.*'
 			] + Qdomains
 		}
 	}
