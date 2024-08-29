@@ -6,6 +6,8 @@
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>ERROR</level>
       </filter>
+      <queueSize>20</queueSize>
+      <neverBlock>true</neverBlock>
       <appender-ref ref="SLACK_APPENDER"/>
     </appender>
 
