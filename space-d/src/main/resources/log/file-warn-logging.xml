@@ -1,6 +1,7 @@
 <included>
   <springProfile name="file-warn-logging">
-    <appender name="FILE-WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="FILE-WARN-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
       <file>${LOG_DIR}/warn/warn-${BY_DATE}.log</file>
 
       <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -29,8 +30,17 @@
       </rollingPolicy>
     </appender>
 
-    <root level="info">
-      <appender-ref ref="FILE-WARN"/>
+    <appender name="ASYNC_FILE_WARN_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>WARN</level>
+      </filter>
+      <queueSize>100</queueSize>
+      <neverBlock>true</neverBlock>
+      <appender-ref ref="FILE-WARN-APPENDER"/>
+    </appender>
+
+    <root>
+      <appender-ref ref="ASYNC_FILE_WARN_APPENDER"/>
     </root>
   </springProfile>
 </included>
