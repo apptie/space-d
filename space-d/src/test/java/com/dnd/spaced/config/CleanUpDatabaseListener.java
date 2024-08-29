@@ -11,7 +11,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 public class CleanUpDatabaseListener extends AbstractTestExecutionListener {
 
     @Override
-    public void afterTestMethod(TestContext testContext) {
+    public void beforeTestMethod(TestContext testContext) {
         EntityManager em = findEntityManager(testContext);
         List<String> tableNames = calculateTableNames(em);
 
@@ -49,13 +49,21 @@ public class CleanUpDatabaseListener extends AbstractTestExecutionListener {
 
     private void clean(EntityManager em, List<String> tableNames) {
         em.flush();
-        em.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
-        for (String tableName : tableNames) {
-            em.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            em.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN id RESTART WITH 1").executeUpdate();
+        StringBuilder sb = new StringBuilder("SET REFERENTIAL_INTEGRITY FALSE;");
+
+        for (final String tableName : tableNames) {
+            sb.append("TRUNCATE TABLE ")
+              .append(tableName)
+              .append(";");
+
+            sb.append("ALTER TABLE ")
+              .append(tableName)
+              .append(" ALTER COLUMN id RESTART WITH 1;");
         }
 
-        em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        sb.append("SET REFERENTIAL_INTEGRITY TRUE;");
+
+        em.createNativeQuery(sb.toString()).executeUpdate();
     }
 }
