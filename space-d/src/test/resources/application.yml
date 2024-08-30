@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    default: test
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+
+  web:
+    resources:
+      add-mappings: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+token:
+  access-key: thisistoolargeaccesstokenkeyfordummykeydatafortest
+  refresh-key: thisistoolargerefreshtokenkeyfordummykeydatafortest
+  issuer: localissuer
+  access-expired-seconds: 3600
+  refresh-expired-seconds: 259200
+  access-expired-millis-seconds: 3600000
+  refresh-expired-millis-seconds: 259200000

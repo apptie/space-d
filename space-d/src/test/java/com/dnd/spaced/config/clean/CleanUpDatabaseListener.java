@@ -1,4 +1,4 @@
-package com.dnd.spaced.config;
+package com.dnd.spaced.config.clean;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
