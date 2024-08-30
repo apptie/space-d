@@ -145,6 +145,18 @@ jacocoTestCoverageVerification {
 	}
 }
 
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file("$projectDir/build/generated")
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs += "$projectDir/build/generated"
+		}
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
