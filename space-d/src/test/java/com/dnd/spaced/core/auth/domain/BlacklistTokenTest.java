@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.dnd.spaced.core.auth.domain.exception.InvalidBlacklistTokenContentException;
-import com.dnd.spaced.util.LocalDateTimeFixture;
+import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;

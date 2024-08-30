@@ -1,4 +1,4 @@
-package com.dnd.spaced.util;
+package com.dnd.spaced.fixture;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
