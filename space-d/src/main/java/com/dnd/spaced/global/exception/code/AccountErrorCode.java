@@ -8,5 +8,6 @@ public enum AccountErrorCode implements ErrorCode {
     INVALID_NICKNAME,
     INVALID_PROFILE_IMAGE,
     INVALID_ROLE,
-    INVALID_EMAIL
+    INVALID_EMAIL,
+    INVALID_NICKNAME_METADATA
 }
