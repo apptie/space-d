@@ -20,7 +20,7 @@ import org.springframework.data.domain.Persistable;
 @Table(name = "accounts")
 @Getter
 @Entity
-@EqualsAndHashCode(callSuper = false, of = "email")
+@EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends CreateTimeEntity implements Persistable<String> {
 
@@ -33,7 +33,7 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     );
 
     @Id
-    private String email;
+    private String id;
 
     private String nickname;
 
@@ -46,10 +46,10 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     CareerInfo careerInfo;
 
     @Builder
-    private Account(String email, String nickname, String profileImage, String roleName) {
-        validateContent(email, nickname, profileImage);
+    private Account(String id, String nickname, String profileImage, String roleName) {
+        validateContent(id, nickname, profileImage);
 
-        this.email = email;
+        this.id = id;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.role = Role.findBy(roleName);
@@ -102,7 +102,7 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
 
     @Override
     public String getId() {
-        return email;
+        return id;
     }
 
     @Override

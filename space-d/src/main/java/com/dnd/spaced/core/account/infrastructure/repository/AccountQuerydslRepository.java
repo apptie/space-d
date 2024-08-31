@@ -4,7 +4,6 @@ import static com.dnd.spaced.core.account.domain.QAccount.account;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,19 +22,11 @@ public class AccountQuerydslRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findBy(String email) {
+    public Optional<Account> findBy(String id) {
         Account result = queryFactory.selectFrom(account)
-                                      .where(eqEmail(email))
+                                      .where(account.id.eq(id))
                                       .fetchOne();
 
         return Optional.ofNullable(result);
-    }
-
-    private BooleanExpression eqEmail(String email) {
-        if (email == null) {
-            return null;
-        }
-
-        return account.email.eq(email);
     }
 }

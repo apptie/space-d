@@ -26,11 +26,11 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class AccountTest {
 
     @Test
-    void build_메서드는_유효한_email_nickname_profileImage_roleName을_전달하면_Account를_초기화하고_반환한다() {
+    void build_메서드는_유효한_id_nickname_profileImage_roleName을_전달하면_Account를_초기화하고_반환한다() {
         // when & then
         assertDoesNotThrow(
                 () -> Account.builder()
-                             .email("email")
+                             .id("email")
                              .nickname("nickname")
                              .profileImage("profileImage")
                              .roleName(Role.ROLE_ADMIN.name())
@@ -40,11 +40,11 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_email을_전달하면_InvalidEmailException_예외가_발생한다(String invalidEmail) {
+    void build_메서드는_유효하지_않은_email을_전달하면_InvalidEmailException_예외가_발생한다(String invalidId) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .email(invalidEmail)
+                             .id(invalidId)
                              .nickname("nickname")
                              .profileImage("profileImage")
                              .roleName(Role.ROLE_ADMIN.name())
@@ -59,7 +59,7 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .email("email")
+                             .id("email")
                              .nickname(invalidNickname)
                              .profileImage("profileImage")
                              .roleName(Role.ROLE_ADMIN.name())
@@ -74,7 +74,7 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .email("email")
+                             .id("email")
                              .nickname("nickname")
                              .profileImage(invalidProfileImage)
                              .roleName(Role.ROLE_ADMIN.name())
@@ -89,7 +89,7 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .email("email")
+                             .id("email")
                              .nickname("nickname")
                              .profileImage("profileImage")
                              .roleName(invalidRoleName)
@@ -102,7 +102,7 @@ class AccountTest {
     void changeCareerInfo_메서드는_유효한_jobGroupName_companyName_experienceName을_전달하면_CareerInfo를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -130,7 +130,7 @@ class AccountTest {
     void changeCareerInfo_메서드는_유효하지_않은_companyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -153,7 +153,7 @@ class AccountTest {
     void changeCareerInfo_메서드는_유효하지_않은_jobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -176,7 +176,7 @@ class AccountTest {
     void changeCareerInfo_메서드는_유효하지_않은_experienceName을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -198,7 +198,7 @@ class AccountTest {
     void changeProfile_메서드는_유효한_changedNickname_changedProfileImage를_전달하면_회원_정보를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -222,7 +222,7 @@ class AccountTest {
     void changeProfile_메서드는_유효하지_않은_profileImage를_전달하면_InvalidProfileImageException_예외가_발생한다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -239,7 +239,7 @@ class AccountTest {
     void changeProfile_메서드는_유효하지_않은_nickname을_전달하면_InvalidNicknameException_예외가_발생한다(String invalidNickname) {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -252,10 +252,10 @@ class AccountTest {
     }
 
     @Test
-    void getId_메서드는_Account의_id_역할을_하는_email을_반환한다() {
+    void getId_메서드는_id를_반환한다() {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
@@ -265,14 +265,14 @@ class AccountTest {
         String actual = account.getId();
 
         // then
-        assertThat(actual).isEqualTo(account.getEmail());
+        assertThat(actual).isEqualTo(account.getId());
     }
 
     @Test
     void isNew_메서드는_Account가_영속화되었는지_여부를_반환한다() {
         // given
         Account account = Account.builder()
-                                 .email("email")
+                                 .id("email")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())

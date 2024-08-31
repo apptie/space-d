@@ -22,22 +22,22 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Optional<BlacklistToken> findBy(String email) {
+    public Optional<BlacklistToken> findBy(String id) {
         String registeredAt = redisTemplate.opsForValue()
-                                           .get(calculateKey(email));
+                                           .get(calculateKey(id));
 
         if (registeredAt == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new BlacklistToken(email, LocalDateTime.parse(registeredAt, formatter)));
+        return Optional.of(new BlacklistToken(id, LocalDateTime.parse(registeredAt, formatter)));
     }
 
     @Override
     public void save(BlacklistToken blacklistToken) {
         redisTemplate.opsForValue()
                      .set(
-                             calculateKey(blacklistToken.getEmail()),
+                             calculateKey(blacklistToken.getAccountId()),
                              formatter.format(blacklistToken.getRegisteredAt()),
                              tokenProperties.refreshExpiredMillisSeconds(),
                              TimeUnit.MILLISECONDS

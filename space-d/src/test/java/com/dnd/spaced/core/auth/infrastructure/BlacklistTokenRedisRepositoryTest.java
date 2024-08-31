@@ -59,7 +59,7 @@ class BlacklistTokenRedisRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get().getEmail()).isEqualTo(email),
+                () -> assertThat(actual.get().getAccountId()).isEqualTo(email),
                 () -> assertThat(actual.get().getRegisteredAt()).isEqualTo(registeredAt.truncatedTo(ChronoUnit.SECONDS))
         );
     }

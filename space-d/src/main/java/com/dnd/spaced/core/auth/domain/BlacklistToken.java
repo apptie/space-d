@@ -6,22 +6,22 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode(callSuper = false, of = "email")
+@EqualsAndHashCode(callSuper = false, of = "accountId")
 public class BlacklistToken {
 
-    private final String email;
+    private final String accountId;
     private final LocalDateTime registeredAt;
 
-    public BlacklistToken(String email, LocalDateTime registeredAt) {
-        validateContent(email, registeredAt);
+    public BlacklistToken(String accountId, LocalDateTime registeredAt) {
+        validateContent(accountId, registeredAt);
 
-        this.email = email;
+        this.accountId = accountId;
         this.registeredAt = registeredAt;
     }
 
-    private void validateContent(String email, LocalDateTime registeredAt) {
-        if (email == null || email.isBlank()) {
-            throw new InvalidBlacklistTokenContentException("유효한 이메일이 아닙니다.");
+    private void validateContent(String id, LocalDateTime registeredAt) {
+        if (id == null || id.isBlank()) {
+            throw new InvalidBlacklistTokenContentException("유효한 ID가 아닙니다.");
         }
 
         if (registeredAt == null) {

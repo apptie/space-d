@@ -23,11 +23,11 @@ class BlacklistTokenTest {
     @MethodSource("isBlacklistTokenTestWithRegisteredAtAndIssuedAtAndExpected")
     void isBlacklistToken_메서드는_issuedAt을_전달하면_블랙리스트된_토큰인지_여부를_반환한다(String targetRegisteredAt, String targetIssuedAt, boolean expected) {
         // given
-        String email = "email";
+        String id = "email";
         LocalDateTime registeredAt = LocalDateTimeFixture.from(targetRegisteredAt);
         LocalDateTime issuedAt = LocalDateTimeFixture.from(targetIssuedAt);
 
-        BlacklistToken blacklistToken = new BlacklistToken(email, registeredAt);
+        BlacklistToken blacklistToken = new BlacklistToken(id, registeredAt);
 
         // when
         boolean actual = blacklistToken.isBlacklistToken(issuedAt);
@@ -38,17 +38,17 @@ class BlacklistTokenTest {
 
     @ParameterizedTest(name = "email이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_email을_전달하면_InvalidBlacklistTokenContentException_예외가_발생한다(String invalidEmail) {
+    void 생성자는_유효하지_않은_email을_전달하면_InvalidBlacklistTokenContentException_예외가_발생한다(String invalidId) {
         // when & then
-        assertThatThrownBy(() -> new BlacklistToken(invalidEmail, LocalDateTime.now()))
+        assertThatThrownBy(() -> new BlacklistToken(invalidId, LocalDateTime.now()))
                 .isInstanceOf(InvalidBlacklistTokenContentException.class)
-                .hasMessage("유효한 이메일이 아닙니다.");
+                .hasMessage("유효한 ID가 아닙니다.");
     }
 
     @Test
     void 생성자는_유효하지_않은_registeredAt을_전달하면_InvalidBlacklistTokenContentException_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> new BlacklistToken("email", null))
+        assertThatThrownBy(() -> new BlacklistToken("id", null))
                 .isInstanceOf(InvalidBlacklistTokenContentException.class)
                 .hasMessage("유효한 등록 일자가 아닙니다.");
     }
