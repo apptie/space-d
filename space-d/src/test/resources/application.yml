@@ -16,6 +16,17 @@ spring:
       host: localhost
       port: 6379
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        use_sql_comments: true
+    open-in-view: false
+
 token:
   access-key: thisistoolargeaccesstokenkeyfordummykeydatafortest
   refresh-key: thisistoolargerefreshtokenkeyfordummykeydatafortest
@@ -24,3 +35,35 @@ token:
   refresh-expired-seconds: 259200
   access-expired-millis-seconds: 3600000
   refresh-expired-millis-seconds: 259200000
+
+app:
+  image:
+    path: /home/
+  profile:
+    nickname:
+      adjective:
+        - 멋있는
+        - 무서운
+        - 상큼한
+        - 행복한
+        - 재빠른
+      planet:
+        - 수성
+        - 금성
+        - 지구
+        - 화성
+        - 목성
+        - 토성
+        - 천왕성
+        - 해왕성
+      format: "%s%03d"
+    image:
+      name:
+        - mercury.png
+        - venus.png
+        - earth.png
+        - mars.png
+        - jupiter.png
+        - saturn.png
+        - uranus.png
+        - neptune.png
