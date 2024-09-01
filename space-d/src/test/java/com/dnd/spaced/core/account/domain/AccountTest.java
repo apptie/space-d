@@ -50,7 +50,7 @@ class AccountTest {
                              .roleName(Role.ROLE_ADMIN.name())
                              .build()
         ).isInstanceOf(InvalidIdException.class)
-         .hasMessageContaining("이메일은 null이나 비어 있을 수 없습니다.");
+         .hasMessageContaining("ID는 null이나 비어 있을 수 없습니다.");
     }
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
