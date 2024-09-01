@@ -18,8 +18,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtDecoder implements TokenDecoder {
 
-    private static final String CLAIM_EMAIL = "email";
+    private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
+    private static final String CLAIM_ISSUED_AT = "iat";
     private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 
     private final TokenProperties tokenProperties;
@@ -53,10 +54,10 @@ public class JwtDecoder implements TokenDecoder {
 
         try {
             Claims claims = Jwts.parserBuilder()
-                              .setSigningKey(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
-                              .build()
-                              .parseClaimsJws(findPureToken(token))
-                              .getBody();
+                                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
+                                .build()
+                                .parseClaimsJws(findPureToken(token))
+                                .getBody();
 
             validateClaims(claims);
 
@@ -77,6 +78,9 @@ public class JwtDecoder implements TokenDecoder {
     }
 
     private PrivateClaims convert(Claims claims) {
-        return new PrivateClaims(claims.get(CLAIM_EMAIL, String.class), claims.get(CLAIM_ROLE, String.class));
+        return new PrivateClaims(
+                claims.get(CLAIM_ID, String.class),
+                claims.get(CLAIM_ROLE, String.class)
+        );
     }
 }

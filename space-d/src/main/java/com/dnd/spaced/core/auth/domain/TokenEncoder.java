@@ -4,5 +4,5 @@ import java.time.LocalDateTime;
 
 public interface TokenEncoder {
 
-    String encode(LocalDateTime targetTime, TokenType tokenType, String email, String roleName);
+    String encode(LocalDateTime targetTime, TokenType tokenType, String id, String roleName);
 }

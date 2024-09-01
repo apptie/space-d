@@ -19,18 +19,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtEncoder implements TokenEncoder {
 
-    private static final String CLAIM_EMAIL = "email";
+    private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
     private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 
     private final TokenProperties tokenProperties;
 
     @Override
-    public String encode(LocalDateTime publishTime, TokenType tokenType, String email, String roleName) {
+    public String encode(LocalDateTime publishTime, TokenType tokenType, String id, String roleName) {
         Date targetDate = convertDate(publishTime);
         String key = tokenProperties.findTokenKey(tokenType);
         Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
-        Map<String, Object> attributes = Map.of(CLAIM_EMAIL, email, CLAIM_ROLE, roleName);
+        Map<String, Object> attributes = Map.of(CLAIM_ID, id, CLAIM_ROLE, roleName);
 
         return BEARER_TOKEN_PREFIX + Jwts.builder()
                                          .setIssuer(tokenProperties.issuer())
