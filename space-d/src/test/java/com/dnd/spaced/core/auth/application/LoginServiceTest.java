@@ -95,7 +95,7 @@ class LoginServiceTest {
     static class TestNicknameProperties extends NicknameProperties {
 
         public TestNicknameProperties() {
-            super(Collections.emptyList(), Collections.emptyList(), "%03d");
+            super(Collections.emptyList(), Collections.emptyList(), "%s%03d");
         }
 
         @Override

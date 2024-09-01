@@ -20,7 +20,7 @@ public class NicknameProperties {
     }
 
     public String format(String nickname, long count) {
-        return nickname + String.format(format, count);
+        return String.format(format, nickname, count);
     }
 
     private static int generateRandomIndex(int range) {
