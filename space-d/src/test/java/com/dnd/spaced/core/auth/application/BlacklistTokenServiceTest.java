@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
-import com.dnd.spaced.core.auth.domain.BlacklistTokenRepository;
+import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayNameGeneration;

@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
-import com.dnd.spaced.core.auth.domain.BlacklistTokenRepository;
+import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

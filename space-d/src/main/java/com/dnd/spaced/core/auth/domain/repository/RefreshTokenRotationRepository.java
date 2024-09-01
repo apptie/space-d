@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.domain;
+package com.dnd.spaced.core.auth.domain.repository;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.auth.application;
 
-import com.dnd.spaced.core.auth.domain.BlacklistTokenRepository;
+import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

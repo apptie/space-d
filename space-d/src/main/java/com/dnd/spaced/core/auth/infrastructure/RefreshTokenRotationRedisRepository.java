@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
-import com.dnd.spaced.core.auth.domain.RefreshTokenRotationRepository;
+import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;

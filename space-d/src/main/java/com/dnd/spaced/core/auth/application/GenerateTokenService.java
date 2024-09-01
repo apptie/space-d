@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
-import com.dnd.spaced.core.auth.domain.RefreshTokenRotationRepository;
+import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
 import com.dnd.spaced.core.auth.domain.TokenType;
 import java.time.Clock;
