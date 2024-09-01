@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.account.domain;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidEmailException;
+import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
 import com.dnd.spaced.core.account.domain.exception.InvalidNicknameException;
 import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
@@ -55,9 +55,9 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
         this.role = Role.findBy(roleName);
     }
 
-    private void validateContent(String email, String nickname, String profileImage) {
-        if (isInvalidEmail(email)) {
-            throw new InvalidEmailException("이메일은 null이나 비어 있을 수 없습니다.");
+    private void validateContent(String id, String nickname, String profileImage) {
+        if (isInvalidEmail(id)) {
+            throw new InvalidIdException("ID는 null이나 비어 있을 수 없습니다.");
         }
 
         validateProfileInfo(nickname, profileImage);

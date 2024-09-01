@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
-import com.dnd.spaced.core.account.domain.exception.InvalidEmailException;
+import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
 import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
 import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
 import com.dnd.spaced.core.account.domain.exception.InvalidNicknameException;
@@ -49,7 +49,7 @@ class AccountTest {
                              .profileImage("profileImage")
                              .roleName(Role.ROLE_ADMIN.name())
                              .build()
-        ).isInstanceOf(InvalidEmailException.class)
+        ).isInstanceOf(InvalidIdException.class)
          .hasMessageContaining("이메일은 null이나 비어 있을 수 없습니다.");
     }
 
