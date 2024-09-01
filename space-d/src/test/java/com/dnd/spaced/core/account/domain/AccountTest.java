@@ -40,7 +40,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_email을_전달하면_InvalidEmailException_예외가_발생한다(String invalidId) {
+    void build_메서드는_유효하지_않은_id을_전달하면_InvalidEmailException_예외가_발생한다(String invalidId) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
