@@ -10,6 +10,9 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -78,9 +81,12 @@ public class JwtDecoder implements TokenDecoder {
     }
 
     private PrivateClaims convert(Claims claims) {
+        Date issuedAt = claims.get(CLAIM_ISSUED_AT, Date.class);
+
         return new PrivateClaims(
                 claims.get(CLAIM_ID, String.class),
-                claims.get(CLAIM_ROLE, String.class)
+                claims.get(CLAIM_ROLE, String.class),
+                LocalDateTime.ofInstant(issuedAt.toInstant(), ZoneId.systemDefault())
         );
     }
 }

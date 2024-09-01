@@ -1,4 +1,6 @@
 package com.dnd.spaced.core.auth.domain;
 
-public record PrivateClaims(String id, String roleName) {
+import java.time.LocalDateTime;
+
+public record PrivateClaims(String id, String roleName, LocalDateTime issuedAt) {
 }

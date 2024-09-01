@@ -9,6 +9,7 @@ import com.dnd.spaced.core.auth.domain.TokenType;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -74,7 +75,8 @@ class JwtDecoderTest {
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String email = "email";
         String roleName = "roleName";
-        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, email, roleName);
+        LocalDateTime now = LocalDateTime.now();
+        String token = jwtEncoder.encode(now, tokenType, email, roleName);
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
@@ -83,7 +85,8 @@ class JwtDecoderTest {
         assertAll(
                 () -> assertThat(actual).isNotEmpty(),
                 () -> assertThat(actual.get().id()).isEqualTo(email),
-                () -> assertThat(actual.get().roleName()).isEqualTo(roleName)
+                () -> assertThat(actual.get().roleName()).isEqualTo(roleName),
+                () -> assertThat(actual.get().issuedAt()).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS))
         );
     }
 
