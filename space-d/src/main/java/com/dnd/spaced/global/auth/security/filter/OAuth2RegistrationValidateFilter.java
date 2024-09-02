@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -38,6 +39,7 @@ public class OAuth2RegistrationValidateFilter extends OncePerRequestFilter {
             if (!REGISTRATION_ID.contains(registrationId)) {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
 
                 PrintWriter writer = response.getWriter();
 
