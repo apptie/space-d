@@ -36,12 +36,29 @@ class AuthControllerTest extends CommonControllerSliceTest {
         );
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/auths/profile").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                       .contentType(MediaType.APPLICATION_JSON)
                                       .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
                 status().isNoContent()
+        );
+
+        initAccountProfile_문서화(resultActions);
+    }
+
+    private void initAccountProfile_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        requestFields(
+                                fieldWithPath("jobGroupName").description(generateLinkCode(DocsUrl.JOB_GROUP)),
+                                fieldWithPath("companyName").description(generateLinkCode(DocsUrl.COMPANY)),
+                                fieldWithPath("experienceName").description(generateLinkCode(DocsUrl.EXPERIENCE))
+                        )
+                )
         );
     }
 }

@@ -1,0 +1,5 @@
+:doctype: book
+:icons: font
+
+[[company]]
+include::{snippets}/docs-controller-test/enums/enum-response-fields-company.adoc[]

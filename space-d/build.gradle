@@ -27,7 +27,7 @@ repositories {
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+	snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
@@ -58,10 +58,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'it.ozimov:embedded-redis:0.7.2'
 
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
 }
 
 tasks.named('test') {
@@ -178,6 +183,13 @@ task jacocoTestCoverage(type: Test) {
 asciidoctor {
 	dependsOn test
 	configurations 'asciidoctorExt'
+	inputs.dir snippetsDir
+
+	sources{
+		include("**/index.adoc", "**/common/*.adoc")
+	}
+
+	baseDirFollowsSourceFile()
 }
 
 tasks.register('copyApiDocument', Copy) {
