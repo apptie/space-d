@@ -32,7 +32,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         store.set(new AuthAccountInfo(id));
         return true;
-        //throw new UnauthorizedException();
     }
 
     @Override
