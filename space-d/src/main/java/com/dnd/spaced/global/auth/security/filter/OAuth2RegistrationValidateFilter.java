@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class OAuth2RegistrationValidateFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZE_URI = "/login";
+    private static final String REQUEST_DELIMITER = "/";
     private static final List<String> REGISTRATION_ID = List.of("kakao");
 
     private final ObjectMapper objectMapper;
@@ -33,7 +34,7 @@ public class OAuth2RegistrationValidateFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         if (requestURI.contains(AUTHORIZE_URI)) {
-            String[] splitRequestUri = requestURI.split("/");
+            String[] splitRequestUri = requestURI.split(REQUEST_DELIMITER);
             String registrationId = splitRequestUri[splitRequestUri.length - 1];
 
             if (!REGISTRATION_ID.contains(registrationId)) {
