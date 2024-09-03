@@ -4,7 +4,7 @@ import org.springframework.security.core.AuthenticationException;
 
 public class InvalidResponseWriteException extends AuthenticationException {
 
-    public InvalidResponseWriteException() {
-        super("응답 메시지를 추가하는 과정에 문제가 발생했습니다.");
+    public InvalidResponseWriteException(Throwable e) {
+        super("응답 메시지를 추가하는 과정에 문제가 발생했습니다.", e);
     }
 }

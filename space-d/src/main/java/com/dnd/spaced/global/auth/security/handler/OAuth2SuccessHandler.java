@@ -61,7 +61,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             writer.println(objectMapper.writeValueAsString(new LoginResponse(accessToken, isSignUp)));
             writer.flush();
         } catch (IOException e) {
-            throw new InvalidResponseWriteException();
+            throw new InvalidResponseWriteException(e);
         }
     }
 
