@@ -14,7 +14,7 @@ public class BlacklistTokenService {
     private final BlacklistTokenRepository blacklistTokenRepository;
 
     public boolean isBlockedToken(PrivateClaims privateClaims) {
-        return blacklistTokenRepository.findBy(privateClaims.id())
+        return blacklistTokenRepository.findBy(privateClaims.accountId())
                                        .map(blacklistToken -> blacklistToken.isBlacklistToken(privateClaims.issuedAt()))
                                        .orElse(Boolean.FALSE);
     }

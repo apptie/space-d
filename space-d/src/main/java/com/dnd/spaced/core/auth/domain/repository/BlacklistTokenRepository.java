@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface BlacklistTokenRepository {
 
-    Optional<BlacklistToken> findBy(String id);
+    Optional<BlacklistToken> findBy(String accountId);
 
     void save(BlacklistToken blacklistToken);
 }

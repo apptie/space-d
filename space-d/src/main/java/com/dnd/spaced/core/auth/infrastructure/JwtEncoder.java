@@ -26,11 +26,11 @@ public class JwtEncoder implements TokenEncoder {
     private final TokenProperties tokenProperties;
 
     @Override
-    public String encode(LocalDateTime publishTime, TokenType tokenType, String id, String roleName) {
+    public String encode(LocalDateTime publishTime, TokenType tokenType, String accountId, String roleName) {
         Date targetDate = convertDate(publishTime);
         String key = tokenProperties.findTokenKey(tokenType);
         Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
-        Map<String, Object> attributes = Map.of(CLAIM_ID, id, CLAIM_ROLE, roleName);
+        Map<String, Object> attributes = Map.of(CLAIM_ID, accountId, CLAIM_ROLE, roleName);
 
         return BEARER_TOKEN_PREFIX + Jwts.builder()
                                          .setIssuer(tokenProperties.issuer())

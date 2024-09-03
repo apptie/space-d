@@ -28,7 +28,7 @@ public class OAuth2UserDetailsService implements UserDetailsService {
         validatePrivateClaims(privateClaims);
 
         return new OAuth2UserDetails(
-                privateClaims.id(),
+                privateClaims.accountId(),
                 Set.of(new SimpleGrantedAuthority(privateClaims.roleName()))
         );
     }

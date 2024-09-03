@@ -26,20 +26,20 @@ public class LoginService {
     private final NicknameMetadataRepository nicknameMetadataRepository;
 
     @Transactional
-    public LoggedInAccountInfoDto login(String id) {
+    public LoggedInAccountInfoDto login(String accountId) {
         AtomicBoolean isSignUp = new AtomicBoolean(false);
-        Account account = accountRepository.findBy(id)
+        Account account = accountRepository.findBy(accountId)
                                            .orElseGet(
                                                    () -> {
                                                        isSignUp.set(true);
-                                                       return signUp(id);
+                                                       return signUp(accountId);
                                                    }
                                            );
 
         return new LoggedInAccountInfoDto(account.getId(), account.getRole().name(), isSignUp.get());
     }
 
-    private Account signUp(String id) {
+    private Account signUp(String accountId) {
         String nickname = nicknameProperties.generate();
         String profileImage = profileImageProperties.find();
 
@@ -47,7 +47,7 @@ public class LoginService {
                                          .map(
                                                  nicknameMetadata -> {
                                                      nicknameMetadata.addCount();
-                                                     return saveAccount(id, profileImage, nicknameMetadata);
+                                                     return saveAccount(accountId, profileImage, nicknameMetadata);
                                                  }
                                          )
                                          .orElseGet(
@@ -55,18 +55,18 @@ public class LoginService {
                                                      NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
 
                                                      nicknameMetadataRepository.save(nicknameMetadata);
-                                                     return saveAccount(id, profileImage, nicknameMetadata);
+                                                     return saveAccount(accountId, profileImage, nicknameMetadata);
                                                  }
                                          );
     }
 
-    private Account saveAccount(String id, String profileImage, NicknameMetadata nicknameMetadata) {
+    private Account saveAccount(String accountId, String profileImage, NicknameMetadata nicknameMetadata) {
         String nickname = nicknameProperties.format(
                 nicknameMetadata.getNickname(),
                 nicknameMetadata.getCount()
         );
         Account account = Account.builder()
-                                 .id(id)
+                                 .id(accountId)
                                  .nickname(nickname)
                                  .roleName(DEFAULT_ROLE_NAME)
                                  .profileImage(profileImage)

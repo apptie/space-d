@@ -84,7 +84,7 @@ class JwtDecoderTest {
         // then
         assertAll(
                 () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual.get().id()).isEqualTo(email),
+                () -> assertThat(actual.get().accountId()).isEqualTo(email),
                 () -> assertThat(actual.get().roleName()).isEqualTo(roleName),
                 () -> assertThat(actual.get().issuedAt()).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS))
         );

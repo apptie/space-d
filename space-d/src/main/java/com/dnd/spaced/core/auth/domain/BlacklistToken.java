@@ -19,8 +19,8 @@ public class BlacklistToken {
         this.registeredAt = registeredAt;
     }
 
-    private void validateContent(String id, LocalDateTime registeredAt) {
-        if (id == null || id.isBlank()) {
+    private void validateContent(String accountId, LocalDateTime registeredAt) {
+        if (accountId == null || accountId.isBlank()) {
             throw new InvalidBlacklistTokenContentException("유효한 ID가 아닙니다.");
         }
 

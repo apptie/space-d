@@ -18,10 +18,10 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void save(String id, String refreshToken) {
+    public void save(String accountId, String refreshToken) {
         redisTemplate.opsForValue()
                      .set(
-                             calculateKey(id),
+                             calculateKey(accountId),
                              refreshToken,
                              tokenProperties.refreshExpiredMillisSeconds(),
                              TimeUnit.MILLISECONDS
@@ -29,9 +29,9 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
     }
 
     @Override
-    public Optional<String> findBy(String id) {
+    public Optional<String> findBy(String accountId) {
         String refreshToken = redisTemplate.opsForValue()
-                                           .get(calculateKey(id));
+                                           .get(calculateKey(accountId));
 
         if (refreshToken == null) {
             return Optional.empty();
@@ -40,7 +40,7 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
         return Optional.of(refreshToken);
     }
 
-    private String calculateKey(String email) {
-        return RTT_KEY_PREFIX + email;
+    private String calculateKey(String accountId) {
+        return RTT_KEY_PREFIX + accountId;
     }
 }

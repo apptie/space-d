@@ -22,15 +22,15 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Optional<BlacklistToken> findBy(String id) {
+    public Optional<BlacklistToken> findBy(String accountId) {
         String registeredAt = redisTemplate.opsForValue()
-                                           .get(calculateKey(id));
+                                           .get(calculateKey(accountId));
 
         if (registeredAt == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new BlacklistToken(id, LocalDateTime.parse(registeredAt, formatter)));
+        return Optional.of(new BlacklistToken(accountId, LocalDateTime.parse(registeredAt, formatter)));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
                      );
     }
 
-    private String calculateKey(String email) {
-        return BLACKLIST_KEY_PREFIX + email;
+    private String calculateKey(String accountId) {
+        return BLACKLIST_KEY_PREFIX + accountId;
     }
 }
