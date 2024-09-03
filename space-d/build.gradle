@@ -97,14 +97,14 @@ jacocoTestReport {
 					exclude: [
 							'**/*Application*',
 							'**/*Exception*',
-							'**/*Dto*',
 							'**/*PrivateClaims*',
 							'**/config/**',
 							'**/common/**',
 							'**/infrastructure/**',
 							'**/event/**',
 							'**/embed/**',
-							'**/global/**'
+							'**/global/**',
+							'**/dto/**'
 					] + Qdomains)
 		}))
 	}
@@ -135,16 +135,15 @@ jacocoTestCoverageVerification {
 
 			excludes = [
 					'*.*Exception*',
-					'*.*Dto*',
 					'*.*Application*',
-					'*.*Dto*',
 					'*.*PrivateClaims*',
 					'*.config.*',
 					'*.common.*',
 					'*.infrastructure.*',
 					'*.event.*',
 					'*.embed.*',
-					'*.global.*'
+					'*.global.*',
+					'*.dto.*'
 			] + Qdomains
 		}
 	}
