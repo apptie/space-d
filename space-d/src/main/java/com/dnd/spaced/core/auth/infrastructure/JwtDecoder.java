@@ -6,6 +6,7 @@ import com.dnd.spaced.core.auth.domain.TokenType;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -65,8 +66,10 @@ public class JwtDecoder implements TokenDecoder {
             validateClaims(claims);
 
             return Optional.of(claims);
-        } catch (JwtException ignored) {
+        } catch (ExpiredJwtException ignored) {
             return Optional.empty();
+        } catch (JwtException e) {
+            throw new InvalidTokenException("유효한 토큰이 아닙니다.", e);
         }
     }
 

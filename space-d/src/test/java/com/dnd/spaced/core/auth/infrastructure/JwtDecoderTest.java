@@ -36,12 +36,34 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효하지_않은_토큰이_주어지면_빈_Optional을_반환한다(TokenType tokenType) {
+    void encode_메서드는_유효하지_않은_토큰이_주어지면_InvalidTokenException_예외가_발생한다(TokenType tokenType) {
         // given
         String invalidToken = "Bearer abcde";
 
+        // when & then
+        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
+                .isInstanceOf(InvalidTokenException.class)
+                .hasMessage("유효한 토큰이 아닙니다.");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TokenType.class)
+    void encode_메서드는_만료된_토큰이_주어지면_빈_Optional을_반환한다(TokenType tokenType) {
+        // given
+        TokenProperties tokenProperties = new TokenProperties(
+                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
+                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
+                "otherissuer",
+                43200,
+                259200,
+                43200000L,
+                259200000L
+        );
+        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+        String token = jwtEncoder.encode(LocalDateTime.now().minusYears(3L), tokenType, "id", "roleName");
+
         // when
-        Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, invalidToken);
+        Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
 
         // then
         assertThat(actual).isEmpty();
@@ -73,10 +95,10 @@ class JwtDecoderTest {
     void encode_메서드는_유효한_토큰을_전달하면_토큰의_PrivateClaims를_반환한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String email = "email";
+        String id = "id";
         String roleName = "roleName";
         LocalDateTime now = LocalDateTime.now();
-        String token = jwtEncoder.encode(now, tokenType, email, roleName);
+        String token = jwtEncoder.encode(now, tokenType, id, roleName);
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
@@ -84,7 +106,7 @@ class JwtDecoderTest {
         // then
         assertAll(
                 () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual.get().accountId()).isEqualTo(email),
+                () -> assertThat(actual.get().accountId()).isEqualTo(id),
                 () -> assertThat(actual.get().roleName()).isEqualTo(roleName),
                 () -> assertThat(actual.get().issuedAt()).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS))
         );
@@ -104,9 +126,9 @@ class JwtDecoderTest {
                 259200000L
         );
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String email = "email";
+        String id = "id";
         String roleName = "roleName";
-        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, email, roleName);
+        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, id, roleName);
 
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))
