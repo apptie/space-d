@@ -21,7 +21,6 @@ public class JwtEncoder implements TokenEncoder {
 
     private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
-    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 
     private final TokenProperties tokenProperties;
 
@@ -32,16 +31,16 @@ public class JwtEncoder implements TokenEncoder {
         Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
         Map<String, Object> attributes = Map.of(CLAIM_ID, accountId, CLAIM_ROLE, roleName);
 
-        return BEARER_TOKEN_PREFIX + Jwts.builder()
-                                         .setIssuer(tokenProperties.issuer())
-                                         .setIssuedAt(targetDate)
-                                         .setExpiration(new Date(targetDate.getTime() + expiredMillisSeconds))
-                                         .addClaims(attributes)
-                                         .signWith(
-                                                 Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)),
-                                                 SignatureAlgorithm.HS256
-                                         )
-                                         .compact();
+        return Jwts.builder()
+                   .setIssuer(tokenProperties.issuer())
+                   .setIssuedAt(targetDate)
+                   .setExpiration(new Date(targetDate.getTime() + expiredMillisSeconds))
+                   .addClaims(attributes)
+                   .signWith(
+                           Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)),
+                           SignatureAlgorithm.HS256
+                   )
+                   .compact();
     }
 
     private Date convertDate(LocalDateTime target) {

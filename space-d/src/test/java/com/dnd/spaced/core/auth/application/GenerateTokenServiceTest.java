@@ -32,8 +32,8 @@ class GenerateTokenServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.accessToken()).startsWith("Bearer "),
-                () -> assertThat(actual.refreshToken()).startsWith("Bearer ")
+                () -> assertThat(actual.accessToken()).isNotBlank(),
+                () -> assertThat(actual.refreshToken()).isNotBlank()
         );
     }
 }

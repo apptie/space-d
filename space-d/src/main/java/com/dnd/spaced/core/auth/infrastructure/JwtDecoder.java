@@ -25,31 +25,20 @@ public class JwtDecoder implements TokenDecoder {
     private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
     private static final String CLAIM_ISSUED_AT = "iat";
-    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 
     private final TokenProperties tokenProperties;
 
     @Override
     public Optional<PrivateClaims> decode(TokenType tokenType, String token) {
-        validateBearerToken(token);
+        validateToken(token);
 
         return this.parse(tokenType, token)
                    .map(this::convert);
     }
 
-    private void validateBearerToken(String token) {
-        try {
-            String tokenPrefix = token.substring(0, BEARER_TOKEN_PREFIX.length());
-
-            validateTokenType(tokenPrefix);
-        } catch (StringIndexOutOfBoundsException | NullPointerException e) {
-            throw new InvalidTokenException("토큰이 존재하지 않거나 길이가 부족합니다.", e);
-        }
-    }
-
-    private void validateTokenType(String tokenPrefix) {
-        if (!BEARER_TOKEN_PREFIX.equals(tokenPrefix)) {
-            throw new InvalidTokenException("Bearer 타입의 토큰이 아닙니다.");
+    private void validateToken(String token) {
+        if (token == null || token.isBlank()) {
+            throw new InvalidTokenException("토큰이 존재하지 않거나 길이가 부족합니다.");
         }
     }
 
@@ -60,7 +49,7 @@ public class JwtDecoder implements TokenDecoder {
             Claims claims = Jwts.parserBuilder()
                                 .setSigningKey(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
                                 .build()
-                                .parseClaimsJws(findPureToken(token))
+                                .parseClaimsJws(token)
                                 .getBody();
 
             validateClaims(claims);
@@ -77,10 +66,6 @@ public class JwtDecoder implements TokenDecoder {
         if (!tokenProperties.issuer().equals(claims.getIssuer())) {
             throw new InvalidTokenException("서비스에서 발급한 토큰이 아닙니다.");
         }
-    }
-
-    private String findPureToken(String token) {
-        return token.substring(BEARER_TOKEN_PREFIX.length());
     }
 
     private PrivateClaims convert(Claims claims) {

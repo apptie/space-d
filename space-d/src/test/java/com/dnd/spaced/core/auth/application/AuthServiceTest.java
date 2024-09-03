@@ -52,7 +52,7 @@ class AuthServiceTest {
         // when & then
         assertThatThrownBy(() -> authService.refreshToken("Basic refresh token"))
                 .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("Bearer 타입의 토큰이 아닙니다.");
+                .hasMessage("유효한 토큰이 아닙니다.");
     }
 
     @Test
@@ -173,8 +173,8 @@ class AuthServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.accessToken()).startsWith("Bearer "),
-                () -> assertThat(actual.refreshToken()).startsWith("Bearer "),
+                () -> assertThat(actual.accessToken()).isNotBlank(),
+                () -> assertThat(actual.refreshToken()).isNotBlank(),
                 () -> assertThat(refreshTokenRotationRepository.findBy(accountId)).isPresent()
         );
     }

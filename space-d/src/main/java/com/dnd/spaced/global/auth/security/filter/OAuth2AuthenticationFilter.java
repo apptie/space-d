@@ -1,5 +1,6 @@
 package com.dnd.spaced.global.auth.security.filter;
 
+import com.dnd.spaced.global.auth.exception.InvalidTokenException;
 import com.dnd.spaced.global.auth.security.core.OAuth2AuthenticationToken;
 import com.dnd.spaced.global.auth.security.core.OAuth2UserDetails;
 import com.dnd.spaced.global.auth.security.core.OAuth2UserDetailsService;
@@ -17,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String TOKEN_SCHEME = "Bearer ";
+
     private final OAuth2UserDetailsService oAuth2UserDetailsService;
 
     @Override
@@ -25,7 +28,8 @@ public class OAuth2AuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        extractToken(request).map(oAuth2UserDetailsService::loadUserByUsername)
+        extractToken(request).map(this::parseToken)
+                             .map(oAuth2UserDetailsService::loadUserByUsername)
                              .ifPresent(this::setAuthentication);
 
         filterChain.doFilter(request, response);
@@ -43,5 +47,17 @@ public class OAuth2AuthenticationFilter extends OncePerRequestFilter {
 
     private Optional<String> extractToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION));
+    }
+
+    private String parseToken(String token) {
+        validateToken(token);
+
+        return token.substring(TOKEN_SCHEME.length());
+    }
+
+    private void validateToken(String token) {
+        if (!token.startsWith(TOKEN_SCHEME)) {
+            throw new InvalidTokenException("Bearer 타입의 토큰이 아닙니다.");
+        }
     }
 }
