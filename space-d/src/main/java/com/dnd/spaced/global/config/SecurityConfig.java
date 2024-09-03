@@ -173,7 +173,7 @@ public class SecurityConfig {
             NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri)
                                                        .cache(
                                                                Objects.requireNonNull(
-                                                                       oidcCacheManager().getCache("cache")
+                                                                       oidcCacheManager().getCache("oidc::publicKey")
                                                                )
                                                        )
                                                        .build();
