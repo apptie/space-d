@@ -1,8 +1,6 @@
 package com.dnd.spaced.core.account.domain;
 
 import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
-import com.dnd.spaced.core.account.domain.exception.InvalidNicknameException;
-import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -24,43 +22,31 @@ import org.springframework.data.domain.Persistable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends CreateTimeEntity implements Persistable<String> {
 
-    private static final int NICKNAME_MIN_LENGTH = 5;
-    private static final int NICKNAME_MAX_LENGTH = 10;
-    private static final String NICKNAME_EXCEPTION_MESSAGE = String.format(
-            "닉네임은 최소 %d글자 이상, 최대 %d글자 이하여야 합니다.",
-            NICKNAME_MIN_LENGTH,
-            NICKNAME_MAX_LENGTH
-    );
-
     @Id
     private String id;
 
-    private String nickname;
-
-    private String profileImage;
-
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Embedded
+    private ProfileInfo profileInfo;
 
     @Embedded
     CareerInfo careerInfo;
 
     @Builder
     private Account(String id, String nickname, String profileImage, String roleName) {
-        validateContent(id, nickname, profileImage);
+        validateContent(id);
 
         this.id = id;
-        this.nickname = nickname;
-        this.profileImage = profileImage;
+        this.profileInfo = new ProfileInfo(nickname, profileImage);
         this.role = Role.findBy(roleName);
     }
 
-    private void validateContent(String id, String nickname, String profileImage) {
-        if (isInvalidEmail(id)) {
+    private void validateContent(String id) {
+        if (isInvalidId(id)) {
             throw new InvalidIdException("ID는 null이나 비어 있을 수 없습니다.");
         }
-
-        validateProfileInfo(nickname, profileImage);
     }
 
     public void changeCareerInfo(String jobGroupName, String companyName, String experienceName) {
@@ -72,32 +58,11 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     }
 
     public void changeProfileInfo(String changedNickname, String changedProfileImage) {
-        validateProfileInfo(changedNickname, changedProfileImage);
-
-        this.nickname = changedNickname;
-        this.profileImage = changedProfileImage;
+        this.profileInfo.changeProfileInfo(changedNickname, changedProfileImage);
     }
 
-    private void validateProfileInfo(String nickname, String profileImage) {
-        if (isInvalidNickname(nickname)) {
-            throw new InvalidNicknameException(NICKNAME_EXCEPTION_MESSAGE);
-        }
-        if (isInvalidProfileImage(profileImage)) {
-            throw new InvalidProfileImageException("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
-        }
-    }
-
-    private boolean isInvalidEmail(String email) {
-        return email == null || email.isBlank();
-    }
-
-    private boolean isInvalidNickname(String nickname) {
-        return nickname == null || nickname.isBlank()
-                || nickname.length() < NICKNAME_MIN_LENGTH || nickname.length() > NICKNAME_MAX_LENGTH;
-    }
-
-    private boolean isInvalidProfileImage(String profileImage) {
-        return profileImage == null || profileImage.isBlank();
+    private boolean isInvalidId(String id) {
+        return id == null || id.isBlank();
     }
 
     @Override

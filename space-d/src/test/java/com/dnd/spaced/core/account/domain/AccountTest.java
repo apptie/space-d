@@ -212,8 +212,8 @@ class AccountTest {
 
         // then
         assertAll(
-                () -> assertThat(account.getNickname()).isEqualTo(changedNickname),
-                () -> assertThat(account.getProfileImage()).isEqualTo(changedProfileImage)
+                () -> assertThat(account.getProfileInfo().getNickname()).isEqualTo(changedNickname),
+                () -> assertThat(account.getProfileInfo().getProfileImage()).isEqualTo(changedProfileImage)
         );
     }
 
