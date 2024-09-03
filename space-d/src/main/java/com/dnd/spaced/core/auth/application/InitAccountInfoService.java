@@ -15,11 +15,11 @@ public class InitAccountInfoService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void initCareerInfo(String id, String jobGroupName, String companyName, String experienceName) {
-        Account account = accountRepository.findBy(id)
+    public void initCareerInfo(String accountId, String jobGroupName, String companyName, String experienceName) {
+        Account account = accountRepository.findSignedUpAccountBy(accountId)
                                            .orElseThrow(
                                                    () -> new ForbiddenInitCareerInfoException(
-                                                           "로그인이 필요한 기능입니다."
+                                                           "최초로 가입한 회원이 아닙니다."
                                                    )
                                            );
 

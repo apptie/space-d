@@ -153,6 +153,6 @@ class InitAccountInfoServiceTest {
                         Experience.BETWEEN_THIRD_FOURTH.getName()
                 )
         ).isInstanceOf(ForbiddenInitCareerInfoException.class)
-         .hasMessage("로그인이 필요한 기능입니다.");
+         .hasMessage("최초로 가입한 회원이 아닙니다.");
     }
 }
