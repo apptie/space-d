@@ -1,0 +1,130 @@
+= Space D API 문서
+
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+[[Auth-API]]
+== Auth API
+
+[[Social-Login]]
+
+=== 소셜 로그인 요청 API
+
+==== HTTP request
+[source,http,options="nowrap"]
+----
+GET /login/{provider} HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+
+----
+
+==== Path parameters
+
+|===
+|파라미터명|필수여부|제약조건|설명
+|`+provider+`
+|true
+|kakao만 허용
+|OAuth2 인증을 제공하는 provider
+|===
+
+==== HTTP response
+
+[source,http,options="nowrap"]
+----
+HTTP/1.1 302 Found
+Location: https://kauth.kakao.com/oauth/authorize
+
+----
+
+`/login/{provider}` 예외 상황
+|===
+|에러 코드|HTTP Status 이름|HTTP Status 값|메시지
+
+|`+UNAUTHORIZED+`
+|INVALID_REGISTRATION_ID
+|400
+|지원하지 않는 소셜 로그인 방식입니다.
+
+|===
+
+[[Social-Login-Redirect]]
+
+=== 소셜 로그인 Redirect API
+
+==== HTTP request
+[source,http,options="nowrap"]
+----
+GET /login/oauth2/code/kakao?code={code}&state={state} HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+
+----
+
+==== Path parameters
+
+|===
+
+|파라미터명|필수여부|제약조건|설명
+|`+code+`
+|true
+|kakao 소셜 로그인 과정에서 제공
+|인가 코드
+
+|`+state+`
+|true
+|kakao 소셜 로그인 과정에서 제공
+|CSRF 토큰
+
+|===
+
+==== HTTP response
+
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Set-Cookie: refreshToken={refreshToken}
+
+{
+    "accessToken": "{accessToken}",
+    "isSignUp": "true"
+}
+----
+
+==== Response headers
+
+|===
+
+|이름|설명
+|`+refreshToken+`
+|발급된 Refresh Token
+
+|===
+
+==== Response fields
+
+|===
+
+|필드명|타입|필수여부|설명
+|`+accessToken+`
+|String
+|true
+|발급된 Access Token
+
+|`+isSignUp+`
+|Boolean
+|true
+|회원 가입 유무
+
+|===
+
+[[Auth-Init-Profile]]
+=== 회원 프로필 정보 초기화 API
+operation::auth-controller-test/init-account-profile_성공_테스트[snippets='http-request,request-headers,request-body,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-authProfileException.adoc[]
