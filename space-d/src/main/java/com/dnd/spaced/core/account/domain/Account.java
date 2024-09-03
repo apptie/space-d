@@ -13,11 +13,15 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.domain.Persistable;
 
 @Table(name = "accounts")
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE accounts SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends CreateTimeEntity implements Persistable<String> {
@@ -27,6 +31,8 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    boolean deleted = false;
 
     @Embedded
     private ProfileInfo profileInfo;
