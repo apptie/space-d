@@ -52,7 +52,7 @@ spring:
 token:
   access-key: thisistoolargeaccesstokenkeyfordummykeydatafortest
   refresh-key: thisistoolargerefreshtokenkeyfordummykeydatafortest
-  issuer: localissuer
+  issuer: testissuer
   access-expired-seconds: 3600
   refresh-expired-seconds: 259200
   access-expired-millis-seconds: 3600000
