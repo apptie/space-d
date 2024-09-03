@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
@@ -52,6 +53,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private void writeResponse(HttpServletResponse response, String accessToken, boolean isSignUp) {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setStatus(HttpStatus.OK.value());
 
         try {
             PrintWriter writer = response.getWriter();
