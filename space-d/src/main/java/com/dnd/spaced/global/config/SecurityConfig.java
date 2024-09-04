@@ -86,6 +86,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.POST, "/auths/refresh-token").authenticated()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().permitAll()
             )
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
