@@ -14,7 +14,8 @@ public final class DocumentLinkGenerator {
     public enum DocsUrl {
         JOB_GROUP("job-group", "직군"),
         COMPANY("company","회사"),
-        EXPERIENCE("experience", "경력");
+        EXPERIENCE("experience", "경력"),
+        PROFILE_IMAGE_NAME("profile-image-name", "프로필 이미지 이름");
 
         DocsUrl(String pageId, String text) {
             this.pageId = pageId;

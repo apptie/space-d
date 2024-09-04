@@ -56,6 +56,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.experience").withSubsectionId("experience"),
                                       attributes(key("title").value("Experience 허용 값")),
                                       enumConvertFieldDescriptor(data.getExperience())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.profileImageName").withSubsectionId("profileImageName"),
+                                      attributes(key("title").value("ProfileImageName 허용 값")),
+                                      enumConvertFieldDescriptor(data.getProfileImageName())
                               )
                       ));
     }
@@ -89,6 +95,30 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
                                       attributes(key("title").value("`/auths/blacklist-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.withdrawalException").withSubsectionId("withdrawalException"),
+                                      attributes(key("title").value("`/accounts/withdrawal` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getWithdrawalException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.changeCareerInfoException").withSubsectionId("changeCareerInfoException"),
+                                      attributes(key("title").value("`/accounts/career-info` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getChangeCareerInfoException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.changeProfileInfoException").withSubsectionId("changeProfileInfoException"),
+                                      attributes(key("title").value("`/accounts/profile-info` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getChangeProfileInfoException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findAccountInfoException").withSubsectionId("findAccountInfoException"),
+                                      attributes(key("title").value("`/account` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindAccountInfoException())
                               )
                       )
               );

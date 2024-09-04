@@ -145,3 +145,34 @@ include::{snippets}/docs-controller-test/exceptions/exception-response-fields-re
 operation::admin-controller-test/register-blacklist-token_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-registerBlacklistTokenException.adoc[]
+
+[[Account-API]]
+== Account API
+
+[[Withdrawal]]
+=== 회원 탈퇴 API
+
+operation::account-controller-test/withdrawal_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-withdrawalException.adoc[]
+
+[[Change-Career-Info]]
+=== 회원 경력 정보 변경 API
+
+operation::account-controller-test/change-career-info_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-changeCareerInfoException.adoc[]
+
+[[Change-Profile-Info]]
+=== 회원 프로필 정보 변경 API
+
+operation::account-controller-test/change-profile-info_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-changeProfileInfoException.adoc[]
+
+[[Find-Account-Info]]
+=== 회원 정보 조회 API
+
+operation::account-controller-test/find-account-info_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findAccountInfoException.adoc[]

@@ -7,6 +7,7 @@ import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionDocs;
 import com.dnd.spaced.core.account.domain.Company;
 import com.dnd.spaced.core.account.domain.Experience;
 import com.dnd.spaced.core.account.domain.JobGroup;
+import com.dnd.spaced.core.account.domain.ProfileImageName;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
@@ -35,10 +36,14 @@ public class DocsController {
                                             .collect(Collectors.toMap(Enum::name, Company::getName));
         Map<String, String> experience = Arrays.stream(Experience.values())
                                                .collect(Collectors.toMap(Enum::name, Experience::getName));
+        Map<String, String> profileImageName = Arrays.stream(ProfileImageName.values())
+                                                     .collect(
+                                                             Collectors.toMap(Enum::name, ProfileImageName::getKorean));
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
                                     .company(company)
                                     .experience(experience)
+                                    .profileImageName(profileImageName)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -46,27 +51,86 @@ public class DocsController {
 
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
-        Map<String, ExceptionContent> authProfileException = calculateAuthProfileException();
-        Map<String, ExceptionContent> refreshTokenException = calculateRefreshTokenException();
-        Map<String, ExceptionContent> registerBlacklistTokenException = calculateRegisterBlacklistTokenException();
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
-                                                   .authProfileException(authProfileException)
-                                                   .refreshTokenException(refreshTokenException)
-                                                   .registerBlacklistTokenException(registerBlacklistTokenException)
+                                                   .authProfileException(calculateAuthProfileException())
+                                                   .refreshTokenException(calculateRefreshTokenException())
+                                                   .registerBlacklistTokenException(
+                                                           calculateRegisterBlacklistTokenException()
+                                                   )
+                                                   .withdrawalException(calculateWithdrawalException())
+                                                   .changeCareerInfoException(calculateChangeCareerInfoException())
+                                                   .changeProfileInfoException(calculateChangeProfileInfoException())
+                                                   .findAccountInfoException(calculateFindAccountInfoException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
     }
 
+    private Map<String, ExceptionContent> calculateFindAccountInfoException() {
+        Map<String, ExceptionContent> findAccountInfoException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(findAccountInfoException);
+
+        return findAccountInfoException;
+    }
+
+    private Map<String, ExceptionContent> calculateChangeProfileInfoException() {
+        Map<String, ExceptionContent> changeProfileInfoException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(changeProfileInfoException);
+        putMethodArgumentNotValidExceptionContent(
+                changeProfileInfoException,
+                "originNickname",
+                "profileImageKoreanName"
+        );
+        processAccountException(
+                changeProfileInfoException,
+                AccountErrorCode.INVALID_NICKNAME,
+                AccountErrorCode.INVALID_PROFILE_NAME,
+                AccountErrorCode.INVALID_PROFILE_IMAGE
+        );
+
+        return changeProfileInfoException;
+    }
+
+    private Map<String, ExceptionContent> calculateChangeCareerInfoException() {
+        Map<String, ExceptionContent> changeCareerInfoException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(changeCareerInfoException);
+        putMethodArgumentNotValidExceptionContent(
+                changeCareerInfoException,
+                "jobGroupName",
+                "companyName",
+                "experienceName"
+        );
+        processAccountException(
+                changeCareerInfoException,
+                AccountErrorCode.INVALID_COMPANY,
+                AccountErrorCode.INVALID_EXPERIENCE,
+                AccountErrorCode.INVALID_JOB_GROUP
+        );
+
+        return changeCareerInfoException;
+    }
+
+    private Map<String, ExceptionContent> calculateWithdrawalException() {
+        Map<String, ExceptionContent> withdrawalException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(withdrawalException);
+        processAccountException(withdrawalException, AccountErrorCode.FORBIDDEN_ACCOUNT);
+
+        return withdrawalException;
+    }
+
     private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
-        Map<String, ExceptionContent> registerBlacklistToken = new LinkedHashMap<>();
+        Map<String, ExceptionContent> registerBlacklistTokenException = new LinkedHashMap<>();
 
-        putUnauthorizedExceptionContent(registerBlacklistToken);
-        putForbiddenExceptionContent(registerBlacklistToken);
-        putMethodArgumentNotValidExceptionContent(registerBlacklistToken, "accountId");
-        processAuthException(registerBlacklistToken, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
+        putUnauthorizedExceptionContent(registerBlacklistTokenException);
+        putForbiddenExceptionContent(registerBlacklistTokenException);
+        putMethodArgumentNotValidExceptionContent(registerBlacklistTokenException, "accountId");
+        processAuthException(registerBlacklistTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
 
-        return registerBlacklistToken;
+        return registerBlacklistTokenException;
     }
 
     private Map<String, ExceptionContent> calculateRefreshTokenException() {
