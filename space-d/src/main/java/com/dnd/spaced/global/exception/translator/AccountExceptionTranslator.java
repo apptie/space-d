@@ -48,6 +48,16 @@ public enum AccountExceptionTranslator implements ExceptionTranslator {
             AccountErrorCode.INVALID_ROLE,
             HttpStatus.BAD_REQUEST,
             "잘못된 권한 이름을 입력했습니다."
+    ),
+    FORBIDDEN_ACCOUNT_EXCEPTION(
+            AccountErrorCode.FORBIDDEN_ACCOUNT,
+            HttpStatus.FORBIDDEN,
+            "권한이 없습니다."
+    ),
+    INVALID_PROFILE_NAME_EXCEPTION(
+            AccountErrorCode.INVALID_PROFILE_NAME,
+            HttpStatus.BAD_REQUEST,
+            "유효한 프로필 이미지 이름이 아닙니다."
     );
 
     private final ErrorCode errorCode;
