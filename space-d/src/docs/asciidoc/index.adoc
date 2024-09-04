@@ -101,7 +101,7 @@ Set-Cookie: refreshToken={refreshToken}
 |===
 
 |이름|설명
-|`+refreshToken+`
+|`+Set-Cookie: refreshToken+`
 |발급된 Refresh Token
 
 |===

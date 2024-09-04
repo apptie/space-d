@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.auth.presentation;
 
+import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -64,9 +65,9 @@ class AuthControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         requestFields(
-                                fieldWithPath("jobGroupName").description(generateLinkCode(DocsUrl.JOB_GROUP)),
-                                fieldWithPath("companyName").description(generateLinkCode(DocsUrl.COMPANY)),
-                                fieldWithPath("experienceName").description(generateLinkCode(DocsUrl.EXPERIENCE))
+                                fieldWithPath("jobGroupName").attributes(field("constraints", generateLinkCode(DocsUrl.JOB_GROUP))).description("회원 직군"),
+                                fieldWithPath("companyName").attributes(field("constraints", generateLinkCode(DocsUrl.COMPANY))).description("회원 회사 종류"),
+                                fieldWithPath("experienceName").attributes(field("constraints", generateLinkCode(DocsUrl.EXPERIENCE))).description("회원 경력")
                         )
                 )
         );
