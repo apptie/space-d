@@ -49,12 +49,23 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         Map<String, ExceptionContent> authProfileException = calculateAuthProfileException();
         Map<String, ExceptionContent> refreshTokenException = calculateRefreshTokenException();
+        Map<String, ExceptionContent> registerBlacklistTokenException = calculateRegisterBlacklistTokenException();
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .authProfileException(authProfileException)
                                                    .refreshTokenException(refreshTokenException)
+                                                   .registerBlacklistTokenException(registerBlacklistTokenException)
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
+        Map<String, ExceptionContent> refreshTokenException = new LinkedHashMap<>();
+
+        refreshTokenException.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto("accountId"));
+        processAuthException(refreshTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
+
+        return refreshTokenException;
     }
 
     private Map<String, ExceptionContent> calculateRefreshTokenException() {

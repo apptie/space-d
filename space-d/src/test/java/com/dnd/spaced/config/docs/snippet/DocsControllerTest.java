@@ -83,6 +83,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.refreshTokenException").withSubsectionId("refreshTokenException"),
                                       attributes(key("title").value("`/auths/refresh-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRefreshTokenException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
+                                      attributes(key("title").value("`/auths/blacklist-token` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
                               )
                       )
               );

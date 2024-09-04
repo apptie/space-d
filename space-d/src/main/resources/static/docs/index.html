@@ -833,7 +833,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 07:55:15 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 08:53:22 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -945,11 +945,129 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Admin-API"><a class="link" href="#Admin-API">Admin API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Register-Blacklist-Token"><a class="link" href="#Register-Blacklist-Token">블랙리스트 토큰 등록 API</a></h3>
+<div class="sect3">
+<h4 id="Register-Blacklist-Token_http_request"><a class="link" href="#Register-Blacklist-Token_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /admin/blacklist-token HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer AccessToken
+
+{
+  "accountId" : "id"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Register-Blacklist-Token_request_headers"><a class="link" href="#Register-Blacklist-Token_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 관리자 Access Token</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Register-Blacklist-Token_request_fields"><a class="link" href="#Register-Blacklist-Token_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">제약조건</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accountId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입한 회원 ID만 가능</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">블랙리스트 토큰으로 등록할 회원 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Register-Blacklist-Token_http_response"><a class="link" href="#Register-Blacklist-Token_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Location: /</code></pre>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>/auths/blacklist-token</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (accountId)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_BLACKLIST_TOKEN_CONTENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">토큰 처리 과정에서 문제가 발생했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-09-04 16:42:45 +0900
+Last updated 2024-09-04 17:53:04 +0900
 </div>
 </div>
 </body>

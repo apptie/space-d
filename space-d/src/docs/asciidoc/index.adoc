@@ -131,6 +131,17 @@ include::{snippets}/docs-controller-test/exceptions/exception-response-fields-au
 
 [[Auth-Refresh-Token]]
 === 토큰 재발급 API
+
 operation::auth-controller-test/refresh-token_성공_테스트[snippets='http-request,request-cookies,http-response,response-fields,response-cookies']
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-refreshTokenException.adoc[]
+
+[[Admin-API]]
+== Admin API
+
+[[Register-Blacklist-Token]]
+=== 블랙리스트 토큰 등록 API
+
+operation::admin-controller-test/register-blacklist-token_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-registerBlacklistTokenException.adoc[]
