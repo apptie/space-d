@@ -85,9 +85,9 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(HttpMethod.POST, "/auths/refresh-token").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/auths/refresh-token").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
             )
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .exceptionHandling(handler -> handler
