@@ -61,8 +61,6 @@ token:
   refresh-expired-millis-seconds: 259200000
 
 app:
-  image:
-    path: /home/
   profile:
     nickname:
       adjective:

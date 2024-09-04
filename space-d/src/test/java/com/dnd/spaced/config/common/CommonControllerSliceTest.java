@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
+import com.dnd.spaced.core.account.application.AccountService;
+import com.dnd.spaced.core.account.presentation.AccountController;
 import com.dnd.spaced.core.admin.presentation.AdminController;
 import com.dnd.spaced.core.auth.application.AuthService;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
@@ -35,7 +37,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                AuthController.class, DocsController.class, AdminController.class
+                AuthController.class, DocsController.class, AdminController.class, AccountController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -66,6 +68,12 @@ public class CommonControllerSliceTest {
     @Autowired
     protected AdminController adminController;
 
+    @Autowired
+    protected AccountController accountController;
+
+    @MockBean
+    protected AccountService accountService;
+
     @MockBean
     protected BlacklistTokenService blacklistTokenService;
 
@@ -86,7 +94,12 @@ public class CommonControllerSliceTest {
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authController, adminController, commonDocsController)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(
+                                              authController,
+                                              adminController,
+                                              accountController,
+                                              commonDocsController
+                                      )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(authAccountInfoArgumentResolver)
