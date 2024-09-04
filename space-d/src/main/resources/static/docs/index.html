@@ -760,6 +760,12 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
@@ -833,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 08:53:22 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 09:18:49 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -1046,6 +1052,18 @@ Location: /</code></pre>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>

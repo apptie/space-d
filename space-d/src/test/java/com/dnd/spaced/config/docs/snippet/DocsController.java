@@ -35,7 +35,6 @@ public class DocsController {
                                             .collect(Collectors.toMap(Enum::name, Company::getName));
         Map<String, String> experience = Arrays.stream(Experience.values())
                                                .collect(Collectors.toMap(Enum::name, Experience::getName));
-
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
                                     .company(company)
@@ -60,12 +59,14 @@ public class DocsController {
     }
 
     private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
-        Map<String, ExceptionContent> refreshTokenException = new LinkedHashMap<>();
+        Map<String, ExceptionContent> registerBlacklistToken = new LinkedHashMap<>();
 
-        refreshTokenException.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto("accountId"));
-        processAuthException(refreshTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
+        putUnauthorizedExceptionContent(registerBlacklistToken);
+        putForbiddenExceptionContent(registerBlacklistToken);
+        putMethodArgumentNotValidExceptionContent(registerBlacklistToken, "accountId");
+        processAuthException(registerBlacklistToken, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
 
-        return refreshTokenException;
+        return registerBlacklistToken;
     }
 
     private Map<String, ExceptionContent> calculateRefreshTokenException() {
@@ -85,15 +86,14 @@ public class DocsController {
     private Map<String, ExceptionContent> calculateAuthProfileException() {
         Map<String, ExceptionContent> authProfileException = new LinkedHashMap<>();
 
-        ExceptionContent unauthorizedExceptionContent = new ExceptionContent(
-                HttpStatus.UNAUTHORIZED,
-                "로그인이 필요한 기능입니다."
+        putUnauthorizedExceptionContent(authProfileException);
+        putForbiddenExceptionContent(authProfileException);
+        putMethodArgumentNotValidExceptionContent(
+                authProfileException,
+                "jobGroupName",
+                "companyName",
+                "experienceName"
         );
-
-        authProfileException.put("UNAUTHORIZED", unauthorizedExceptionContent);
-        authProfileException.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(
-                "jobGroupName", "companyName", "experienceName"
-        ));
 
         processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO);
         processAccountException(
@@ -104,6 +104,21 @@ public class DocsController {
         );
 
         return authProfileException;
+    }
+
+    private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
+        target.put(
+                "UNAUTHORIZED",
+                new ExceptionContent(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다.")
+        );
+    }
+
+    private void putForbiddenExceptionContent(Map<String, ExceptionContent> target) {
+        target.put("FORBIDDEN", new ExceptionContent(HttpStatus.FORBIDDEN, "권한이 없습니다."));
+    }
+
+    private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
+        target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
     }
 
     private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
