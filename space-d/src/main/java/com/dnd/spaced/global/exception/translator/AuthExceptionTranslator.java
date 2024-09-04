@@ -16,14 +16,36 @@ public enum AuthExceptionTranslator implements ExceptionTranslator{
     ),
     INVALID_TOKEN_EXCEPTION(
             AuthErrorCode.INVALID_TOKEN,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.UNAUTHORIZED,
             "유효한 토큰이 아닙니다."
     ),
     FORBIDDEN_INIT_CAREER_INFO_EXCEPTION(
             AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO,
             HttpStatus.FORBIDDEN,
             "권한이 없습니다."
-    );
+    ),
+    REFRESH_TOKEN_NOT_FOUND_EXCEPTION(
+            AuthErrorCode.REFRESH_TOKEN_NOT_FOUND,
+            HttpStatus.UNAUTHORIZED,
+            "refresh token cookie가 없습니다."
+    ),
+    EXPIRED_TOKEN_EXCEPTION(
+            AuthErrorCode.EXPIRED_TOKEN,
+            HttpStatus.UNAUTHORIZED,
+            "토큰이 만료되었습니다."
+    ),
+    BLOCKED_TOKEN_EXCEPTION(
+            AuthErrorCode.BLOCKED_TOKEN,
+            HttpStatus.UNAUTHORIZED,
+            "세션이 만료되었습니다. 다시 로그인 해 주세요."
+    ),
+    ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION(
+            AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH,
+            HttpStatus.UNAUTHORIZED,
+            "세션이 만료되었습니다. 다시 로그인 해 주세요."
+    )
+
+    ;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;

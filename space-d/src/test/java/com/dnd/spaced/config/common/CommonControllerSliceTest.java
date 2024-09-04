@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
+import com.dnd.spaced.core.auth.application.AuthService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
@@ -62,6 +63,9 @@ public class CommonControllerSliceTest {
 
     @MockBean
     protected InitAccountInfoService initAccountInfoService;
+
+    @MockBean
+    protected AuthService authService;
 
     @Autowired
     protected DocsController commonDocsController;
