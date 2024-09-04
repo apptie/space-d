@@ -100,6 +100,24 @@ class AuthControllerTest extends CommonControllerSliceTest {
         refreshToken_문서화(resultActions);
     }
 
+    @Test
+    void refreshToken_실패_테스트_refreshToken_없음() throws Exception {
+        // given
+        Cookie notRefreshTokenCookie = mock(Cookie.class);
+
+        given(notRefreshTokenCookie.getName()).willReturn("not refreshToken");
+
+        // when & then
+        mockMvc.perform(
+                post("/auths/refresh-token").contentType(MediaType.APPLICATION_JSON)
+                        .cookie(notRefreshTokenCookie)
+        ).andExpectAll(
+                status().isUnauthorized(),
+                jsonPath("$.code").value("REFRESH_TOKEN_NOT_FOUND"),
+                jsonPath("$.message").value("refresh token cookie가 없습니다.")
+        );
+    }
+
     private void refreshToken_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
