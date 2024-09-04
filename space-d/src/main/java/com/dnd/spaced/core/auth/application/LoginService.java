@@ -2,12 +2,12 @@ package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
+import com.dnd.spaced.core.account.domain.ProfileImageName;
 import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
-import com.dnd.spaced.global.config.properties.ProfileImageProperties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ public class LoginService {
     private static final String DEFAULT_ROLE_NAME = Role.ROLE_USER.name();
 
     private final NicknameProperties nicknameProperties;
-    private final ProfileImageProperties profileImageProperties;
     private final AccountRepository accountRepository;
     private final NicknameMetadataRepository nicknameMetadataRepository;
 
@@ -41,13 +40,14 @@ public class LoginService {
 
     private Account signUp(String accountId) {
         String nickname = nicknameProperties.generate();
-        String profileImage = profileImageProperties.find();
+        String profileImageName = ProfileImageName.findRandom()
+                                                  .getImageName();
 
         return nicknameMetadataRepository.findBy(nickname)
                                          .map(
                                                  nicknameMetadata -> {
                                                      nicknameMetadata.addCount();
-                                                     return saveAccount(accountId, profileImage, nicknameMetadata);
+                                                     return saveAccount(accountId, profileImageName, nicknameMetadata);
                                                  }
                                          )
                                          .orElseGet(
@@ -55,7 +55,7 @@ public class LoginService {
                                                      NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
 
                                                      nicknameMetadataRepository.save(nicknameMetadata);
-                                                     return saveAccount(accountId, profileImage, nicknameMetadata);
+                                                     return saveAccount(accountId, profileImageName, nicknameMetadata);
                                                  }
                                          );
     }

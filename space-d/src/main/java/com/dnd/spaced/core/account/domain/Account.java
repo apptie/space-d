@@ -32,13 +32,13 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    boolean deleted = false;
+    private boolean deleted = false;
 
     @Embedded
     private ProfileInfo profileInfo;
 
     @Embedded
-    CareerInfo careerInfo;
+    private CareerInfo careerInfo;
 
     @Builder
     private Account(String id, String nickname, String profileImage, String roleName) {

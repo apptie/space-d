@@ -41,6 +41,11 @@ public class AccountQuerydslRepository implements AccountRepository {
         return Optional.ofNullable(result);
     }
 
+    @Override
+    public void delete(Account account) {
+        accountCrudRepository.delete(account);
+    }
+
     private BooleanExpression notWithdrawal() {
         return account.deleted.isFalse();
     }
