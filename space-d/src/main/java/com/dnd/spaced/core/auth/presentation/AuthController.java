@@ -12,6 +12,7 @@ import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.server.Cookie.SameSite;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +40,7 @@ public class AuthController {
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountProfile(
             @AuthAccount AuthAccountInfo accountInfo,
-            UpdateAccountCareerInfoRequest request
+            @Valid @RequestBody UpdateAccountCareerInfoRequest request
     ) {
         initAccountInfoService.initCareerInfo(
                 accountInfo.id(),

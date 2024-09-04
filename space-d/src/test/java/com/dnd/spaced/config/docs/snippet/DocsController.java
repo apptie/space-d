@@ -80,10 +80,17 @@ public class DocsController {
         );
 
         authProfileException.put("UNAUTHORIZED", unauthorizedExceptionContent);
+        authProfileException.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(
+                "jobGroupName", "companyName", "experienceName"
+        ));
 
         processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO);
-        processAccountException(authProfileException, AccountErrorCode.INVALID_COMPANY,
-                AccountErrorCode.INVALID_EXPERIENCE, AccountErrorCode.INVALID_JOB_GROUP);
+        processAccountException(
+                authProfileException,
+                AccountErrorCode.INVALID_COMPANY,
+                AccountErrorCode.INVALID_EXPERIENCE,
+                AccountErrorCode.INVALID_JOB_GROUP
+        );
 
         return authProfileException;
     }
@@ -113,5 +120,12 @@ public class DocsController {
         );
 
         target.put(exceptionDto.code(), exceptionContent);
+    }
+
+    private ExceptionContent createMethodArgumentNotValidExceptionDto(String... inputs) {
+        return new ExceptionContent(
+                HttpStatus.BAD_REQUEST,
+                "유효한 입력 값이 아닙니다. (" + String.join(", ", inputs) + ")"
+        );
     }
 }

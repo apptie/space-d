@@ -747,6 +747,12 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (jobGroupName, companyName, experienceName)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN_INIT_CAREER_INFO</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
@@ -811,7 +817,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 02:35:41 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 7 Sep 2024 06:37:12 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
