@@ -10,4 +10,6 @@ public interface AccountRepository {
     Optional<Account> findBy(String id);
 
     Optional<Account> findSignedUpAccountBy(String id);
+
+    void delete(Account account);
 }
