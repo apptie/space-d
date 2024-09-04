@@ -42,19 +42,19 @@ class DocsControllerTest extends CommonControllerSliceTest {
                               customResponseFields(
                                       "enum-response",
                                       beneathPath("data.company").withSubsectionId("company"),
-                                      attributes(key("title").value("Company")),
+                                      attributes(key("title").value("Company 허용 값")),
                                       enumConvertFieldDescriptor(data.getCompany())
                               ),
                               customResponseFields(
                                       "enum-response",
                                       beneathPath("data.jobGroup").withSubsectionId("jobGroup"),
-                                      attributes(key("title").value("JobGroup")),
+                                      attributes(key("title").value("JobGroup 허용 값")),
                                       enumConvertFieldDescriptor(data.getJobGroup())
                               ),
                               customResponseFields(
                                       "enum-response",
                                       beneathPath("data.experience").withSubsectionId("experience"),
-                                      attributes(key("title").value("Experience")),
+                                      attributes(key("title").value("Experience 허용 값")),
                                       enumConvertFieldDescriptor(data.getExperience())
                               )
                       ));
@@ -77,6 +77,18 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.authProfileException").withSubsectionId("authProfileException"),
                                       attributes(key("title").value("`/auths/profile` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getAuthProfileException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.refreshTokenException").withSubsectionId("refreshTokenException"),
+                                      attributes(key("title").value("`/auths/refresh-token` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getRefreshTokenException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
+                                      attributes(key("title").value("`/auths/blacklist-token` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
                               )
                       )
               );

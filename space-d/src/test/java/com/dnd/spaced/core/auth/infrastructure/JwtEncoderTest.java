@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.auth.domain.TokenType;
 import com.dnd.spaced.global.config.properties.TokenProperties;
@@ -33,9 +32,6 @@ class JwtEncoderTest {
         String actual = jwtEncoder.encode(LocalDateTime.now(), tokenType, "email", "roleName");
 
         // then
-        assertAll(
-                () -> assertThat(actual).isNotBlank(),
-                () -> assertThat(actual).startsWith("Bearer ")
-        );
+        assertThat(actual).isNotBlank();
     }
 }

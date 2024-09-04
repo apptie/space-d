@@ -42,10 +42,10 @@ class BlacklistTokenServiceTest {
     void isBlockedToken_메서드는_블랙리스트_등록_일자보다_isseudAt이_미래면_false를_반환한다() {
         // given
         LocalDateTime now = LocalDateTime.now();
-        String id = "id";
-        PrivateClaims privateClaims = new PrivateClaims(id, "roleName", now);
+        String accountId = "id";
+        PrivateClaims privateClaims = new PrivateClaims(accountId, "roleName", now);
 
-        blacklistTokenRepository.save(new BlacklistToken(id, now.minusDays(1L)));
+        blacklistTokenRepository.save(new BlacklistToken(accountId, now.minusDays(1L)));
 
         // when
         boolean actual = blacklistTokenService.isBlockedToken(privateClaims);
@@ -58,15 +58,27 @@ class BlacklistTokenServiceTest {
     void isBlockedToken_메서드는_블랙리스트_등록_일자보다_isseudAt이_과거면_true를_반환한다() {
         // given
         LocalDateTime now = LocalDateTime.now();
-        String id = "id";
-        PrivateClaims privateClaims = new PrivateClaims(id, "roleName", now);
+        String accountId = "id";
+        PrivateClaims privateClaims = new PrivateClaims(accountId, "roleName", now);
 
-        blacklistTokenRepository.save(new BlacklistToken(id, now.plusDays(1L)));
+        blacklistTokenRepository.save(new BlacklistToken(accountId, now.plusDays(1L)));
 
         // when
         boolean actual = blacklistTokenService.isBlockedToken(privateClaims);
 
         // then
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void register_메서드는_전달한_accountId_기반으로_토큰_블랙리스트를_등록한다() {
+        // given
+        String accountId = "id";
+
+        // when
+        blacklistTokenService.register(accountId);
+
+        // then
+        assertThat(blacklistTokenRepository.findBy(accountId)).isPresent();
     }
 }

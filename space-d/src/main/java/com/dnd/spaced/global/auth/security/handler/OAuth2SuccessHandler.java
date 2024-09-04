@@ -46,19 +46,20 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         LoggedInAccountInfoDto accountInfoDto = loginService.login(id);
         TokenDto tokenDto = generateTokenService.generate(accountInfoDto.id(), accountInfoDto.roleName());
 
-        writeResponse(response, tokenDto.accessToken(), accountInfoDto.isSignUp());
+        writeResponse(response, tokenDto, accountInfoDto.isSignUp());
         createRefreshTokenCookie(response, tokenDto.refreshToken());
     }
 
-    private void writeResponse(HttpServletResponse response, String accessToken, boolean isSignUp) {
+    private void writeResponse(HttpServletResponse response, TokenDto tokenDto, boolean isSignUp) {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setStatus(HttpStatus.OK.value());
 
         try {
             PrintWriter writer = response.getWriter();
+            LoginResponse loginResponse = new LoginResponse(tokenDto.accessToken(), tokenDto.tokenScheme(), isSignUp);
 
-            writer.println(objectMapper.writeValueAsString(new LoginResponse(accessToken, isSignUp)));
+            writer.println(objectMapper.writeValueAsString(loginResponse));
             writer.flush();
         } catch (IOException e) {
             throw new InvalidResponseWriteException(e);

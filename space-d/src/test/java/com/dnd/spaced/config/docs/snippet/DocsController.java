@@ -35,7 +35,6 @@ public class DocsController {
                                             .collect(Collectors.toMap(Enum::name, Company::getName));
         Map<String, String> experience = Arrays.stream(Experience.values())
                                                .collect(Collectors.toMap(Enum::name, Experience::getName));
-
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
                                     .company(company)
@@ -48,28 +47,78 @@ public class DocsController {
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         Map<String, ExceptionContent> authProfileException = calculateAuthProfileException();
-
+        Map<String, ExceptionContent> refreshTokenException = calculateRefreshTokenException();
+        Map<String, ExceptionContent> registerBlacklistTokenException = calculateRegisterBlacklistTokenException();
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .authProfileException(authProfileException)
+                                                   .refreshTokenException(refreshTokenException)
+                                                   .registerBlacklistTokenException(registerBlacklistTokenException)
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
     }
 
+    private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
+        Map<String, ExceptionContent> registerBlacklistToken = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(registerBlacklistToken);
+        putForbiddenExceptionContent(registerBlacklistToken);
+        putMethodArgumentNotValidExceptionContent(registerBlacklistToken, "accountId");
+        processAuthException(registerBlacklistToken, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
+
+        return registerBlacklistToken;
+    }
+
+    private Map<String, ExceptionContent> calculateRefreshTokenException() {
+        Map<String, ExceptionContent> refreshTokenException = new LinkedHashMap<>();
+
+        processAuthException(
+                refreshTokenException,
+                AuthErrorCode.REFRESH_TOKEN_NOT_FOUND,
+                AuthErrorCode.EXPIRED_TOKEN,
+                AuthErrorCode.BLOCKED_TOKEN,
+                AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH
+        );
+
+        return refreshTokenException;
+    }
+
     private Map<String, ExceptionContent> calculateAuthProfileException() {
         Map<String, ExceptionContent> authProfileException = new LinkedHashMap<>();
 
-        ExceptionContent unauthorizedExceptionContent = new ExceptionContent(
-                HttpStatus.UNAUTHORIZED,
-                "로그인이 필요한 기능입니다."
+        putUnauthorizedExceptionContent(authProfileException);
+        putForbiddenExceptionContent(authProfileException);
+        putMethodArgumentNotValidExceptionContent(
+                authProfileException,
+                "jobGroupName",
+                "companyName",
+                "experienceName"
         );
 
-        authProfileException.put("UNAUTHORIZED", unauthorizedExceptionContent);
-
         processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO);
-        processAccountException(authProfileException, AccountErrorCode.INVALID_COMPANY, AccountErrorCode.INVALID_EXPERIENCE, AccountErrorCode.INVALID_JOB_GROUP);
+        processAccountException(
+                authProfileException,
+                AccountErrorCode.INVALID_COMPANY,
+                AccountErrorCode.INVALID_EXPERIENCE,
+                AccountErrorCode.INVALID_JOB_GROUP
+        );
 
         return authProfileException;
+    }
+
+    private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
+        target.put(
+                "UNAUTHORIZED",
+                new ExceptionContent(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다.")
+        );
+    }
+
+    private void putForbiddenExceptionContent(Map<String, ExceptionContent> target) {
+        target.put("FORBIDDEN", new ExceptionContent(HttpStatus.FORBIDDEN, "권한이 없습니다."));
+    }
+
+    private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
+        target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
     }
 
     private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
@@ -97,5 +146,12 @@ public class DocsController {
         );
 
         target.put(exceptionDto.code(), exceptionContent);
+    }
+
+    private ExceptionContent createMethodArgumentNotValidExceptionDto(String... inputs) {
+        return new ExceptionContent(
+                HttpStatus.BAD_REQUEST,
+                "유효한 입력 값이 아닙니다. (" + String.join(", ", inputs) + ")"
+        );
     }
 }

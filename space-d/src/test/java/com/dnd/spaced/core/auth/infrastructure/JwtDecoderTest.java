@@ -80,18 +80,6 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_주어진_토큰이_Bearer_타입이_아니라면_InvalidTokenException_예외가_발생한다(TokenType tokenType) {
-        // given
-        String invalidToken = "Basic abcdeabcde";
-
-        // when
-        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("Bearer 타입의 토큰이 아닙니다.");
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TokenType.class)
     void encode_메서드는_유효한_토큰을_전달하면_토큰의_PrivateClaims를_반환한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);

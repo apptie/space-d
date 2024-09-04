@@ -13,4 +13,6 @@ import lombok.NoArgsConstructor;
 public class ExceptionDocs {
 
     private Map<String, ExceptionContent> authProfileException;
+    private Map<String, ExceptionContent> refreshTokenException;
+    private Map<String, ExceptionContent> registerBlacklistTokenException;
 }
