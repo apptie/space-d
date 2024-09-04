@@ -128,3 +128,9 @@ Set-Cookie: refreshToken={refreshToken}
 operation::auth-controller-test/init-account-profile_성공_테스트[snippets='http-request,request-headers,request-body,request-fields,http-response']
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-authProfileException.adoc[]
+
+[[Auth-Refresh-Token]]
+=== 토큰 재발급 API
+operation::auth-controller-test/refresh-token_성공_테스트[snippets='http-request,request-cookies,http-response,response-fields,response-cookies']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-refreshTokenException.adoc[]

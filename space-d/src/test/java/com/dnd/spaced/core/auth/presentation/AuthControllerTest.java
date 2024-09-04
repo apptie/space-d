@@ -5,10 +5,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
+import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,9 +84,9 @@ class AuthControllerTest extends CommonControllerSliceTest {
         );
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/auths/refresh-token").contentType(MediaType.APPLICATION_JSON)
-                        .cookie(refreshTokenCookie)
+                                            .cookie(refreshTokenCookie)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("$.accessToken").value("accessToken"),
@@ -91,6 +95,25 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 cookie().path("refreshToken", "/"),
                 cookie().secure("refreshToken", true),
                 cookie().httpOnly("refreshToken", true)
+        );
+
+        refreshToken_문서화(resultActions);
+    }
+
+    private void refreshToken_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestCookies(
+                                cookieWithName("refreshToken").description("토큰 재발급을 위한 refresh token cookie")
+                        ),
+                        responseCookies(
+                                cookieWithName("refreshToken").description("새롭게 발급된 refresh token")
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").description("새롭게 발급된 access token"),
+                                fieldWithPath("tokenScheme").description("토큰 scheme")
+                        )
+                )
         );
     }
 }

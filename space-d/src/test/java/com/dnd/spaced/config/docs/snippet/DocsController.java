@@ -48,12 +48,27 @@ public class DocsController {
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         Map<String, ExceptionContent> authProfileException = calculateAuthProfileException();
-
+        Map<String, ExceptionContent> refreshTokenException = calculateRefreshTokenException();
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .authProfileException(authProfileException)
+                                                   .refreshTokenException(refreshTokenException)
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateRefreshTokenException() {
+        Map<String, ExceptionContent> refreshTokenException = new LinkedHashMap<>();
+
+        processAuthException(
+                refreshTokenException,
+                AuthErrorCode.REFRESH_TOKEN_NOT_FOUND,
+                AuthErrorCode.EXPIRED_TOKEN,
+                AuthErrorCode.BLOCKED_TOKEN,
+                AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH
+        );
+
+        return refreshTokenException;
     }
 
     private Map<String, ExceptionContent> calculateAuthProfileException() {
@@ -67,7 +82,8 @@ public class DocsController {
         authProfileException.put("UNAUTHORIZED", unauthorizedExceptionContent);
 
         processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO);
-        processAccountException(authProfileException, AccountErrorCode.INVALID_COMPANY, AccountErrorCode.INVALID_EXPERIENCE, AccountErrorCode.INVALID_JOB_GROUP);
+        processAccountException(authProfileException, AccountErrorCode.INVALID_COMPANY,
+                AccountErrorCode.INVALID_EXPERIENCE, AccountErrorCode.INVALID_JOB_GROUP);
 
         return authProfileException;
     }
