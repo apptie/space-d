@@ -1,11 +1,11 @@
-package com.dnd.spaced.core.word.application;
+package com.dnd.spaced.core.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
-import com.dnd.spaced.core.word.application.dto.request.SaveWordDto;
-import com.dnd.spaced.core.word.application.dto.request.SaveWordDto.PronunciationInfoDto;
+import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class WordCommandServiceTest {
+class AdminWordServiceTest {
 
     @Autowired
-    WordCommandService wordCommandService;
+    AdminWordService adminWordService;
 
     @Test
     void saveWord_메서드는_유효한_CreateWordDto를_전달하면_Word를_초기화하고_영속화한다() {
@@ -39,7 +39,7 @@ class WordCommandServiceTest {
         );
 
         // when
-        Long actual = wordCommandService.saveWord(saveWordDto);
+        Long actual = adminWordService.saveWord(saveWordDto);
 
         // then
         assertThat(actual).isPositive();
@@ -48,18 +48,18 @@ class WordCommandServiceTest {
     @Test
     void updateWordExample_메서드는_지정한_id에_해당하는_WordExample의_example을_전달한_example로_변환한다() {
         // when & then
-        assertDoesNotThrow(() -> wordCommandService.updateWordExample(1L, "changed word example"));
+        assertDoesNotThrow(() -> adminWordService.updateWordExample(1L, "changed word example"));
     }
 
     @Test
     void deleteWordExample_메서드는_지정한_id에_해당하는_WordExample을_삭제한다() {
         // when & then
-        assertDoesNotThrow(() -> wordCommandService.deleteWordExample(1L));
+        assertDoesNotThrow(() -> adminWordService.deleteWordExample(1L));
     }
 
     @Test
     void deletePronunciation_메서드는_지정한_id에_해당하는_Pronunciation을_삭제한다() {
         // when & then
-        assertDoesNotThrow(() -> wordCommandService.deletePronunciation(1L));
+        assertDoesNotThrow(() -> adminWordService.deletePronunciation(1L));
     }
 }

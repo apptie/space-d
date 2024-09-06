@@ -1,7 +1,7 @@
-package com.dnd.spaced.core.word.application;
+package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.word.application.dto.request.SaveWordDto;
-import com.dnd.spaced.core.word.application.dto.request.SaveWordDto.PronunciationInfoDto;
+import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordExample;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class WordCommandService {
+public class AdminWordService {
 
     private final WordRepository wordRepository;
     private final WordExampleRepository wordExampleRepository;

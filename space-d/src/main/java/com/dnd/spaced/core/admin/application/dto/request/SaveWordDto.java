@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.application.dto.request;
+package com.dnd.spaced.core.admin.application.dto.request;
 
 import java.util.List;
 
