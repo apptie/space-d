@@ -35,7 +35,7 @@ public class WordQuerydslRepository implements WordRepository {
     @Override
     public Optional<Word> findBy(Long id) {
         Word result = queryFactory.selectFrom(word)
-                                  .leftJoin(word.wordExamples).fetchJoin()
+                                  .leftJoin(word.wordExamples)
                                   .leftJoin(word.pronunciations).fetchJoin()
                                   .where(word.id.eq(id))
                                   .fetchOne();
