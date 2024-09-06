@@ -1,6 +1,7 @@
 package com.dnd.spaced.core.word.domain;
 
 import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationContentException;
+import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Pronunciation {
+public class Pronunciation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
