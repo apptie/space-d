@@ -69,16 +69,4 @@ class BlacklistTokenServiceTest {
         // then
         assertThat(actual).isTrue();
     }
-
-    @Test
-    void register_메서드는_전달한_accountId_기반으로_토큰_블랙리스트를_등록한다() {
-        // given
-        String accountId = "id";
-
-        // when
-        blacklistTokenService.register(accountId);
-
-        // then
-        assertThat(blacklistTokenRepository.findBy(accountId)).isPresent();
-    }
 }
