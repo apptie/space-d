@@ -13,10 +13,13 @@ import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
+import com.dnd.spaced.core.word.application.WordService;
+import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
+import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -38,7 +41,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                AuthController.class, DocsController.class, AdminController.class, AccountController.class
+                AuthController.class, DocsController.class, AdminController.class, AccountController.class,
+                WordController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -72,6 +76,9 @@ public class CommonControllerSliceTest {
     @Autowired
     protected AccountController accountController;
 
+    @Autowired
+    protected WordController wordController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -87,6 +94,9 @@ public class CommonControllerSliceTest {
     @MockBean
     protected AuthService authService;
 
+    @MockBean
+    protected WordService wordService;
+
     @Autowired
     protected DocsController commonDocsController;
 
@@ -97,16 +107,21 @@ public class CommonControllerSliceTest {
         AuthStore store = new AuthStore();
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
+        CommonWordPageableArgumentResolver commonWordPageableArgumentResolver = new CommonWordPageableArgumentResolver();
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
                                               adminController,
                                               accountController,
-                                              commonDocsController
+                                              commonDocsController,
+                                              wordController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
-                                      .setCustomArgumentResolvers(authAccountInfoArgumentResolver)
+                                      .setCustomArgumentResolvers(
+                                              authAccountInfoArgumentResolver,
+                                              commonWordPageableArgumentResolver
+                                      )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))
                                       .alwaysDo(print())
