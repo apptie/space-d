@@ -10,6 +10,8 @@ import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
+import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -47,7 +49,10 @@ public class WordQuerydslRepository implements WordRepository {
                                    lastWordNameGt(pageRequest.lastWordName()),
                                    categoryEq(wordCondition.category())
                            )
-                           .orderBy(word.name.asc())
+                           .orderBy(
+                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                                             .toArray(OrderSpecifier[]::new)
+                           )
                            .limit(pageRequest.pageable().getPageSize())
                            .fetch();
     }
@@ -65,7 +70,10 @@ public class WordQuerydslRepository implements WordRepository {
                                    nameStartsWith(condition.name()),
                                    categoryEq(condition.category())
                            )
-                           .orderBy(word.name.asc())
+                           .orderBy(
+                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                                             .toArray(OrderSpecifier[]::new)
+                           )
                            .limit(pageRequest.pageable().getPageSize())
                            .fetch();
     }
