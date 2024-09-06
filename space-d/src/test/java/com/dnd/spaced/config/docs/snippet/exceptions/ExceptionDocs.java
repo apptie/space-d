@@ -23,4 +23,5 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> updateWordExampleException;
     private Map<String, ExceptionContent> deleteWordExampleException;
     private Map<String, ExceptionContent> deletePronunciationException;
+    private Map<String, ExceptionContent> readWordException;
 }

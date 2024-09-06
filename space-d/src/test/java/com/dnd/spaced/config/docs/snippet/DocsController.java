@@ -81,9 +81,18 @@ public class DocsController {
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
                                                    .deletePronunciationException(calculateDeletePronunciationException())
+                                                   .readWordException(calculateReadWordException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateReadWordException() {
+        Map<String, ExceptionContent> readWordException = new LinkedHashMap<>();
+
+        processWordException(readWordException, WordErrorCode.WORD_NOT_FOUND);
+
+        return readWordException;
     }
 
     private Map<String, ExceptionContent> calculateDeletePronunciationException() {

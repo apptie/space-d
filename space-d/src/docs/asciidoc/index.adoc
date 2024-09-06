@@ -204,3 +204,23 @@ include::{snippets}/docs-controller-test/exceptions/exception-response-fields-ch
 operation::account-controller-test/find-account-info_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findAccountInfoException.adoc[]
+
+[[Word-API]]
+== Word API
+
+[[Read-Word]]
+=== 용어 상세 조회 API
+
+operation::word-controller-test/read_성공_테스트[snippets='http-request,path-parameters,http-response,response-fields']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-readWordException.adoc[]
+
+[[Read-All-Word]]
+=== 용어 목록 조회 API
+
+operation::word-controller-test/read-all-by_성공_테스트[snippets='http-request,query-parameters,http-response,response-fields']
+
+[[Search-Word]]
+=== 용어 검색 API
+
+operation::word-controller-test/search_성공_테스트[snippets='http-request,query-parameters,http-response,response-fields']
