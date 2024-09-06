@@ -146,6 +146,34 @@ operation::admin-controller-test/register-blacklist-token_성공_테스트[snipp
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-registerBlacklistTokenException.adoc[]
 
+[[Save-Word]]
+=== 용어 등록 API
+
+operation::admin-controller-test/save-word_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-saveWordException.adoc[]
+
+[[Update-Word-Example]]
+=== 용어 예문 수정 API
+
+operation::admin-controller-test/update-word-example_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-updateWordExampleException.adoc[]
+
+[[Delete-Word-Example]]
+=== 용어 예문 삭제 API
+
+operation::admin-controller-test/delete-word-example_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-deleteWordExampleException.adoc[]
+
+[[Delete-Pronunciation]]
+=== 용어 발음 삭제 API
+
+operation::admin-controller-test/delete-pronunciation_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-deletePronunciationException.adoc[]
+
 [[Account-API]]
 == Account API
 

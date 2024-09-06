@@ -6,6 +6,7 @@ import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
+import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminController;
 import com.dnd.spaced.core.auth.application.AuthService;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
@@ -79,6 +80,9 @@ public class CommonControllerSliceTest {
 
     @MockBean
     protected InitAccountInfoService initAccountInfoService;
+
+    @MockBean
+    protected AdminWordService adminWordService;
 
     @MockBean
     protected AuthService authService;
