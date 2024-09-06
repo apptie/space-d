@@ -1,0 +1,5 @@
+:doctype: book
+:icons: font
+
+[[profile-image-name]]
+include::{snippets}/docs-controller-test/enums/enum-response-fields-pronunciationType.adoc[]

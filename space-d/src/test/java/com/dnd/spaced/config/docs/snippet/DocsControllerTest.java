@@ -59,9 +59,21 @@ class DocsControllerTest extends CommonControllerSliceTest {
                               ),
                               customResponseFields(
                                       "enum-response",
+                                      beneathPath("data.category").withSubsectionId("category"),
+                                      attributes(key("title").value("Category 허용 값")),
+                                      enumConvertFieldDescriptor(data.getCategory())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
                                       beneathPath("data.profileImageName").withSubsectionId("profileImageName"),
                                       attributes(key("title").value("ProfileImageName 허용 값")),
                                       enumConvertFieldDescriptor(data.getProfileImageName())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.pronunciationType").withSubsectionId("pronunciationType"),
+                                      attributes(key("title").value("PronunciationType 허용 값")),
+                                      enumConvertFieldDescriptor(data.getPronunciationType())
                               )
                       ));
     }
@@ -81,44 +93,68 @@ class DocsControllerTest extends CommonControllerSliceTest {
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.authProfileException").withSubsectionId("authProfileException"),
-                                      attributes(key("title").value("`/auths/profile` 예외 상황")),
+                                      attributes(key("title").value("`POST /auths/profile` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getAuthProfileException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.refreshTokenException").withSubsectionId("refreshTokenException"),
-                                      attributes(key("title").value("`/auths/refresh-token` 예외 상황")),
+                                      attributes(key("title").value("`POST /auths/refresh-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRefreshTokenException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
-                                      attributes(key("title").value("`/auths/blacklist-token` 예외 상황")),
+                                      attributes(key("title").value("`POST /auths/blacklist-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.withdrawalException").withSubsectionId("withdrawalException"),
-                                      attributes(key("title").value("`/accounts/withdrawal` 예외 상황")),
+                                      attributes(key("title").value("`DELETE /accounts/withdrawal` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getWithdrawalException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.changeCareerInfoException").withSubsectionId("changeCareerInfoException"),
-                                      attributes(key("title").value("`/accounts/career-info` 예외 상황")),
+                                      attributes(key("title").value("`PUT /accounts/career-info` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getChangeCareerInfoException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.changeProfileInfoException").withSubsectionId("changeProfileInfoException"),
-                                      attributes(key("title").value("`/accounts/profile-info` 예외 상황")),
+                                      attributes(key("title").value("`PUT /accounts/profile-info` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getChangeProfileInfoException())
                               ),
                               customResponseFields(
                                       "exception-response",
                                       beneathPath("data.findAccountInfoException").withSubsectionId("findAccountInfoException"),
-                                      attributes(key("title").value("`/account` 예외 상황")),
+                                      attributes(key("title").value("`GET /accounts` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindAccountInfoException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.saveWordException").withSubsectionId("saveWordException"),
+                                      attributes(key("title").value("`POST /admin/words` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getSaveWordException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.updateWordExampleException").withSubsectionId("updateWordExampleException"),
+                                      attributes(key("title").value("`PATCH /admin/words/examples/{id}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getUpdateWordExampleException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.deleteWordExampleException").withSubsectionId("deleteWordExampleException"),
+                                      attributes(key("title").value("`DELETE /admin/words/examples/{id}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getDeleteWordExampleException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.deletePronunciationException").withSubsectionId("deletePronunciationException"),
+                                      attributes(key("title").value("`DELETE /admin/words/pronunciations/{id}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getDeletePronunciationException())
                               )
                       )
               );

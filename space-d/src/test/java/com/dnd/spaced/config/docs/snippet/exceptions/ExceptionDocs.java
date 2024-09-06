@@ -19,4 +19,8 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> changeCareerInfoException;
     private Map<String, ExceptionContent> changeProfileInfoException;
     private Map<String, ExceptionContent> findAccountInfoException;
+    private Map<String, ExceptionContent> saveWordException;
+    private Map<String, ExceptionContent> updateWordExampleException;
+    private Map<String, ExceptionContent> deleteWordExampleException;
+    private Map<String, ExceptionContent> deletePronunciationException;
 }

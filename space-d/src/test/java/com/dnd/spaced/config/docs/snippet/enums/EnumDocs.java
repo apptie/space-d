@@ -12,4 +12,6 @@ public class EnumDocs {
     private Map<String, String> company;
     private Map<String, String> experience;
     private Map<String, String> profileImageName;
+    private Map<String, String> category;
+    private Map<String, String> pronunciationType;
 }

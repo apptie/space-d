@@ -8,12 +8,16 @@ import com.dnd.spaced.core.account.domain.Company;
 import com.dnd.spaced.core.account.domain.Experience;
 import com.dnd.spaced.core.account.domain.JobGroup;
 import com.dnd.spaced.core.account.domain.ProfileImageName;
+import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
+import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,12 +42,24 @@ public class DocsController {
                                                .collect(Collectors.toMap(Enum::name, Experience::getName));
         Map<String, String> profileImageName = Arrays.stream(ProfileImageName.values())
                                                      .collect(
-                                                             Collectors.toMap(Enum::name, ProfileImageName::getKorean));
+                                                             Collectors.toMap(Enum::name, ProfileImageName::getKorean)
+                                                     );
+        Map<String, String> category = Arrays.stream(Category.values())
+                                             .collect(
+                                                     Collectors.toMap(Enum::name, Category::getName)
+                                             );
+        Map<String, String> pronunciationType = Arrays.stream(PronunciationType.values())
+                                                      .collect(
+                                                              Collectors.toMap(Enum::name, PronunciationType::getName)
+                                                      );
+
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
                                     .company(company)
                                     .experience(experience)
                                     .profileImageName(profileImageName)
+                                    .category(category)
+                                    .pronunciationType(pronunciationType)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -61,9 +77,61 @@ public class DocsController {
                                                    .changeCareerInfoException(calculateChangeCareerInfoException())
                                                    .changeProfileInfoException(calculateChangeProfileInfoException())
                                                    .findAccountInfoException(calculateFindAccountInfoException())
+                                                   .saveWordException(calculateSaveWordException())
+                                                   .updateWordExampleException(calculateUpdateWordExampleException())
+                                                   .deleteWordExampleException(calculateDeleteWordExampleException())
+                                                   .deletePronunciationException(calculateDeletePronunciationException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateDeletePronunciationException() {
+        Map<String, ExceptionContent> deletePronunciationException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(deletePronunciationException);
+        putForbiddenExceptionContent(deletePronunciationException);
+
+        return deletePronunciationException;
+    }
+
+
+    private Map<String, ExceptionContent> calculateDeleteWordExampleException() {
+        Map<String, ExceptionContent> deleteWordExampleException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(deleteWordExampleException);
+        putForbiddenExceptionContent(deleteWordExampleException);
+
+        return deleteWordExampleException;
+    }
+
+    private Map<String, ExceptionContent> calculateUpdateWordExampleException() {
+        Map<String, ExceptionContent> updateWordExampleException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(updateWordExampleException);
+        putForbiddenExceptionContent(updateWordExampleException);
+        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
+        processWordException(updateWordExampleException, WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT);
+
+        return updateWordExampleException;
+    }
+
+    private Map<String, ExceptionContent> calculateSaveWordException() {
+        Map<String, ExceptionContent> saveWordException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(saveWordException);
+        putForbiddenExceptionContent(saveWordException);
+        putMethodArgumentNotValidExceptionContent(
+                saveWordException,
+                "name",
+                "meaning",
+                "categoryName",
+                "pronunciations",
+                "examples"
+        );
+        processWordException(saveWordException, WordErrorCode.values());
+
+        return saveWordException;
     }
 
     private Map<String, ExceptionContent> calculateFindAccountInfoException() {
@@ -183,6 +251,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processWordException(Map<String, ExceptionContent> target, WordErrorCode... errorCodes) {
+        for (WordErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = WordExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
