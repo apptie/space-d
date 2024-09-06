@@ -14,6 +14,7 @@ import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +63,8 @@ public class WordQuerydslRepository implements WordRepository {
         return queryFactory.selectFrom(word)
                            .join(word.pronunciations, pronunciation)
                            .on(
-                                   pronunciation.word.id.eq(word.id),
-                                   pronunciation.content.startsWith(condition.pronunciation())
+                                   calculatePronunciationBooleanExpression(condition.pronunciation())
+                                           .toArray(BooleanExpression[]::new)
                            )
                            .where(
                                    lastWordNameGt(pageRequest.lastWordName()),
@@ -100,5 +101,17 @@ public class WordQuerydslRepository implements WordRepository {
         }
 
         return word.category.eq(category);
+    }
+
+    private List<BooleanExpression> calculatePronunciationBooleanExpression(String content) {
+        List<BooleanExpression> pronunciationPredicate = new ArrayList<>();
+
+        pronunciationPredicate.add(pronunciation.word.id.eq(word.id));
+
+        if (content != null) {
+            pronunciationPredicate.add(pronunciation.content.startsWith(content));
+        }
+
+        return pronunciationPredicate;
     }
 }
