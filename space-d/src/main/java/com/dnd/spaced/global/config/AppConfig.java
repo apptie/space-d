@@ -2,6 +2,7 @@ package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
+import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.Clock;
@@ -22,6 +23,7 @@ public class AppConfig implements WebMvcConfigurer {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     private final AuthInterceptor authInterceptor;
+    private final CommonWordPageableArgumentResolver commonWordPageableArgumentResolver;
     private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
 
     @Bean
@@ -44,6 +46,7 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(commonWordPageableArgumentResolver);
         resolvers.add(authAccountInfoArgumentResolver);
     }
 
@@ -51,6 +54,6 @@ public class AppConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login/**");
+                .excludePathPatterns("/login/**", "/words/**");
     }
 }

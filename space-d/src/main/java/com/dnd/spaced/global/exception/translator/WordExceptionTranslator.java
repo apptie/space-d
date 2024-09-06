@@ -38,6 +38,11 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
             HttpStatus.BAD_REQUEST,
             "예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다."
+    ),
+    WORD_NOT_FOUND(
+            WordErrorCode.WORD_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            "지정한 용어가 없습니다."
     );
 
     private final ErrorCode errorCode;

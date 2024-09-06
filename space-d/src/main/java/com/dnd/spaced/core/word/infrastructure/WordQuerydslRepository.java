@@ -10,8 +10,11 @@ import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
+import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +35,7 @@ public class WordQuerydslRepository implements WordRepository {
     @Override
     public Optional<Word> findBy(Long id) {
         Word result = queryFactory.selectFrom(word)
-                                  .leftJoin(word.wordExamples).fetchJoin()
+                                  .leftJoin(word.wordExamples)
                                   .leftJoin(word.pronunciations).fetchJoin()
                                   .where(word.id.eq(id))
                                   .fetchOne();
@@ -47,25 +50,31 @@ public class WordQuerydslRepository implements WordRepository {
                                    lastWordNameGt(pageRequest.lastWordName()),
                                    categoryEq(wordCondition.category())
                            )
-                           .orderBy(word.name.asc())
+                           .orderBy(
+                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                                             .toArray(OrderSpecifier[]::new)
+                           )
                            .limit(pageRequest.pageable().getPageSize())
                            .fetch();
     }
 
     @Override
-    public List<Word> findAllBy(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
+    public List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
         return queryFactory.selectFrom(word)
                            .join(word.pronunciations, pronunciation)
                            .on(
-                                   pronunciation.word.id.eq(word.id),
-                                   pronunciation.content.startsWith(condition.pronunciation())
+                                   calculatePronunciationBooleanExpression(condition.pronunciation())
+                                           .toArray(BooleanExpression[]::new)
                            )
                            .where(
                                    lastWordNameGt(pageRequest.lastWordName()),
                                    nameStartsWith(condition.name()),
                                    categoryEq(condition.category())
                            )
-                           .orderBy(word.name.asc())
+                           .orderBy(
+                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                                             .toArray(OrderSpecifier[]::new)
+                           )
                            .limit(pageRequest.pageable().getPageSize())
                            .fetch();
     }
@@ -92,5 +101,17 @@ public class WordQuerydslRepository implements WordRepository {
         }
 
         return word.category.eq(category);
+    }
+
+    private List<BooleanExpression> calculatePronunciationBooleanExpression(String content) {
+        List<BooleanExpression> pronunciationPredicate = new ArrayList<>();
+
+        pronunciationPredicate.add(pronunciation.word.id.eq(word.id));
+
+        if (content != null) {
+            pronunciationPredicate.add(pronunciation.content.startsWith(content));
+        }
+
+        return pronunciationPredicate;
     }
 }

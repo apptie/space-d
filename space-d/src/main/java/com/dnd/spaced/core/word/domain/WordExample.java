@@ -1,6 +1,7 @@
 package com.dnd.spaced.core.word.domain;
 
 import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
+import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false, of = "id")
-public class WordExample {
+public class WordExample extends BaseTimeEntity {
 
     private static final int MIN_EXAMPLE_LENGTH = 1;
     private static final int MAX_EXAMPLE_LENGTH = 50;
