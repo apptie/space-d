@@ -58,7 +58,7 @@ public class WordQuerydslRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
+    public List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
         return queryFactory.selectFrom(word)
                            .join(word.pronunciations, pronunciation)
                            .on(
