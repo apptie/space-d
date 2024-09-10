@@ -205,13 +205,29 @@ class WordControllerTest extends CommonControllerSliceTest {
         given(wordService.readPopularWordsAll()).willReturn(List.of(popularWordDto));
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/words/popular").accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("words").exists(),
+                jsonPath("words[*].rank").value(popularWordDto.rank()),
                 jsonPath("words[*].id").exists(),
                 jsonPath("words[*].name").value(popularWordDto.name())
+        );
+
+        readPopularWordsAll_문서화(resultActions);
+    }
+
+    private void readPopularWordsAll_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        responseFields(
+                                fieldWithPath("words").description("많이 조회한 용어 검색 결과"),
+                                fieldWithPath("words[*].rank").description("많이 조회한 용어 랭킹"),
+                                fieldWithPath("words[*].id").description("용어 ID"),
+                                fieldWithPath("words[*].name").description("용어 이름")
+                        )
+                )
         );
     }
 }
