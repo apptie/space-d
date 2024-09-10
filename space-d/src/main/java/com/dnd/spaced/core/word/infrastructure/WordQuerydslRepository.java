@@ -10,6 +10,7 @@ import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
+import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -33,6 +34,24 @@ public class WordQuerydslRepository implements WordRepository {
     }
 
     @Override
+    public void updateViewCount(Long id) {
+        queryFactory.update(word)
+                    .set(word.viewCount, word.viewCount.add(1))
+                    .where(word.id.eq(id))
+                    .execute();
+    }
+
+    @Override
+    public void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos) {
+        for (WordViewCountStatisticsDto dto : wordViewCountStatisticsDtos) {
+            queryFactory.update(word)
+                        .set(word.viewCount, word.viewCount.add(dto.viewCount()))
+                        .where(word.id.eq(dto.id()))
+                        .execute();
+        }
+    }
+
+    @Override
     public Optional<Word> findBy(Long id) {
         Word result = queryFactory.selectFrom(word)
                                   .leftJoin(word.wordExamples)
@@ -41,6 +60,14 @@ public class WordQuerydslRepository implements WordRepository {
                                   .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<String> findNameAllBy(Long[] ids) {
+        return queryFactory.select(word.name)
+                           .from(word)
+                           .where(word.id.in(ids))
+                           .fetch();
     }
 
     @Override
