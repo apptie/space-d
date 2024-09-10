@@ -4,15 +4,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
+import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
 import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
 import com.dnd.spaced.core.word.application.dto.response.SearchedWordDto;
+import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
+import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
+import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
+import com.dnd.spaced.core.word.domain.repository.dto.PopularWordInfo;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -21,11 +27,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@CleanUpDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@CleanUpPersistence
+@RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class WordServiceTest {
@@ -35,6 +44,12 @@ class WordServiceTest {
 
     @Autowired
     WordRepository wordRepository;
+
+    @Autowired
+    PopularWordRepository popularWordRepository;
+
+    @Autowired
+    ApplicationEvents events;
 
     @Test
     void read_메서드는_지정한_id에_해당하는_용어_정보를_반환한다() {
@@ -57,7 +72,9 @@ class WordServiceTest {
         assertAll(
                 () -> assertThat(actual.name()).isEqualTo(name),
                 () -> assertThat(actual.categoryName()).isEqualTo(categoryName),
-                () -> assertThat(actual.meaning()).isEqualTo(meaning)
+                () -> assertThat(actual.meaning()).isEqualTo(meaning),
+                () -> assertThat(events.stream(WordViewCountIncrementEvent.class).count()).isOne(),
+                () -> assertThat(events.stream(WordViewCountStatisticsEvent.class).count()).isOne()
         );
     }
 
@@ -112,5 +129,23 @@ class WordServiceTest {
 
         // then
         assertThat(actual).hasSize(1);
+    }
+
+    @Test
+    void readPopularWordsAll_메서드는_많이_찾아본_용어_목록을_반환한다() {
+        // given
+        PopularWordInfo popularWordInfo = new PopularWordInfo(1, 1L, "name");
+        popularWordRepository.saveAll(List.of(popularWordInfo), LocalDateTime.now());
+
+        // when
+        List<PopularWordDto> actual = wordService.readPopularWordsAll();
+
+        // then
+        assertAll(
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual.get(0).rank()).isEqualTo(popularWordInfo.rank()),
+                () -> assertThat(actual.get(0).name()).isEqualTo(popularWordInfo.name()),
+                () -> assertThat(actual.get(0).wordId()).isEqualTo(popularWordInfo.wordId())
+        );
     }
 }
