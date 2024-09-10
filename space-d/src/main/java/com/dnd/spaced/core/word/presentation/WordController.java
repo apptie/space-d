@@ -2,11 +2,13 @@ package com.dnd.spaced.core.word.presentation;
 
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
 import com.dnd.spaced.core.word.application.dto.response.SearchedWordDto;
 import com.dnd.spaced.core.word.presentation.dto.request.ReadWordAllRequest;
 import com.dnd.spaced.core.word.presentation.dto.request.SearchWordRequest;
+import com.dnd.spaced.core.word.presentation.dto.response.PopularWordResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.ReadWordAllResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.ReadWordResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.SearchedWordResponse;
@@ -63,5 +65,12 @@ public class WordController {
         List<SearchedWordDto> result = wordService.search(searchConditionDto);
 
         return ResponseEntity.ok(SearchedWordResponse.from(result));
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<PopularWordResponse> readPopularWordsAll() {
+        List<PopularWordDto> result = wordService.readPopularWordsAll();
+
+        return ResponseEntity.ok(PopularWordResponse.from(result));
     }
 }

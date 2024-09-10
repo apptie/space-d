@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
 import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto.WordPronunciationInfoDto;
@@ -194,6 +195,23 @@ class WordControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("words[*].viewCount").description("조회수")
                         )
                 )
+        );
+    }
+
+    @Test
+    void readPopularWordsAll_성공_테스트() throws Exception {
+        // given
+        PopularWordDto popularWordDto = new PopularWordDto(1, 1L, "name");
+        given(wordService.readPopularWordsAll()).willReturn(List.of(popularWordDto));
+
+        // when & then
+        mockMvc.perform(
+                get("/words/popular").accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk(),
+                jsonPath("words").exists(),
+                jsonPath("words[*].id").exists(),
+                jsonPath("words[*].name").value(popularWordDto.name())
         );
     }
 }
