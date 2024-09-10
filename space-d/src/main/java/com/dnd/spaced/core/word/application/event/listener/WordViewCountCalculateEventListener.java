@@ -19,12 +19,8 @@ public class WordViewCountCalculateEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void listen(WordViewCountIncrementEvent event) {
-        try {
-            if (!popularWordRepository.existsBy(event.wordId(), event.localDateTime())) {
-                wordRepository.updateViewCount(event.wordId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!popularWordRepository.existsBy(event.wordId(), event.localDateTime())) {
+            wordRepository.updateViewCount(event.wordId());
         }
     }
 }
