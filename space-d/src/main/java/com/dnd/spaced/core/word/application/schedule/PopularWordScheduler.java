@@ -42,14 +42,7 @@ public class PopularWordScheduler {
                               .map(ViewCountStatisticsRankDto::wordId)
                               .toArray(Long[]::new);
         List<String> names = wordRepository.findNameAllBy(ids);
-        List<PopularWordInfo> popularWordInfos = new ArrayList<>();
-
-        for (int i = 0; i < ranking.size(); i++) {
-            ViewCountStatisticsRankDto targetRankDto = ranking.get(i);
-            String targetName = names.get(i);
-
-            popularWordInfos.add(new PopularWordInfo(targetRankDto.rank(), targetRankDto.wordId(), targetName));
-        }
+        List<PopularWordInfo> popularWordInfos = calculatePopularWordInfo(ranking, names);
 
         popularWordRepository.saveAll(popularWordInfos, today);
     }
@@ -62,6 +55,19 @@ public class PopularWordScheduler {
         List<WordViewCountStatisticsDto> dtos = wordViewCountStatisticsRepository.findAllBy(ids, yesterday);
 
         wordRepository.updateViewCount(dtos);
+    }
+
+    private List<PopularWordInfo> calculatePopularWordInfo(List<ViewCountStatisticsRankDto> ranking, List<String> names) {
+        List<PopularWordInfo> popularWordInfos = new ArrayList<>();
+
+        for (int i = 0; i < ranking.size(); i++) {
+            ViewCountStatisticsRankDto targetRankDto = ranking.get(i);
+            String targetName = names.get(i);
+
+            popularWordInfos.add(new PopularWordInfo(targetRankDto.rank(), targetRankDto.wordId(), targetName));
+        }
+
+        return popularWordInfos;
     }
 
     private void clearViewCountMetadata(LocalDateTime yesterday, LocalDateTime beforeYesterday) {
