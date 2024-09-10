@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
 import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto.WordPronunciationInfoDto;
@@ -192,6 +193,39 @@ class WordControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("words[*].meaning").description("용어 뜻"),
                                 fieldWithPath("words[*].category").description("용어 카테고리"),
                                 fieldWithPath("words[*].viewCount").description("조회수")
+                        )
+                )
+        );
+    }
+
+    @Test
+    void readPopularWordsAll_성공_테스트() throws Exception {
+        // given
+        PopularWordDto popularWordDto = new PopularWordDto(1, 1L, "name");
+        given(wordService.readPopularWordsAll()).willReturn(List.of(popularWordDto));
+
+        // when & then
+        ResultActions resultActions = mockMvc.perform(
+                get("/words/popular").accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk(),
+                jsonPath("words").exists(),
+                jsonPath("words[*].rank").value(popularWordDto.rank()),
+                jsonPath("words[*].id").exists(),
+                jsonPath("words[*].name").value(popularWordDto.name())
+        );
+
+        readPopularWordsAll_문서화(resultActions);
+    }
+
+    private void readPopularWordsAll_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        responseFields(
+                                fieldWithPath("words").description("많이 조회한 용어 검색 결과"),
+                                fieldWithPath("words[*].rank").description("많이 조회한 용어 랭킹"),
+                                fieldWithPath("words[*].id").description("용어 ID"),
+                                fieldWithPath("words[*].name").description("용어 이름")
                         )
                 )
         );
