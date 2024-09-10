@@ -103,6 +103,7 @@ jacocoTestReport {
 							'**/infrastructure/**',
 							'**/event/**',
 							'**/embed/**',
+							'**/schedule/**',
 							'**/global/**',
 							'**/dto/**'
 					] + Qdomains)
@@ -142,6 +143,7 @@ jacocoTestCoverageVerification {
 					'*.infrastructure.*',
 					'*.event.*',
 					'*.embed.*',
+					'*.schedule.*',
 					'*.global.*',
 					'*.dto.*'
 			] + Qdomains
