@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -33,10 +35,16 @@ class CommentTest {
     @Test
     void isOnwer_메서드는_accountId를_전달하면_해당_Comment의_작성자인지_여부를_반환한다() {
         // given
-        Comment comment = new Comment("accountId", 1L, "댓글");
+        Account account = Account.builder()
+                                 .id("accountId")
+                                 .nickname("nickname")
+                                 .profileImage("profileImage")
+                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .build();
+        Comment comment = new Comment(account.getId(), 1L, "댓글");
 
         // when
-        boolean actual = comment.isOwner(comment.getAccountId());
+        boolean actual = comment.isOwner(account);
 
         // then
         assertThat(actual).isTrue();
