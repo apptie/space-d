@@ -86,6 +86,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.POST, "/auths/refresh-token").permitAll()
                     .requestMatchers(HttpMethod.GET, "/words/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/words/{wordId}/comments").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )

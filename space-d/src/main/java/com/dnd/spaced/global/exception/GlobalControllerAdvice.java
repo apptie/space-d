@@ -4,6 +4,8 @@ import com.dnd.spaced.global.exception.base.AccountClientException;
 import com.dnd.spaced.global.exception.base.AccountServerException;
 import com.dnd.spaced.global.exception.base.AuthClientException;
 import com.dnd.spaced.global.exception.base.AuthServerException;
+import com.dnd.spaced.global.exception.base.CommentClientException;
+import com.dnd.spaced.global.exception.base.LikeClientException;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
@@ -64,6 +66,26 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthClientException.class)
     private ResponseEntity<ExceptionDto> handleAuthClientException(AuthClientException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = AuthExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
+    @ExceptionHandler(CommentClientException.class)
+    private ResponseEntity<ExceptionDto> handleCommentClientException(CommentClientException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = AuthExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
+    @ExceptionHandler(LikeClientException.class)
+    private ResponseEntity<ExceptionDto> handleLikeClientException(LikeClientException ex) {
         logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
 
         ExceptionTranslator translator = AuthExceptionTranslator.findBy(ex.getErrorCode());
