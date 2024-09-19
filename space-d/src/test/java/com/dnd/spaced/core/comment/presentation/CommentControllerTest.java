@@ -6,6 +6,10 @@ import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -26,7 +30,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -41,7 +44,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/words/{wordId}/comments", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                post("/words/{wordId}/comments", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
@@ -73,7 +76,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     void delete_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isNoContent()
         );
@@ -102,7 +105,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.put("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                put("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                          .contentType(MediaType.APPLICATION_JSON)
                                          .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
@@ -139,7 +142,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/words/{wordId}/comments", 1L).accept(MediaType.APPLICATION_JSON)
+                get("/words/{wordId}/comments", 1L).accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("comments").exists(),
