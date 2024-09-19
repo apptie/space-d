@@ -15,6 +15,8 @@ import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
 import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.presentation.CommentController;
+import com.dnd.spaced.core.like.application.LikeService;
+import com.dnd.spaced.core.like.presentation.LikeController;
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
@@ -45,7 +47,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @WebMvcTest(
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
-                WordController.class, CommentController.class
+                WordController.class, CommentController.class, LikeController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -88,6 +90,9 @@ public class CommonControllerSliceTest {
     @Autowired
     protected CommentController commentController;
 
+    @Autowired
+    protected LikeController likeController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -109,6 +114,9 @@ public class CommonControllerSliceTest {
     @MockBean
     protected CommentService commentService;
 
+    @MockBean
+    protected LikeService likeService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -125,7 +133,8 @@ public class CommonControllerSliceTest {
                                               accountController,
                                               commonDocsController,
                                               wordController,
-                                              commentController
+                                              commentController,
+                                              likeController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
