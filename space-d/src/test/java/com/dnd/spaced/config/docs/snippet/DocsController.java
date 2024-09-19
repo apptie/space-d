@@ -13,12 +13,14 @@ import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
+import com.dnd.spaced.global.exception.code.LikeErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.LikeExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -88,9 +90,22 @@ public class DocsController {
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
                                                    .updateCommentException(calculateUpdateCommentException())
+                                                   .processLikeException(calculateProcessLikeException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateProcessLikeException() {
+        Map<String, ExceptionContent> processLikeException = new LinkedHashMap<>();
+
+        processLikeException(
+                processLikeException,
+                LikeErrorCode.FORBIDDEN_LIKE,
+                LikeErrorCode.ASSOCIATION_COMMENT_NOT_FOUND
+        );
+
+        return processLikeException;
     }
 
     private Map<String, ExceptionContent> calculateUpdateCommentException() {
@@ -306,6 +321,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processLikeException(Map<String, ExceptionContent> target, LikeErrorCode... errorCodes) {
+        for (LikeErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = LikeExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processCommentException(Map<String, ExceptionContent> target, CommentErrorCode... errorCodes) {
