@@ -18,14 +18,14 @@ public class LikeCountRedisRepository implements LikeCountRepository {
 
     private static final String KEY = "likeCount:";
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Long> likeCountRedisTemplate;
     private final LikeCountBuffer buffer;
 
     public LikeCountRedisRepository(
-            RedisTemplate<String, String> redisTemplate,
+            RedisTemplate<String, Long> likeCountRedisTemplate,
             Executor asyncCommentLikeCountExecutor
     ) {
-        this.redisTemplate = redisTemplate;
+        this.likeCountRedisTemplate = likeCountRedisTemplate;
         this.buffer = new LikeCountBuffer(this::updateCache, asyncCommentLikeCountExecutor);
     }
 
@@ -36,13 +36,13 @@ public class LikeCountRedisRepository implements LikeCountRepository {
                                          .match(KEY + "*")
                                          .count(10)
                                          .build();
-        Cursor<String> cursor = redisTemplate.scan(options);
+        Cursor<String> cursor = likeCountRedisTemplate.scan(options);
 
         while (cursor.hasNext()) {
             String key = cursor.next();
-            redisTemplate.opsForHash()
-                         .entries(key)
-                         .forEach(
+            likeCountRedisTemplate.opsForHash()
+                                  .entries(key)
+                                  .forEach(
                                  (member, value) -> result.add(
                                          new LikeCountInfoDto(
                                                  Long.parseLong((String) member),
@@ -57,8 +57,8 @@ public class LikeCountRedisRepository implements LikeCountRepository {
 
     @Override
     public Map<Long, Integer> findLikeCountAllBy(Long wordId, List<Object> commentIds) {
-        List<Object> objects = redisTemplate.opsForHash()
-                                            .multiGet(calculateKey(wordId), commentIds);
+        List<Object> objects = likeCountRedisTemplate.opsForHash()
+                                                     .multiGet(calculateKey(wordId), commentIds);
         Map<Long, Integer> result = new HashMap<>();
 
         for (int i = 0; i < objects.size(); i++) {
@@ -84,12 +84,12 @@ public class LikeCountRedisRepository implements LikeCountRepository {
 
     private void updateCache(Map<LikeCountIdentifier, Integer> buffer) {
         buffer.forEach(
-                (identifier, count) -> redisTemplate.opsForHash()
-                                                    .increment(
-                                                            calculateKey(identifier.wordId()),
-                                                            identifier.commentId(),
-                                                            count
-                                                    )
+                (identifier, count) -> likeCountRedisTemplate.opsForHash()
+                                                             .increment(
+                                                                     calculateKey(identifier.wordId()),
+                                                                     identifier.commentId(),
+                                                                     count
+                                                             )
         );
     }
 }
