@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.comment.domain;
 
+import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
@@ -49,8 +50,8 @@ public class Comment extends BaseTimeEntity {
                 || !(CONTENT_MIN_LENGTH <= content.length() && content.length() <= CONTENT_MAX_LENGTH);
     }
 
-    public boolean isOwner(String accountId) {
-        return this.accountId.equals(accountId);
+    public boolean isOwner(Account account) {
+        return account.isEqualTo(this.accountId);
     }
 
     public void changeContent(String content) {

@@ -67,6 +67,10 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
         this.profileInfo.changeProfileInfo(changedNickname, changedProfileImage);
     }
 
+    public boolean isEqualTo(String id) {
+        return this.id.equals(id);
+    }
+
     private boolean isInvalidId(String id) {
         return id == null || id.isBlank();
     }

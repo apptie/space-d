@@ -285,6 +285,41 @@ class AccountTest {
         assertThat(actual).isTrue();
     }
 
+    @Test
+    void isEqualTo_메서드는_일치하는_id를_전달하면_true를_반환한다() {
+        // given
+        String id = "email";
+        Account account = Account.builder()
+                                 .id(id)
+                                 .nickname("nickname")
+                                 .profileImage("profileImage")
+                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .build();
+
+        // when
+        boolean actual = account.isEqualTo(id);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void isEqualTo_메서드는_일치하지_않는_id를_전달하면_false를_반환한다() {
+        // given
+        Account account = Account.builder()
+                                 .id("email")
+                                 .nickname("nickname")
+                                 .profileImage("profileImage")
+                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .build();
+
+        // when
+        boolean actual = account.isEqualTo("invalidId");
+
+        // then
+        assertThat(actual).isFalse();
+    }
+
     private static Stream<Arguments> builderTestWithInvalidNickname() {
         return Stream.of(
                 Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
