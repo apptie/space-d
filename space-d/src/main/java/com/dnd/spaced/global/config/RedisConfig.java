@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -35,5 +36,17 @@ public class RedisConfig {
         popularWordIdRedisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         
         return popularWordIdRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, Long> likeCountRedisTemplate() {
+        RedisTemplate<String, Long> likeCountRedisTemplate = new RedisTemplate<>();
+
+        likeCountRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        likeCountRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        likeCountRedisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Long.class));
+        likeCountRedisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Integer.class));
+
+        return likeCountRedisTemplate;
     }
 }
