@@ -13,12 +13,15 @@ import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
+import com.dnd.spaced.core.comment.application.CommentService;
+import com.dnd.spaced.core.comment.presentation.CommentController;
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
+import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +45,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @WebMvcTest(
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
-                WordController.class
+                WordController.class, CommentController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -54,6 +57,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AutoConfigureRestDocs
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class CommonControllerSliceTest {
+
+    @Autowired
+    protected DocsController commonDocsController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -79,6 +85,9 @@ public class CommonControllerSliceTest {
     @Autowired
     protected WordController wordController;
 
+    @Autowired
+    protected CommentController commentController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -97,8 +106,8 @@ public class CommonControllerSliceTest {
     @MockBean
     protected WordService wordService;
 
-    @Autowired
-    protected DocsController commonDocsController;
+    @MockBean
+    protected CommentService commentService;
 
     protected MockMvc mockMvc;
 
@@ -108,19 +117,22 @@ public class CommonControllerSliceTest {
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
         CommonWordPageableArgumentResolver commonWordPageableArgumentResolver = new CommonWordPageableArgumentResolver();
+        CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver = new CommonCommentPageableArgumentResolver();
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
                                               adminController,
                                               accountController,
                                               commonDocsController,
-                                              wordController
+                                              wordController,
+                                              commentController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(
                                               authAccountInfoArgumentResolver,
-                                              commonWordPageableArgumentResolver
+                                              commonWordPageableArgumentResolver,
+                                              commonCommentPageableArgumentResolver
                                       )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))

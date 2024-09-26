@@ -2,6 +2,7 @@ package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
+import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -30,6 +31,7 @@ public class AppConfig implements WebMvcConfigurer {
     private final AuthInterceptor authInterceptor;
     private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
     private final CommonWordPageableArgumentResolver commonWordPageableArgumentResolver;
+    private final CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver;
 
     @Bean
     public Clock clock() {
@@ -53,14 +55,39 @@ public class AppConfig implements WebMvcConfigurer {
     public Executor asyncWordViewCountExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-        executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(10);
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Math.max(1, availableProcessors / 6);
+        int maxPoolSize = Math.max(2, corePoolSize * 2);
+
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(10);
         executor.setKeepAliveSeconds(180);
         executor.setAllowCoreThreadTimeOut(true);
         executor.setAwaitTerminationSeconds(20);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-        executor.setThreadNamePrefix("Async-Word-View-Count-");
+        executor.setThreadNamePrefix("Async-Word-ViewCount-");
+        executor.initialize();
+
+        return executor;
+    }
+
+    @Bean
+    public Executor asyncCommentLikeCountExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Math.max(1, availableProcessors / 6);
+        int maxPoolSize = Math.max(2, corePoolSize * 2);
+
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity(10);
+        executor.setKeepAliveSeconds(180);
+        executor.setAllowCoreThreadTimeOut(true);
+        executor.setAwaitTerminationSeconds(20);
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        executor.setThreadNamePrefix("Async-Comment-LikeCount-");
         executor.initialize();
 
         return executor;
@@ -70,6 +97,7 @@ public class AppConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authAccountInfoArgumentResolver);
         resolvers.add(commonWordPageableArgumentResolver);
+        resolvers.add(commonCommentPageableArgumentResolver);
     }
 
     @Override
