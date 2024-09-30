@@ -258,3 +258,13 @@ include::{snippets}/docs-controller-test/exceptions/exception-response-fields-up
 === 댓글 목록 조회 API
 
 operation::comment-controller-test/read-all-by_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+[[Like-API]]
+== Like API
+
+[[Process-Like]]
+=== 좋아요 API
+
+operation::like-controller-test/process-like_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-processLikeException.adoc[]

@@ -27,4 +27,5 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> saveCommentException;
     private Map<String, ExceptionContent> deleteCommentException;
     private Map<String, ExceptionContent> updateCommentException;
+    private Map<String, ExceptionContent> processLikeException;
 }

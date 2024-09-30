@@ -179,6 +179,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.updateCommentException").withSubsectionId("updateCommentException"),
                                       attributes(key("title").value("`PUT /comments/{id}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getUpdateCommentException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.processLikeException").withSubsectionId("processLikeException"),
+                                      attributes(key("title").value("`POST /comments/{commentId}/likes` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getProcessLikeException())
                               )
                       )
               );
