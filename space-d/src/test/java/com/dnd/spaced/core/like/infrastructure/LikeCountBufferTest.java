@@ -36,13 +36,17 @@ class LikeCountBufferTest {
         // when
         CountDownLatch latch = new CountDownLatch(2);
 
-        Runnable addLikeCountTask = () -> {
-            buffer.addLikeCount(new LikeCountIdentifier(1L, 100L));
+        Runnable addLikeCountTask1 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(101L, 100L));
+            latch.countDown();
+        };
+        Runnable addLikeCountTask2 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(102L, 100L));
             latch.countDown();
         };
 
-        executorService.execute(addLikeCountTask);
-        executorService.execute(addLikeCountTask);
+        executorService.execute(addLikeCountTask1);
+        executorService.execute(addLikeCountTask2);
 
         latch.await();
 
