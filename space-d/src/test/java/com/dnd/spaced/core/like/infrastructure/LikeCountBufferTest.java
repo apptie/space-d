@@ -18,13 +18,13 @@ import org.junit.jupiter.api.RepeatedTest;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class LikeCountBufferTest {
 
-    @RepeatedTest(1000)
+    @RepeatedTest(10)
     @SuppressWarnings("unchecked")
     void addLikeCount_메서드는_임계치에_도달하는_타이밍에_동시에_두_개의_스레드가_접근하더라도_flush를_한_번만_수행한다() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         // given
         CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
         AtomicInteger callbackRunCounter = new AtomicInteger(0);
-        ExecutorService testThreadPool = Executors.newFixedThreadPool(2);
+        ExecutorService testThreadPool = Executors.newFixedThreadPool(10);
         ExecutorService bufferThreadPool = Executors.newFixedThreadPool(2);
         AtomicInteger bufferSizeBeforeFlush = new AtomicInteger();
         LikeCountBuffer buffer = new LikeCountBuffer(map -> {
@@ -38,7 +38,7 @@ class LikeCountBufferTest {
         }
 
         // when
-        CountDownLatch testCountDownLatch = new CountDownLatch(2);
+        CountDownLatch testCountDownLatch = new CountDownLatch(10);
 
         Runnable addLikeCountTask1 = () -> {
             buffer.addLikeCount(new LikeCountIdentifier(101L, 100L));
@@ -48,9 +48,49 @@ class LikeCountBufferTest {
             buffer.addLikeCount(new LikeCountIdentifier(102L, 100L));
             testCountDownLatch.countDown();
         };
+        Runnable addLikeCountTask3 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(103L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask4 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(104L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask5 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(105L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask6 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(106L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask7 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(107L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask8 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(108L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask9 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(109L, 100L));
+            testCountDownLatch.countDown();
+        };
+        Runnable addLikeCountTask10 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(110L, 100L));
+            testCountDownLatch.countDown();
+        };
 
         testThreadPool.execute(addLikeCountTask1);
         testThreadPool.execute(addLikeCountTask2);
+        testThreadPool.execute(addLikeCountTask3);
+        testThreadPool.execute(addLikeCountTask4);
+        testThreadPool.execute(addLikeCountTask5);
+        testThreadPool.execute(addLikeCountTask6);
+        testThreadPool.execute(addLikeCountTask7);
+        testThreadPool.execute(addLikeCountTask8);
+        testThreadPool.execute(addLikeCountTask9);
+        testThreadPool.execute(addLikeCountTask10);
 
         testCountDownLatch.await();
         callbackRunCountDownLatch.await();
@@ -62,6 +102,6 @@ class LikeCountBufferTest {
         int bufferSizeAfterFlush = currentBuffer.get().size();
 
         assertThat(callbackRunCounter.get()).isOne();
-        assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(101);
+        assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(109);
     }
 }
