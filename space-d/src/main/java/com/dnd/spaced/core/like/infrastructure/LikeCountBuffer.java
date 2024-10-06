@@ -24,7 +24,7 @@ public class LikeCountBuffer {
         currentBuffer.get()
                      .merge(identifier, 1, Integer::sum);
 
-        if (likeEventCount.incrementAndGet() >= FLUSH_THRESHOLD) {
+        if (likeEventCount.incrementAndGet() == FLUSH_THRESHOLD) {
             flushBuffer();
         }
     }
@@ -38,6 +38,5 @@ public class LikeCountBuffer {
         Map<LikeCountIdentifier, Integer> buffer = currentBuffer.getAndSet(new ConcurrentHashMap<>());
 
         CompletableFuture.runAsync(() -> cacheUpdateCallback.accept(buffer), asyncCommentLikeCountExecutor);
-        likeEventCount.set(0);
     }
 }
