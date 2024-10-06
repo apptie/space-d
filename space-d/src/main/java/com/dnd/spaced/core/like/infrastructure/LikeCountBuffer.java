@@ -24,7 +24,9 @@ public class LikeCountBuffer {
         currentBuffer.get()
                      .merge(identifier, 1, Integer::sum);
 
-        if (likeEventCount.incrementAndGet() == FLUSH_THRESHOLD) {
+        likeEventCount.incrementAndGet();
+
+        if (likeEventCount.compareAndSet(FLUSH_THRESHOLD, 0)) {
             flushBuffer();
         }
     }
