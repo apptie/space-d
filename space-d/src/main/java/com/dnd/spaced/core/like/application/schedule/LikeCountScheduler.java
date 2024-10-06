@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LikeCountScheduler {
 
+    private static final int BATCH_SIZE = 100;
+
     private final JdbcTemplate jdbcTemplate;
     private final LikeCountRepository likeCountRepository;
 
@@ -24,22 +26,28 @@ public class LikeCountScheduler {
     public void schedule() {
         List<LikeCountInfoDto> likeCountInfos = likeCountRepository.findLikeCountAll();
 
-        jdbcTemplate.batchUpdate(
-                "UPDATE comments c SET c.like_count =: likeCount WHERE c.id =: id",
-                new BatchPreparedStatementSetter() {
+        for (int i = 0; i < likeCountInfos.size(); i += BATCH_SIZE) {
+            int batchStartIndex = i;
+            int batchEndIndex = Math.min(batchStartIndex + BATCH_SIZE, likeCountInfos.size());
+            List<LikeCountInfoDto> batchLikeCountInfos = likeCountInfos.subList(batchStartIndex, batchEndIndex);
 
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        LikeCountInfoDto likeCountInfoDto = likeCountInfos.get(i);
+            jdbcTemplate.batchUpdate(
+                    "UPDATE comments c SET c.like_count =: likeCount WHERE c.id =: id",
+                    new BatchPreparedStatementSetter() {
 
-                        ps.setInt(1, likeCountInfoDto.likeCount());
-                        ps.setLong(2, likeCountInfoDto.commentId());
-                    }
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            LikeCountInfoDto likeCountInfoDto = batchLikeCountInfos.get(i);
 
-                    @Override
-                    public int getBatchSize() {
-                        return 100;
-                    }
-                });
+                            ps.setInt(1, likeCountInfoDto.likeCount());
+                            ps.setLong(2, likeCountInfoDto.commentId());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return batchLikeCountInfos.size();
+                        }
+                    });
+        }
     }
 }
