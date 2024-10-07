@@ -47,7 +47,7 @@ public class CommentService {
         Account owner = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (!comment.isOwner(owner)) {
+        if (comment.isNotOwner(owner)) {
             throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
         }
 
@@ -59,7 +59,7 @@ public class CommentService {
         Account owner = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (!comment.isOwner(owner)) {
+        if (comment.isNotOwner(owner)) {
             throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
         }
 
