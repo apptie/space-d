@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.auth.presentation;
 
-import com.dnd.spaced.core.auth.application.AuthService;
+import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.presentation.dto.request.UpdateAccountCareerInfoRequest;
@@ -34,7 +34,7 @@ public class AuthController {
     private static final String COOKIE_DOMAIN = "/";
 
     private final TokenProperties tokenProperties;
-    private final AuthService authService;
+    private final TokenService tokenService;
     private final InitAccountInfoService initAccountInfoService;
 
     @PostMapping("/profile")
@@ -58,7 +58,7 @@ public class AuthController {
                 () -> new RefreshTokenNotFoundException("Cookie에서 refreshToken을 찾을 수 없습니다.")
         );
 
-        TokenDto tokenDto = authService.refreshToken(refreshToken);
+        TokenDto tokenDto = tokenService.refreshToken(refreshToken);
         HttpCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_KEY, tokenDto.refreshToken())
                                           .httpOnly(true)
                                           .secure(true)

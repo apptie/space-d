@@ -8,7 +8,7 @@ import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminController;
-import com.dnd.spaced.core.auth.application.AuthService;
+import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
@@ -106,7 +106,7 @@ public class CommonControllerSliceTest {
     protected AdminWordService adminWordService;
 
     @MockBean
-    protected AuthService authService;
+    protected TokenService tokenService;
 
     @MockBean
     protected WordService wordService;
