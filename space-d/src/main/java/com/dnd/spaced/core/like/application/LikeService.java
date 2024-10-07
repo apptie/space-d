@@ -25,21 +25,33 @@ public class LikeService {
 
     @Transactional
     public void processLike(String accountId, Long commentId) {
-        Account account = accountRepository.findBy(accountId)
-                                           .orElseThrow(() -> new ForbiddenLikeException("좋아요를 제어할 권한이 없습니다."));
-        Comment comment = commentRepository.findBy(commentId)
-                                           .orElseThrow(() -> new AssociationCommentNotFoundException("좋아요 대상인 댓글을 찾을 수 없습니다."));
+        Account account = findAccount(accountId);
+        Comment targetComment = findTargetComment(commentId);
 
-        likeRepository.findBy(account.getId(), comment.getId())
+        likeRepository.findBy(account.getId(), targetComment.getId())
                       .ifPresentOrElse(
-                              like -> {
-                                  likeRepository.delete(like);
-                                  likeCountRepository.deleteLikeCount(comment.getWordId(), comment.getId());
-                              },
-                              () -> {
-                                  likeRepository.save(new Like(account.getId(), comment.getId()));
-                                  likeCountRepository.addLikeCount(comment.getWordId(), comment.getId());
-                              }
+                              like -> processDeleteLike(like, targetComment),
+                              () -> processAddLike(account, targetComment)
                       );
+    }
+
+    private Comment findTargetComment(Long commentId) {
+        return commentRepository.findBy(commentId)
+                                .orElseThrow(() -> new AssociationCommentNotFoundException("좋아요 대상인 댓글을 찾을 수 없습니다."));
+    }
+
+    private Account findAccount(String accountId) {
+        return accountRepository.findBy(accountId)
+                                .orElseThrow(() -> new ForbiddenLikeException("좋아요를 제어할 권한이 없습니다."));
+    }
+
+    private void processDeleteLike(Like like, Comment comment) {
+        likeRepository.delete(like);
+        likeCountRepository.deleteLikeCount(comment.getWordId(), comment.getId());
+    }
+
+    private void processAddLike(Account account, Comment comment) {
+        likeRepository.save(new Like(account.getId(), comment.getId()));
+        likeCountRepository.addLikeCount(comment.getWordId(), comment.getId());
     }
 }
