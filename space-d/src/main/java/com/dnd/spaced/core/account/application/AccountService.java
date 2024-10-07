@@ -18,30 +18,30 @@ public class AccountService {
 
     @Transactional
     public void withdrawal(String accountId) {
-        Account account = findAuthorizedAccount(accountId);
+        Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        accountRepository.delete(account);
+        accountRepository.delete(authorizedAccount);
     }
 
     @Transactional
     public void changeCareerInfo(String accountId, String jobGroupName, String companyName, String experienceName) {
-        Account account = findAuthorizedAccount(accountId);
+        Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        account.changeCareerInfo(jobGroupName, companyName, experienceName);
+        authorizedAccount.changeCareerInfo(jobGroupName, companyName, experienceName);
     }
 
     @Transactional
     public void changeProfileInfo(String accountId, String originalNickname, String profileImageKoreanName) {
-        Account account = findAuthorizedAccount(accountId);
+        Account authorizedAccount = findAuthorizedAccount(accountId);
         ProfileImageName profileImageName = ProfileImageName.findBy(profileImageKoreanName);
 
-        account.changeProfileInfo(originalNickname, profileImageName.getImageName());
+        authorizedAccount.changeProfileInfo(originalNickname, profileImageName.getImageName());
     }
 
     public AccountInfoDto findAccountInfo(String accountId) {
-        Account account = findAuthorizedAccount(accountId);
+        Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        return AccountInfoDto.from(account);
+        return AccountInfoDto.from(authorizedAccount);
     }
 
     private Account findAuthorizedAccount(String accountId) {

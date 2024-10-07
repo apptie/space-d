@@ -30,10 +30,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AuthServiceTest {
+class TokenServiceTest {
 
     @Autowired
-    AuthService authService;
+    TokenService tokenService;
 
     @Autowired
     TokenEncoder tokenEncoder;
@@ -50,7 +50,7 @@ class AuthServiceTest {
     @Test
     void refreshToken_메서드는_Bearer_타입의_토큰이_아닌_경우_InvalidTokenException_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken("Basic refresh token"))
+        assertThatThrownBy(() -> tokenService.refreshToken("Basic refresh token"))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
@@ -66,7 +66,7 @@ class AuthServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken(refreshToken))
+        assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
                 .isInstanceOf(ExpiredTokenException.class)
                 .hasMessage("Refresh Token이 만료되었습니다.");
     }
@@ -74,7 +74,7 @@ class AuthServiceTest {
     @Test
     void refreshToken_메서드는_유효하지_않은_refreshToken을_전달하면_InvalidTokenException_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken("Bearer abcde"))
+        assertThatThrownBy(() -> tokenService.refreshToken("Bearer abcde"))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
@@ -84,7 +84,7 @@ class AuthServiceTest {
     void refreshToken_메서드는_null이나_길이가_부족한_refreshToken을_전달하면_InvalidTokenException_예외가_발생한다(
             String invalidRefreshToken) {
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken(invalidRefreshToken))
+        assertThatThrownBy(() -> tokenService.refreshToken(invalidRefreshToken))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("토큰이 존재하지 않거나 길이가 부족합니다.");
     }
@@ -110,7 +110,7 @@ class AuthServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken(refreshToken))
+        assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("서비스에서 발급한 토큰이 아닙니다.");
     }
@@ -130,7 +130,7 @@ class AuthServiceTest {
         blacklistTokenService.register(accountId);
 
         // when & then
-        assertThatThrownBy(() -> authService.refreshToken(refreshToken))
+        assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
                 .isInstanceOf(BlockedTokenException.class)
                 .hasMessage("블랙리스트로 등록된 토큰입니다.");
     }
@@ -150,7 +150,7 @@ class AuthServiceTest {
 
         // when & then
         assertAll(
-                () -> assertThatThrownBy(() -> authService.refreshToken(refreshToken))
+                () -> assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
                         .isInstanceOf(RotationRefreshTokenMismatchException.class)
                         .hasMessage("기존 Refresh Token과 일치하지 않습니다."),
                 () -> assertThat(blacklistTokenRepository.findBy(accountId)).isPresent()
@@ -169,7 +169,7 @@ class AuthServiceTest {
         );
 
         // when
-        TokenDto actual = authService.refreshToken(refreshToken);
+        TokenDto actual = tokenService.refreshToken(refreshToken);
 
         // then
         assertAll(

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class AuthService {
+public class TokenService {
 
     private final TokenDecoder tokenDecoder;
     private final GenerateTokenService generateTokenService;
@@ -24,10 +24,7 @@ public class AuthService {
 
     @Transactional
     public TokenDto refreshToken(String refreshToken) {
-        PrivateClaims privateClaims = tokenDecoder.decode(TokenType.REFRESH, refreshToken)
-                                                  .orElseThrow(
-                                                          () -> new ExpiredTokenException("Refresh Token이 만료되었습니다.")
-                                                  );
+        PrivateClaims privateClaims = convertTokenPrivateClaims(refreshToken);
 
         validateBlacklistToken(privateClaims);
         validateRotationRefreshToken(refreshToken, privateClaims);
@@ -39,6 +36,13 @@ public class AuthService {
         return tokenDto;
     }
 
+    private PrivateClaims convertTokenPrivateClaims(String refreshToken) {
+        return tokenDecoder.decode(TokenType.REFRESH, refreshToken)
+                           .orElseThrow(
+                                   () -> new ExpiredTokenException("Refresh Token이 만료되었습니다.")
+                           );
+    }
+
     private void validateBlacklistToken(PrivateClaims privateClaims) {
         if (blacklistTokenService.isBlockedToken(privateClaims)) {
             throw new BlockedTokenException("블랙리스트로 등록된 토큰입니다.");
@@ -47,14 +51,21 @@ public class AuthService {
 
     private void validateRotationRefreshToken(String refreshToken, PrivateClaims privateClaims) {
         refreshTokenRotationRepository.findBy(privateClaims.accountId())
-                                      .ifPresent(rotateRefreshToken -> {
-                                          if (!refreshToken.equals(rotateRefreshToken)) {
-                                              blacklistTokenService.register(privateClaims.accountId());
+                                      .ifPresent(
+                                              rotateRefreshToken ->
+                                                      validateRefreshToken(
+                                                              refreshToken,
+                                                              privateClaims,
+                                                              rotateRefreshToken
+                                                      )
+                                      );
+    }
 
-                                              throw new RotationRefreshTokenMismatchException(
-                                                      "기존 Refresh Token과 일치하지 않습니다."
-                                              );
-                                          }
-                                      });
+    private void validateRefreshToken(String refreshToken, PrivateClaims privateClaims, String rotateRefreshToken) {
+        if (!refreshToken.equals(rotateRefreshToken)) {
+            blacklistTokenService.register(privateClaims.accountId());
+
+            throw new RotationRefreshTokenMismatchException("기존 Refresh Token과 일치하지 않습니다.");
+        }
     }
 }

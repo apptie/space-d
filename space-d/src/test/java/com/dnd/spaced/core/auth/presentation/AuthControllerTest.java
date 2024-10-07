@@ -80,7 +80,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
 
         given(refreshTokenCookie.getName()).willReturn("refreshToken");
         given(refreshTokenCookie.getValue()).willReturn("Bearer refreshToken");
-        given(authService.refreshToken(anyString())).willReturn(
+        given(tokenService.refreshToken(anyString())).willReturn(
                 new TokenDto("accessToken", "refreshToken", "BEARER")
         );
 

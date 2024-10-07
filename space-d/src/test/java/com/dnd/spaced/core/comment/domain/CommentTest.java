@@ -33,7 +33,7 @@ class CommentTest {
     }
 
     @Test
-    void isOnwer_메서드는_accountId를_전달하면_해당_Comment의_작성자인지_여부를_반환한다() {
+    void isNotOnwer_메서드는_accountId를_전달하면_해당_Comment의_작성자인지_여부를_반환한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -44,10 +44,10 @@ class CommentTest {
         Comment comment = new Comment(account.getId(), 1L, "댓글");
 
         // when
-        boolean actual = comment.isOwner(account);
+        boolean actual = comment.isNotOwner(account);
 
         // then
-        assertThat(actual).isTrue();
+        assertThat(actual).isFalse();
     }
 
     @Test

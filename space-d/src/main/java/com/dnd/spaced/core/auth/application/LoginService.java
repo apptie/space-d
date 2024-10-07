@@ -26,16 +26,17 @@ public class LoginService {
 
     @Transactional
     public LoggedInAccountInfoDto login(String accountId) {
-        AtomicBoolean isSignUp = new AtomicBoolean(false);
+        AtomicBoolean isSignUp = new AtomicBoolean();
         Account account = accountRepository.findBy(accountId)
-                                           .orElseGet(
-                                                   () -> {
-                                                       isSignUp.set(true);
-                                                       return signUp(accountId);
-                                                   }
-                                           );
+                                           .orElseGet(() -> processSignUpAccount(accountId, isSignUp));
 
         return new LoggedInAccountInfoDto(account.getId(), account.getRole().name(), isSignUp.get());
+    }
+
+    private Account processSignUpAccount(String accountId, AtomicBoolean isSignUp) {
+        isSignUp.set(true);
+
+        return signUp(accountId);
     }
 
     private Account signUp(String accountId) {
@@ -45,19 +46,33 @@ public class LoginService {
 
         return nicknameMetadataRepository.findBy(nickname)
                                          .map(
-                                                 nicknameMetadata -> {
-                                                     nicknameMetadata.addCount();
-                                                     return saveAccount(accountId, profileImageName, nicknameMetadata);
-                                                 }
+                                                 nicknameMetadata -> processExistsNicknameMetadata(
+                                                         accountId,
+                                                         nicknameMetadata,
+                                                         profileImageName
+                                                 )
                                          )
                                          .orElseGet(
-                                                 () -> {
-                                                     NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
-
-                                                     nicknameMetadataRepository.save(nicknameMetadata);
-                                                     return saveAccount(accountId, profileImageName, nicknameMetadata);
-                                                 }
+                                                 () -> processNotExistsNicknameMetadata(
+                                                         accountId,
+                                                         nickname,
+                                                         profileImageName
+                                                 )
                                          );
+    }
+
+    private Account processExistsNicknameMetadata(String accountId, NicknameMetadata nicknameMetadata, String profileImageName) {
+        nicknameMetadata.addCount();
+
+        return saveAccount(accountId, profileImageName, nicknameMetadata);
+    }
+
+    private Account processNotExistsNicknameMetadata(String accountId, String nickname, String profileImageName) {
+        NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
+
+        nicknameMetadataRepository.save(nicknameMetadata);
+
+        return saveAccount(accountId, profileImageName, nicknameMetadata);
     }
 
     private Account saveAccount(String accountId, String profileImage, NicknameMetadata nicknameMetadata) {
