@@ -9,6 +9,7 @@ import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.request.CommentPageRequest;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
 import com.dnd.spaced.core.comment.infrastructure.util.CommentSortConditionConverter;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -38,6 +39,19 @@ public class CommentQuerydslRepository implements CommentRepository {
 
     @Override
     public List<LikedCommentDto> findAllBy(String accountId, Long wordId, CommentPageRequest pageRequest) {
+        if (accountId == null) {
+            return findAllWithoutIsLikedBy(wordId, pageRequest);
+        }
+
+        return findAllWithIsLikedBy(accountId, wordId, pageRequest);
+    }
+
+    @Override
+    public void delete(Comment comment) {
+        commentCrudRepository.delete(comment);
+    }
+
+    private List<LikedCommentDto> findAllWithIsLikedBy(String accountId, Long wordId, CommentPageRequest pageRequest) {
         return queryFactory.select(
                                    Projections.constructor(
                                            LikedCommentDto.class,
@@ -59,9 +73,35 @@ public class CommentQuerydslRepository implements CommentRepository {
                            .fetch();
     }
 
-    @Override
-    public void delete(Comment comment) {
-        commentCrudRepository.delete(comment);
+    private List<LikedCommentDto> findAllWithoutIsLikedBy(Long wordId, CommentPageRequest pageRequest) {
+        List<Tuple> comments = queryFactory.select(
+                                                   comment,
+                                                   account.profileInfo.nickname,
+                                                   account.profileInfo.profileImage
+                                           )
+                                           .from(comment)
+                                           .join(account).on(comment.accountId.eq(account.id))
+                                           .where(comment.wordId.eq(wordId),
+                                                   calculateLastCommentIdBooleanExpression(pageRequest))
+                                           .orderBy(
+                                                   CommentSortConditionConverter.convert(pageRequest.pageable())
+                                                                                .toArray(OrderSpecifier[]::new)
+                                           )
+                                           .limit(pageRequest.pageable().getPageSize())
+                                           .fetch();
+
+        return comments.stream()
+                       .map(this::convertLikedCommentDto)
+                       .toList();
+    }
+
+    private LikedCommentDto convertLikedCommentDto(Tuple tuple) {
+        return new LikedCommentDto(
+                tuple.get(0, Comment.class),
+                false,
+                tuple.get(1, String.class),
+                tuple.get(2, String.class)
+        );
     }
 
     private BooleanExpression calculateLastCommentIdBooleanExpression(CommentPageRequest pageRequest) {

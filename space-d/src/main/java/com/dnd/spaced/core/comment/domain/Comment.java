@@ -50,7 +50,7 @@ public class Comment extends BaseTimeEntity {
                 || !(CONTENT_MIN_LENGTH <= content.length() && content.length() <= CONTENT_MAX_LENGTH);
     }
 
-    public boolean isNotOwner(Account account) {
+    public boolean isNotWriter(Account account) {
         return !account.isEqualTo(this.accountId);
     }
 

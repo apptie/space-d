@@ -44,10 +44,10 @@ public class CommentService {
 
     @Transactional
     public void delete(String accountId, Long commentId) {
-        Account owner = findAccount(accountId);
+        Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (comment.isNotOwner(owner)) {
+        if (comment.isNotWriter(writer)) {
             throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
         }
 
@@ -56,10 +56,10 @@ public class CommentService {
 
     @Transactional
     public void update(String accountId, Long commentId, String content) {
-        Account owner = findAccount(accountId);
+        Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (comment.isNotOwner(owner)) {
+        if (comment.isNotWriter(writer)) {
             throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
         }
 

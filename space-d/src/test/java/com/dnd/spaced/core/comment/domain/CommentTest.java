@@ -44,7 +44,7 @@ class CommentTest {
         Comment comment = new Comment(account.getId(), 1L, "댓글");
 
         // when
-        boolean actual = comment.isNotOwner(account);
+        boolean actual = comment.isNotWriter(account);
 
         // then
         assertThat(actual).isFalse();
