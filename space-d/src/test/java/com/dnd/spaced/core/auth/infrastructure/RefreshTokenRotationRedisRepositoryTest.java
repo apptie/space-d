@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
@@ -53,9 +52,7 @@ class RefreshTokenRotationRedisRepositoryTest {
         Optional<String> actual = refreshTokenRotationRepository.findBy(id);
 
         // then
-        assertAll(
-                () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get()).isEqualTo(refreshToken)
-        );
+        assertThat(actual).isPresent()
+                          .contains(refreshToken);
     }
 }
