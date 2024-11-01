@@ -49,7 +49,7 @@ class AccountServiceTest {
     @Test
     void 지정한_회원을_탈퇴_처리한다() {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -77,7 +77,7 @@ class AccountServiceTest {
     @Test
     void 회원의_경력_정보를_변경한다() {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -102,7 +102,7 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -128,7 +128,7 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -154,7 +154,7 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -200,7 +200,7 @@ class AccountServiceTest {
     @MethodSource("changeProfileInfoTestWithProfileImageKoreanName")
     void 회원의_프로필_정보를_변경한다(String profileImageKoreanName) {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -224,7 +224,7 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImageKoreanName) {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
@@ -250,7 +250,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
-                        "id",
+                        "withdrawalEmail",
                         "nickname",
                         ProfileImageName.EARTH.getKorean()
                 )
@@ -261,7 +261,7 @@ class AccountServiceTest {
     @Test
     void 회원의_정보를_찾아서_반환한다() {
         // given
-        String accountId = "id";
+        String accountId = "email";
         Account account = Account.builder()
                                  .id(accountId)
                                  .nickname("nickname")
