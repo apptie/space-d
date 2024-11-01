@@ -38,7 +38,7 @@ class AccountTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = " {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 도메인을_초기화할_때_유효한_회원_식별자가_아니라면_예외가_발생한다(String invalidId) {
         // when & then
@@ -75,7 +75,7 @@ class AccountTest {
          .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 도메인을_초기화할_때_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
         // when & then
@@ -90,7 +90,7 @@ class AccountTest {
          .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "권한 정보가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 도메인을_초기화할_때_유효한_권한_정보가_아니라면_예외가_발생한다(String invalidRoleName) {
         // when & then
@@ -132,7 +132,7 @@ class AccountTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // given
@@ -155,7 +155,7 @@ class AccountTest {
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // given
@@ -178,7 +178,7 @@ class AccountTest {
          .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // given
@@ -224,7 +224,7 @@ class AccountTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
         // given
@@ -248,7 +248,7 @@ class AccountTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
     void 회원의_프로필_정보_변경_시_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
         // given
