@@ -78,6 +78,10 @@ public class LikeCountRedisRepository implements LikeCountRepository {
         buffer.deleteLikeCount(new LikeCountIdentifier(wordId, commentId));
     }
 
+    public void flushBuffer() {
+        buffer.flushBuffer();
+    }
+
     private String calculateKey(Long wordId) {
         return KEY + wordId;
     }
