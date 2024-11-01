@@ -98,7 +98,7 @@ class AccountServiceTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // given
@@ -124,7 +124,7 @@ class AccountServiceTest {
          .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // given
@@ -150,7 +150,7 @@ class AccountServiceTest {
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // given
@@ -196,7 +196,7 @@ class AccountServiceTest {
                      .map(Arguments::of);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "프로필 이미지를 허용된 프로필 이미지인 {0}으로 변경한다")
     @MethodSource("changeProfileInfoTestWithProfileImageKoreanName")
     void 회원의_프로필_정보를_변경한다(String profileImageKoreanName) {
         // given
@@ -220,7 +220,7 @@ class AccountServiceTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImageKoreanName) {
         // given
