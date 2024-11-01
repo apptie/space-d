@@ -32,7 +32,7 @@ public class LikeCountBuffer {
                      .merge(identifier, -1, Integer::sum);
     }
 
-    private void flushBuffer() {
+    public void flushBuffer() {
         Map<LikeCountIdentifier, Integer> buffer = currentBuffer.getAndSet(new ConcurrentHashMap<>());
 
         CompletableFuture.runAsync(() -> cacheUpdateCallback.accept(buffer), asyncCommentLikeCountExecutor);
