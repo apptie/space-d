@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class LikeCountBufferGracefulShutdownListener implements ApplicationListener<ContextClosedEvent> {
