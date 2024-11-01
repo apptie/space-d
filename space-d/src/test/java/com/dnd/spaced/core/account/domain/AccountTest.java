@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class AccountTest {
 
     @Test
-    void build_메서드는_유효한_id_nickname_profileImage_roleName을_전달하면_Account를_초기화하고_반환한다() {
+    void 도메인을_초기화한다() {
         // when & then
         assertDoesNotThrow(
                 () -> Account.builder()
@@ -40,7 +40,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_id을_전달하면_InvalidEmailException_예외가_발생한다(String invalidId) {
+    void 도메인을_초기화할_때_유효한_회원_식별자가_아니라면_예외가_발생한다(String invalidId) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -53,9 +53,16 @@ class AccountTest {
          .hasMessageContaining("ID는 null이나 비어 있을 수 없습니다.");
     }
 
+    private static Stream<Arguments> builderTestWithInvalidNickname() {
+        return Stream.of(
+                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
+                Arguments.of("1234"), Arguments.of("12345678901")
+        );
+    }
+
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("builderTestWithInvalidNickname")
-    void build_메서드는_유효하지_않은_nickname을_전달하면_InvalidNicknameException_예외가_발생한다(String invalidNickname) {
+    void 도메인을_초기화할_때_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -70,7 +77,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_profileImage를_전달하면_InvalidProfileImageException_예외가_발생한다(String invalidProfileImage) {
+    void 도메인을_초기화할_때_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -85,7 +92,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_roleName을_전달하면_InvalidRoleNameException_예외가_발생한다(String invalidRoleName) {
+    void 도메인을_초기화할_때_유효한_권한_정보가_아니라면_예외가_발생한다(String invalidRoleName) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -99,7 +106,7 @@ class AccountTest {
     }
 
     @Test
-    void changeCareerInfo_메서드는_유효한_jobGroupName_companyName_experienceName을_전달하면_CareerInfo를_변경한다() {
+    void 회원의_경력_정보를_변경한다() {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -127,7 +134,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_companyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -150,7 +157,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_jobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidJobGroupName) {
+    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -173,7 +180,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_experienceName을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidExperienceName) {
+    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -195,7 +202,7 @@ class AccountTest {
     }
 
     @Test
-    void changeProfile_메서드는_유효한_changedNickname_changedProfileImage를_전달하면_회원_정보를_변경한다() {
+    void 회원의_프로필_정보를_변경한다() {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -219,7 +226,7 @@ class AccountTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeProfile_메서드는_유효하지_않은_profileImage를_전달하면_InvalidProfileImageException_예외가_발생한다(String invalidProfileImage) {
+    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -234,9 +241,16 @@ class AccountTest {
                 .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
     }
 
+    private static Stream<Arguments> changeProfileInfoTestWithInvalidNickname() {
+        return Stream.of(
+                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
+                Arguments.of("1234"), Arguments.of("12345678901")
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
-    void changeProfile_메서드는_유효하지_않은_nickname을_전달하면_InvalidNicknameException_예외가_발생한다(String invalidNickname) {
+    void 회원의_프로필_정보_변경_시_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -252,7 +266,7 @@ class AccountTest {
     }
 
     @Test
-    void getId_메서드는_id를_반환한다() {
+    void 회원_식별자를_반환한다() {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -269,7 +283,7 @@ class AccountTest {
     }
 
     @Test
-    void isNew_메서드는_Account가_영속화되었는지_여부를_반환한다() {
+    void 영속화_여부를_반환한다() {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -285,26 +299,16 @@ class AccountTest {
         assertThat(actual).isTrue();
     }
 
-    @Test
-    void isEqualTo_메서드는_일치하는_id를_전달하면_true를_반환한다() {
-        // given
-        String id = "email";
-        Account account = Account.builder()
-                                 .id(id)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
-                                 .build();
-
-        // when
-        boolean actual = account.isEqualTo(id);
-
-        // then
-        assertThat(actual).isTrue();
+    private static Stream<Object> isEqualToTestArguments() {
+        return Stream.of(
+                Arguments.of("email", true),
+                Arguments.of("notSameEmail", false)
+        );
     }
 
-    @Test
-    void isEqualTo_메서드는_일치하지_않는_id를_전달하면_false를_반환한다() {
+    @ParameterizedTest(name = "회원의 식별자가 email인 도메인에 대해 {0}과 비교하면 {1}을 반환한다")
+    @MethodSource("isEqualToTestArguments")
+    void 회원의_식별자가_일치하는지_비교한다(String id, boolean expected) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -314,23 +318,9 @@ class AccountTest {
                                  .build();
 
         // when
-        boolean actual = account.isEqualTo("invalidId");
+        boolean actual = account.isEqualTo(id);
 
         // then
-        assertThat(actual).isFalse();
-    }
-
-    private static Stream<Arguments> builderTestWithInvalidNickname() {
-        return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("aaaa"), Arguments.of("aaaaaaaaaaa")
-        );
-    }
-
-    private static Stream<Arguments> changeProfileInfoTestWithInvalidNickname() {
-        return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("aaaa"), Arguments.of("aaaaaaaaaaa")
-        );
+        assertThat(actual).isEqualTo(expected);
     }
 }
