@@ -6,17 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
-import com.dnd.spaced.global.config.properties.NicknameProperties;
-import java.util.Collections;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -80,27 +75,5 @@ class LoginServiceTest {
                 () -> assertThat(actual.roleName()).isEqualTo(Role.ROLE_USER.name()),
                 () -> assertThat(actual.isSignUp()).isTrue()
         );
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-
-        @Bean
-        @Primary
-        public NicknameProperties nicknameProperties() {
-            return new TestNicknameProperties();
-        }
-    }
-
-    static class TestNicknameProperties extends NicknameProperties {
-
-        public TestNicknameProperties() {
-            super(Collections.emptyList(), Collections.emptyList(), "%s%03d");
-        }
-
-        @Override
-        public String generate() {
-            return "재빠른지구";
-        }
     }
 }

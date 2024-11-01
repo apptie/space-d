@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
@@ -11,9 +10,10 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @CleanUpRedis
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class RefreshTokenRotationRedisRepositoryTest {
@@ -52,9 +52,7 @@ class RefreshTokenRotationRedisRepositoryTest {
         Optional<String> actual = refreshTokenRotationRepository.findBy(id);
 
         // then
-        assertAll(
-                () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get()).isEqualTo(refreshToken)
-        );
+        assertThat(actual).isPresent()
+                          .contains(refreshToken);
     }
 }
