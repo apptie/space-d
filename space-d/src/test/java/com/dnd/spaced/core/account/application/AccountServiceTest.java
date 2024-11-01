@@ -47,7 +47,7 @@ class AccountServiceTest {
     AccountRepository accountRepository;
 
     @Test
-    void withdrawal_메서드는_회원_ID를_전달하면_회원을_탈퇴_처리한다() {
+    void 지정한_회원을_탈퇴_처리한다() {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -67,7 +67,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void withdrawl_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 탈퇴_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() -> accountService.withdrawal("id"))
                 .isInstanceOf(ForbiddenAccountException.class)
@@ -75,7 +75,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void changeCareerInfo_메서드는_유효한_CareerInfo를_전달하면_CareerInfo를_변경한다() {
+    void 회원의_경력_정보를_변경한다() {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -100,8 +100,7 @@ class AccountServiceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_JobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(
-            String invalidJobGroupName) {
+    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -127,7 +126,7 @@ class AccountServiceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_CompanyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -153,8 +152,7 @@ class AccountServiceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_ExperienceName을_전달하면_InvalidExperienceException_예외가_발생한다(
-            String invalidExperienceName) {
+    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -179,7 +177,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void changeCareerInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원의_경력_정보_변경_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
@@ -192,9 +190,15 @@ class AccountServiceTest {
          .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
+    private static Stream<Arguments> changeProfileInfoTestWithProfileImageKoreanName() {
+        return Arrays.stream(ProfileImageName.values())
+                     .map(ProfileImageName::getKorean)
+                     .map(Arguments::of);
+    }
+
     @ParameterizedTest
     @MethodSource("changeProfileInfoTestWithProfileImageKoreanName")
-    void changeProfileInfo_메서드는_유효한_ProfileInfo를_전달하면_ProfileInfo를_변경한다(String profileImageKoreanName) {
+    void 회원의_프로필_정보를_변경한다(String profileImageKoreanName) {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -218,7 +222,7 @@ class AccountServiceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeProfileInfo_메서드는_유효하지_않은_profileImageKoreanName을_전달하면_InvalidProfileImageException_예외가_발생한다(String invalidProfileImageKoreanName) {
+    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImageKoreanName) {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -242,7 +246,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void changeProfileInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원의_프로필_정보_변경_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
@@ -255,7 +259,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void fidnAccountInfo_메서드는_유효한_회원_ID를_전달하면_해당_회원_정보를_반환한다() {
+    void 회원의_정보를_찾아서_반환한다() {
         // given
         String accountId = "id";
         Account account = Account.builder()
@@ -282,16 +286,10 @@ class AccountServiceTest {
     }
 
     @Test
-    void findAccountInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원_정보_조회_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() -> accountService.findAccountInfo("id"))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
-    }
-
-    private static Stream<Arguments> changeProfileInfoTestWithProfileImageKoreanName() {
-        return Arrays.stream(ProfileImageName.values())
-                     .map(ProfileImageName::getKorean)
-                     .map(Arguments::of);
     }
 }
