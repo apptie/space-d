@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class ExperienceTest {
 
     @Test
-    void findBy_메서드는_유효한_name을_전달하면_name에_맞는_Experience를_반환한다() {
+    void 경력과_일치하는_도메인을_반환한다() {
         // given
         Experience betweenFirstSecond = Experience.BETWEEN_FIRST_SECOND;
 
@@ -28,7 +28,7 @@ class ExperienceTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void findBy_메서드는_유효하지_않은_name을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidName) {
+    void 유효한_경력이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Experience.findBy(invalidName))
                 .isInstanceOf(InvalidExperienceException.class)
