@@ -38,7 +38,7 @@ class ExperienceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 유효한_경력이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
