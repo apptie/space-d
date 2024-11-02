@@ -218,7 +218,7 @@ public class DocsController {
         putUnauthorizedExceptionContent(changeProfileInfoException);
         putMethodArgumentNotValidExceptionContent(
                 changeProfileInfoException,
-                "originNickname",
+                "nickname",
                 "profileImageKoreanName"
         );
         processAccountException(
