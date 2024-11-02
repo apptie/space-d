@@ -31,7 +31,7 @@ class WordExampleTest {
         // when & then
         assertThatThrownBy(() -> new WordExample(invalidExample))
                 .isInstanceOf(InvalidWordExampleContentException.class)
-                .hasMessage("예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.");
+                .hasMessage("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
     }
 
     @Test
@@ -55,10 +55,13 @@ class WordExampleTest {
     void updateContent_메서드는_유효한_example을_전달하면_해당_example로_변경한다() {
         // given
         WordExample wordExample = new WordExample("example");
+        String changedExample = "changedExample";
 
         // when
-        String changedExample = "changedExample";
         wordExample.changeExample(changedExample);
+
+        // then
+        assertThat(wordExample.getExample()).isEqualTo(changedExample);
     }
 
     @Test

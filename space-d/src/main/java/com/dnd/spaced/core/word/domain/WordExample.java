@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class WordExample extends BaseTimeEntity {
 
     private static final int MIN_EXAMPLE_LENGTH = 1;
-    private static final int MAX_EXAMPLE_LENGTH = 50;
+    private static final int MAX_EXAMPLE_LENGTH = 150;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +54,7 @@ public class WordExample extends BaseTimeEntity {
 
     private void validateContent(String content) {
         if (isInvalidContent(content)) {
-            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.");
+            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
         }
     }
 
