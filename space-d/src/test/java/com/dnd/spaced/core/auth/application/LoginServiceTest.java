@@ -25,9 +25,9 @@ class LoginServiceTest {
     LoginService loginService;
 
     @Test
-    void login_메서드는_회원가입하지_않은_id를_전달하면_회원가입_이후_회원_정보를_반환한다() {
+    void 회원가입하지_않은_회원이_로그인하면_회원_가입과_로그인_절차를_진행한다() {
         // given
-        String id = "id";
+        String id = "email@email.com";
 
         // when
         LoggedInAccountInfoDto actual = loginService.login(id);
@@ -41,9 +41,9 @@ class LoginServiceTest {
     }
 
     @Test
-    void login_메서드는_회원가입한_id를_전달하면_회원_정보를_반환한다() {
+    void 회원가입한_회원이_로그인하면_로그인_절차를_진행한다() {
         // given
-        String id = "id";
+        String id = "email@email.com";
 
         loginService.login(id);
 
@@ -59,10 +59,10 @@ class LoginServiceTest {
     }
 
     @Test
-    void login_메서드는_회원가입하지_않은_id를_전달하면_닉네임_메타데이터를_갱신_및_회원가입_이후_회원_정보를_반환한다() {
+    void 회원가입하지_않은_회원이_로그인하면서_회원_가입_절차에서_기존_닉네임과_동일한_닉네임을_부여받으면_닉네임_메타데이터를_갱신하고_로그인_절차를_진행한다() {
         // given
-        String id1 = "id1";
-        String id2 = "id2";
+        String id1 = "email1@email.com";
+        String id2 = "email2@email.com";
 
         loginService.login(id1);
 
