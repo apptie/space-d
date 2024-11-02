@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class JobGroupTest {
 
     @Test
-    void findBy_메서드는_유효한_name을_전달하면_name에_맞는_JobGroup을_반환한다() {
+    void 직군과_일치하는_도메인을_반환한다() {
         // given
         JobGroup develop = JobGroup.DEVELOP;
 
@@ -26,9 +26,9 @@ class JobGroupTest {
         assertThat(actual).isEqualTo(develop);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void findBy_메서드는_유효하지_않은_name을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidName) {
+    void 유효한_직군이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> JobGroup.findBy(invalidName))
                 .isInstanceOf(InvalidJobGroupException.class)
