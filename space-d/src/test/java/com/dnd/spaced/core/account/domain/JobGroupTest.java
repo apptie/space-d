@@ -4,26 +4,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class JobGroupTest {
 
-    @Test
-    void 직군과_일치하는_도메인을_반환한다() {
-        // given
-        JobGroup develop = JobGroup.DEVELOP;
+    private static Stream<Arguments> findByTestArguments() {
+        return Stream.of(
+                Arguments.of("개발자", JobGroup.DEVELOP),
+                Arguments.of("디자이너", JobGroup.DESIGN),
+                Arguments.of("기타", JobGroup.ETC)
+        );
+    }
 
+    @ParameterizedTest(name = "직군이 {0}일 때 {1}을 반환한다")
+    @MethodSource("findByTestArguments")
+    void 직군과_일치하는_도메인을_반환한다(String jobGroupName, JobGroup expected) {
         // when
-        JobGroup actual = JobGroup.findBy(develop.getName());
+        JobGroup actual = JobGroup.findBy(jobGroupName);
 
         // then
-        assertThat(actual).isEqualTo(develop);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
