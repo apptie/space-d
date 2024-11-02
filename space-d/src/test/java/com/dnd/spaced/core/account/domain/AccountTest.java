@@ -102,7 +102,7 @@ class AccountTest {
                              .roleName(invalidRoleName)
                              .build()
         ).isInstanceOf(InvalidRoleNameException.class)
-         .hasMessageContaining("잘못된 role name");
+         .hasMessageContaining("잘못된 권한 정보 이름");
     }
 
     @Test
