@@ -31,7 +31,7 @@ class AccountCrudRepositoryTest {
     EntityManager em;
 
     @Test
-    void delete_메서드는_soft_delete를_수행한다() {
+    void 회원을_soft_delete로_삭제한다() {
         // given
         Account account = Account.builder()
                                  .id("id1")
@@ -45,16 +45,16 @@ class AccountCrudRepositoryTest {
         // when
         accountCrudRepository.delete(account);
 
+        // then
         em.flush();
 
-        // then
         Optional<Account> actual = accountCrudRepository.findById(account.getId());
 
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void findById_메서드는_soft_delete_대상을_제외한_데이터를_조회한다() {
+    void soft_delete_되지_않은_회원을_조회한다() {
         // given
         Account account1 = Account.builder()
                                  .id("id1")
@@ -75,9 +75,13 @@ class AccountCrudRepositoryTest {
         em.flush();
 
         // when
+        Optional<Account> actualAccount1 = accountCrudRepository.findById(account1.getId());
+        Optional<Account> actualAccount2 = accountCrudRepository.findById(account2.getId());
+
+        // then
         assertAll(
-                () -> assertThat(accountCrudRepository.findById(account1.getId())).isPresent(),
-                () -> assertThat(accountCrudRepository.findById(account2.getId())).isEmpty()
+                () -> assertThat(actualAccount1).isPresent(),
+                () -> assertThat(actualAccount2).isEmpty()
         );
     }
 }
