@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class CareerInfoTest {
 
     @Test
-    void build_메서드는_유효한_experienceName_companyName_jobGroupName을_전달하면_CareerInfo를_초기화하고_반환한다() {
+    void 도메인을_초기화한다() {
         // when & then
         assertDoesNotThrow(
                 () -> CareerInfo.builder()
@@ -28,9 +28,9 @@ class CareerInfoTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_experienceName을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidExperienceName) {
+    void 도메인을_초기화할_때_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
@@ -42,9 +42,9 @@ class CareerInfoTest {
          .hasMessageContaining("잘못된 경력");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_companyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 도메인을_초기화할_때_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
@@ -56,9 +56,9 @@ class CareerInfoTest {
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_jobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidJobGroupName) {
+    void 도메인을_초기화할_때_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
