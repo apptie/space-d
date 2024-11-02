@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class WordMeaning {
 
     private static final int MIN_MEANING_LENGTH = 10;
-    private static final int MAX_MEANING_LENGTH = 70;
+    private static final int MAX_MEANING_LENGTH = 150;
 
     private String meaning;
 
