@@ -283,7 +283,7 @@ class AccountTest {
     }
 
     @Test
-    void 영속화_여부를_반환한다() {
+    void 회원의_영속화_여부를_반환한다() {
         // given
         Account account = Account.builder()
                                  .id("email")

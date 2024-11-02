@@ -30,7 +30,7 @@ class CompanyTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 {1}을 반환한다")
     @MethodSource("findByTestArguments")
-    void 회사명과_일치하는_도메인을_반환한다(String companyName, Company expected) {
+    void 회사_정보를_찾는다(String companyName, Company expected) {
         // when
         Company actual = Company.findBy(companyName);
 
@@ -40,7 +40,7 @@ class CompanyTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 유효한_회사명이_아닌_경우_예외가_발생한다(String invalidName) {
+    void 회사_정보를_찾을_때_유효한_회사명이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Company.findBy(invalidName))
                 .isInstanceOf(InvalidCompanyException.class)

@@ -26,7 +26,7 @@ class JobGroupTest {
 
     @ParameterizedTest(name = "직군이 {0}일 때 {1}을 반환한다")
     @MethodSource("findByTestArguments")
-    void 직군과_일치하는_도메인을_반환한다(String jobGroupName, JobGroup expected) {
+    void 직군_정보를_찾는다(String jobGroupName, JobGroup expected) {
         // when
         JobGroup actual = JobGroup.findBy(jobGroupName);
 
@@ -36,7 +36,7 @@ class JobGroupTest {
 
     @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 유효한_직군이_아닌_경우_예외가_발생한다(String invalidName) {
+    void 직군_정보를_찾을_때_유효한_직군이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> JobGroup.findBy(invalidName))
                 .isInstanceOf(InvalidJobGroupException.class)

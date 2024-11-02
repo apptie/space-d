@@ -30,7 +30,7 @@ class ExperienceTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 {1}을 반환한다")
     @MethodSource("findByTestArguments")
-    void 경력과_일치하는_도메인을_반환한다(String experienceName, Experience expected) {
+    void 경력_정보를_찾는다(String experienceName, Experience expected) {
         // when
         Experience actual = Experience.findBy(experienceName);
 
@@ -40,7 +40,7 @@ class ExperienceTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 유효한_경력이_아닌_경우_예외가_발생한다(String invalidName) {
+    void 경력_정보를_찾을_때_유효한_경력이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Experience.findBy(invalidName))
                 .isInstanceOf(InvalidExperienceException.class)
