@@ -88,7 +88,7 @@ class ProfileInfoTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
     void 프로필_정보를_변경할_때_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
         // given
