@@ -38,7 +38,7 @@ class CompanyTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void 유효한_회사명이_아닌_경우_예외가_발생한다(String invalidName) {
         // when & then
