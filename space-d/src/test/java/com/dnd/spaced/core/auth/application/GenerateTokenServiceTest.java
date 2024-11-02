@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
+import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -22,10 +23,10 @@ class GenerateTokenServiceTest {
     GenerateTokenService generateTokenService;
 
     @Test
-    void generate_메서드는_id와_roleName을_전달하면_accessToken과_refreshToken을_초기화하고_반환한다() {
+    void accessToken과_refreshToken을_생성한다() {
         // given
         String id = "id";
-        String roleName = "roleName";
+        String roleName = Role.ROLE_USER.name();
 
         // when
         TokenDto actual = generateTokenService.generate(id, roleName);
