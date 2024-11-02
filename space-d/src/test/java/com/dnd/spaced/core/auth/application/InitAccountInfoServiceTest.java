@@ -38,13 +38,13 @@ class InitAccountInfoServiceTest {
     AccountRepository accountRepository;
 
     @Test
-    void initCareerInfo_메서드는_유효한_jobGroupName_companyName_experienceName을_전달하면_CareerInfo를_초기화한다() {
+    void 경력_정보를_초기화한다() {
         // given
-        String id = "id";
+        String id = "email@email.com";
         Account account = Account.builder()
                                  .id(id)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
                                  .roleName(Role.ROLE_USER.name())
                                  .build();
 
@@ -61,15 +61,15 @@ class InitAccountInfoServiceTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void initCareerInfo_메서드는_유효하지_않은_companyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 경력_정보_초기화_시_유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // given
-        String id = "id";
+        String id = "email@email.com";
         Account account = Account.builder()
                                  .id(id)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
                                  .roleName(Role.ROLE_USER.name())
                                  .build();
 
@@ -88,15 +88,15 @@ class InitAccountInfoServiceTest {
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void initCareerInfo_메서드는_유효하지_않은_jobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidJobGroupName) {
+    void 경력_정보_초기화_시_유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // given
-        String id = "id";
+        String id = "email@email.com";
         Account account = Account.builder()
                                  .id(id)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
                                  .roleName(Role.ROLE_USER.name())
                                  .build();
 
@@ -115,15 +115,15 @@ class InitAccountInfoServiceTest {
          .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void initCareerInfo_메서드는_유효하지_않은_experienceName을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidExperienceName) {
+    void 경력_정보_초기화_시_유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // given
-        String id = "id";
+        String id = "email@email.com";
         Account account = Account.builder()
                                  .id(id)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
                                  .roleName(Role.ROLE_USER.name())
                                  .build();
 
@@ -143,11 +143,11 @@ class InitAccountInfoServiceTest {
     }
 
     @Test
-    void initCareerInfo_메서드는_유효하지_않은_id를_전달한_경우_ForbiddenInitCareerInfoException_예외가_발생한다() {
+    void 경력_정보_초기화_시_유효한_회원_식별자가_아닌_경우_경력_정보를_초기화할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        "id",
+                        "email@email.com",
                         JobGroup.DESIGN.getName(),
                         Company.BLIND.getName(),
                         Experience.BETWEEN_THIRD_FOURTH.getName()
