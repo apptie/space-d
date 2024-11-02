@@ -36,7 +36,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void registerBlacklistToken_성공_테스트() throws Exception {
+    void 토큰_블랙리스트_등록_요청_성공_테스트() throws Exception {
         // given
         UpdateBlacklistTokenRequest request = new UpdateBlacklistTokenRequest("id");
 
@@ -49,10 +49,10 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 status().isCreated()
         );
 
-        registerBlacklistToken_문서화(resultAction);
+        토큰_블랙리스트_등록_요청_문서화(resultAction);
     }
 
-    private void registerBlacklistToken_문서화(ResultActions resultActions) throws Exception {
+    private void 토큰_블랙리스트_등록_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -68,12 +68,18 @@ class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void saveWord_성공_테스트() throws Exception {
+    void 용어_등록_요청_성공_테스트() throws Exception {
         // given
         List<PronunciationInfoRequest> pronunciationInfo = List.of(
-                new PronunciationInfoRequest("pronunciation", "typeName"));
-        List<String> example = List.of("example");
-        SaveWordRequest request = new SaveWordRequest("name", "meaning", "categoryName", pronunciationInfo, example);
+                new PronunciationInfoRequest("어써라이제이션", "한글 발음"));
+        List<String> example = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
+        SaveWordRequest request = new SaveWordRequest(
+                "Authorization",
+                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+                "개발",
+                pronunciationInfo,
+                example
+        );
 
         given(adminWordService.saveWord(any(SaveWordDto.class))).willReturn(1L);
 
@@ -87,10 +93,10 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 header().stringValues("Location", "/words/1")
         );
 
-        saveWord_문서화(resultActions);
+        용어_등록_요청_문서화(resultActions);
     }
 
-    private void saveWord_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_등록_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -116,9 +122,11 @@ class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void updateWordExample_성공_테스트() throws Exception {
+    void 용어_예문_변경_요청_성공_테스트() throws Exception {
         // given
-        UpdateWordExampleRequest request = new UpdateWordExampleRequest("example");
+        UpdateWordExampleRequest request = new UpdateWordExampleRequest(
+                "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
+        );
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -129,10 +137,10 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        updateWordExample_문서화(resultActions);
+        용어_예문_변경_요청_문서화(resultActions);
     }
 
-    private void updateWordExample_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_예문_변경_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -150,7 +158,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void deleteWordExample_성공_테스트() throws Exception {
+    void 용어_예문_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 delete("/admin/words/{wordId}/examples/{exampleId}", 1L,  1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -158,10 +166,10 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        deleteWordExample_문서화(resultActions);
+        용어_예문_삭제_요청_문서화(resultActions);
     }
 
-    private void deleteWordExample_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_예문_삭제_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -177,7 +185,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void deletePronunciation_성공_테스트() throws Exception {
+    void 용어_발음_정보_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultAction = mockMvc.perform(
                 delete("/admin/words/{wordId}/pronunciations/{pronunciationId}", 1L, 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -185,10 +193,10 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        deletePronunciation_문서화(resultAction);
+        용어_발음_정보_삭제_요청_문서화(resultAction);
     }
 
-    private void deletePronunciation_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_발음_정보_삭제_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
