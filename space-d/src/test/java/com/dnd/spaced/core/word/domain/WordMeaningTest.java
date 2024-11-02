@@ -30,7 +30,7 @@ class WordMeaningTest {
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
-                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 
     @Test
@@ -46,15 +46,12 @@ class WordMeaningTest {
         assertThat(wordMeaning.getMeaning()).isEqualTo(changedMeaning);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "용어 뜻이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
     void changeMeaning_메서드는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
-        // given
-        WordMeaning wordMeaning = new WordMeaning("1234567890");
-
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
-                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 }

@@ -62,7 +62,7 @@ class WordTest {
                           .categoryName("개발")
                           .build()
         ).isInstanceOf(InvalidWordMeaningException.class)
-         .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+         .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 
     @ParameterizedTest
@@ -160,6 +160,6 @@ class WordTest {
         // when & then
         assertThatThrownBy(() -> word.changeMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
-                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 }
