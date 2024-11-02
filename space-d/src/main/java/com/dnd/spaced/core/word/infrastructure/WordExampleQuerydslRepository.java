@@ -14,12 +14,19 @@ public class WordExampleQuerydslRepository implements WordExampleRepository {
     private final JPAQueryFactory queryFactory;
     private final WordExampleCrudRepository wordExampleCrudRepository;
 
+    public long countBy(Long wordId) {
+        return queryFactory.select(wordExample.id.count())
+                           .from(wordExample)
+                           .where(wordExample.word.id.eq(wordId))
+                           .fetchFirst();
+    }
+
     @Override
-    public void update(Long id, String example) {
-        queryFactory.update(wordExample)
-                    .set(wordExample.example, example)
-                    .where(wordExample.id.eq(id))
-                    .execute();
+    public long update(Long id, String example) {
+        return queryFactory.update(wordExample)
+                           .set(wordExample.example, example)
+                           .where(wordExample.id.eq(id))
+                           .execute();
     }
 
     @Override

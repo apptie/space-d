@@ -12,7 +12,7 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
     INVALID_WORD_MEANING_EXCEPTION(
             WordErrorCode.INVALID_WORD_MEANING,
             HttpStatus.BAD_REQUEST,
-            "용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다."
+            "용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다."
     ),
     INVALID_CATEGORY_NAME_EXCEPTION(
             WordErrorCode.INVALID_CATEGORY_NAME,
@@ -37,12 +37,27 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
     INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION(
             WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
             HttpStatus.BAD_REQUEST,
-            "예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다."
+            "예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다."
     ),
     WORD_NOT_FOUND(
             WordErrorCode.WORD_NOT_FOUND,
             HttpStatus.NOT_FOUND,
             "지정한 용어가 없습니다."
+    ),
+    UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT(
+            WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT,
+            HttpStatus.BAD_REQUEST,
+            "용어 예문이 정상적으로 변경되지 않았습니다."
+    ),
+    WORD_EXAMPLE_DELETION_NOT_ALLOWED(
+            WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,
+            HttpStatus.BAD_REQUEST,
+            "해당 용어의 예문 개수가 최소치입니다."
+    ),
+    PRONUNCIATION_DELETION_NOT_ALLOWED(
+            WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
+            HttpStatus.BAD_REQUEST,
+            "해당 용어의 발음 정보 개수가 최소치입니다."
     );
 
     private final ErrorCode errorCode;

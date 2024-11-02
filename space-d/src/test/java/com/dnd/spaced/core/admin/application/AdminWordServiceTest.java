@@ -82,7 +82,10 @@ class AdminWordServiceTest {
     void 용어_예문을_삭제한다() {
         // given
         List<PronunciationInfoDto> pronunciationInfoDtos = List.of(new PronunciationInfoDto("어써라이제이션", "한글 발음"));
-        List<String> examples = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
+        List<String> examples = List.of(
+                "게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.",
+                "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
+        );
         SaveWordDto saveWordDto = new SaveWordDto(
                 "Authorization",
                 "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
@@ -96,7 +99,9 @@ class AdminWordServiceTest {
                                   .get();
 
         // when & then
-        assertDoesNotThrow(() -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId()));
+        assertDoesNotThrow(
+                () -> adminWordService.deleteWordExample(word.getId(), word.getWordExamples().get(0).getId())
+        );
     }
 
     @Test
@@ -120,6 +125,8 @@ class AdminWordServiceTest {
                                   .get();
 
         // when & then
-        assertDoesNotThrow(() -> adminWordService.deletePronunciation(word.getPronunciations().get(0).getId()));
+        assertDoesNotThrow(
+                () -> adminWordService.deletePronunciation(wordId, word.getPronunciations().get(0).getId())
+        );
     }
 }

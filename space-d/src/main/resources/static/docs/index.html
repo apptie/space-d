@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Tue, 5 Nov 2024 05:19:28 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Tue, 5 Nov 2024 07:13:52 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -1262,13 +1262,13 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_MEANING</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_NAME</code></p></td>
@@ -1281,6 +1281,24 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어가 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1404,7 +1422,13 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1415,7 +1439,7 @@ Authorization: Bearer AccessToken
 <h4 id="Delete-Word-Example_http_request"><a class="link" href="#Delete-Word-Example_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/examples/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1/examples/1 HTTP/1.1
 Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
@@ -1483,6 +1507,12 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1492,7 +1522,7 @@ Authorization: Bearer AccessToken</code></pre>
 <h4 id="Delete-Pronunciation_http_request"><a class="link" href="#Delete-Pronunciation_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/pronunciations/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1/pronunciations/1 HTTP/1.1
 Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
@@ -1559,6 +1589,12 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
 </tr>
 </tbody>
 </table>

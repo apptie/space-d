@@ -153,7 +153,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     void deleteWordExample_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                delete("/admin/words/examples/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/admin/words/{wordId}/examples/{exampleId}", 1L,  1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isNoContent()
         );
@@ -168,7 +168,8 @@ class AdminControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
                         ),
                         pathParameters(
-                                parameterWithName("id").description("삭제하고자 하는 용어 예문 ID")
+                                parameterWithName("wordId").description("삭제하고자 하는 용어 예문을 가진 용어 ID"),
+                                parameterWithName("exampleId").description("삭제하고자 하는 용어 예문 ID")
                         )
                 )
         );
@@ -179,7 +180,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     void deletePronunciation_성공_테스트() throws Exception {
         // when & then
         ResultActions resultAction = mockMvc.perform(
-                delete("/admin/words/pronunciations/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/admin/words/{wordId}/pronunciations/{pronunciationId}", 1L, 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isNoContent()
         );
@@ -194,7 +195,8 @@ class AdminControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
                         ),
                         pathParameters(
-                                parameterWithName("id").description("삭제하고자 하는 용어 발음 ID")
+                                parameterWithName("wordId").description("삭제하고자 하는 용어 발음 정보를 가진 용어 ID"),
+                                parameterWithName("pronunciationId").description("삭제하고자 하는 용어 발음 정보 ID")
                         )
                 )
         );
