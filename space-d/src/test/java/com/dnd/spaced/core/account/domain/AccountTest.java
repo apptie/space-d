@@ -40,7 +40,7 @@ class AccountTest {
 
     @ParameterizedTest(name = " {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_회원_식별자가_아니라면_예외가_발생한다(String invalidId) {
+    void 회원을_초기화할_때_유효한_회원_식별자가_아니라면_회원을_초기화할_수_없다(String invalidId) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -62,7 +62,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("builderTestWithInvalidNickname")
-    void 회원을_초기화할_때_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
+    void 회원을_초기화할_때_유효한_닉네임이_아니라면_회원을_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -77,7 +77,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
+    void 회원을_초기화할_때_유효한_프로필_이미지가_아니라면_회원을_초기화할_수_없다(String invalidProfileImage) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -92,7 +92,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "권한 정보가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_권한_정보가_아니라면_예외가_발생한다(String invalidRoleName) {
+    void 회원을_초기화할_때_유효한_권한_정보가_아니라면_회원을_초기화할_수_없다(String invalidRoleName) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -134,7 +134,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
+    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -157,7 +157,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
+    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -180,7 +180,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
+    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -226,7 +226,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImage) {
+    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
                                  .id("email")
@@ -250,7 +250,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
-    void 회원의_프로필_정보_변경_시_유효한_닉네임이_아니라면_예외가_발생한다(String invalidNickname) {
+    void 회원의_프로필_정보_변경_시_유효한_닉네임이_아니라면_프로필_정보를_변환할_수_없다(String invalidNickname) {
         // given
         Account account = Account.builder()
                                  .id("email")

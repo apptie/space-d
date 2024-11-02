@@ -32,7 +32,7 @@ class NicknameMetadataTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("constructorTestWithInvalidNickname")
-    void 닉네임_메타데이터를_초기화할_때_유효하지_않은_닉네임이라면_예외가_발생한다(String invalidNickname) {
+    void 닉네임_메타데이터를_초기화할_때_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(() -> new NicknameMetadata(invalidNickname))
                 .isInstanceOf(InvalidNicknameMetadataException.class)

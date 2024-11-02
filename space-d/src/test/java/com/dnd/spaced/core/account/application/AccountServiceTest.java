@@ -67,7 +67,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 탈퇴_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
+    void 탈퇴_시_유효한_회원_식별자가_아니라면_탈퇴할_수_없다() {
         // when & then
         assertThatThrownBy(() -> accountService.withdrawal("id"))
                 .isInstanceOf(ForbiddenAccountException.class)
@@ -100,7 +100,7 @@ class AccountServiceTest {
 
     @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
+    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         String accountId = "email";
         Account account = Account.builder()
@@ -126,7 +126,7 @@ class AccountServiceTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
+    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         String accountId = "email";
         Account account = Account.builder()
@@ -152,7 +152,7 @@ class AccountServiceTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
+    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         String accountId = "email";
         Account account = Account.builder()
@@ -177,7 +177,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원의_경력_정보_변경_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
+    void 회원의_경력_정보_변경_시_유효한_회원_식별자가_아니라면_경력_정보를_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
@@ -222,7 +222,7 @@ class AccountServiceTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_예외가_발생한다(String invalidProfileImageKoreanName) {
+    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
         String accountId = "email";
         Account account = Account.builder()
@@ -246,7 +246,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원의_프로필_정보_변경_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
+    void 회원의_프로필_정보_변경_시_유효한_회원_식별자가_아니라면_프로필_정보를_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
@@ -286,7 +286,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원_정보_조회_시_유효한_회원_식별자가_아니라면_예외가_발생한다() {
+    void 회원_정보_조회_시_유효한_회원_식별자가_아니라면_회원_정보를_조회할_수_없다() {
         // when & then
         assertThatThrownBy(() -> accountService.findAccountInfo("id"))
                 .isInstanceOf(ForbiddenAccountException.class)

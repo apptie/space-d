@@ -40,7 +40,7 @@ class ExperienceTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 경력_정보를_찾을_때_유효한_경력이_아닌_경우_예외가_발생한다(String invalidName) {
+    void 경력_정보를_찾을_때_유효한_경력이_아닌_경우_경력_정보를_찾을_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Experience.findBy(invalidName))
                 .isInstanceOf(InvalidExperienceException.class)

@@ -83,7 +83,7 @@ class AdminWordServiceTest {
     }
 
     @Test
-    void 용어_예문_변경_시_유효한_용어_예문_식별자가_아닌_경우_예외가_발생한다() {
+    void 용어_예문_변경_시_유효한_용어_예문_식별자가_아닌_경우_용어_예문을_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> adminWordService.updateWordExample(
@@ -121,7 +121,7 @@ class AdminWordServiceTest {
     }
 
     @Test
-    void 용어_예문_삭제_시_용어_예문의_개수가_최소치라면_예외가_발생한다() {
+    void 용어_예문_삭제_시_용어_예문의_개수가_최소치라면_용어_예문을_삭제할_수_없다() {
         // given
         List<PronunciationInfoDto> pronunciationInfoDtos = List.of(new PronunciationInfoDto("어써라이제이션", "한글 발음"));
         List<String> examples = List.of(
@@ -173,7 +173,7 @@ class AdminWordServiceTest {
     }
 
     @Test
-    void 용어_발음_정보_삭제_시_용어_발음_정보의_개수가_최소치라면_예외가_발생한다() {
+    void 용어_발음_정보_삭제_시_용어_발음_정보의_개수가_최소치라면_용어_발음_정보를_삭제할_수_없다() {
         // given
         List<PronunciationInfoDto> pronunciationInfoDtos = List.of(
                 new PronunciationInfoDto("어써라이제이션", "한글 발음")

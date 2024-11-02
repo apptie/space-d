@@ -30,7 +30,7 @@ class CareerInfoTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 경력_정보를_초기화할_때_유효한_경력이_아니라면_예외가_발생한다(String invalidExperienceName) {
+    void 경력_정보를_초기화할_때_유효한_경력이_아니라면_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
@@ -44,7 +44,7 @@ class CareerInfoTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 경력_정보를_초기화할_때_유효한_회사명이_아니라면_예외가_발생한다(String invalidCompanyName) {
+    void 경력_정보를_초기화할_때_유효한_회사명이_아니라면_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
@@ -58,7 +58,7 @@ class CareerInfoTest {
 
     @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 경력_정보를_초기화할_때_유효한_직군_이름이_아니라면_예외가_발생한다(String invalidJobGroupName) {
+    void 경력_정보를_초기화할_때_유효한_직군_이름이_아니라면_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()

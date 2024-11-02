@@ -40,7 +40,7 @@ class CompanyTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회사_정보를_찾을_때_유효한_회사명이_아닌_경우_예외가_발생한다(String invalidName) {
+    void 회사_정보를_찾을_때_유효한_회사명이_아닌_경우_회사_정보를_찾을_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Company.findBy(invalidName))
                 .isInstanceOf(InvalidCompanyException.class)

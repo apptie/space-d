@@ -35,7 +35,7 @@ class RoleTest {
 
     @ParameterizedTest(name = "권한 정보 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 권한_정보를_찾을_때_유효한_권한_정보_이름이_아니라면_예외가_발생한다(String invalidRoleName) {
+    void 권한_정보를_찾을_때_유효한_권한_정보_이름이_아니라면_권한_정보를_찾을_수_없다(String invalidRoleName) {
         // when & then
         assertThatThrownBy(() -> Role.findBy(invalidRoleName))
                 .isInstanceOf(InvalidRoleNameException.class)
