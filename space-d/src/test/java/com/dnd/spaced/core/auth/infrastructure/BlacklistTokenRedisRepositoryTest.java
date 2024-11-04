@@ -1,13 +1,11 @@
 package com.dnd.spaced.core.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -26,7 +24,7 @@ class BlacklistTokenRedisRepositoryTest {
     BlacklistTokenRedisRepository blacklistTokenRepository;
 
     @Test
-    void save_메서드는_전달한_blacklistToken을_저장한다() {
+    void 블랙리스트_토큰을_저장한다() {
         // given
         String email = "email";
         LocalDateTime registeredAt = LocalDateTime.now();
@@ -37,7 +35,7 @@ class BlacklistTokenRedisRepositoryTest {
     }
 
     @Test
-    void findBy_메서드는_지정한_email에_해당하는_key가_없는_경우_빈_Optional을_반환한다() {
+    void 블랙리스트로_등록되지_않은_회원_식별자로_블랙리스트_토큰을_조회한다() {
         // when
         Optional<BlacklistToken> actual = blacklistTokenRepository.findBy("email");
 
@@ -46,7 +44,7 @@ class BlacklistTokenRedisRepositoryTest {
     }
 
     @Test
-    void findBy_메서드는_지정한_email에_해당하는_key가_있는_경우_해당_blacklistToken을_반환한다() {
+    void 블랙리스트로_등록된_회원_식별자로_블랙리스트_토큰을_조회한다() {
         // given
         String email = "email";
         LocalDateTime registeredAt = LocalDateTime.now();
@@ -58,10 +56,7 @@ class BlacklistTokenRedisRepositoryTest {
         Optional<BlacklistToken> actual = blacklistTokenRepository.findBy(email);
 
         // then
-        assertAll(
-                () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get().getAccountId()).isEqualTo(email),
-                () -> assertThat(actual.get().getRegisteredAt()).isEqualTo(registeredAt.truncatedTo(ChronoUnit.SECONDS))
-        );
+        assertThat(actual).isPresent()
+                          .contains(blacklistToken);
     }
 }
