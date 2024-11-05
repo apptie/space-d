@@ -36,7 +36,7 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효하지_않은_토큰이_주어지면_InvalidTokenException_예외가_발생한다(TokenType tokenType) {
+    void 유효하지_않은_토큰을_인코딩_할_수_없다(TokenType tokenType) {
         // given
         String invalidToken = "Bearer abcde";
 
@@ -48,17 +48,8 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_만료된_토큰이_주어지면_빈_Optional을_반환한다(TokenType tokenType) {
+    void 만료된_토큰을_디코딩_한다(TokenType tokenType) {
         // given
-        TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
-                43200,
-                259200,
-                43200000L,
-                259200000L
-        );
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String token = jwtEncoder.encode(LocalDateTime.now().minusYears(3L), tokenType, "id", "roleName");
 
@@ -69,9 +60,18 @@ class JwtDecoderTest {
         assertThat(actual).isEmpty();
     }
 
+    private static Stream<Arguments> encodeTestWithTokenTypeAndInvalidToken() {
+        return Stream.of(
+                Arguments.of(TokenType.ACCESS, null),
+                Arguments.of(TokenType.ACCESS, ""),
+                Arguments.of(TokenType.REFRESH, null),
+                Arguments.of(TokenType.REFRESH, "")
+        );
+    }
+
     @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 예외가 발생한다.")
     @MethodSource("encodeTestWithTokenTypeAndInvalidToken")
-    void encode_메서드는_주어진_토큰이_null이거나_길이가_부족하면_InvalidTokenException_예외가_발생한다(TokenType tokenType, String invalidToken) {
+    void 길이가_부족한_토큰은_디코딩_할_수_없다(TokenType tokenType, String invalidToken) {
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
                 .isInstanceOf(InvalidTokenException.class)
@@ -80,7 +80,7 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효한_토큰을_전달하면_토큰의_PrivateClaims를_반환한다(TokenType tokenType) {
+    void 유효한_토큰을_디코딩_한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String id = "id";
@@ -102,17 +102,8 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_issuer가_다른_토큰을_전달하면_InvalidTokenException이_발생한다(TokenType tokenType) {
+    void 토큰_발급자가_다른_토큰은_디코딩_할_수_없다(TokenType tokenType) {
         // given
-        TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
-                43200,
-                259200,
-                43200000L,
-                259200000L
-        );
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String id = "id";
         String roleName = "roleName";
@@ -122,14 +113,5 @@ class JwtDecoderTest {
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("서비스에서 발급한 토큰이 아닙니다.");
-    }
-
-    private static Stream<Arguments> encodeTestWithTokenTypeAndInvalidToken() {
-        return Stream.of(
-                Arguments.of(TokenType.ACCESS, null),
-                Arguments.of(TokenType.ACCESS, ""),
-                Arguments.of(TokenType.REFRESH, null),
-                Arguments.of(TokenType.REFRESH, "")
-        );
     }
 }
