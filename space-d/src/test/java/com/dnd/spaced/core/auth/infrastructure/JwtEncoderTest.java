@@ -27,7 +27,7 @@ class JwtEncoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효한_claims_데이터를_전달하면_token을_반환한다(TokenType tokenType) {
+    void 토큰을_인코딩한다(TokenType tokenType) {
         // when
         String actual = jwtEncoder.encode(LocalDateTime.now(), tokenType, "email", "roleName");
 
