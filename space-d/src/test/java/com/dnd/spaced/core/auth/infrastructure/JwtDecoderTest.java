@@ -104,6 +104,16 @@ class JwtDecoderTest {
     @EnumSource(value = TokenType.class)
     void 토큰_발급자가_다른_토큰은_디코딩_할_수_없다(TokenType tokenType) {
         // given
+        TokenProperties tokenProperties = new TokenProperties(
+                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
+                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
+                "otherissuer",
+                43200,
+                259200,
+                43200000L,
+                259200000L
+        );
+
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String id = "id";
         String roleName = "roleName";
