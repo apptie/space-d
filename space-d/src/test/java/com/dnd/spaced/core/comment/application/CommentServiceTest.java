@@ -15,7 +15,6 @@ import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFound
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
-import com.dnd.spaced.core.like.infrastructure.LikeCountRedisRepository;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
@@ -46,11 +45,8 @@ class CommentServiceTest {
     @Autowired
     WordRepository wordRepository;
 
-    @Autowired
-    LikeCountRedisRepository likeCountRedisRepository;
-
     @Test
-    void save_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 유효하지_않은_회원은_댓글을_작성할_수_없다() {
         // when & then
         assertThatThrownBy(() -> commentService.save("accountId", -1L, "댓글"))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
@@ -58,7 +54,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void save_메서드는_지정한_용어_ID가_없다면_AssociationWordNotFoundException_예외가_발생한다() {
+    void 댓글을_작성할_용어가_없는_경우_댓글을_작성할_수_없다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -75,9 +71,9 @@ class CommentServiceTest {
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void save_메서드는_유효하지_않은_댓글_내용을_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 비어_있는_내용은_댓글로_작성할_수_없다(String invalidContent) {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -101,7 +97,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void save_메서드는_유효한_파라미터를_전달하면_댓글을_추가한다() {
+    void 댓글을_작성한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -123,7 +119,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void delete_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 유효하지_않은_회원은_댓글을_삭제할_수_없다() {
         // when & then
         assertThatThrownBy(() -> commentService.delete("accountId", -1L))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
@@ -131,7 +127,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void delete_메서드는_지정한_댓글_ID가_없다면_CommentNotFoundException_예외가_발생한다() {
+    void 식별할_수_없는_댓글을_삭제할_수_없다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -149,7 +145,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void delete_메서드는_댓글_작성자가_아니라면_ForbiddenCommentException_예외가_발생한다() {
+    void 댓글_작성자가_아니라면_댓글을_삭제할_수_없다() {
         // given
         Account writer = Account.builder()
                                 .id("accountId1")
@@ -181,7 +177,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void delete_메서드는_유효한_파라미터를_전달하면_지정한_댓글을_싹제한다() {
+    void 댓글을_삭제한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId1")
@@ -204,7 +200,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void update_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 유효하지_않은_회원은_댓글을_수정할_수_없다() {
         // when & then
         assertThatThrownBy(() -> commentService.update("accountId", -1L, "댓글"))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
@@ -212,7 +208,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void update_메서드는_지정한_댓글_ID가_없다면_CommentNotFoundException_예외가_발생한다() {
+    void 식별할_수_없는_댓글은_수정할_수_없다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -230,7 +226,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void update_메서드는_댓글_작성자가_아니라면_ForbiddenCommentException_예외가_발생한다() {
+    void 댓글_작성자가_아니라면_댓글을_수정할_수_없다() {
         // given
         Account writer = Account.builder()
                                 .id("accountId1")
@@ -261,9 +257,9 @@ class CommentServiceTest {
                 .hasMessage("댓글을 수정할 권한이 없습니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void update_메서드는_유효하지_않은_댓글_내용을_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 비어_있는_내용으로_댓글을_수정할_수_없다(String invalidContent) {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -288,7 +284,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void update_메서드는_유효한_파라미터를_전달하면_전달한_내용으로_댓글_내용을_변경한다() {
+    void 댓글을_수정한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId1")
@@ -311,7 +307,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void readAllBy_메서드는_로그인한_경우_지정한_조건에_따라_댓글_목록을_조회한다() {
+    void 로그인_하지_않고_특정_용어의_댓글_목록을_조회한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId1")
@@ -345,7 +341,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void readAllBy_메서드는_로그인하지_않은_경우_지정한_조건에_따라_댓글_목록을_조회한다() {
+    void 로그인하고_특정_용어의_댓글_목록을_조회한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId1")
