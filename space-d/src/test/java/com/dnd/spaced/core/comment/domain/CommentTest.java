@@ -18,14 +18,14 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class CommentTest {
 
     @Test
-    void 생성자는_유효한_accountId_wordId_content를_전달하면_Comment를_초기화하고_반환한다() {
+    void 댓글을_초기화한다() {
         // when & then
         assertDoesNotThrow(() -> new Comment("accountId", 1L, "댓글"));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_content를_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 비어있는_내용으로_댓글을_초기화할_수_없다(String invalidContent) {
         // when & then
         assertThatThrownBy(() -> new Comment("accountId", 1L, invalidContent))
                 .isInstanceOf(InvalidCommentContentException.class)
@@ -33,7 +33,7 @@ class CommentTest {
     }
 
     @Test
-    void isNotOnwer_메서드는_accountId를_전달하면_해당_Comment의_작성자인지_여부를_반환한다() {
+    void 댓글의_작성자인지_확인한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -51,7 +51,7 @@ class CommentTest {
     }
 
     @Test
-    void changeContent_메서드는_유효한_accountId_wordId_content를_전달하면_Comment를_초기화하고_반환한다() {
+    void 댓글을_수정한다() {
         // given
         Comment comment = new Comment("accountId", 1L, "댓글");
 
@@ -65,9 +65,9 @@ class CommentTest {
 
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeContent_메서드는_유효하지_않은_content를_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 비어있는_내용으로_댓글을_수정할_수_없다(String invalidContent) {
         // given
         Comment comment = new Comment("accountId", 1L, "댓글");
 
