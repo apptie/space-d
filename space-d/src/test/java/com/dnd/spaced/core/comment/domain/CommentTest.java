@@ -33,21 +33,21 @@ class CommentTest {
     }
 
     @Test
-    void 댓글의_작성자인지_확인한다() {
+    void 댓글의_작성자가_아닌지_확인한다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
+                                 .id("email@email.com")
                                  .nickname("nickname")
                                  .profileImage("profileImage")
                                  .roleName(Role.ROLE_ADMIN.name())
                                  .build();
-        Comment comment = new Comment(account.getId(), 1L, "댓글");
+        Comment comment = new Comment("other@email.com", 1L, "댓글");
 
         // when
         boolean actual = comment.isNotWriter(account);
 
         // then
-        assertThat(actual).isFalse();
+        assertThat(actual).isTrue();
     }
 
     @Test
@@ -75,5 +75,23 @@ class CommentTest {
         assertThatThrownBy(() -> comment.changeContent(invalidContent))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
+    }
+
+    @Test
+    void 댓글의_작성자인지_확인한다() {
+        // given
+        Account account = Account.builder()
+                                 .id("email@email.com")
+                                 .nickname("nickname")
+                                 .profileImage("profileImage")
+                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .build();
+        Comment comment = new Comment(account.getId(), 1L, "댓글");
+
+        // when
+        boolean actual = comment.isNotWriter(account);
+
+        // then
+        assertThat(actual).isFalse();
     }
 }
