@@ -24,8 +24,8 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void refreshToken을_rotation으로_등록한다() {
         // given
-        String id = "email";
-        String refreshToken = "refreshToken";
+        String id = "email@email.com";
+        String refreshToken = "Bearer refreshToken";
 
         // when & then
         assertDoesNotThrow(() -> refreshTokenRotationRepository.save(id, refreshToken));
@@ -34,7 +34,7 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void 등록하지_않은_이메일로_refreshToken_rotation을_조회한다() {
         // when
-        Optional<String> actual = refreshTokenRotationRepository.findBy("email");
+        Optional<String> actual = refreshTokenRotationRepository.findBy("email@email.com");
 
         // then
         assertThat(actual).isEmpty();
@@ -43,8 +43,8 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void 등록한_이메일로_refreshToken_rotation을_조회한다() {
         // given
-        String id = "email";
-        String refreshToken = "refreshToken";
+        String id = "email@email.com";
+        String refreshToken = "Bearer refreshToken";
 
         refreshTokenRotationRepository.save(id, refreshToken);
 
