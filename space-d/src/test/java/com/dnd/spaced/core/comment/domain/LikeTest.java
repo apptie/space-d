@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 class LikeTest {
 
     @Test
-    void 생성자는_accountId와_commentId를_전달하면_Like를_초기화하고_반환한다() {
+    void 좋아요를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new Like("accountId", 1L));
+        assertDoesNotThrow(() -> new Like("email@email.com", 1L));
     }
 }
