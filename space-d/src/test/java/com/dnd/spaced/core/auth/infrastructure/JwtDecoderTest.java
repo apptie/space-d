@@ -38,7 +38,7 @@ class JwtDecoderTest {
     @EnumSource(value = TokenType.class)
     void 유효하지_않은_토큰을_인코딩_할_수_없다(TokenType tokenType) {
         // given
-        String invalidToken = "Bearer abcde";
+        String invalidToken = "Bearer invalid";
 
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
@@ -51,7 +51,12 @@ class JwtDecoderTest {
     void 만료된_토큰을_디코딩_한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String token = jwtEncoder.encode(LocalDateTime.now().minusYears(3L), tokenType, "id", "roleName");
+        String token = jwtEncoder.encode(
+                LocalDateTime.now().minusYears(3L),
+                tokenType,
+                "email@email.com",
+                "ROLE_USER"
+        );
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
@@ -83,8 +88,8 @@ class JwtDecoderTest {
     void 유효한_토큰을_디코딩_한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "id";
-        String roleName = "roleName";
+        String id = "email@email.com";
+        String roleName = "ROLE_USER";
         LocalDateTime now = LocalDateTime.now();
         String token = jwtEncoder.encode(now, tokenType, id, roleName);
 
@@ -115,8 +120,8 @@ class JwtDecoderTest {
         );
 
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "id";
-        String roleName = "roleName";
+        String id = "email@email.com";
+        String roleName = "ROLE_USER";
         String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, id, roleName);
 
         // when & then
