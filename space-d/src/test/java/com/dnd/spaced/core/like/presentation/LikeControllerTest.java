@@ -18,7 +18,7 @@ class LikeControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void processLike_성공_테스트() throws Exception {
+    void 좋아요_처리_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 post("/comments/{commentId}/likes", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -26,17 +26,17 @@ class LikeControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        processLike_문서화(resultActions);
+        좋아요_처리_요청_문서화(resultActions);
     }
 
-    private void processLike_문서화(ResultActions resultActions) throws Exception {
+    private void 좋아요_처리_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         pathParameters(
-                                parameterWithName("commentId").description("좋아요 추가/취소를 수소할 댓글 ID")
+                                parameterWithName("commentId").description("좋아요 추가/취소를 수행할 댓글 ID")
                         )
                 )
         );
