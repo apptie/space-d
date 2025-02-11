@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class WordMeaningTest {
 
     @Test
-    void 생성자는_유효한_meaning을_전달하면_WordMeaning을_초기화하고_반환한다() {
+    void 단어_뜻을_초기화한다() {
         // when
         String meaning = "1234567890";
         WordMeaning wordMeaning = new WordMeaning(meaning);
@@ -26,7 +26,7 @@ class WordMeaningTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 단어_뜻_초기화_시_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
@@ -34,7 +34,7 @@ class WordMeaningTest {
     }
 
     @Test
-    void changeMeaning_메서드는_유효한_meaning을_전달하면_meaning을_변경한다() {
+    void 단어_뜻을_변경한다() {
         // given
         WordMeaning wordMeaning = new WordMeaning("1234567890");
 
@@ -48,7 +48,7 @@ class WordMeaningTest {
 
     @ParameterizedTest(name = "용어 뜻이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeMeaning_메서드는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 단어_뜻_변경_시_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
