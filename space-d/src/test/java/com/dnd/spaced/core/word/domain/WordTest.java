@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class WordTest {
 
     @Test
-    void 생성자는_유효한_name과_meaning을_전달하면_Word를_초기화하고_반환한다() {
+    void 용어를_초기화한다() {
         // when
         String name = "name";
         String meaning = "word meaning";
@@ -39,7 +39,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_name을_전달하면_InvalidWordNameException_예외가_발생한다(String invalidName) {
+    void 용어_초기화_시_유효하지_않은_용어_이름이라면_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -53,7 +53,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 용어_초기화_시_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -67,7 +67,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_categoryName을_전달하면_InvalidCategoryNameException_예외가_발생한다(String invalidCategoryName) {
+    void 용어_초기화_시_유효하지_않은_카테고리_이름을_전달하면_예외가_발생한다(String invalidCategoryName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -80,7 +80,7 @@ class WordTest {
     }
 
     @Test
-    void addPronunciation_메서드는_Pronunciation을_전달하면_Word에_Pronunciation을_추가한다() {
+    void 용어에_용어_발음_정보를_추가한다() {
         // given
         Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
         Word word = Word.builder()
@@ -97,7 +97,7 @@ class WordTest {
     }
 
     @Test
-    void addWordExample_메서드는_WordExample을_전달하면_Word에_WordExample을_추가한다() {
+    void 용어에_용어_예문을_추가한다() {
         // given
         WordExample wordExample = new WordExample("example");
         Word word = Word.builder()
@@ -114,7 +114,7 @@ class WordTest {
     }
 
     @Test
-    void addViewCount_메서드는_호출하면_viewCount를_1_증가시킨다() {
+    void 조회수를_증가시킨다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
@@ -130,7 +130,7 @@ class WordTest {
     }
 
     @Test
-    void changeWordMeaning_메서드는_유효한_meaning을_전달하면_전달한_meaning으로_변경한다() {
+    void 용어_뜻을_변경한다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
@@ -149,7 +149,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeWordMeaning_메서드는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 용어_뜻_변경_시_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // given
         Word word = Word.builder()
                         .name("Authorization")
