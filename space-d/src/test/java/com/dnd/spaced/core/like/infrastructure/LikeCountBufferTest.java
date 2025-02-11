@@ -20,7 +20,7 @@ class LikeCountBufferTest {
 
     @RepeatedTest(10)
     @SuppressWarnings("unchecked")
-    void addLikeCount_메서드는_임계치에_도달하는_타이밍에_동시에_두_개의_스레드가_접근하더라도_flush를_한_번만_수행한다() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
+    void 좋아요_수_카운트_도중_임계치_직전에_여러_스레드가_접근해_임계치를_크게_넘어간다고_하더라도_캐시에_한_번만_갱신된다() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         // given
         CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
         AtomicInteger callbackRunCounter = new AtomicInteger(0);
