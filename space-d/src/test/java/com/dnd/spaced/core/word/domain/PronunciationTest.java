@@ -17,14 +17,14 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class PronunciationTest {
 
     @Test
-    void 생성자는_유효한_content와_typeName을_전달하면_Pronunciation을_초기화하고_반환한다() {
+    void 발음_정보를_초기화한다() {
         // when & then
         assertDoesNotThrow(() -> new Pronunciation("어써라이제이션", "한글 발음"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_content를_전달하면_InvalidPronunciationContentException_예외가_발생한다(String invalidContent) {
+    void 발음이_유효하지_않다면_예외가_발생한다(String invalidContent) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation(invalidContent, "한글 발음"))
                 .isInstanceOf(InvalidPronunciationContentException.class)
@@ -33,7 +33,7 @@ class PronunciationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_typeName을_전달하면_InvalidPronunciationContentException_예외가_발생한다(String invalidTypeName) {
+    void 발음_유형이_유효하지_않다면_예외가_발생한다(String invalidTypeName) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation("어써라이제이션", invalidTypeName))
                 .isInstanceOf(InvalidPronunciationTypeNameException.class)
@@ -41,7 +41,7 @@ class PronunciationTest {
     }
 
     @Test
-    void initWord_메서드는_word를_전달하면_전달한_word로_초기화한다() {
+    void 발음_정보에_단어_정보를_추가한다() {
         // given
         Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
         Word word = Word.builder()
