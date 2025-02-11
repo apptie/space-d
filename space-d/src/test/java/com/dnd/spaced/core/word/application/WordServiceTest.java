@@ -52,7 +52,7 @@ class WordServiceTest {
     ApplicationEvents events;
 
     @Test
-    void read_메서드는_지정한_id에_해당하는_용어_정보를_반환한다() {
+    void 용어를_조회한다() {
         // given
         String name = "word";
         String categoryName = "개발";
@@ -79,7 +79,7 @@ class WordServiceTest {
     }
 
     @Test
-    void read_메서드는_지정한_id에_해당하는_용어가_없다면_WordNotFoundException_예외가_발생한다() {
+    void 용어를_찾지_못하면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() -> wordService.read(-1L))
                 .isInstanceOf(WordNotFoundException.class)
@@ -87,7 +87,7 @@ class WordServiceTest {
     }
 
     @Test
-    void readAllBy_메서드는_용어_목록을_조회한다() {
+    void 용어_목록을_조회한다() {
         // given
         String name = "word";
         String categoryName = "개발";
@@ -108,7 +108,7 @@ class WordServiceTest {
     }
 
     @Test
-    void search_메서드는_조건을_전달하면_조건에_맞는_Word_목록을_반환한다() {
+    void 용어를_검색한다() {
         // given
         String name = "word";
         String categoryName = "개발";
@@ -132,7 +132,7 @@ class WordServiceTest {
     }
 
     @Test
-    void readPopularWordsAll_메서드는_많이_찾아본_용어_목록을_반환한다() {
+    void 많이_찾아본_용어_목록을_조회한다() {
         // given
         PopularWordInfo popularWordInfo = new PopularWordInfo(1, 1L, "name");
         popularWordRepository.saveAll(List.of(popularWordInfo), LocalDateTime.now());
