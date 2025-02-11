@@ -38,7 +38,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void save_성공_테스트() throws Exception {
+    void 댓글_작성_요청_성공_테스트() throws Exception {
         // given
         SaveCommentRequest request = new SaveCommentRequest("content");
 
@@ -52,10 +52,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/words/1")
         );
 
-        save_문서화(resultActions);
+        댓글_작성_요청_문서화(resultActions);
     }
 
-    private void save_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_작성_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -73,7 +73,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void delete_성공_테스트() throws Exception {
+    void 댓글_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 delete("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -81,10 +81,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        delete_문서화(resultActions);
+        댓글_삭제_요청_문서화(resultActions);
     }
 
-    private void delete_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_삭제_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -99,7 +99,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void update_성공_테스트() throws Exception {
+    void 댓글_수정_요청_성공() throws Exception {
         // given
         UpdateCommentRequest request = new UpdateCommentRequest("change content");
 
@@ -112,10 +112,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        update_문서화(resultActions);
+        댓글_수정_요청_문서화(resultActions);
     }
 
-    private void update_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_수정_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -132,7 +132,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void readAllBy_성공_테스트() throws Exception {
+    void 댓글_전체_조회_성공_테스트() throws Exception {
         // given
         CommentInfoDto commentInfoDto = new CommentInfoDto(1L, 1L, "content", 0);
         WriterInfoDto writerInfoDto = new WriterInfoDto("accountId", "writer", "profileImage");
@@ -156,10 +156,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("comments[*].writerInfo.writerProfileImage").value("profileImage")
         );
 
-        readAllBy_문서화(resultActions);
+        댓글_전체_조회_문서화(resultActions);
     }
 
-    private void readAllBy_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_전체_조회_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
