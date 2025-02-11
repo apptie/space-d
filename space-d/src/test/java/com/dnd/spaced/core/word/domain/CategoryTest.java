@@ -19,7 +19,7 @@ class CategoryTest {
 
     @ParameterizedTest
     @MethodSource("findByTestWithCategoryName")
-    void findBy_메서드는_유효한_이름을_전달하면_이름에_맞는_Category를_반환한다(String name) {
+    void 카테고리를_이름으로_조회한다(String name) {
         // when
         Category category = Category.findBy(name);
 
@@ -29,7 +29,7 @@ class CategoryTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void findBy_메서드는_유효하지_않은_이름을_전달하면_InvalidCategoryNameException_예외가_발생한다(String invalidName) {
+    void 카테고리에_없는_이름으로_조회하면_예외가_발생한다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Category.findBy(invalidName))
                 .isInstanceOf(InvalidCategoryNameException.class)
