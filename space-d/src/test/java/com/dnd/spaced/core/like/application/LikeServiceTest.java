@@ -47,7 +47,7 @@ class LikeServiceTest {
     LikeRepository likeRepository;
 
     @Test
-    void processLike_메서드는_없는_회원을_전달하면_ForbiddenLikeException_예외가_발생한다() {
+    void 좋아요를_누른_회원이_아닌_다른_회원은_좋아요를_취소할_수_없다() {
         // when & then
         assertThatThrownBy(() -> likeService.processLike("accountId", -1L))
                 .isInstanceOf(ForbiddenLikeException.class)
@@ -55,7 +55,7 @@ class LikeServiceTest {
     }
 
     @Test
-    void processLike_메서드는_없는_댓글을_전달하면_AssociationCommentNotFoundException_예외가_발생한다() {
+    void 존재하지_않는_댓글에_좋아요를_할_수_없다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -73,7 +73,7 @@ class LikeServiceTest {
     }
 
     @Test
-    void processLike_메서드는_이미_좋아요를_수행한_댓글인_경우_좋아요를_삭제한다() {
+    void 좋아요를_취소한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
@@ -105,7 +105,7 @@ class LikeServiceTest {
     }
 
     @Test
-    void processLike_메서드는_좋아요를_하지_않은_댓글의_경우_좋아요를_수행한다() {
+    void 좋아요를_추가한다() {
         // given
         Account account = Account.builder()
                                  .id("accountId")
