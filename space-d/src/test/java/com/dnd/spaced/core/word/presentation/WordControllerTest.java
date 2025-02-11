@@ -22,8 +22,6 @@ import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
 import com.dnd.spaced.core.word.application.dto.response.ReadWordDto.WordPronunciationInfoDto;
 import com.dnd.spaced.core.word.application.dto.response.SearchedWordDto;
-import com.dnd.spaced.core.word.presentation.dto.request.ReadWordAllRequest;
-import com.dnd.spaced.core.word.presentation.dto.request.SearchWordRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -33,7 +31,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class WordControllerTest extends CommonControllerSliceTest {
 
     @Test
-    void read_성공_테스트() throws Exception {
+    void 용어_조회_요청_성공_테스트() throws Exception {
         // given
         ReadWordDto readWordDto = new ReadWordDto(
                 1L,
@@ -61,10 +59,10 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("viewCount").value(readWordDto.id())
         );
 
-        read_문서화(resultActions);
+        용어_조회_문서화(resultActions);
     }
 
-    private void read_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_조회_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         pathParameters(
@@ -86,14 +84,8 @@ class WordControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void search_성공_테스트() throws Exception {
+    void 용어_검색_요청_성공_테스트() throws Exception {
         // given
-        SearchWordRequest request = new SearchWordRequest(
-                "name",
-                "categoryName",
-                "pronunciation",
-                "lastWordName"
-        );
         SearchedWordDto searchedWordDto = new SearchedWordDto(
                 1L,
                 "name",
@@ -120,10 +112,10 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("words[*].viewCount").exists()
         );
 
-        search_문서화(resultActions);
+        용어_검색_요청_문서화(resultActions);
     }
 
-    private void search_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_검색_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         queryParameters(
@@ -147,9 +139,8 @@ class WordControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void readAllBy_성공_테스트() throws Exception {
+    void 용어_목록_조회_요청_성공_테스트() throws Exception {
         // given
-        ReadWordAllRequest request = new ReadWordAllRequest("categoryName", "lastWordName");
         ReadAllWordDto readAllWordDto = new ReadAllWordDto(
                 1L,
                 "name",
@@ -175,10 +166,10 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("words[*].viewCount").exists()
         );
 
-        readAllBy_문서화(resultActions);
+        용어_목록_조회_요청_문서화(resultActions);
     }
 
-    private void readAllBy_문서화(ResultActions resultActions) throws Exception {
+    private void 용어_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         queryParameters(
@@ -199,7 +190,7 @@ class WordControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void readPopularWordsAll_성공_테스트() throws Exception {
+    void 많이_찾아본_용어_목록_조회_요청_성공_테스트() throws Exception {
         // given
         PopularWordDto popularWordDto = new PopularWordDto(1, 1L, "name");
         given(wordService.readPopularWordsAll()).willReturn(List.of(popularWordDto));
@@ -215,10 +206,10 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("words[*].name").value(popularWordDto.name())
         );
 
-        readPopularWordsAll_문서화(resultActions);
+        많이_찾아본_용어_목록_조회_요청_문서화(resultActions);
     }
 
-    private void readPopularWordsAll_문서화(ResultActions resultActions) throws Exception {
+    private void 많이_찾아본_용어_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         responseFields(
