@@ -16,7 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 class WordExampleTest {
 
     @Test
-    void 생성자는_유효한_example을_전달하면_WordExample을_초기화하고_반환한다() {
+    void 단어_예문을_초기화한다() {
         // when
         String example = "example";
         WordExample wordExample = new WordExample(example);
@@ -27,7 +27,7 @@ class WordExampleTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_example을_전달하면_InvalidWordExampleContentException_예외가_발생한다(String invalidExample) {
+    void 유효하지_않은_단어_예문을_전달하면_예외가_발생한(String invalidExample) {
         // when & then
         assertThatThrownBy(() -> new WordExample(invalidExample))
                 .isInstanceOf(InvalidWordExampleContentException.class)
@@ -35,7 +35,7 @@ class WordExampleTest {
     }
 
     @Test
-    void initWord_메서드는_word를_전달하면_전달한_word로_초기화한다() {
+    void 단어_예문에_단어_정보를_추가한다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
@@ -52,7 +52,7 @@ class WordExampleTest {
     }
 
     @Test
-    void updateContent_메서드는_유효한_example을_전달하면_해당_example로_변경한다() {
+    void 단어_예문을_변경한다() {
         // given
         WordExample wordExample = new WordExample("example");
         String changedExample = "changedExample";
@@ -65,7 +65,7 @@ class WordExampleTest {
     }
 
     @Test
-    void isEqualTo_메서드는_전달한_id와_일치하는지_여부를_반환한다() {
+    void 단어_예문의_식별자_여부를_판단한다() {
         // given
         WordExample wordExample = new WordExample("example");
         ReflectionTestUtils.setField(wordExample, "id", 1L);
