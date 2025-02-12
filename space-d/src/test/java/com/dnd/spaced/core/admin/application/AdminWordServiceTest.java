@@ -83,7 +83,7 @@ class AdminWordServiceTest {
     }
 
     @Test
-    void 용어_예문_변경_시_유효한_용어_예문_식별자가_아닌_경우_용어_예문을_변경할_수_없다() {
+    void 용어_예문_변경_시_없는_용어_예문_식별자라면_용어_예문을_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> adminWordService.updateWordExample(
