@@ -30,24 +30,24 @@ class AccountTest {
         // when & then
         assertDoesNotThrow(
                 () -> Account.builder()
-                             .id("email")
-                             .nickname("nickname")
-                             .profileImage("profileImage")
-                             .roleName(Role.ROLE_ADMIN.name())
+                             .id("user1@naver.com")
+                             .nickname("재빠른지구001")
+                             .profileImage("earth.png")
+                             .roleName("ROLE_USER")
                              .build()
         );
     }
 
     @ParameterizedTest(name = " {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_회원_식별자가_아니라면_회원을_초기화할_수_없다(String invalidId) {
+    void 회원을_초기화할_때_식별자가_없다면_회원을_초기화할_수_없다(String invalidId) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
                              .id(invalidId)
-                             .nickname("nickname")
-                             .profileImage("profileImage")
-                             .roleName(Role.ROLE_ADMIN.name())
+                             .nickname("재빠른지구001")
+                             .profileImage("earth.png")
+                             .roleName("ROLE_USER")
                              .build()
         ).isInstanceOf(InvalidIdException.class)
          .hasMessageContaining("ID는 null이나 비어 있을 수 없습니다.");
@@ -55,21 +55,24 @@ class AccountTest {
 
     private static Stream<Arguments> builderTestWithInvalidNickname() {
         return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("1234"), Arguments.of("12345678901")
+                Arguments.of((Object) null),
+                Arguments.of(""),
+                Arguments.of("  "),
+                Arguments.of("1234"),
+                Arguments.of("12345678901")
         );
     }
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("builderTestWithInvalidNickname")
-    void 회원을_초기화할_때_유효한_닉네임이_아니라면_회원을_초기화할_수_없다(String invalidNickname) {
+    void 회원을_초기화할_때_비어_있거나_유효한_길이의_닉네임이_아니라면_회원을_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .id("email")
+                             .id("user1@naver.com")
                              .nickname(invalidNickname)
-                             .profileImage("profileImage")
-                             .roleName(Role.ROLE_ADMIN.name())
+                             .profileImage("earth.png")
+                             .roleName("ROLE_USER")
                              .build()
         ).isInstanceOf(InvalidNicknameException.class)
          .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
@@ -77,14 +80,14 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_프로필_이미지가_아니라면_회원을_초기화할_수_없다(String invalidProfileImage) {
+    void 회원을_초기화할_때_비어_있는_프로필_이미지_경로라면_회원을_초기화할_수_없다(String invalidProfileImage) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .id("email")
-                             .nickname("nickname")
+                             .id("user1@naver.com")
+                             .nickname("재빠른지구001")
                              .profileImage(invalidProfileImage)
-                             .roleName(Role.ROLE_ADMIN.name())
+                             .roleName("ROLE_USER")
                              .build()
         ).isInstanceOf(InvalidProfileImageException.class)
          .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
@@ -96,9 +99,9 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .id("email")
-                             .nickname("nickname")
-                             .profileImage("profileImage")
+                             .id("user1@naver.com")
+                             .nickname("재빠른지구001")
+                             .profileImage("earth.png")
                              .roleName(invalidRoleName)
                              .build()
         ).isInstanceOf(InvalidRoleNameException.class)
@@ -109,26 +112,22 @@ class AccountTest {
     void 회원의_경력_정보를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when
-        Experience experience = Experience.BLIND;
-        JobGroup jobGroup = JobGroup.DEVELOP;
-        Company company = Company.BLIND;
-
-        account.changeCareerInfo(jobGroup.getName(), company.getName(), experience.getName());
+        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
 
         // then
         CareerInfo careerInfo = account.getCareerInfo();
 
         assertAll(
-                () -> assertThat(careerInfo.getCompany()).isEqualTo(company),
-                () -> assertThat(careerInfo.getJobGroup()).isEqualTo(jobGroup),
-                () -> assertThat(careerInfo.getExperience()).isEqualTo(experience)
+                () -> assertThat(careerInfo.getCompany()).isEqualTo(Company.BLIND),
+                () -> assertThat(careerInfo.getJobGroup()).isEqualTo(JobGroup.DEVELOP),
+                () -> assertThat(careerInfo.getExperience()).isEqualTo(Experience.BETWEEN_FIRST_SECOND)
         );
     }
 
@@ -137,18 +136,18 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when & then
         assertThatThrownBy(
                 () -> account.changeCareerInfo(
-                        JobGroup.DEVELOP.getName(),
+                        "개발자",
                         invalidCompanyName,
-                        Experience.BLIND.getName()
+                        "1~2년 차"
                 )
 
         ).isInstanceOf(InvalidCompanyException.class)
@@ -160,18 +159,18 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when & then
         assertThatThrownBy(
                 () -> account.changeCareerInfo(
                         invalidJobGroupName,
-                        Company.BLIND.getName(),
-                        Experience.BLIND.getName()
+                        "비공개",
+                        "1~2년 차"
                 )
 
         ).isInstanceOf(InvalidJobGroupException.class)
@@ -183,17 +182,17 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when & then
         assertThatThrownBy(
                 () -> account.changeCareerInfo(
-                        JobGroup.DEVELOP.getName(),
-                        Company.BLIND.getName(),
+                        "개발자",
+                        "비공개",
                         invalidExperienceName
                 )
 
@@ -205,15 +204,15 @@ class AccountTest {
     void 회원의_프로필_정보를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when
-        String changedNickname = "changeNick";
-        String changedProfileImage = "changeProfileImage";
+        String changedNickname = "행복한화성001";
+        String changedProfileImage = "mars.png";
 
         account.changeProfileInfo(changedNickname, changedProfileImage);
 
@@ -226,41 +225,44 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_프로필_정보_변경_시_유효한_프로필_이미지가_아니라면_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
+    void 회원의_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo("nickname", invalidProfileImage))
+        assertThatThrownBy(() -> account.changeProfileInfo("행복한화성001", invalidProfileImage))
                 .isInstanceOf(InvalidProfileImageException.class)
                 .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
     }
 
     private static Stream<Arguments> changeProfileInfoTestWithInvalidNickname() {
         return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("1234"), Arguments.of("12345678901")
+                Arguments.of((Object) null),
+                Arguments.of(""),
+                Arguments.of("  "),
+                Arguments.of("1234"),
+                Arguments.of("12345678901")
         );
     }
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
-    void 회원의_프로필_정보_변경_시_유효한_닉네임이_아니라면_프로필_정보를_변환할_수_없다(String invalidNickname) {
+    void 회원의_프로필_정보_변경_시_비어_있거나_유효한_길이가_아닌_닉네임이면_프로필_정보를_변환할_수_없다(String invalidNickname) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo(invalidNickname, "profileImage"))
+        assertThatThrownBy(() -> account.changeProfileInfo(invalidNickname, "mars.png"))
                 .isInstanceOf(InvalidNicknameException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
@@ -269,10 +271,10 @@ class AccountTest {
     void 회원_식별자를_반환한다() {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when
@@ -286,10 +288,10 @@ class AccountTest {
     void 회원의_영속화_여부를_반환한다() {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when
@@ -301,20 +303,20 @@ class AccountTest {
 
     private static Stream<Object> isEqualToTestArguments() {
         return Stream.of(
-                Arguments.of("email", true),
-                Arguments.of("notSameEmail", false)
+                Arguments.of("user1@naver.com", true),
+                Arguments.of("user2@naver.com", false)
         );
     }
 
-    @ParameterizedTest(name = "회원의 식별자가 email인 도메인에 대해 {0}과 비교하면 {1}을 반환한다")
+    @ParameterizedTest(name = "회원의 식별자를 {0}과 비교하면 {1}을 반환한다")
     @MethodSource("isEqualToTestArguments")
     void 회원의_식별자가_일치하는지_비교한다(String id, boolean expected) {
         // given
         Account account = Account.builder()
-                                 .id("email")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         // when
