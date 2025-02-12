@@ -21,9 +21,9 @@ class CareerInfoTest {
         // when & then
         assertDoesNotThrow(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
-                                .companyName(Company.BLIND.getName())
-                                .jobGroupName(JobGroup.DEVELOP.getName())
+                                .jobGroupName("개발자")
+                                .experienceName("1~2년 차")
+                                .companyName("비공개")
                                 .build()
         );
     }
@@ -34,9 +34,9 @@ class CareerInfoTest {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
+                                .jobGroupName("개발자")
                                 .experienceName(invalidExperienceName)
-                                .companyName(Company.BLIND.getName())
-                                .jobGroupName(JobGroup.DEVELOP.getName())
+                                .companyName("비공개")
                                 .build()
         ).isInstanceOf(InvalidExperienceException.class)
          .hasMessageContaining("잘못된 경력");
@@ -48,9 +48,9 @@ class CareerInfoTest {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
+                                .jobGroupName("개발자")
+                                .experienceName("1~2년 차")
                                 .companyName(invalidCompanyName)
-                                .jobGroupName(JobGroup.DEVELOP.getName())
                                 .build()
         ).isInstanceOf(InvalidCompanyException.class)
          .hasMessageContaining("잘못된 회사 이름");
@@ -62,9 +62,9 @@ class CareerInfoTest {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
-                                .companyName(Company.BLIND.getName())
                                 .jobGroupName(invalidJobGroupName)
+                                .experienceName("1~2년 차")
+                                .companyName("비공개")
                                 .build()
         ).isInstanceOf(InvalidJobGroupException.class)
          .hasMessageContaining("잘못된 직군 이름");
