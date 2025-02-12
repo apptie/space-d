@@ -20,19 +20,22 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new NicknameMetadata("12345"));
+        assertDoesNotThrow(() -> new NicknameMetadata("재빠른지구"));
     }
 
     private static Stream<Arguments> constructorTestWithInvalidNickname() {
         return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("1234"), Arguments.of("1234567")
+                Arguments.of((Object) null),
+                Arguments.of(""),
+                Arguments.of("  "),
+                Arguments.of("1234"),
+                Arguments.of("1234567")
         );
     }
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("constructorTestWithInvalidNickname")
-    void 닉네임_메타데이터를_초기화할_때_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
+    void 닉네임_메타데이터를_초기화할_때_길이가_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(() -> new NicknameMetadata(invalidNickname))
                 .isInstanceOf(InvalidNicknameMetadataException.class)
@@ -42,7 +45,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터의_닉네임_생성_횟수를_1_증가시킨다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("12345");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
         long beforeCount = nicknameMetadata.getCount();
 
         // when
@@ -55,7 +58,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터_식별자를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("12345");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
 
         // when
         String actual = nicknameMetadata.getId();
@@ -67,7 +70,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터의_영속화_여부를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("12345");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
 
         // when
         boolean actual = nicknameMetadata.isNew();
