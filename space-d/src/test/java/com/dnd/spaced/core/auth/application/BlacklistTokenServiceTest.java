@@ -65,7 +65,7 @@ class BlacklistTokenServiceTest {
     void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_과거라면_차단된_토큰이다() {
         // given
         LocalDateTime tokenIssuedAt = LocalDateTime.of(2022, 2, 2, 13, 13);
-        LocalDateTime registerBlacklistTokenAt = LocalDateTime.of(2022, 2, 1, 13, 13);
+        LocalDateTime registerBlacklistTokenAt = LocalDateTime.of(2022, 2, 3, 13, 13);
         String accountId = "user1@naver.com";
         PrivateClaims privateClaims = new PrivateClaims(accountId, Role.ROLE_USER.name(), tokenIssuedAt);
 
