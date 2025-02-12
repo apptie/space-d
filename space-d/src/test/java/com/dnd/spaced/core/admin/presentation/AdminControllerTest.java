@@ -35,10 +35,10 @@ import org.springframework.test.web.servlet.ResultActions;
 class AdminControllerTest extends CommonControllerSliceTest {
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void 토큰_블랙리스트_등록_요청_성공_테스트() throws Exception {
         // given
-        UpdateBlacklistTokenRequest request = new UpdateBlacklistTokenRequest("id");
+        UpdateBlacklistTokenRequest request = new UpdateBlacklistTokenRequest("user1@naver.com");
 
         // when & then
         ResultActions resultAction = mockMvc.perform(
@@ -67,7 +67,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void 용어_등록_요청_성공_테스트() throws Exception {
         // given
         List<PronunciationInfoRequest> pronunciationInfo = List.of(
@@ -121,7 +121,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void 용어_예문_변경_요청_성공_테스트() throws Exception {
         // given
         UpdateWordExampleRequest request = new UpdateWordExampleRequest(
@@ -157,7 +157,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void 용어_예문_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -184,7 +184,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void 용어_발음_정보_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultAction = mockMvc.perform(
