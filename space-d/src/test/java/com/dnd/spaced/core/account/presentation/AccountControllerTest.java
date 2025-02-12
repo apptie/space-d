@@ -89,7 +89,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @WithMockUser("account")
     void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
         // given
-        UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("nickname", "profileImageKoreanName");
+        UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("행복한금성001", "금성");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -122,11 +122,11 @@ class AccountControllerTest extends CommonControllerSliceTest {
     void 회원_정보_조회_요청_성공_테스트() throws Exception {
         // given
         AccountInfoDto accountInfoDto = new AccountInfoDto(
-                "nickname",
-                "profileImage",
-                "jobGroup",
-                "company",
-                "experience"
+                "재빠른지구001",
+                "earth.png",
+                "개발자",
+                "비공개",
+                "1~2년 차"
         );
 
         given(accountService.findAccountInfo(anyString())).willReturn(accountInfoDto);
@@ -136,11 +136,11 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 get("/accounts").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isOk(),
-                jsonPath("$.nickname").value(accountInfoDto.nickname()),
-                jsonPath("$.profileImage").value(accountInfoDto.profileImage()),
-                jsonPath("$.jobGroupName").value(accountInfoDto.jobGroupName()),
-                jsonPath("$.companyName").value(accountInfoDto.companyName()),
-                jsonPath("$.experienceName").value(accountInfoDto.experienceName())
+                jsonPath("$.nickname").value("재빠른지구001"),
+                jsonPath("$.profileImage").value("earth.png"),
+                jsonPath("$.jobGroupName").value("개발자"),
+                jsonPath("$.companyName").value("비공개"),
+                jsonPath("$.experienceName").value("1~2년 차")
         );
 
         회원_정보_조회_요청_문서화(resultActions);
