@@ -5,10 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.Company;
-import com.dnd.spaced.core.account.domain.Experience;
-import com.dnd.spaced.core.account.domain.JobGroup;
-import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
 import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
 import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
@@ -40,12 +36,12 @@ class InitAccountInfoServiceTest {
     @Test
     void 경력_정보를_초기화한다() {
         // given
-        String id = "email@email.com";
+        String id = "user1@naver.com";
         Account account = Account.builder()
                                  .id(id)
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -54,9 +50,9 @@ class InitAccountInfoServiceTest {
         assertDoesNotThrow(
                 () -> initAccountInfoService.initCareerInfo(
                         id,
-                        JobGroup.DESIGN.getName(),
-                        Company.BLIND.getName(),
-                        Experience.BETWEEN_THIRD_FOURTH.getName()
+                        "개발자",
+                        "비공개",
+                        "1~2년 차"
                 )
         );
     }
@@ -65,12 +61,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // given
-        String id = "email@email.com";
+        String id = "user1@naver.com";
         Account account = Account.builder()
                                  .id(id)
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -79,9 +75,9 @@ class InitAccountInfoServiceTest {
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
                         id,
-                        JobGroup.DEVELOP.getName(),
+                        "개발자",
                         invalidCompanyName,
-                        Experience.BLIND.getName()
+                        "1~2년 차"
                 )
 
         ).isInstanceOf(InvalidCompanyException.class)
@@ -92,12 +88,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // given
-        String id = "email@email.com";
+        String id = "user1@naver.com";
         Account account = Account.builder()
                                  .id(id)
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -107,8 +103,8 @@ class InitAccountInfoServiceTest {
                 () -> initAccountInfoService.initCareerInfo(
                         id,
                         invalidJobGroupName,
-                        Company.BLIND.getName(),
-                        Experience.BLIND.getName()
+                        "비공개",
+                        "1~2년 차"
                 )
 
         ).isInstanceOf(InvalidJobGroupException.class)
@@ -119,12 +115,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // given
-        String id = "email@email.com";
+        String id = "user1@naver.com";
         Account account = Account.builder()
                                  .id(id)
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -133,8 +129,8 @@ class InitAccountInfoServiceTest {
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
                         id,
-                        JobGroup.DEVELOP.getName(),
-                        Company.BLIND.getName(),
+                        "개발자",
+                        "비공개",
                         invalidExperienceName
                 )
 
@@ -143,14 +139,14 @@ class InitAccountInfoServiceTest {
     }
 
     @Test
-    void 경력_정보_초기화_시_유효한_회원_식별자가_아닌_경우_경력_정보를_초기화할_수_없다() {
+    void 경력_정보_초기화_시_회원_식별자가_없거나_탈퇴한_경우_경력_정보를_초기화할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        "email@email.com",
-                        JobGroup.DESIGN.getName(),
-                        Company.BLIND.getName(),
-                        Experience.BETWEEN_THIRD_FOURTH.getName()
+                        "user1@naver.com",
+                        "개발자",
+                        "비공개",
+                        "1~2년 차"
                 )
         ).isInstanceOf(ForbiddenInitCareerInfoException.class)
          .hasMessage("최초로 가입한 회원이 아닙니다.");
