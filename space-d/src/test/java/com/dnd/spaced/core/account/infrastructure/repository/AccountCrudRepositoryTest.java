@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -31,13 +30,13 @@ class AccountCrudRepositoryTest {
     EntityManager em;
 
     @Test
-    void 회원을_soft_delete로_삭제한다() {
+    void 회원을_식별자로_삭제한다() {
         // given
         Account account = Account.builder()
-                                 .id("id1")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountCrudRepository.save(account);
@@ -54,19 +53,19 @@ class AccountCrudRepositoryTest {
     }
 
     @Test
-    void soft_delete_되지_않은_회원을_조회한다() {
+    void 삭제되지_않은_회원을_식별자로_조회한다() {
         // given
         Account account1 = Account.builder()
-                                 .id("id1")
-                                 .nickname("nickname1")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Account account2 = Account.builder()
-                                  .id("id2")
-                                  .nickname("nickname2")
-                                  .profileImage("profileImage")
-                                  .roleName(Role.ROLE_ADMIN.name())
+                                  .id("user2@naver.com")
+                                  .nickname("행복한화성001")
+                                  .profileImage("mars.png")
+                                  .roleName("ROLE_USER")
                                   .build();
 
         accountCrudRepository.saveAll(List.of(account1, account2));
