@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
-import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.application.exception.BlockedTokenException;
 import com.dnd.spaced.core.auth.application.exception.ExpiredTokenException;
@@ -18,6 +17,7 @@ import com.dnd.spaced.core.auth.infrastructure.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -51,22 +51,23 @@ class TokenServiceTest {
     @Test
     void 기존_refreshToken을_통해_토큰을_갱신한다() {
         // given
-        String accountId = "email@email.com";
+        String accountId = "user1@naver.com";
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
                 accountId,
-                Role.ROLE_USER.name()
+                "ROLE_USER"
         );
 
         // when
-        TokenDto actual = tokenService.refreshToken(refreshToken);
+        TokenDto token = tokenService.refreshToken(refreshToken);
+        Optional<String> rtt = refreshTokenRotationRepository.findBy(accountId);
 
         // then
         assertAll(
-                () -> assertThat(actual.accessToken()).isNotBlank(),
-                () -> assertThat(actual.refreshToken()).isNotBlank(),
-                () -> assertThat(refreshTokenRotationRepository.findBy(accountId)).isPresent()
+                () -> assertThat(token.accessToken()).isNotBlank(),
+                () -> assertThat(token.refreshToken()).isNotBlank(),
+                () -> assertThat(rtt).isPresent()
         );
     }
     
@@ -81,11 +82,12 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
+        LocalDateTime targetTime = LocalDateTime.of(2000, 2, 2, 13, 13);
         String refreshToken = tokenEncoder.encode(
-                LocalDateTime.now().minusYears(3L),
+                targetTime,
                 TokenType.REFRESH,
-                "id",
-                Role.ROLE_USER.name()
+                "user1@naver.com",
+                "ROLE_USER"
         );
 
         // when & then
@@ -95,7 +97,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
+    void 토큰을_갱신할_때_길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken("Bearer abcde"))
                 .isInstanceOf(InvalidTokenException.class)
@@ -104,8 +106,7 @@ class TokenServiceTest {
 
     @ParameterizedTest(name = "refreshToken이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 토큰을_갱신할_때_null이나_길이가_부족한_refreshToken을_전달하면_토큰_갱신을_할_수_없다(
-            String invalidRefreshToken) {
+    void 토큰을_갱신할_때_비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken(invalidRefreshToken))
                 .isInstanceOf(InvalidTokenException.class)
@@ -114,11 +115,10 @@ class TokenServiceTest {
 
     @Test
     void 토큰을_갱신할_때_다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
-        String accountId = "email@email.com";
         TokenProperties tokenProperties = new TokenProperties(
                 "thisistoolargeaccesstokenkeyfordummykeydatafortest",
                 "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
+                "other-issuer",
                 43200,
                 259200,
                 43200000L,
@@ -128,8 +128,8 @@ class TokenServiceTest {
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
-                accountId,
-                Role.ROLE_USER.name()
+                "user1@naver.com",
+                "ROLE_USER"
         );
 
         // when & then
@@ -141,13 +141,12 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_블랙리스트로_등록된_회원의_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "email@email.com";
-        LocalDateTime now = LocalDateTime.now();
+        String accountId = "user1@naver.com";
         String refreshToken = tokenEncoder.encode(
-                now.minusMinutes(10L),
+                LocalDateTime.now().minusMinutes(3L),
                 TokenType.REFRESH,
                 accountId,
-                Role.ROLE_USER.name()
+                "ROLE_USER"
         );
 
         blacklistTokenService.register(accountId);
@@ -161,12 +160,12 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_전달한_refreshToken_값이_RTT로_저장한_값과_일치하지_않으면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "email@email.com";
+        String accountId = "user1@naver.com";
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
                 accountId,
-                Role.ROLE_USER.name()
+                "ROLE_USER"
         );
 
         refreshTokenRotationRepository.save(accountId, "refresh token");
