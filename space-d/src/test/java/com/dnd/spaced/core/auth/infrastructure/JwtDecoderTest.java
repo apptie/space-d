@@ -36,25 +36,22 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void 유효하지_않은_토큰을_인코딩_할_수_없다(TokenType tokenType) {
-        // given
-        String invalidToken = "Bearer invalid";
-
+    void 유효하지_않은_길이의_토큰을_인코딩_할_수_없다(TokenType tokenType) {
         // when & then
-        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
+        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, "Bearer invalid"))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void 만료된_토큰을_디코딩_한다(TokenType tokenType) {
+    void 만료된_토큰을_디코딩_하면_빈_claim을_반환한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         String token = jwtEncoder.encode(
-                LocalDateTime.now().minusYears(3L),
+                LocalDateTime.of(2022, 2, 2, 13, 13),
                 tokenType,
-                "email@email.com",
+                "user1@naver.com",
                 "ROLE_USER"
         );
 
@@ -76,7 +73,7 @@ class JwtDecoderTest {
 
     @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 예외가 발생한다.")
     @MethodSource("encodeTestWithTokenTypeAndInvalidToken")
-    void 길이가_부족한_토큰은_디코딩_할_수_없다(TokenType tokenType, String invalidToken) {
+    void 비어_있는_토큰은_디코딩_할_수_없다(TokenType tokenType, String invalidToken) {
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
                 .isInstanceOf(InvalidTokenException.class)
@@ -88,10 +85,8 @@ class JwtDecoderTest {
     void 유효한_토큰을_디코딩_한다(TokenType tokenType) {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "email@email.com";
-        String roleName = "ROLE_USER";
-        LocalDateTime now = LocalDateTime.now();
-        String token = jwtEncoder.encode(now, tokenType, id, roleName);
+        LocalDateTime publishTime = LocalDateTime.now();
+        String token = jwtEncoder.encode(publishTime, tokenType, "user1@naver.com", "ROLE_USER");
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
@@ -99,9 +94,9 @@ class JwtDecoderTest {
         // then
         assertAll(
                 () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual.get().accountId()).isEqualTo(id),
-                () -> assertThat(actual.get().roleName()).isEqualTo(roleName),
-                () -> assertThat(actual.get().issuedAt()).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS))
+                () -> assertThat(actual.get().accountId()).isEqualTo("user1@naver.com"),
+                () -> assertThat(actual.get().roleName()).isEqualTo("ROLE_USER"),
+                () -> assertThat(actual.get().issuedAt()).isEqualTo(publishTime.truncatedTo(ChronoUnit.SECONDS))
         );
     }
 
@@ -109,20 +104,18 @@ class JwtDecoderTest {
     @EnumSource(value = TokenType.class)
     void 토큰_발급자가_다른_토큰은_디코딩_할_수_없다(TokenType tokenType) {
         // given
-        TokenProperties tokenProperties = new TokenProperties(
+        TokenProperties otherIssuerTokenProperties = new TokenProperties(
                 "thisistoolargeaccesstokenkeyfordummykeydatafortest",
                 "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
+                "other-issuer",
                 43200,
                 259200,
                 43200000L,
                 259200000L
         );
 
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "email@email.com";
-        String roleName = "ROLE_USER";
-        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, id, roleName);
+        JwtEncoder jwtEncoder = new JwtEncoder(otherIssuerTokenProperties);
+        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, "user1@naver.com", "ROLE_USER");
 
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))
