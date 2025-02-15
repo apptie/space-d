@@ -22,19 +22,15 @@ class RefreshTokenRotationRedisRepositoryTest {
     RefreshTokenRotationRedisRepository refreshTokenRotationRepository;
 
     @Test
-    void refreshToken을_rotation으로_등록한다() {
-        // given
-        String id = "email@email.com";
-        String refreshToken = "Bearer refreshToken";
-
+    void 회원_식별자를_key로_refreshToken을_rotation으로_등록한다() {
         // when & then
-        assertDoesNotThrow(() -> refreshTokenRotationRepository.save(id, refreshToken));
+        assertDoesNotThrow(() -> refreshTokenRotationRepository.save("user1@naver.com", "Bearer refreshToken"));
     }
 
     @Test
-    void 등록하지_않은_이메일로_refreshToken_rotation을_조회한다() {
+    void 등록하지_않은_회원_식별자로_refreshToken_rotation을_조회하면_빈_값을_반환한다() {
         // when
-        Optional<String> actual = refreshTokenRotationRepository.findBy("email@email.com");
+        Optional<String> actual = refreshTokenRotationRepository.findBy("user1@naver.com");
 
         // then
         assertThat(actual).isEmpty();
@@ -43,7 +39,7 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void 등록한_이메일로_refreshToken_rotation을_조회한다() {
         // given
-        String id = "email@email.com";
+        String id = "user1@naver.com";
         String refreshToken = "Bearer refreshToken";
 
         refreshTokenRotationRepository.save(id, refreshToken);
