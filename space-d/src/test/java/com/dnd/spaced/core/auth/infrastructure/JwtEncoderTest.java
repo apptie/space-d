@@ -29,7 +29,12 @@ class JwtEncoderTest {
     @EnumSource(value = TokenType.class)
     void 토큰을_인코딩한다(TokenType tokenType) {
         // when
-        String actual = jwtEncoder.encode(LocalDateTime.now(), tokenType, "email", "roleName");
+        String actual = jwtEncoder.encode(
+                LocalDateTime.now(),
+                tokenType,
+                "user1@naver.com",
+                "ROLE_USER"
+        );
 
         // then
         assertThat(actual).isNotBlank();
