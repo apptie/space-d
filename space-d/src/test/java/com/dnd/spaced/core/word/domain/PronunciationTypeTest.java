@@ -17,6 +17,11 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class PronunciationTypeTest {
 
+    private static Stream<Arguments> findByTestWithPronunciationTypeName() {
+        return Arrays.stream(PronunciationType.values())
+                     .map(pronunciationType -> Arguments.of(pronunciationType.getName()));
+    }
+
     @ParameterizedTest
     @MethodSource("findByTestWithPronunciationTypeName")
     void 발음_유형을_이름으로_조회한다(String name) {
@@ -34,10 +39,5 @@ class PronunciationTypeTest {
         assertThatThrownBy(() -> PronunciationType.findBy(invalidName))
                 .isInstanceOf(InvalidPronunciationTypeNameException.class)
                 .hasMessageContaining("잘못된 발음 타입");
-    }
-
-    private static Stream<Arguments> findByTestWithPronunciationTypeName() {
-        return Arrays.stream(PronunciationType.values())
-                     .map(pronunciationType -> Arguments.of(pronunciationType.getName()));
     }
 }
