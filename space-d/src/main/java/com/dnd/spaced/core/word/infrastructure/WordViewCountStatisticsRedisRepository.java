@@ -43,7 +43,7 @@ public class WordViewCountStatisticsRedisRepository implements WordViewCountStat
     }
 
     @Override
-    public List<ViewCountStatisticsRankDto> findByRanking(LocalDateTime localDateTime) {
+    public List<ViewCountStatisticsRankDto> findAllBy(LocalDateTime localDateTime) {
         Set<TypedTuple<String>> popularWords = redisTemplate.opsForZSet()
                                                             .reverseRangeWithScores(calculateKey(localDateTime), 0, 9);
 

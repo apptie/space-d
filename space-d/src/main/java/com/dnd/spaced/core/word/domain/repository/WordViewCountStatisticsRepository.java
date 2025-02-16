@@ -11,7 +11,7 @@ public interface WordViewCountStatisticsRepository {
 
     List<WordViewCountStatisticsDto> findAllBy(List<Long> ids, LocalDateTime localDateTime);
 
-    List<ViewCountStatisticsRankDto> findByRanking(LocalDateTime localDateTime);
+    List<ViewCountStatisticsRankDto> findAllBy(LocalDateTime localDateTime);
 
     void deleteAll(LocalDateTime localDateTime);
 }
