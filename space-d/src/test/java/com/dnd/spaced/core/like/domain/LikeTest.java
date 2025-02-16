@@ -1,8 +1,7 @@
-package com.dnd.spaced.core.comment.domain;
+package com.dnd.spaced.core.like.domain;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.like.domain.Like;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,6 @@ class LikeTest {
     @Test
     void 좋아요를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new Like("email@email.com", 1L));
+        assertDoesNotThrow(() -> new Like("user1@naver.com", 1L));
     }
 }
