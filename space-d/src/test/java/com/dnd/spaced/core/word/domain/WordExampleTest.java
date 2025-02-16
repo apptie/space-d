@@ -16,9 +16,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 class WordExampleTest {
 
     @Test
-    void 단어_예문을_초기화한다() {
+    void 용어_예문을_초기화한다() {
         // when
-        String example = "example";
+        String example = "시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.";
         WordExample wordExample = new WordExample(example);
 
         // then
@@ -27,7 +27,7 @@ class WordExampleTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 유효하지_않은_단어_예문을_전달하면_예외가_발생한(String invalidExample) {
+    void 유효하지_않은_용어_예문을_전달하면_예외가_발생한다(String invalidExample) {
         // when & then
         assertThatThrownBy(() -> new WordExample(invalidExample))
                 .isInstanceOf(InvalidWordExampleContentException.class)
@@ -35,14 +35,14 @@ class WordExampleTest {
     }
 
     @Test
-    void 단어_예문에_단어_정보를_추가한다() {
+    void 용어_예문에_용어_정보를_추가한다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
-        WordExample wordExample = new WordExample("example");
+        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
 
         // when
         wordExample.initWord(word);
@@ -52,10 +52,10 @@ class WordExampleTest {
     }
 
     @Test
-    void 단어_예문을_변경한다() {
+    void 용어_예문을_변경한다() {
         // given
-        WordExample wordExample = new WordExample("example");
-        String changedExample = "changedExample";
+        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
+        String changedExample = "보안 팀장은 외부 감사관의 데이터베이스 접근 Authorization을 일시적으로 승인했다.";
 
         // when
         wordExample.changeExample(changedExample);
@@ -65,9 +65,9 @@ class WordExampleTest {
     }
 
     @Test
-    void 단어_예문의_식별자_여부를_판단한다() {
+    void 용어_예문의_식별자_여부를_판단한다() {
         // given
-        WordExample wordExample = new WordExample("example");
+        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
         ReflectionTestUtils.setField(wordExample, "id", 1L);
 
         // when
