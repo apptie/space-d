@@ -15,9 +15,9 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class WordMeaningTest {
 
     @Test
-    void 단어_뜻을_초기화한다() {
+    void 용어_뜻을_초기화한다() {
         // when
-        String meaning = "1234567890";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         WordMeaning wordMeaning = new WordMeaning(meaning);
 
         // then
@@ -26,7 +26,7 @@ class WordMeaningTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 단어_뜻_초기화_시_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 용어_뜻_초기화_시_글자_수가_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
@@ -34,23 +34,26 @@ class WordMeaningTest {
     }
 
     @Test
-    void 단어_뜻을_변경한다() {
+    void 용어_뜻을_변경한다() {
         // given
-        WordMeaning wordMeaning = new WordMeaning("1234567890");
+        WordMeaning wordMeaning = new WordMeaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘");
 
         // when
-        String changedMeaning = "changedMeaning";
+        String changedMeaning = "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         wordMeaning.changeMeaning(changedMeaning);
 
         // then
         assertThat(wordMeaning.getMeaning()).isEqualTo(changedMeaning);
     }
 
-    @ParameterizedTest(name = "용어 뜻이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "변경하려는 용어 뜻이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 단어_뜻_변경_시_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 용어_뜻_변경_시_글자_수가_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+        // given
+        WordMeaning wordMeaning = new WordMeaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘");
+
         // when & then
-        assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
+        assertThatThrownBy(() -> wordMeaning.changeMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
                 .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
