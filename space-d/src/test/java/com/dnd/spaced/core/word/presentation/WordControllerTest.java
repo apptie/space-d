@@ -34,12 +34,12 @@ class WordControllerTest extends CommonControllerSliceTest {
     void 용어_조회_요청_성공_테스트() throws Exception {
         // given
         ReadWordDto readWordDto = new ReadWordDto(
-                1L,
-                "name",
-                "categoryName",
-                "meaning",
-                List.of("examples"),
-                List.of(new WordPronunciationInfoDto("pronunciation", "typeName")),
+                3L,
+                "Authorization",
+                "개발",
+                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+                List.of("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다."),
+                List.of(new WordPronunciationInfoDto("어써라이제이션", "한글 발음")),
                 1L
         );
 
@@ -47,7 +47,7 @@ class WordControllerTest extends CommonControllerSliceTest {
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                get("/words/{id}", 1L).accept(MediaType.APPLICATION_JSON)
+                get("/words/{id}", 3L).accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("id").value(readWordDto.id()),
@@ -56,7 +56,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("meaning").value(readWordDto.meaning()),
                 jsonPath("examples").exists(),
                 jsonPath("pronunciationInfo").exists(),
-                jsonPath("viewCount").value(readWordDto.id())
+                jsonPath("viewCount").value(readWordDto.viewCount())
         );
 
         용어_조회_문서화(resultActions);
@@ -87,10 +87,10 @@ class WordControllerTest extends CommonControllerSliceTest {
     void 용어_검색_요청_성공_테스트() throws Exception {
         // given
         SearchedWordDto searchedWordDto = new SearchedWordDto(
-                1L,
-                "name",
-                "meaning",
-                "category",
+                3L,
+                "Authorization",
+                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+                "개발",
                 1L
         );
         given(wordService.search(any(SearchConditionDto.class))).willReturn(List.of(searchedWordDto));
@@ -98,10 +98,10 @@ class WordControllerTest extends CommonControllerSliceTest {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 get("/words/search").accept(MediaType.APPLICATION_JSON)
-                                    .queryParam("name", "name")
-                                    .queryParam("categoryName", "categoryName")
-                                    .queryParam("pronunciation", "pronunciation")
-                                    .queryParam("lastWordName", "lastWordName")
+                                    .queryParam("name", "Authorization")
+                                    .queryParam("categoryName", "개발")
+                                    .queryParam("pronunciation", "어써라이제이션")
+                                    .queryParam("lastWordName", "Agile")
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("words").exists(),
@@ -142,10 +142,10 @@ class WordControllerTest extends CommonControllerSliceTest {
     void 용어_목록_조회_요청_성공_테스트() throws Exception {
         // given
         ReadAllWordDto readAllWordDto = new ReadAllWordDto(
-                1L,
-                "name",
-                "meaning",
-                "category",
+                3L,
+                "Authorization",
+                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+                "개발",
                 1L
         );
 
@@ -154,8 +154,8 @@ class WordControllerTest extends CommonControllerSliceTest {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 get("/words").accept(MediaType.APPLICATION_JSON)
-                             .queryParam("categoryName", "categoryName")
-                             .queryParam("lastWordName", "lastWordName")
+                             .queryParam("categoryName", "개발")
+                             .queryParam("lastWordName", "Agile")
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("words").exists(),
@@ -192,7 +192,7 @@ class WordControllerTest extends CommonControllerSliceTest {
     @Test
     void 많이_찾아본_용어_목록_조회_요청_성공_테스트() throws Exception {
         // given
-        PopularWordDto popularWordDto = new PopularWordDto(1, 1L, "name");
+        PopularWordDto popularWordDto = new PopularWordDto(1, 3L, "Authorization");
         given(wordService.readPopularWordsAll()).willReturn(List.of(popularWordDto));
 
         // when & then
