@@ -20,20 +20,20 @@ class WordTest {
     @Test
     void 용어를_초기화한다() {
         // when
-        String name = "name";
-        String meaning = "word meaning";
-        String category = "개발";
+        String name = "Authorization";
+        String categoryName = "개발";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         Word word = Word.builder()
                         .name(name)
+                        .categoryName(categoryName)
                         .meaning(meaning)
-                        .categoryName(category)
                         .build();
 
         // then
         assertAll(
                 () -> assertThat(word.getName()).isEqualTo(name),
                 () -> assertThat(word.getWordMeaning().getMeaning()).isEqualTo(meaning),
-                () -> assertThat(word.getCategory().getName()).isEqualTo(category)
+                () -> assertThat(word.getCategory().getName()).isEqualTo(categoryName)
         );
     }
 
@@ -44,7 +44,7 @@ class WordTest {
         assertThatThrownBy(
                 () -> Word.builder()
                           .name(invalidName)
-                          .meaning("word meaning")
+                          .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                           .categoryName("개발")
                           .build()
         ).isInstanceOf(InvalidWordNameException.class)
@@ -57,7 +57,7 @@ class WordTest {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
-                          .name("name")
+                          .name("Authorization")
                           .meaning(invalidMeaning)
                           .categoryName("개발")
                           .build()
@@ -71,8 +71,8 @@ class WordTest {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
-                          .name("name")
-                          .meaning("word meaning")
+                          .name("Authorization")
+                          .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                           .categoryName(invalidCategoryName)
                           .build()
         ).isInstanceOf(InvalidCategoryNameException.class)
@@ -85,7 +85,7 @@ class WordTest {
         Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -99,10 +99,10 @@ class WordTest {
     @Test
     void 용어에_용어_예문을_추가한다() {
         // given
-        WordExample wordExample = new WordExample("example");
+        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -114,11 +114,11 @@ class WordTest {
     }
 
     @Test
-    void 조회수를_증가시킨다() {
+    void 용어_조회수를_증가시킨다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -134,12 +134,12 @@ class WordTest {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
         // when
-        String changedMeaning = "changed word meaning";
+        String changedMeaning = "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
 
         word.changeMeaning(changedMeaning);
 
@@ -149,11 +149,11 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_뜻_변경_시_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 용어_뜻_변경_시_길이가_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
