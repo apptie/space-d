@@ -33,7 +33,7 @@ class NicknameMetadataTest {
         );
     }
 
-    @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "닉네임이 {0}일 때 닉네임 메타데이터를 초기화할 수 없다")
     @MethodSource("constructorTestWithInvalidNickname")
     void 닉네임_메타데이터를_초기화할_때_길이가_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
         // when & then
