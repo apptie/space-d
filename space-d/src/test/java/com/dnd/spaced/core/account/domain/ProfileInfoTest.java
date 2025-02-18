@@ -36,7 +36,7 @@ class ProfileInfoTest {
         );
     }
 
-    @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "닉네임이 {0}일 때 프로필 정보를 초기화할 수 없다")
     @MethodSource("constructorTestWithInvalidNickname")
     void 프로필_정보를_초기화할_때_유효한_길이의_닉네임이_아니라면_프로필_정보를_초기화할_수_없다(String invalidNickname) {
         // when & then
@@ -45,7 +45,7 @@ class ProfileInfoTest {
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
 
-    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 프로필 정보를 초기화할 수 없다")
     @NullAndEmptySource
     void 프로필_정보를_초기화할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_초기화할_수_없다(String invalidProfileImage) {
         // when & then
@@ -72,7 +72,7 @@ class ProfileInfoTest {
         );
     }
 
-    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 프로필 정보를 변경할 수 없다")
     @NullAndEmptySource
     void 프로필_정보를_변경할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_변경할_수_없다(String invalidProfileImage) {
         // given
@@ -94,7 +94,7 @@ class ProfileInfoTest {
         );
     }
 
-    @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "닉네임이 {0}일 때 프로필 정보를 변경할 수 없다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
     void 프로필_정보를_변경할_때_유효한_닉네임_길이가_아니라면_프로필_정보를_변경할_수_없다(String invalidNickname) {
         // given
