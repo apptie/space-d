@@ -34,7 +34,7 @@ class PronunciationTypeTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 발음_유형을_이름으로_찾을_수_없다면_예외가_발생한다(String invalidName) {
+    void 없는_발음_유형_이름으로는_발음_유형을_찾을_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> PronunciationType.findBy(invalidName))
                 .isInstanceOf(InvalidPronunciationTypeNameException.class)
