@@ -39,7 +39,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_초기화_시_유효하지_않은_용어_이름이라면_예외가_발생한다(String invalidName) {
+    void 비어_있는_용어_이름이라면_용어를_초기화_할_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -53,7 +53,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_초기화_시_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 비어_있는_용어_뜻이라면_용어를_초기화_할_수_없다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -67,7 +67,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_초기화_시_유효하지_않은_카테고리_이름을_전달하면_예외가_발생한다(String invalidCategoryName) {
+    void 비어_있는_카테고리_이름을_전달하면_용어를_초기화_할_수_없다(String invalidCategoryName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
@@ -149,7 +149,7 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_뜻_변경_시_길이가_유효하지_않은_용어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 길이가_유효하지_않은_용어_뜻이라면_용어를_초기화_할_수_없다(String invalidMeaning) {
         // given
         Word word = Word.builder()
                         .name("Authorization")
