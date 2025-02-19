@@ -57,7 +57,7 @@ class InitAccountInfoServiceTest {
         );
     }
 
-    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "회사명이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // given
@@ -84,7 +84,7 @@ class InitAccountInfoServiceTest {
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "직군이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // given
@@ -111,7 +111,7 @@ class InitAccountInfoServiceTest {
          .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "경력이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // given
