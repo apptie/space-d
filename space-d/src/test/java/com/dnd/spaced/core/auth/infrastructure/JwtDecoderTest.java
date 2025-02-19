@@ -71,7 +71,7 @@ class JwtDecoderTest {
         );
     }
 
-    @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 예외가 발생한다.")
+    @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 토큰 디코딩을 할 수 없다")
     @MethodSource("encodeTestWithTokenTypeAndInvalidToken")
     void 비어_있는_토큰은_디코딩_할_수_없다(TokenType tokenType, String invalidToken) {
         // when & then
