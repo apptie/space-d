@@ -15,6 +15,7 @@ import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.core.auth.infrastructure.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
+import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -82,9 +83,8 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
-        LocalDateTime targetTime = LocalDateTime.of(2000, 2, 2, 13, 13);
         String refreshToken = tokenEncoder.encode(
-                targetTime,
+                LocalDateTimeFixture.from("2000-02-02 13:13:00"),
                 TokenType.REFRESH,
                 "user1@naver.com",
                 "ROLE_USER"
@@ -104,7 +104,7 @@ class TokenServiceTest {
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
 
-    @ParameterizedTest(name = "refreshToken이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
     @NullAndEmptySource
     void 토큰을_갱신할_때_비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
         // when & then
