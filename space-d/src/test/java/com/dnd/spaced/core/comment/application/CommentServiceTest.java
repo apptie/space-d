@@ -70,7 +70,7 @@ class CommentServiceTest {
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
 
-    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 댓글을 작성할 수 없다")
     @NullAndEmptySource
     void 댓글로_비어_있는_내용을_작성할_수_없다(String invalidContent) {
         // given
