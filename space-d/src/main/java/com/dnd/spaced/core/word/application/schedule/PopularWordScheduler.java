@@ -37,7 +37,7 @@ public class PopularWordScheduler {
     }
 
     private void updatePopularWord(LocalDateTime today) {
-        List<ViewCountStatisticsRankDto> ranking = wordViewCountStatisticsRepository.findByRanking(today);
+        List<ViewCountStatisticsRankDto> ranking = wordViewCountStatisticsRepository.findAllBy(today);
         Long[] ids = ranking.stream()
                               .map(ViewCountStatisticsRankDto::wordId)
                               .toArray(Long[]::new);

@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
-import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
-import java.time.LocalDateTime;
+import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
+import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -27,9 +27,13 @@ class BlacklistTokenServiceTest {
     BlacklistTokenRepository blacklistTokenRepository;
 
     @Test
-    void isBlockedToken_메서드는_블랙리스트로_등록되어_있지_않은_id의_PrivateClaims를_전달하면_fals를_반환한다() {
+    void 토큰_블랙리스트에_등록되지_않은_회원의_토큰은_유효한_토큰이다() {
         // given
-        PrivateClaims privateClaims = new PrivateClaims("id", "roleName", LocalDateTime.now());
+        PrivateClaims privateClaims = new PrivateClaims(
+                "user1@naver.com",
+                "ROLE_USER",
+                LocalDateTimeFixture.from("2022-02-02 13:13:00")
+        );
 
         // when
         boolean actual = blacklistTokenService.isBlockedToken(privateClaims);
@@ -39,13 +43,18 @@ class BlacklistTokenServiceTest {
     }
 
     @Test
-    void isBlockedToken_메서드는_블랙리스트_등록_일자보다_isseudAt이_미래면_false를_반환한다() {
+    void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_미래라면_유효한_토큰이다() {
         // given
-        LocalDateTime now = LocalDateTime.now();
-        String accountId = "id";
-        PrivateClaims privateClaims = new PrivateClaims(accountId, "roleName", now);
+        String accountId = "user1@naver.com";
+        PrivateClaims privateClaims = new PrivateClaims(
+                accountId,
+                "ROLE_USER",
+                LocalDateTimeFixture.from("2022-02-02 13:13:00")
+        );
 
-        blacklistTokenRepository.save(new BlacklistToken(accountId, now.minusDays(1L)));
+        blacklistTokenRepository.save(
+                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-01 13:13:00"))
+        );
 
         // when
         boolean actual = blacklistTokenService.isBlockedToken(privateClaims);
@@ -55,13 +64,18 @@ class BlacklistTokenServiceTest {
     }
 
     @Test
-    void isBlockedToken_메서드는_블랙리스트_등록_일자보다_isseudAt이_과거면_true를_반환한다() {
+    void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_과거라면_차단된_토큰이다() {
         // given
-        LocalDateTime now = LocalDateTime.now();
-        String accountId = "id";
-        PrivateClaims privateClaims = new PrivateClaims(accountId, "roleName", now);
+        String accountId = "user1@naver.com";
+        PrivateClaims privateClaims = new PrivateClaims(
+                accountId,
+                "ROLE_USER",
+                LocalDateTimeFixture.from("2022-02-02 13:13:00")
+        );
 
-        blacklistTokenRepository.save(new BlacklistToken(accountId, now.plusDays(1L)));
+        blacklistTokenRepository.save(
+                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-03 13:13:00"))
+        );
 
         // when
         boolean actual = blacklistTokenService.isBlockedToken(privateClaims);

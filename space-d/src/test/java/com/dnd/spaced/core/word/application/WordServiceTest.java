@@ -52,11 +52,11 @@ class WordServiceTest {
     ApplicationEvents events;
 
     @Test
-    void read_메서드는_지정한_id에_해당하는_용어_정보를_반환한다() {
+    void 용어를_조회한다() {
         // given
-        String name = "word";
+        String name = "Authorization";
         String categoryName = "개발";
-        String meaning = "word meaning";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         Word word = Word.builder()
                         .name(name)
                         .categoryName(categoryName)
@@ -79,7 +79,7 @@ class WordServiceTest {
     }
 
     @Test
-    void read_메서드는_지정한_id에_해당하는_용어가_없다면_WordNotFoundException_예외가_발생한다() {
+    void 용어_식별자로_용어를_찾지_못하면_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() -> wordService.read(-1L))
                 .isInstanceOf(WordNotFoundException.class)
@@ -87,11 +87,11 @@ class WordServiceTest {
     }
 
     @Test
-    void readAllBy_메서드는_용어_목록을_조회한다() {
+    void 용어_목록을_조회한다() {
         // given
-        String name = "word";
+        String name = "Authorization";
         String categoryName = "개발";
-        String meaning = "word meaning";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         Word word = Word.builder()
                         .name(name)
                         .categoryName(categoryName)
@@ -108,23 +108,23 @@ class WordServiceTest {
     }
 
     @Test
-    void search_메서드는_조건을_전달하면_조건에_맞는_Word_목록을_반환한다() {
+    void 용어를_검색한다() {
         // given
-        String name = "word";
+        String name = "Authorization";
         String categoryName = "개발";
-        String meaning = "word meaning";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         Word word = Word.builder()
                         .name(name)
                         .categoryName(categoryName)
                         .meaning(meaning)
                         .build();
-        Pronunciation pronunciation = new Pronunciation("워드", "한글 발음");
+        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
 
         word.addPronunciation(pronunciation);
         wordRepository.save(word);
 
         // when
-        SearchConditionDto dto = new SearchConditionDto("word", null, null, PageRequest.of(0, 3), null);
+        SearchConditionDto dto = new SearchConditionDto("Authorization", null, null, PageRequest.of(0, 3), null);
         List<SearchedWordDto> actual = wordService.search(dto);
 
         // then
@@ -132,9 +132,9 @@ class WordServiceTest {
     }
 
     @Test
-    void readPopularWordsAll_메서드는_많이_찾아본_용어_목록을_반환한다() {
+    void 많이_찾아본_용어_목록을_조회한다() {
         // given
-        PopularWordInfo popularWordInfo = new PopularWordInfo(1, 1L, "name");
+        PopularWordInfo popularWordInfo = new PopularWordInfo(1, 1L, "Authorization");
         popularWordRepository.saveAll(List.of(popularWordInfo), LocalDateTime.now());
 
         // when

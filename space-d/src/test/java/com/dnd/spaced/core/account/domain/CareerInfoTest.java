@@ -17,54 +17,54 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class CareerInfoTest {
 
     @Test
-    void build_메서드는_유효한_experienceName_companyName_jobGroupName을_전달하면_CareerInfo를_초기화하고_반환한다() {
+    void 경력_정보를_초기화한다() {
         // when & then
         assertDoesNotThrow(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
-                                .companyName(Company.BLIND.getName())
-                                .jobGroupName(JobGroup.DEVELOP.getName())
+                                .jobGroupName("개발자")
+                                .experienceName("1~2년 차")
+                                .companyName("비공개")
                                 .build()
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_experienceName을_전달하면_InvalidExperienceException_예외가_발생한다(String invalidExperienceName) {
+    void 경력_정보를_초기화할_때_유효한_경력이_아니라면_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
+                                .jobGroupName("개발자")
                                 .experienceName(invalidExperienceName)
-                                .companyName(Company.BLIND.getName())
-                                .jobGroupName(JobGroup.DEVELOP.getName())
+                                .companyName("비공개")
                                 .build()
         ).isInstanceOf(InvalidExperienceException.class)
          .hasMessageContaining("잘못된 경력");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_companyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 경력_정보를_초기화할_때_유효한_회사명이_아니라면_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
+                                .jobGroupName("개발자")
+                                .experienceName("1~2년 차")
                                 .companyName(invalidCompanyName)
-                                .jobGroupName(JobGroup.DEVELOP.getName())
                                 .build()
         ).isInstanceOf(InvalidCompanyException.class)
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void build_메서드는_유효하지_않은_jobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(String invalidJobGroupName) {
+    void 경력_정보를_초기화할_때_유효한_직군_이름이_아니라면_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // when & then
         assertThatThrownBy(
                 () -> CareerInfo.builder()
-                                .experienceName(Experience.BETWEEN_FIRST_SECOND.getName())
-                                .companyName(Company.BLIND.getName())
                                 .jobGroupName(invalidJobGroupName)
+                                .experienceName("1~2년 차")
+                                .companyName("비공개")
                                 .build()
         ).isInstanceOf(InvalidJobGroupException.class)
          .hasMessageContaining("잘못된 직군 이름");

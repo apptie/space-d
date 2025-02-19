@@ -22,13 +22,9 @@ class GenerateTokenServiceTest {
     GenerateTokenService generateTokenService;
 
     @Test
-    void generate_메서드는_id와_roleName을_전달하면_accessToken과_refreshToken을_초기화하고_반환한다() {
-        // given
-        String id = "id";
-        String roleName = "roleName";
-
+    void accessToken과_refreshToken을_생성한다() {
         // when
-        TokenDto actual = generateTokenService.generate(id, roleName);
+        TokenDto actual = generateTokenService.generate("user1@naver.com", "ROLE_USER");
 
         // then
         assertAll(

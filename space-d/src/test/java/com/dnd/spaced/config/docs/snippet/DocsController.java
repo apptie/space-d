@@ -85,7 +85,8 @@ public class DocsController {
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
                                                    .deletePronunciationException(
-                                                           calculateDeletePronunciationException())
+                                                           calculateDeletePronunciationException()
+                                                   )
                                                    .readWordException(calculateReadWordException())
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
@@ -161,6 +162,7 @@ public class DocsController {
 
         putUnauthorizedExceptionContent(deletePronunciationException);
         putForbiddenExceptionContent(deletePronunciationException);
+        processWordException(deletePronunciationException, WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED);
 
         return deletePronunciationException;
     }
@@ -171,6 +173,7 @@ public class DocsController {
 
         putUnauthorizedExceptionContent(deleteWordExampleException);
         putForbiddenExceptionContent(deleteWordExampleException);
+        processWordException(deleteWordExampleException, WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED);
 
         return deleteWordExampleException;
     }
@@ -181,7 +184,11 @@ public class DocsController {
         putUnauthorizedExceptionContent(updateWordExampleException);
         putForbiddenExceptionContent(updateWordExampleException);
         putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
-        processWordException(updateWordExampleException, WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT);
+        processWordException(
+                updateWordExampleException,
+                WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
+                WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT
+        );
 
         return updateWordExampleException;
     }
@@ -218,7 +225,7 @@ public class DocsController {
         putUnauthorizedExceptionContent(changeProfileInfoException);
         putMethodArgumentNotValidExceptionContent(
                 changeProfileInfoException,
-                "originNickname",
+                "nickname",
                 "profileImageKoreanName"
         );
         processAccountException(

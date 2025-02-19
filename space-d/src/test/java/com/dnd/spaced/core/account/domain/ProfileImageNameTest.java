@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageNameException;
-import java.util.Arrays;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -20,33 +19,40 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class ProfileImageNameTest {
 
     @Test
-    void findRandom_메서드는_호출하면_랜덤한_ProflieImageName를_반환한다() {
+    void 정해진_프로필_이미지_이름_중_랜덤한_프로필_이미지_이름을_반환한다() {
         // when & then
         assertDoesNotThrow(ProfileImageName::findRandom);
     }
 
-    @ParameterizedTest
+    private static Stream<Arguments> findByTestWithProfileImageKoreanName() {
+        return Stream.of(
+                Arguments.of("수성", ProfileImageName.MERCURY),
+                Arguments.of("금성", ProfileImageName.VENUS),
+                Arguments.of("지구", ProfileImageName.EARTH),
+                Arguments.of("화성", ProfileImageName.MARS),
+                Arguments.of("목성", ProfileImageName.JUPITER),
+                Arguments.of("토성", ProfileImageName.SATURN),
+                Arguments.of("천왕성", ProfileImageName.URANUS),
+                Arguments.of("해왕성", ProfileImageName.NEPTUNE)
+        );
+    }
+
+    @ParameterizedTest(name = "프로필 이미지 이름이 {0}일 때 {1}을 반환한다")
     @MethodSource("findByTestWithProfileImageKoreanName")
-    void fidnBy_메서드는_유효한_이름을_전달하면_그에_맞는_ProfileImageName을_반환한다(String korean) {
+    void 프로필_이미지를_찾는다(String korean, ProfileImageName expected) {
         // when
         ProfileImageName actual = ProfileImageName.findBy(korean);
 
         // then
-        assertThat(actual.getKorean()).isEqualTo(korean);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void findBy_메서드는_유효하지_않은_이름을_전달하면_InvalidProfileImageNameException_예외가_발생한다(String korean) {
+    void 프로필_이미지를_찾을_때_유효한_프로필_이미지_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidKoreanName) {
         // when & then
-        assertThatThrownBy(() -> ProfileImageName.findBy(korean))
+        assertThatThrownBy(() -> ProfileImageName.findBy(invalidKoreanName))
                 .isInstanceOf(InvalidProfileImageNameException.class)
                 .hasMessageContaining("잘못된 프로필 이미지 이름");
-    }
-
-    private static Stream<Arguments> findByTestWithProfileImageKoreanName() {
-        return Arrays.stream(ProfileImageName.values())
-                     .map(ProfileImageName::getKorean)
-                     .map(Arguments::of);
     }
 }

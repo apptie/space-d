@@ -35,15 +35,15 @@ class AuthControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void initAccountProfile_성공_테스트() throws Exception {
+    void 회원_프로필_초기화_요청_성공_테스트() throws Exception {
         // given
         willDoNothing().given(initAccountInfoService)
                        .initCareerInfo(anyString(), anyString(), anyString(), anyString());
 
         UpdateAccountCareerInfoRequest request = new UpdateAccountCareerInfoRequest(
-                "jobGroupName",
-                "companyName",
-                "experienceName"
+                "개발자",
+                "중소기업",
+                "1년 차 미만"
         );
 
         // when & then
@@ -55,10 +55,10 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        initAccountProfile_문서화(resultActions);
+        회원_프로필_초기화_요청_문서화(resultActions);
     }
 
-    private void initAccountProfile_문서화(ResultActions resultActions) throws Exception {
+    private void 회원_프로필_초기화_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -74,7 +74,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void refreshToken_성공_테스트() throws Exception {
+    void 토큰_재발급_요청_성공_테스트() throws Exception {
         // given
         Cookie refreshTokenCookie = mock(Cookie.class);
 
@@ -98,28 +98,10 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 cookie().httpOnly("refreshToken", true)
         );
 
-        refreshToken_문서화(resultActions);
+        토큰_재발급_요청_문서화(resultActions);
     }
 
-    @Test
-    void refreshToken_실패_테스트_refreshToken_없음() throws Exception {
-        // given
-        Cookie notRefreshTokenCookie = mock(Cookie.class);
-
-        given(notRefreshTokenCookie.getName()).willReturn("not refreshToken");
-
-        // when & then
-        mockMvc.perform(
-                post("/auths/refresh-token").contentType(MediaType.APPLICATION_JSON)
-                        .cookie(notRefreshTokenCookie)
-        ).andExpectAll(
-                status().isUnauthorized(),
-                jsonPath("$.code").value("REFRESH_TOKEN_NOT_FOUND"),
-                jsonPath("$.message").value("refresh token cookie가 없습니다.")
-        );
-    }
-
-    private void refreshToken_문서화(ResultActions resultActions) throws Exception {
+    private void 토큰_재발급_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestCookies(
@@ -133,6 +115,22 @@ class AuthControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("tokenScheme").description("토큰 scheme")
                         )
                 )
+        );
+    }
+
+    @Test
+    void refreshToken이_없으면_토큰을_재발급_할_수_없다() throws Exception {
+        // given
+        Cookie notRefreshTokenCookie = mock(Cookie.class);
+
+        // when & then
+        mockMvc.perform(
+                post("/auths/refresh-token").contentType(MediaType.APPLICATION_JSON)
+                                            .cookie(notRefreshTokenCookie)
+        ).andExpectAll(
+                status().isUnauthorized(),
+                jsonPath("$.code").value("REFRESH_TOKEN_NOT_FOUND"),
+                jsonPath("$.message").value("refresh token cookie가 없습니다.")
         );
     }
 }

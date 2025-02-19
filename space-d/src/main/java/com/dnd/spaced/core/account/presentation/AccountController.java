@@ -52,7 +52,7 @@ public class AccountController {
             @AuthAccount AuthAccountInfo accountInfo,
             @Valid @RequestBody UpdateProfileInfoRequest request
     ) {
-        accountService.changeProfileInfo(accountInfo.id(), request.originNickname(), request.profileImageKoreanName());
+        accountService.changeProfileInfo(accountInfo.id(), request.nickname(), request.profileImageKoreanName());
 
         return ResponseEntityConst.NO_CONTENT;
     }

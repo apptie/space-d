@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProfileImageName {
+
     MERCURY("수성", "mercury.png"),
     VENUS("금성", "venus.png"),
     EARTH("지구", "earth.png"),

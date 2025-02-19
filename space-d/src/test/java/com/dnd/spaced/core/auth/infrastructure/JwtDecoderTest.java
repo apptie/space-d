@@ -36,92 +36,30 @@ class JwtDecoderTest {
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효하지_않은_토큰이_주어지면_InvalidTokenException_예외가_발생한다(TokenType tokenType) {
-        // given
-        String invalidToken = "Bearer abcde";
-
+    void 유효하지_않은_길이의_토큰을_인코딩_할_수_없다(TokenType tokenType) {
         // when & then
-        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
+        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, "Bearer invalid"))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
-    void encode_메서드는_만료된_토큰이_주어지면_빈_Optional을_반환한다(TokenType tokenType) {
+    void 만료된_토큰을_디코딩_하면_빈_claim을_반환한다(TokenType tokenType) {
         // given
-        TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
-                43200,
-                259200,
-                43200000L,
-                259200000L
-        );
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String token = jwtEncoder.encode(LocalDateTime.now().minusYears(3L), tokenType, "id", "roleName");
+        String token = jwtEncoder.encode(
+                LocalDateTime.of(2022, 2, 2, 13, 13),
+                tokenType,
+                "user1@naver.com",
+                "ROLE_USER"
+        );
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
 
         // then
         assertThat(actual).isEmpty();
-    }
-
-    @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 예외가 발생한다.")
-    @MethodSource("encodeTestWithTokenTypeAndInvalidToken")
-    void encode_메서드는_주어진_토큰이_null이거나_길이가_부족하면_InvalidTokenException_예외가_발생한다(TokenType tokenType, String invalidToken) {
-        // when & then
-        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("토큰이 존재하지 않거나 길이가 부족합니다.");
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TokenType.class)
-    void encode_메서드는_유효한_토큰을_전달하면_토큰의_PrivateClaims를_반환한다(TokenType tokenType) {
-        // given
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "id";
-        String roleName = "roleName";
-        LocalDateTime now = LocalDateTime.now();
-        String token = jwtEncoder.encode(now, tokenType, id, roleName);
-
-        // when
-        Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
-
-        // then
-        assertAll(
-                () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual.get().accountId()).isEqualTo(id),
-                () -> assertThat(actual.get().roleName()).isEqualTo(roleName),
-                () -> assertThat(actual.get().issuedAt()).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS))
-        );
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TokenType.class)
-    void encode_메서드는_issuer가_다른_토큰을_전달하면_InvalidTokenException이_발생한다(TokenType tokenType) {
-        // given
-        TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
-                43200,
-                259200,
-                43200000L,
-                259200000L
-        );
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
-        String id = "id";
-        String roleName = "roleName";
-        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, id, roleName);
-
-        // when & then
-        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("서비스에서 발급한 토큰이 아닙니다.");
     }
 
     private static Stream<Arguments> encodeTestWithTokenTypeAndInvalidToken() {
@@ -131,5 +69,57 @@ class JwtDecoderTest {
                 Arguments.of(TokenType.REFRESH, null),
                 Arguments.of(TokenType.REFRESH, "")
         );
+    }
+
+    @ParameterizedTest(name = "TokenType이 {0}이고 토큰이 {1}일 때 토큰 디코딩을 할 수 없다")
+    @MethodSource("encodeTestWithTokenTypeAndInvalidToken")
+    void 비어_있는_토큰은_디코딩_할_수_없다(TokenType tokenType, String invalidToken) {
+        // when & then
+        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, invalidToken))
+                .isInstanceOf(InvalidTokenException.class)
+                .hasMessage("토큰이 존재하지 않거나 길이가 부족합니다.");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TokenType.class)
+    void 유효한_토큰을_디코딩_한다(TokenType tokenType) {
+        // given
+        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+        LocalDateTime publishTime = LocalDateTime.now();
+        String token = jwtEncoder.encode(publishTime, tokenType, "user1@naver.com", "ROLE_USER");
+
+        // when
+        Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
+
+        // then
+        assertAll(
+                () -> assertThat(actual).isNotEmpty(),
+                () -> assertThat(actual.get().accountId()).isEqualTo("user1@naver.com"),
+                () -> assertThat(actual.get().roleName()).isEqualTo("ROLE_USER"),
+                () -> assertThat(actual.get().issuedAt()).isEqualTo(publishTime.truncatedTo(ChronoUnit.SECONDS))
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TokenType.class)
+    void 토큰_발급자가_다른_토큰은_디코딩_할_수_없다(TokenType tokenType) {
+        // given
+        TokenProperties otherIssuerTokenProperties = new TokenProperties(
+                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
+                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
+                "other-issuer",
+                43200,
+                259200,
+                43200000L,
+                259200000L
+        );
+
+        JwtEncoder jwtEncoder = new JwtEncoder(otherIssuerTokenProperties);
+        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, "user1@naver.com", "ROLE_USER");
+
+        // when & then
+        assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))
+                .isInstanceOf(InvalidTokenException.class)
+                .hasMessage("서비스에서 발급한 토큰이 아닙니다.");
     }
 }

@@ -38,9 +38,9 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void save_성공_테스트() throws Exception {
+    void 댓글_작성_요청_성공_테스트() throws Exception {
         // given
-        SaveCommentRequest request = new SaveCommentRequest("content");
+        SaveCommentRequest request = new SaveCommentRequest("이 용어 언제 쓰는건가요?");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -52,10 +52,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/words/1")
         );
 
-        save_문서화(resultActions);
+        댓글_작성_요청_문서화(resultActions);
     }
 
-    private void save_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_작성_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -73,7 +73,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void delete_성공_테스트() throws Exception {
+    void 댓글_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 delete("/comments/{id}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -81,10 +81,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        delete_문서화(resultActions);
+        댓글_삭제_요청_문서화(resultActions);
     }
 
-    private void delete_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_삭제_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -99,9 +99,9 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void update_성공_테스트() throws Exception {
+    void 댓글_수정_요청_성공() throws Exception {
         // given
-        UpdateCommentRequest request = new UpdateCommentRequest("change content");
+        UpdateCommentRequest request = new UpdateCommentRequest("이 용어 쓰기는 하는건가요?");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -112,10 +112,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        update_문서화(resultActions);
+        댓글_수정_요청_문서화(resultActions);
     }
 
-    private void update_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_수정_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -132,10 +132,10 @@ class CommentControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void readAllBy_성공_테스트() throws Exception {
+    void 댓글_전체_조회_성공_테스트() throws Exception {
         // given
-        CommentInfoDto commentInfoDto = new CommentInfoDto(1L, 1L, "content", 0);
-        WriterInfoDto writerInfoDto = new WriterInfoDto("accountId", "writer", "profileImage");
+        CommentInfoDto commentInfoDto = new CommentInfoDto(1L, 1L, "이 용어 언제 쓰는건가요?", 0);
+        WriterInfoDto writerInfoDto = new WriterInfoDto("user1@naver.com", "재빠른지구001", "earth.png");
         ReadAllCommentDto readAllCommentDto = new ReadAllCommentDto(commentInfoDto, writerInfoDto, false);
 
         given(commentService.readAllBy(eq(null), anyLong(), eq(null), any())).willReturn(List.of(readAllCommentDto));
@@ -148,18 +148,18 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("comments").exists(),
                 jsonPath("comments[*].commentInfo").exists(),
                 jsonPath("comments[*].commentInfo.id").exists(),
-                jsonPath("comments[*].commentInfo.content").value("content"),
+                jsonPath("comments[*].commentInfo.content").value("이 용어 언제 쓰는건가요?"),
                 jsonPath("comments[*].commentInfo.likeCount").value(0),
                 jsonPath("comments[*].writerInfo").exists(),
-                jsonPath("comments[*].writerInfo.id").value("accountId"),
-                jsonPath("comments[*].writerInfo.writerNickname").value("writer"),
-                jsonPath("comments[*].writerInfo.writerProfileImage").value("profileImage")
+                jsonPath("comments[*].writerInfo.id").value("user1@naver.com"),
+                jsonPath("comments[*].writerInfo.writerNickname").value("재빠른지구001"),
+                jsonPath("comments[*].writerInfo.writerProfileImage").value("earth.png")
         );
 
-        readAllBy_문서화(resultActions);
+        댓글_전체_조회_문서화(resultActions);
     }
 
-    private void readAllBy_문서화(ResultActions resultActions) throws Exception {
+    private void 댓글_전체_조회_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(

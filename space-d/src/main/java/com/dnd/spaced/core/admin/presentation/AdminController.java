@@ -54,16 +54,16 @@ public class AdminController {
         return ResponseEntityConst.NO_CONTENT;
     }
 
-    @DeleteMapping("/words/examples/{id}")
-    public ResponseEntity<Void> deleteWordExample(@PathVariable Long id) {
-        adminWordService.deleteWordExample(id);
+    @DeleteMapping("/words/{wordId}/examples/{exampleId}")
+    public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long exampleId) {
+        adminWordService.deleteWordExample(wordId, exampleId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
-    @DeleteMapping("/words/pronunciations/{id}")
-    public ResponseEntity<Void> deletePronunciation(@PathVariable Long id) {
-        adminWordService.deletePronunciation(id);
+    @DeleteMapping("/words/{wordId}/pronunciations/{pronunciationId}")
+    public ResponseEntity<Void> deletePronunciation(@PathVariable Long wordId, @PathVariable Long pronunciationId) {
+        adminWordService.deletePronunciation(wordId, pronunciationId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

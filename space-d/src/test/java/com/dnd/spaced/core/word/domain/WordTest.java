@@ -18,33 +18,33 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class WordTest {
 
     @Test
-    void 생성자는_유효한_name과_meaning을_전달하면_Word를_초기화하고_반환한다() {
+    void 용어를_초기화한다() {
         // when
-        String name = "name";
-        String meaning = "word meaning";
-        String category = "개발";
+        String name = "Authorization";
+        String categoryName = "개발";
+        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
         Word word = Word.builder()
                         .name(name)
+                        .categoryName(categoryName)
                         .meaning(meaning)
-                        .categoryName(category)
                         .build();
 
         // then
         assertAll(
                 () -> assertThat(word.getName()).isEqualTo(name),
                 () -> assertThat(word.getWordMeaning().getMeaning()).isEqualTo(meaning),
-                () -> assertThat(word.getCategory().getName()).isEqualTo(category)
+                () -> assertThat(word.getCategory().getName()).isEqualTo(categoryName)
         );
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_name을_전달하면_InvalidWordNameException_예외가_발생한다(String invalidName) {
+    void 비어_있는_용어_이름이라면_용어를_초기화_할_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
                           .name(invalidName)
-                          .meaning("word meaning")
+                          .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                           .categoryName("개발")
                           .build()
         ).isInstanceOf(InvalidWordNameException.class)
@@ -53,26 +53,26 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 비어_있는_용어_뜻이라면_용어를_초기화_할_수_없다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
-                          .name("name")
+                          .name("Authorization")
                           .meaning(invalidMeaning)
                           .categoryName("개발")
                           .build()
         ).isInstanceOf(InvalidWordMeaningException.class)
-         .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+         .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_categoryName을_전달하면_InvalidCategoryNameException_예외가_발생한다(String invalidCategoryName) {
+    void 비어_있는_카테고리_이름을_전달하면_용어를_초기화_할_수_없다(String invalidCategoryName) {
         // when & then
         assertThatThrownBy(
                 () -> Word.builder()
-                          .name("name")
-                          .meaning("word meaning")
+                          .name("Authorization")
+                          .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                           .categoryName(invalidCategoryName)
                           .build()
         ).isInstanceOf(InvalidCategoryNameException.class)
@@ -80,12 +80,12 @@ class WordTest {
     }
 
     @Test
-    void addPronunciation_메서드는_Pronunciation을_전달하면_Word에_Pronunciation을_추가한다() {
+    void 용어에_용어_발음_정보를_추가한다() {
         // given
         Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -97,12 +97,12 @@ class WordTest {
     }
 
     @Test
-    void addWordExample_메서드는_WordExample을_전달하면_Word에_WordExample을_추가한다() {
+    void 용어에_용어_예문을_추가한다() {
         // given
-        WordExample wordExample = new WordExample("example");
+        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -114,11 +114,11 @@ class WordTest {
     }
 
     @Test
-    void addViewCount_메서드는_호출하면_viewCount를_1_증가시킨다() {
+    void 용어_조회수를_증가시킨다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -130,16 +130,16 @@ class WordTest {
     }
 
     @Test
-    void changeWordMeaning_메서드는_유효한_meaning을_전달하면_전달한_meaning으로_변경한다() {
+    void 용어_뜻을_변경한다() {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
         // when
-        String changedMeaning = "changed word meaning";
+        String changedMeaning = "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
 
         word.changeMeaning(changedMeaning);
 
@@ -149,17 +149,17 @@ class WordTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void changeWordMeaning_메서드는_유효하지_않은_meaning을_전달하면_InvalidWordMeaningException_예외가_발생한다(String invalidMeaning) {
+    void 길이가_유효하지_않은_용어_뜻이라면_용어를_초기화_할_수_없다(String invalidMeaning) {
         // given
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
         // when & then
         assertThatThrownBy(() -> word.changeMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
-                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+                .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
 }

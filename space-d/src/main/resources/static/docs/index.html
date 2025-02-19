@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 22 Sep 2024 15:21:34 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Mon, 18 Nov 2024 13:21:59 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -1086,14 +1086,14 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "name" : "name",
-  "meaning" : "meaning",
-  "categoryName" : "categoryName",
+  "name" : "Authorization",
+  "meaning" : "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+  "categoryName" : "개발",
   "pronunciations" : [ {
-    "pronunciation" : "pronunciation",
-    "typeName" : "typeName"
+    "pronunciation" : "어써라이제이션",
+    "typeName" : "한글 발음"
   } ],
-  "examples" : [ "example" ]
+  "examples" : [ "게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다." ]
 }</code></pre>
 </div>
 </div>
@@ -1262,13 +1262,13 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_MEANING</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_NAME</code></p></td>
@@ -1282,11 +1282,29 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어가 없습니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Update-Word-Example"><a class="link" href="#Update-Word-Example">용어 예문 수정 API</a></h3>
+<h3 id="Update-Word-Example"><a class="link" href="#Update-Word-Example">용어 예문 변경 API</a></h3>
 <div class="sect3">
 <h4 id="Update-Word-Example_http_request"><a class="link" href="#Update-Word-Example_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1296,7 +1314,7 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "example" : "example"
+  "example" : "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
 }</code></pre>
 </div>
 </div>
@@ -1404,7 +1422,13 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 50글자 이하여야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1415,7 +1439,7 @@ Authorization: Bearer AccessToken
 <h4 id="Delete-Word-Example_http_request"><a class="link" href="#Delete-Word-Example_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/examples/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1/examples/1 HTTP/1.1
 Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
@@ -1483,16 +1507,22 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Delete-Pronunciation"><a class="link" href="#Delete-Pronunciation">용어 발음 삭제 API</a></h3>
+<h3 id="Delete-Pronunciation"><a class="link" href="#Delete-Pronunciation">용어 발음 정보 삭제 API</a></h3>
 <div class="sect3">
 <h4 id="Delete-Pronunciation_http_request"><a class="link" href="#Delete-Pronunciation_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/pronunciations/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1/pronunciations/1 HTTP/1.1
 Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
@@ -1559,6 +1589,12 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1656,9 +1692,9 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "jobGroupName" : "jobGroup",
-  "companyName" : "company",
-  "experienceName" : "experienceName"
+  "jobGroupName" : "개발자",
+  "companyName" : "중소기업",
+  "experienceName" : "비공개"
 }</code></pre>
 </div>
 </div>
@@ -1802,7 +1838,7 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "originNickname" : "originNickname",
+  "nickname" : "nickname",
   "profileImageKoreanName" : "profileImageKoreanName"
 }</code></pre>
 </div>
@@ -1853,7 +1889,7 @@ Authorization: Bearer AccessToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originNickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">기존 닉네임 입력</p></td>
@@ -1906,7 +1942,7 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (originNickname, profileImageKoreanName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (nickname, profileImageKoreanName)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_NICKNAME</code></p></td>
@@ -3165,7 +3201,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-09-20 00:21:18 +0900
+Last updated 2024-11-09 22:21:30 +0900
 </div>
 </div>
 </body>

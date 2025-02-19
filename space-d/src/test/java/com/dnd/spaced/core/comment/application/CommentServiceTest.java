@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
@@ -15,7 +14,6 @@ import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFound
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
-import com.dnd.spaced.core.like.infrastructure.LikeCountRedisRepository;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
@@ -46,48 +44,45 @@ class CommentServiceTest {
     @Autowired
     WordRepository wordRepository;
 
-    @Autowired
-    LikeCountRedisRepository likeCountRedisRepository;
-
     @Test
-    void save_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 없거나_탈퇴한_회원_식별자로_댓글을_작성할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.save("accountId", -1L, "댓글"))
+        assertThatThrownBy(() -> commentService.save("user1@naver.com", 1L, "이 용어는 언제 쓰는건가요?"))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
                 .hasMessage("유효하지 않은 회원입니다.");
     }
 
     @Test
-    void save_메서드는_지정한_용어_ID가_없다면_AssociationWordNotFoundException_예외가_발생한다() {
+    void 댓글을_작성할_용어가_없는_경우_댓글을_작성할_수_없다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
 
         // when & then
-        assertThatThrownBy(() -> commentService.save(account.getId(), -1L, "댓글"))
+        assertThatThrownBy(() -> commentService.save(account.getId(), -1L, "이 용어는 언제 쓰는건가요?"))
                 .isInstanceOf(AssociationWordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 댓글을 작성할 수 없다")
     @NullAndEmptySource
-    void save_메서드는_유효하지_않은_댓글_내용을_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 댓글로_비어_있는_내용을_작성할_수_없다(String invalidContent) {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -101,17 +96,17 @@ class CommentServiceTest {
     }
 
     @Test
-    void save_메서드는_유효한_파라미터를_전달하면_댓글을_추가한다() {
+    void 댓글을_작성한다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
@@ -119,25 +114,27 @@ class CommentServiceTest {
         wordRepository.save(word);
 
         // when & then
-        assertDoesNotThrow(() -> commentService.save(account.getId(), word.getId(), "댓글"));
+        assertDoesNotThrow(() ->
+                commentService.save(account.getId(), word.getId(), "이 용어는 언제 쓰는건가요?")
+        );
     }
 
     @Test
-    void delete_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 없거나_탈퇴한_회원_식별자는_댓글을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.delete("accountId", -1L))
+        assertThatThrownBy(() -> commentService.delete("user1@naver.com", 1L))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
                 .hasMessage("유효하지 않은 회원입니다.");
     }
 
     @Test
-    void delete_메서드는_지정한_댓글_ID가_없다면_CommentNotFoundException_예외가_발생한다() {
+    void 없는_댓글_식별자를_통해_댓글을_삭제할_수_없다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -149,185 +146,190 @@ class CommentServiceTest {
     }
 
     @Test
-    void delete_메서드는_댓글_작성자가_아니라면_ForbiddenCommentException_예외가_발생한다() {
+    void 댓글_작성자가_아니라면_댓글을_삭제할_수_없다() {
         // given
         Account writer = Account.builder()
-                                .id("accountId1")
-                                .nickname("nickname")
-                                .profileImage("profileImage")
-                                .roleName(Role.ROLE_ADMIN.name())
+                                .id("user1@naver.com")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .roleName("ROLE_USER")
                                 .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
-        Account account = Account.builder()
-                                 .id("accountId2")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+        Account reader = Account.builder()
+                                 .id("user2@naver.com")
+                                 .nickname("재빠른지구002")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(writer);
-        accountRepository.save(account);
+        accountRepository.save(reader);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.delete(account.getId(), 1L))
+        assertThatThrownBy(() -> commentService.delete(reader.getId(), 1L))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 삭제할 권한이 없습니다.");
     }
 
     @Test
-    void delete_메서드는_유효한_파라미터를_전달하면_지정한_댓글을_싹제한다() {
+    void 댓글을_삭제한다() {
         // given
-        Account account = Account.builder()
-                                 .id("accountId1")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
-                                 .build();
+        Account writer = Account.builder()
+                                .id("user1@naver.com")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .roleName("ROLE_USER")
+                                .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(account.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertDoesNotThrow(() -> commentService.delete(account.getId(), 1L));
+        assertDoesNotThrow(() -> commentService.delete(writer.getId(), 1L));
     }
 
     @Test
-    void update_메서드는_없는_회원을_전달하면_AssociationAccountNotFoundException_예외가_발생한다() {
+    void 없거나_탈퇴한_회원의_식별자로는_댓글을_수정할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.update("accountId", -1L, "댓글"))
-                .isInstanceOf(AssociationAccountNotFoundException.class)
-                .hasMessage("유효하지 않은 회원입니다.");
+        assertThatThrownBy(() ->
+                commentService.update(
+                        "user1@naver.com",
+                        1L,
+                        "처음 보는 용어인데 잘 쓰지는 않나보네요")
+        ).isInstanceOf(AssociationAccountNotFoundException.class)
+         .hasMessage("유효하지 않은 회원입니다.");
     }
 
     @Test
-    void update_메서드는_지정한_댓글_ID가_없다면_CommentNotFoundException_예외가_발생한다() {
+    void 식별할_수_없는_댓글_식별자로_댓글을_수정할_수_없다() {
         // given
-        Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+        Account writer = Account.builder()
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(account.getId(), -1L, "댓글"))
+        assertThatThrownBy(() -> commentService.update(writer.getId(), 1L, "이 용어는 언제 쓰는건가요?"))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
 
     @Test
-    void update_메서드는_댓글_작성자가_아니라면_ForbiddenCommentException_예외가_발생한다() {
+    void 댓글_작성자가_아니라면_댓글을_수정할_수_없다() {
         // given
         Account writer = Account.builder()
-                                .id("accountId1")
-                                .nickname("nickname")
-                                .profileImage("profileImage")
-                                .roleName(Role.ROLE_ADMIN.name())
+                                .id("user1@naver.com")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .roleName("ROLE_USER")
                                 .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
-        Account account = Account.builder()
-                                 .id("accountId2")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+        Account reader = Account.builder()
+                                 .id("user2@naver.com")
+                                 .nickname("재빠른지구002")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(writer);
-        accountRepository.save(account);
+        accountRepository.save(reader);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(account.getId(), 1L, "댓글"))
+        assertThatThrownBy(() -> commentService.update(reader.getId(), 1L, "처음 보는 용어인데 잘 쓰지는 않나보네요"))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 수정할 권한이 없습니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void update_메서드는_유효하지_않은_댓글_내용을_전달하면_InvalidCommentContentException_예외가_발생한다(String invalidContent) {
+    void 비어_있는_내용으로_댓글을_수정할_수_없다(String invalidContent) {
         // given
-        Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+        Account writer = Account.builder()
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(account.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(account.getId(), word.getId(), invalidContent))
+        assertThatThrownBy(() -> commentService.update(writer.getId(), word.getId(), invalidContent))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
 
     @Test
-    void update_메서드는_유효한_파라미터를_전달하면_전달한_내용으로_댓글_내용을_변경한다() {
+    void 댓글을_수정한다() {
         // given
-        Account account = Account.builder()
-                                 .id("accountId1")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+        Account writer = Account.builder()
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(account.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertDoesNotThrow(() -> commentService.update(account.getId(), 1L, "댓글 변경"));
+        assertDoesNotThrow(() -> commentService.update(writer.getId(), 1L, "처음 보는 용어인데 잘 쓰지는 않나보네요"));
     }
 
     @Test
-    void readAllBy_메서드는_로그인한_경우_지정한_조건에_따라_댓글_목록을_조회한다() {
+    void 로그인_하지_않고_특정_용어의_댓글_목록을_조회한다() {
         // given
-        Account account = Account.builder()
-                                 .id("accountId1")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
-                                 .build();
+        Account writer = Account.builder()
+                                .id("user1@naver.com")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .roleName("ROLE_USER")
+                                .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(account.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.save(writer.getId(), word.getId(), "쓰는걸 본 적이 없는 것 같네요");
 
         // when
         List<ReadAllCommentDto> actual = commentService.readAllBy(
@@ -339,33 +341,35 @@ class CommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("댓글")
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.get(1).commentInfo().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
         );
     }
 
     @Test
-    void readAllBy_메서드는_로그인하지_않은_경우_지정한_조건에_따라_댓글_목록을_조회한다() {
+    void 로그인하고_특정_용어의_댓글_목록을_조회한다() {
         // given
-        Account account = Account.builder()
-                                 .id("accountId1")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
-                                 .build();
+        Account writer = Account.builder()
+                                .id("user1@naver.com")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .roleName("ROLE_USER")
+                                .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
-        accountRepository.save(account);
+        accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(account.getId(), word.getId(), "댓글");
+        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.save(writer.getId(), word.getId(), "쓰는걸 본 적이 없는 것 같네요");
 
         // when
         List<ReadAllCommentDto> actual = commentService.readAllBy(
-                account.getId(),
+                writer.getId(),
                 word.getId(),
                 null,
                 PageRequest.of(0, 10)
@@ -373,8 +377,9 @@ class CommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("댓글")
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.get(1).commentInfo().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
         );
     }
 }

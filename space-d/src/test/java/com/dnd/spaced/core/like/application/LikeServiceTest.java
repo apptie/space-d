@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
@@ -47,21 +46,21 @@ class LikeServiceTest {
     LikeRepository likeRepository;
 
     @Test
-    void processLike_메서드는_없는_회원을_전달하면_ForbiddenLikeException_예외가_발생한다() {
+    void 좋아요를_누른_회원이_아닌_다른_회원은_좋아요를_취소할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> likeService.processLike("accountId", -1L))
+        assertThatThrownBy(() -> likeService.processLike("user1@naver.com", 1L))
                 .isInstanceOf(ForbiddenLikeException.class)
                 .hasMessage("좋아요를 제어할 권한이 없습니다.");
     }
 
     @Test
-    void processLike_메서드는_없는_댓글을_전달하면_AssociationCommentNotFoundException_예외가_발생한다() {
+    void 존재하지_않는_댓글_식별자로_좋아요를_할_수_없다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -73,24 +72,24 @@ class LikeServiceTest {
     }
 
     @Test
-    void processLike_메서드는_이미_좋아요를_수행한_댓글인_경우_좋아요를_삭제한다() {
+    void 좋아요를_취소한다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
         accountRepository.save(account);
         wordRepository.save(word);
 
-        Comment comment = new Comment(account.getId(), word.getId(), "댓글");
+        Comment comment = new Comment(account.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         commentRepository.save(comment);
         likeService.processLike(account.getId(), comment.getId());
@@ -105,24 +104,24 @@ class LikeServiceTest {
     }
 
     @Test
-    void processLike_메서드는_좋아요를_하지_않은_댓글의_경우_좋아요를_수행한다() {
+    void 좋아요를_추가한다() {
         // given
         Account account = Account.builder()
-                                 .id("accountId")
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_ADMIN.name())
+                                 .id("user1@naver.com")
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
-                        .meaning("word meaning")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
 
         accountRepository.save(account);
         wordRepository.save(word);
 
-        Comment comment = new Comment(account.getId(), word.getId(), "댓글");
+        Comment comment = new Comment(account.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
 
         commentRepository.save(comment);
 

@@ -28,8 +28,12 @@ public class LikeCountBuffer {
     }
 
     public void deleteLikeCount(LikeCountIdentifier identifier) {
-        currentBuffer.get()
-                     .merge(identifier, -1, Integer::sum);
+        Map<LikeCountIdentifier, Integer> buffer = currentBuffer.get();
+        buffer.merge(identifier, -1, Integer::sum);
+
+        if (buffer.size() == FLUSH_THRESHOLD) {
+            flushBuffer();
+        }
     }
 
     public void flushBuffer() {

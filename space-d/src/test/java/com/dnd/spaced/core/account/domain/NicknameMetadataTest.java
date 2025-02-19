@@ -18,24 +18,34 @@ import org.junit.jupiter.params.provider.MethodSource;
 class NicknameMetadataTest {
 
     @Test
-    void 생성자는_유효한_nickname을_전달하면_NicknameMetadata를_초기화하고_반환한다() {
+    void 닉네임_메타데이터를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new NicknameMetadata("abcde"));
+        assertDoesNotThrow(() -> new NicknameMetadata("재빠른지구"));
     }
 
-    @ParameterizedTest
+    private static Stream<Arguments> constructorTestWithInvalidNickname() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(""),
+                Arguments.of("  "),
+                Arguments.of("1234"),
+                Arguments.of("1234567")
+        );
+    }
+
+    @ParameterizedTest(name = "닉네임이 {0}일 때 닉네임 메타데이터를 초기화할 수 없다")
     @MethodSource("constructorTestWithInvalidNickname")
-    void 생성자는_유효하지_않은_nickname을_전달하면_InvalidNicknameMetadataException_예외가_발생한다() {
+    void 닉네임_메타데이터를_초기화할_때_길이가_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
         // when & then
-        assertThatThrownBy(() -> new NicknameMetadata("aaaaaaaa"))
+        assertThatThrownBy(() -> new NicknameMetadata(invalidNickname))
                 .isInstanceOf(InvalidNicknameMetadataException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 6글자 이하여야 합니다.");
     }
 
     @Test
-    void addCount_메서드는_nickname_개수를_1_증가시킨다() {
+    void 닉네임_메타데이터의_닉네임_생성_횟수를_1_증가시킨다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("abcde");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
         long beforeCount = nicknameMetadata.getCount();
 
         // when
@@ -46,9 +56,9 @@ class NicknameMetadataTest {
     }
 
     @Test
-    void getId_메서드는_NicknameMetadata의_id_역할을_하는_nickname을_반환한다() {
+    void 닉네임_메타데이터_식별자를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("abcde");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
 
         // when
         String actual = nicknameMetadata.getId();
@@ -58,21 +68,14 @@ class NicknameMetadataTest {
     }
 
     @Test
-    void isNew_메서드는_NicknameMetadat가_영속화가_필요한지_여부를_반환한다() {
+    void 닉네임_메타데이터의_영속화_여부를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("abcde");
+        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
 
         // when
         boolean actual = nicknameMetadata.isNew();
 
         // then
         assertThat(actual).isTrue();
-    }
-
-    private static Stream<Arguments> constructorTestWithInvalidNickname() {
-        return Stream.of(
-                Arguments.of((Object) null), Arguments.of(""), Arguments.of("  "),
-                Arguments.of("aaaa"), Arguments.of("aaaaaaaaaaa")
-        );
     }
 }

@@ -3,17 +3,12 @@ package com.dnd.spaced.core.account.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.Company;
-import com.dnd.spaced.core.account.domain.Experience;
-import com.dnd.spaced.core.account.domain.JobGroup;
 import com.dnd.spaced.core.account.domain.ProfileImageName;
-import com.dnd.spaced.core.account.domain.Role;
 import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
 import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
 import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
@@ -47,14 +42,14 @@ class AccountServiceTest {
     AccountRepository accountRepository;
 
     @Test
-    void withdrawal_메서드는_회원_ID를_전달하면_회원을_탈퇴_처리한다() {
+    void 지정한_회원을_탈퇴_처리한다() {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -67,48 +62,57 @@ class AccountServiceTest {
     }
 
     @Test
-    void withdrawl_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 탈퇴_시_없거나_탈퇴한_회원_식별자라면_아니라면_탈퇴할_수_없다() {
+        // given
+        String accountId = "user1@naver.com";
+
         // when & then
-        assertThatThrownBy(() -> accountService.withdrawal("id"))
+        assertThatThrownBy(() -> accountService.withdrawal(accountId))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
     @Test
-    void changeCareerInfo_메서드는_유효한_CareerInfo를_전달하면_CareerInfo를_변경한다() {
+    void 회원_경력_정보를_변경한다() {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
 
-        // when & then
-        assertDoesNotThrow(
-                () -> accountService.changeCareerInfo(
-                        accountId,
-                        JobGroup.DEVELOP.getName(),
-                        Company.BLIND.getName(),
-                        Experience.BETWEEN_FIRST_SECOND.getName()
-                )
+        // when
+        accountService.changeCareerInfo(
+                accountId,
+                "개발자",
+                "비공개",
+                "1~2년 차"
+        );
+
+        // then
+        AccountInfoDto actual = accountService.findAccountInfo(accountId);
+
+        assertAll(
+                () -> assertThat(actual.jobGroupName()).isEqualTo("개발자"),
+                () -> assertThat(actual.companyName()).isEqualTo("비공개"),
+                () -> assertThat(actual.experienceName()).isEqualTo("1~2년 차")
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_JobGroupName을_전달하면_InvalidJobGroupException_예외가_발생한다(
-            String invalidJobGroupName) {
+    void 회원_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -118,23 +122,23 @@ class AccountServiceTest {
                 () -> accountService.changeCareerInfo(
                         accountId,
                         invalidJobGroupName,
-                        Company.BLIND.getName(),
-                        Experience.BETWEEN_FIRST_SECOND.getName()
+                        "비공개",
+                        "1~2년 차"
                 )
         ).isInstanceOf(InvalidJobGroupException.class)
          .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_CompanyName을_전달하면_InvalidCompanyException_예외가_발생한다(String invalidCompanyName) {
+    void 회원_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -143,25 +147,24 @@ class AccountServiceTest {
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
                         accountId,
-                        JobGroup.DEVELOP.getName(),
+                        "개발자",
                         invalidCompanyName,
-                        Experience.BETWEEN_FIRST_SECOND.getName()
+                        "1~2년 차"
                 )
         ).isInstanceOf(InvalidCompanyException.class)
          .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeCareerInfo_메서드는_유효하지_않은_ExperienceName을_전달하면_InvalidExperienceException_예외가_발생한다(
-            String invalidExperienceName) {
+    void 회원_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -170,8 +173,8 @@ class AccountServiceTest {
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
                         accountId,
-                        JobGroup.DEVELOP.getName(),
-                        Company.BLIND.getName(),
+                        "개발자",
+                        "비공개",
                         invalidExperienceName
                 )
         ).isInstanceOf(InvalidExperienceException.class)
@@ -179,53 +182,61 @@ class AccountServiceTest {
     }
 
     @Test
-    void changeCareerInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원_경력_정보_변경_시_지정한_식별자가_없거나_탈퇴한_회원이라면_경력_정보를_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
-                        "id",
-                        JobGroup.DEVELOP.getName(),
-                        Company.BLIND.getName(),
-                        Experience.BETWEEN_FIRST_SECOND.getName()
+                        "user1@naver.com",
+                        "개발자",
+                        "비공개",
+                        "1~2년 차"
                 )
         ).isInstanceOf(ForbiddenAccountException.class)
          .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
-    @ParameterizedTest
+    private static Stream<Arguments> changeProfileInfoTestWithProfileImageKoreanName() {
+        return Arrays.stream(ProfileImageName.values())
+                     .map(Arguments::of);
+    }
+
+    @ParameterizedTest(name = "프로필 이미지를 유효한 프로필 이미지 경로인 {0}으로 변경한다")
     @MethodSource("changeProfileInfoTestWithProfileImageKoreanName")
-    void changeProfileInfo_메서드는_유효한_ProfileInfo를_전달하면_ProfileInfo를_변경한다(String profileImageKoreanName) {
+    void 회원_프로필_정보를_변경한다(ProfileImageName profileImageName) {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
+        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
         accountRepository.save(account);
 
-        // when & then
-        assertDoesNotThrow(
-                () -> accountService.changeProfileInfo(
-                        accountId,
-                        account.getProfileInfo().getNickname(),
-                        profileImageKoreanName
-                )
+        // when
+        accountService.changeProfileInfo(accountId, "행복한지구001", profileImageName.getKorean());
+
+        // then
+        AccountInfoDto actual = accountService.findAccountInfo(accountId);
+
+        assertAll(
+                () -> assertThat(actual.nickname()).isEqualTo("행복한지구001"),
+                () -> assertThat(actual.profileImage()).isEqualTo(profileImageName.getImageName())
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void changeProfileInfo_메서드는_유효하지_않은_profileImageKoreanName을_전달하면_InvalidProfileImageException_예외가_발생한다(String invalidProfileImageKoreanName) {
+    void 회원_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
         accountRepository.save(account);
@@ -234,38 +245,38 @@ class AccountServiceTest {
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
                         accountId,
-                        account.getProfileInfo().getNickname(),
+                        "재빠른지구001",
                         invalidProfileImageKoreanName
                 )
         ).isInstanceOf(InvalidProfileImageNameException.class)
-         .hasMessageContaining("못된 프로필 이미지 이름");
+         .hasMessageContaining("잘못된 프로필 이미지 이름");
     }
 
     @Test
-    void changeProfileInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원_프로필_정보_변경_시_없거나_탈퇴한_회원_식별자라면_프로필_정보를_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
-                        "id",
-                        "nickname",
-                        ProfileImageName.EARTH.getKorean()
+                        "user1@naver.com",
+                        "재빠른지구001",
+                        "earth.png"
                 )
         ).isInstanceOf(ForbiddenAccountException.class)
          .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
     @Test
-    void fidnAccountInfo_메서드는_유효한_회원_ID를_전달하면_해당_회원_정보를_반환한다() {
+    void 회원_정보를_조회한다() {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         Account account = Account.builder()
                                  .id(accountId)
-                                 .nickname("nickname")
-                                 .profileImage("profileImage")
-                                 .roleName(Role.ROLE_USER.name())
+                                 .nickname("재빠른지구001")
+                                 .profileImage("earth.png")
+                                 .roleName("ROLE_USER")
                                  .build();
 
-        account.changeCareerInfo(JobGroup.DEVELOP.getName(), Company.BLIND.getName(), Experience.BLIND.getName());
+        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
         accountRepository.save(account);
 
         // when
@@ -273,25 +284,19 @@ class AccountServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.companyName()).isEqualTo(account.getCareerInfo().getCompany().getName()),
-                () -> assertThat(actual.jobGroupName()).isEqualTo(account.getCareerInfo().getJobGroup().getName()),
-                () -> assertThat(actual.experienceName()).isEqualTo(account.getCareerInfo().getExperience().getName()),
-                () -> assertThat(actual.profileImage()).isEqualTo(account.getProfileInfo().getProfileImage()),
-                () -> assertThat(actual.nickname()).isEqualTo(account.getProfileInfo().getNickname())
+                () -> assertThat(actual.jobGroupName()).isEqualTo("개발자"),
+                () -> assertThat(actual.companyName()).isEqualTo("비공개"),
+                () -> assertThat(actual.experienceName()).isEqualTo("1~2년 차"),
+                () -> assertThat(actual.nickname()).isEqualTo("재빠른지구001"),
+                () -> assertThat(actual.profileImage()).isEqualTo("earth.png")
         );
     }
 
     @Test
-    void findAccountInfo_메서드는_유효하지_않은_회원_ID를_전달하면_ForbiddenAccountException_예외가_발생한다() {
+    void 회원_정보_조회_시_없거나_탈퇴한_회원_식별자라면_회원_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> accountService.findAccountInfo("id"))
+        assertThatThrownBy(() -> accountService.findAccountInfo("user1@naver.com"))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
-    }
-
-    private static Stream<Arguments> changeProfileInfoTestWithProfileImageKoreanName() {
-        return Arrays.stream(ProfileImageName.values())
-                     .map(ProfileImageName::getKorean)
-                     .map(Arguments::of);
     }
 }

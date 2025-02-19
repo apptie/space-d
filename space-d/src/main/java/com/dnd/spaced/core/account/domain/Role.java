@@ -7,7 +7,7 @@ public enum Role {
 
     ROLE_ADMIN, ROLE_USER;
 
-    private static final String EXCEPTION_FORMAT = "잘못된 role name '%s'을(를) 입력했습니다.";
+    private static final String EXCEPTION_FORMAT = "잘못된 권한 정보 이름 '%s'을(를) 입력했습니다.";
 
     public static Role findBy(String roleName) {
         return Arrays.stream(Role.values())

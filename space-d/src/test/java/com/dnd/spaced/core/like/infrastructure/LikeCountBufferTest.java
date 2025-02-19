@@ -1,7 +1,9 @@
 package com.dnd.spaced.core.like.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.dnd.spaced.config.spy.SpyLikeCountBuffer;
 import com.dnd.spaced.core.like.infrastructure.dto.LikeCountIdentifier;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -13,21 +15,123 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class LikeCountBufferTest {
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void 좋아요를_버퍼에_추가하고_임계치를_넘으면_캐시에_갱신한다() throws Exception {
+        // given
+        CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
+        AtomicInteger callbackRunCounter = new AtomicInteger(0);
+        ExecutorService bufferThreadPool = Executors.newFixedThreadPool(2);
+        AtomicInteger bufferSizeBeforeFlush = new AtomicInteger();
+        SpyLikeCountBuffer buffer = new SpyLikeCountBuffer(map -> {
+            bufferSizeBeforeFlush.set(map.size());
+            callbackRunCounter.incrementAndGet();
+            callbackRunCountDownLatch.countDown();
+        }, bufferThreadPool);
+
+        // when
+        for (long i = 0L; i < 120L; i++) {
+            buffer.addLikeCount(new LikeCountIdentifier(i, i));
+        }
+
+        // then
+        Field currentBufferField = LikeCountBuffer.class.getDeclaredField("currentBuffer");
+        currentBufferField.setAccessible(true);
+        AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
+        int bufferSizeAfterFlush = currentBuffer.get().size();
+
+        System.out.println(bufferSizeBeforeFlush.get());
+        assertAll(
+                () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(120),
+                () -> assertThat(buffer.getAddLikeCountCallCount()).isEqualTo(120),
+                () -> assertThat(buffer.getDeleteLikeCountCallCount()).isZero(),
+                () -> assertThat(buffer.getFlushBufferCallCount()).isOne()
+        );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void 좋아요를_버퍼에서_삭제하고_임계치를_넘으면_캐시에_갱신한다() throws Exception {
+        // given
+        CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
+        AtomicInteger callbackRunCounter = new AtomicInteger(0);
+        ExecutorService bufferThreadPool = Executors.newFixedThreadPool(2);
+        AtomicInteger bufferSizeBeforeFlush = new AtomicInteger();
+        SpyLikeCountBuffer buffer = new SpyLikeCountBuffer(map -> {
+            bufferSizeBeforeFlush.set(map.size());
+            callbackRunCounter.incrementAndGet();
+            callbackRunCountDownLatch.countDown();
+        }, bufferThreadPool);
+
+        // when
+        for (long i = 0L; i < 120L; i++) {
+            buffer.deleteLikeCount(new LikeCountIdentifier(i, i));
+        }
+
+        // then
+        Field currentBufferField = LikeCountBuffer.class.getDeclaredField("currentBuffer");
+        currentBufferField.setAccessible(true);
+        AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
+        int bufferSizeAfterFlush = currentBuffer.get().size();
+
+        assertAll(
+                () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(120),
+                () -> assertThat(buffer.getAddLikeCountCallCount()).isZero(),
+                () -> assertThat(buffer.getDeleteLikeCountCallCount()).isEqualTo(120),
+                () -> assertThat(buffer.getFlushBufferCallCount()).isOne()
+        );
+    }
+
+    @Test
+    void 좋아요_버퍼_크기와_무관하게_캐시에_갱신한다() throws Exception {
+        // given
+        CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
+        AtomicInteger callbackRunCounter = new AtomicInteger(0);
+        ExecutorService bufferThreadPool = Executors.newFixedThreadPool(2);
+        AtomicInteger bufferSizeBeforeFlush = new AtomicInteger();
+        SpyLikeCountBuffer buffer = new SpyLikeCountBuffer(map -> {
+            bufferSizeBeforeFlush.set(map.size());
+            callbackRunCounter.incrementAndGet();
+            callbackRunCountDownLatch.countDown();
+        }, bufferThreadPool);
+
+        for (long i = 0L; i < 20L; i++) {
+            buffer.addLikeCount(new LikeCountIdentifier(i, i));
+        }
+
+        // when
+        buffer.flushBuffer();
+
+        // then
+        Field currentBufferField = LikeCountBuffer.class.getDeclaredField("currentBuffer");
+        currentBufferField.setAccessible(true);
+        AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
+        int bufferSizeAfterFlush = currentBuffer.get().size();
+
+        assertAll(
+                () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(20),
+                () -> assertThat(buffer.getAddLikeCountCallCount()).isEqualTo(20),
+                () -> assertThat(buffer.getDeleteLikeCountCallCount()).isZero(),
+                () -> assertThat(buffer.getFlushBufferCallCount()).isOne()
+        );
+    }
+
     @RepeatedTest(10)
     @SuppressWarnings("unchecked")
-    void addLikeCount_메서드는_임계치에_도달하는_타이밍에_동시에_두_개의_스레드가_접근하더라도_flush를_한_번만_수행한다() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
+    void 좋아요_수_카운트_도중_임계치_직전에_여러_스레드가_접근해_임계치를_크게_넘어간다고_하더라도_캐시에_한_번만_갱신된다() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         // given
         CountDownLatch callbackRunCountDownLatch = new CountDownLatch(1);
         AtomicInteger callbackRunCounter = new AtomicInteger(0);
         ExecutorService testThreadPool = Executors.newFixedThreadPool(10);
         ExecutorService bufferThreadPool = Executors.newFixedThreadPool(2);
         AtomicInteger bufferSizeBeforeFlush = new AtomicInteger();
-        LikeCountBuffer buffer = new LikeCountBuffer(map -> {
+        SpyLikeCountBuffer buffer = new SpyLikeCountBuffer(map -> {
             bufferSizeBeforeFlush.set(map.size());
             callbackRunCounter.incrementAndGet();
             callbackRunCountDownLatch.countDown();
@@ -38,7 +142,7 @@ class LikeCountBufferTest {
         }
 
         // when
-        CountDownLatch testCountDownLatch = new CountDownLatch(10);
+        CountDownLatch testCountDownLatch = new CountDownLatch(11);
 
         Runnable addLikeCountTask1 = () -> {
             buffer.addLikeCount(new LikeCountIdentifier(101L, 100L));
@@ -80,6 +184,10 @@ class LikeCountBufferTest {
             buffer.addLikeCount(new LikeCountIdentifier(110L, 100L));
             testCountDownLatch.countDown();
         };
+        Runnable addLikeCountTask11 = () -> {
+            buffer.addLikeCount(new LikeCountIdentifier(111L, 100L));
+            testCountDownLatch.countDown();
+        };
 
         testThreadPool.execute(addLikeCountTask1);
         testThreadPool.execute(addLikeCountTask2);
@@ -91,6 +199,7 @@ class LikeCountBufferTest {
         testThreadPool.execute(addLikeCountTask8);
         testThreadPool.execute(addLikeCountTask9);
         testThreadPool.execute(addLikeCountTask10);
+        testThreadPool.execute(addLikeCountTask11);
 
         testCountDownLatch.await();
         callbackRunCountDownLatch.await();
@@ -101,7 +210,12 @@ class LikeCountBufferTest {
         AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
         int bufferSizeAfterFlush = currentBuffer.get().size();
 
-        assertThat(callbackRunCounter.get()).isOne();
-        assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(109);
+        assertAll(
+                () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(110),
+                () -> assertThat(callbackRunCounter.get()).isOne(),
+                () -> assertThat(buffer.getFlushBufferCallCount()).isOne(),
+                () -> assertThat(buffer.getAddLikeCountCallCount()).isEqualTo(110)
+        );
     }
+
 }

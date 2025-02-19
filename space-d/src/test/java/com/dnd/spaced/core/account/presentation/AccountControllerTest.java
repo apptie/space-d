@@ -31,7 +31,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void withdrawal_성공_테스트() throws Exception {
+    void 회원_탈퇴_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 delete("/accounts/withdrawal").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -39,10 +39,10 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        withdrawal_문서화(resultActions);
+        회원_탈퇴_요청_문서화(resultActions);
     }
 
-    private void withdrawal_문서화(ResultActions resultActions) throws Exception {
+    private void 회원_탈퇴_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -54,9 +54,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void changeCareerInfo_성공_테스트() throws Exception {
+    void 회원_경력_정보_변경_요청_성공_테스트() throws Exception {
         // given
-        UpdateCareerInfoRequest request = new UpdateCareerInfoRequest("jobGroup", "company", "experienceName");
+        UpdateCareerInfoRequest request = new UpdateCareerInfoRequest("개발자", "중소기업", "비공개");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -67,10 +67,10 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        changeCareerInfo_문서화(resultActions);
+        회원_경력_정보_변경_요청_문서화(resultActions);
     }
 
-    private void changeCareerInfo_문서화(ResultActions resultActions) throws Exception {
+    private void 회원_경력_정보_변경_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
@@ -87,9 +87,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void changeProfileInfo_성공_테스트() throws Exception {
+    void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
         // given
-        UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("originNickname", "profileImageKoreanName");
+        UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("행복한금성001", "금성");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -100,17 +100,17 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        changeProfileInfo_문서화(resultActions);
+        회원_프로필_정보_변경_요청_문서화(resultActions);
     }
 
-    private void changeProfileInfo_문서화(ResultActions resultActions) throws Exception {
+    private void 회원_프로필_정보_변경_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         requestFields(
-                                fieldWithPath("originNickname").attributes(field("constraints", "기존 닉네임 입력")).description("회원 직군"),
+                                fieldWithPath("nickname").attributes(field("constraints", "기존 닉네임 입력")).description("회원 직군"),
                                 fieldWithPath("profileImageKoreanName").attributes(field("constraints", generateLinkCode(DocsUrl.PROFILE_IMAGE_NAME))).description("회원 회사 종류")
                         )
                 )
@@ -119,14 +119,14 @@ class AccountControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("account")
-    void findAccountInfo_성공_테스트() throws Exception {
+    void 회원_정보_조회_요청_성공_테스트() throws Exception {
         // given
         AccountInfoDto accountInfoDto = new AccountInfoDto(
-                "nickname",
-                "profileImage",
-                "jobGroup",
-                "company",
-                "experience"
+                "재빠른지구001",
+                "earth.png",
+                "개발자",
+                "비공개",
+                "1~2년 차"
         );
 
         given(accountService.findAccountInfo(anyString())).willReturn(accountInfoDto);
@@ -136,17 +136,17 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 get("/accounts").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isOk(),
-                jsonPath("$.nickname").value(accountInfoDto.nickname()),
-                jsonPath("$.profileImage").value(accountInfoDto.profileImage()),
-                jsonPath("$.jobGroupName").value(accountInfoDto.jobGroupName()),
-                jsonPath("$.companyName").value(accountInfoDto.companyName()),
-                jsonPath("$.experienceName").value(accountInfoDto.experienceName())
+                jsonPath("$.nickname").value("재빠른지구001"),
+                jsonPath("$.profileImage").value("earth.png"),
+                jsonPath("$.jobGroupName").value("개발자"),
+                jsonPath("$.companyName").value("비공개"),
+                jsonPath("$.experienceName").value("1~2년 차")
         );
 
-        findAccountInfo_문서화(resultActions);
+        회원_정보_조회_요청_문서화(resultActions);
     }
 
-    private void findAccountInfo_문서화(ResultActions resultActions) throws Exception {
+    private void 회원_정보_조회_요청_문서화(ResultActions resultActions) throws Exception {
         resultActions.andDo(
                 restDocs.document(
                         requestHeaders(

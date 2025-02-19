@@ -31,11 +31,11 @@ public class AccountService {
     }
 
     @Transactional
-    public void changeProfileInfo(String accountId, String originalNickname, String profileImageKoreanName) {
+    public void changeProfileInfo(String accountId, String nickname, String profileImageKoreanName) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
         ProfileImageName profileImageName = ProfileImageName.findBy(profileImageKoreanName);
 
-        authorizedAccount.changeProfileInfo(originalNickname, profileImageName.getImageName());
+        authorizedAccount.changeProfileInfo(nickname, profileImageName.getImageName());
     }
 
     public AccountInfoDto findAccountInfo(String accountId) {

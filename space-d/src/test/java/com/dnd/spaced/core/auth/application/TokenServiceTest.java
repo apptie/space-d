@@ -15,8 +15,10 @@ import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.core.auth.infrastructure.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
+import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,30 @@ class TokenServiceTest {
     RefreshTokenRotationRepository refreshTokenRotationRepository;
 
     @Test
-    void refreshToken_메서드는_Bearer_타입의_토큰이_아닌_경우_InvalidTokenException_예외가_발생한다() {
+    void 기존_refreshToken을_통해_토큰을_갱신한다() {
+        // given
+        String accountId = "user1@naver.com";
+        String refreshToken = tokenEncoder.encode(
+                LocalDateTime.now(),
+                TokenType.REFRESH,
+                accountId,
+                "ROLE_USER"
+        );
+
+        // when
+        TokenDto token = tokenService.refreshToken(refreshToken);
+        Optional<String> rtt = refreshTokenRotationRepository.findBy(accountId);
+
+        // then
+        assertAll(
+                () -> assertThat(token.accessToken()).isNotBlank(),
+                () -> assertThat(token.refreshToken()).isNotBlank(),
+                () -> assertThat(rtt).isPresent()
+        );
+    }
+    
+    @Test
+    void 토큰을_갱신할_때_Bearer_타입의_토큰이_아니라면_토큰_갱신을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken("Basic refresh token"))
                 .isInstanceOf(InvalidTokenException.class)
@@ -56,13 +81,13 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshToken_메서드는_만료된_refreshToken을_전달하는_경우_ExpiredTokenException_예외가_발생한다() {
+    void 토큰을_갱신할_때_만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
         String refreshToken = tokenEncoder.encode(
-                LocalDateTime.now().minusYears(3L),
+                LocalDateTimeFixture.from("2000-02-02 13:13:00"),
                 TokenType.REFRESH,
-                "id",
-                "roleName"
+                "user1@naver.com",
+                "ROLE_USER"
         );
 
         // when & then
@@ -72,17 +97,16 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshToken_메서드는_유효하지_않은_refreshToken을_전달하면_InvalidTokenException_예외가_발생한다() {
+    void 토큰을_갱신할_때_길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken("Bearer abcde"))
                 .isInstanceOf(InvalidTokenException.class)
                 .hasMessage("유효한 토큰이 아닙니다.");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
     @NullAndEmptySource
-    void refreshToken_메서드는_null이나_길이가_부족한_refreshToken을_전달하면_InvalidTokenException_예외가_발생한다(
-            String invalidRefreshToken) {
+    void 토큰을_갱신할_때_비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken(invalidRefreshToken))
                 .isInstanceOf(InvalidTokenException.class)
@@ -90,12 +114,11 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshToken_메서드는_다른_서비스에서_발급한_refreshToken을_전달하면_InvalidTokenException_예외가_발생한다() {
-        String accountId = "id";
+    void 토큰을_갱신할_때_다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
         TokenProperties tokenProperties = new TokenProperties(
                 "thisistoolargeaccesstokenkeyfordummykeydatafortest",
                 "thisistoolargerefreshtokenkeyfordummykeydatafortest",
-                "otherissuer",
+                "other-issuer",
                 43200,
                 259200,
                 43200000L,
@@ -105,8 +128,8 @@ class TokenServiceTest {
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
-                accountId,
-                "roleName"
+                "user1@naver.com",
+                "ROLE_USER"
         );
 
         // when & then
@@ -116,15 +139,14 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshToken_메서드는_블랙리스트로_등록된_경우_BlockedTokenException_예외가_발생한다() {
+    void 토큰을_갱신할_때_블랙리스트로_등록된_회원의_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "id";
-        LocalDateTime now = LocalDateTime.now();
+        String accountId = "user1@naver.com";
         String refreshToken = tokenEncoder.encode(
-                now.minusMinutes(10L),
+                LocalDateTime.now().minusMinutes(3L),
                 TokenType.REFRESH,
                 accountId,
-                "roleName"
+                "ROLE_USER"
         );
 
         blacklistTokenService.register(accountId);
@@ -136,14 +158,14 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshToken_메서드는_refresh_token_rotation으로_등록된_값과_일치하지_않으면_RotationRefreshTokenMismatchException_예외가_발생한다() {
+    void 토큰을_갱신할_때_전달한_refreshToken_값이_RTT로_저장한_값과_일치하지_않으면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "id";
+        String accountId = "user1@naver.com";
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
                 accountId,
-                "roleName"
+                "ROLE_USER"
         );
 
         refreshTokenRotationRepository.save(accountId, "refresh token");
@@ -154,28 +176,6 @@ class TokenServiceTest {
                         .isInstanceOf(RotationRefreshTokenMismatchException.class)
                         .hasMessage("기존 Refresh Token과 일치하지 않습니다."),
                 () -> assertThat(blacklistTokenRepository.findBy(accountId)).isPresent()
-        );
-    }
-
-    @Test
-    void refreshToken_메서드는_유효한_refreshToken을_전달하면_새로운_accessToken과_refreshToken을_초기화해_반환한다() {
-        // given
-        String accountId = "id";
-        String refreshToken = tokenEncoder.encode(
-                LocalDateTime.now(),
-                TokenType.REFRESH,
-                accountId,
-                "roleName"
-        );
-
-        // when
-        TokenDto actual = tokenService.refreshToken(refreshToken);
-
-        // then
-        assertAll(
-                () -> assertThat(actual.accessToken()).isNotBlank(),
-                () -> assertThat(actual.refreshToken()).isNotBlank(),
-                () -> assertThat(refreshTokenRotationRepository.findBy(accountId)).isPresent()
         );
     }
 }

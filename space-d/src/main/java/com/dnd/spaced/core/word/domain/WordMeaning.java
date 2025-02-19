@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class WordMeaning {
 
     private static final int MIN_MEANING_LENGTH = 10;
-    private static final int MAX_MEANING_LENGTH = 70;
+    private static final int MAX_MEANING_LENGTH = 150;
 
     private String meaning;
 
@@ -30,7 +30,7 @@ public class WordMeaning {
 
     private void validateContent(String meaning) {
         if (isInvalidMeaning(meaning)) {
-            throw new InvalidWordMeaningException("용어 뜻은 최소 10글자 이상, 최대 70글자 이하여야 합니다.");
+            throw new InvalidWordMeaningException("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
         }
     }
 

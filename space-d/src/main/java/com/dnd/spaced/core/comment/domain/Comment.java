@@ -50,8 +50,12 @@ public class Comment extends BaseTimeEntity {
                 || !(CONTENT_MIN_LENGTH <= content.length() && content.length() <= CONTENT_MAX_LENGTH);
     }
 
+    public boolean isWriter(Account account) {
+        return account.isEqualTo(this.accountId);
+    }
+
     public boolean isNotWriter(Account account) {
-        return !account.isEqualTo(this.accountId);
+        return !isWriter(account);
     }
 
     public void changeContent(String content) {

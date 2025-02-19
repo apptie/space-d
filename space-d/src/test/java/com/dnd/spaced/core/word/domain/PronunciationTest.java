@@ -17,14 +17,14 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class PronunciationTest {
 
     @Test
-    void 생성자는_유효한_content와_typeName을_전달하면_Pronunciation을_초기화하고_반환한다() {
+    void 발음_정보를_초기화한다() {
         // when & then
         assertDoesNotThrow(() -> new Pronunciation("어써라이제이션", "한글 발음"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_content를_전달하면_InvalidPronunciationContentException_예외가_발생한다(String invalidContent) {
+    void 발음_내용이_비어_있다면_발음_정보를_초기화_할_수_없다(String invalidContent) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation(invalidContent, "한글 발음"))
                 .isInstanceOf(InvalidPronunciationContentException.class)
@@ -33,7 +33,7 @@ class PronunciationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 생성자는_유효하지_않은_typeName을_전달하면_InvalidPronunciationContentException_예외가_발생한다(String invalidTypeName) {
+    void 발음_유형이_유효하지_않다면_발음_정보를_초기화_할_수_없다(String invalidTypeName) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation("어써라이제이션", invalidTypeName))
                 .isInstanceOf(InvalidPronunciationTypeNameException.class)
@@ -41,14 +41,14 @@ class PronunciationTest {
     }
 
     @Test
-    void initWord_메서드는_word를_전달하면_전달한_word로_초기화한다() {
+    void 발음_정보에_단어_정보를_추가한다() {
         // given
         Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
         Word word = Word.builder()
-                         .name("Authorization")
-                         .meaning("word meaning")
-                         .categoryName("개발")
-                         .build();
+                        .name("Authorization")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
+                        .categoryName("개발")
+                        .build();
 
         // when
         pronunciation.initWord(word);
