@@ -22,7 +22,7 @@ class CommentTest {
         assertDoesNotThrow(() -> new Comment("user1@naver.com", 1L, "이 용어 언제 쓰는건가요?"));
     }
 
-    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 댓글을 초기화할 수 없다")
     @NullAndEmptySource
     void 비어있는_내용으로_댓글을_초기화할_수_없다(String invalidContent) {
         // when & then
@@ -82,7 +82,7 @@ class CommentTest {
 
     }
 
-    @ParameterizedTest(name = "댓글 내용이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "댓글 내용이 {0}일 때 댓글을 수정할 수 없다")
     @NullAndEmptySource
     void 비어있는_내용으로_댓글을_수정할_수_없다(String invalidContent) {
         // given
