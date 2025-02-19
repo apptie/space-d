@@ -27,7 +27,7 @@ class WordExampleTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 유효하지_않은_용어_예문을_전달하면_예외가_발생한다(String invalidExample) {
+    void 글자_수가_유효하지_않은_용어_예문_내용을_전달하면_용어_예문을_초기화_할_수_없다(String invalidExample) {
         // when & then
         assertThatThrownBy(() -> new WordExample(invalidExample))
                 .isInstanceOf(InvalidWordExampleContentException.class)
