@@ -24,7 +24,7 @@ class PronunciationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 발음이_유효하지_않다면_예외가_발생한다(String invalidContent) {
+    void 발음_내용이_비어_있다면_발음_정보를_초기화_할_수_없다(String invalidContent) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation(invalidContent, "한글 발음"))
                 .isInstanceOf(InvalidPronunciationContentException.class)
@@ -33,7 +33,7 @@ class PronunciationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 발음_유형이_유효하지_않다면_예외가_발생한다(String invalidTypeName) {
+    void 발음_유형이_유효하지_않다면_발음_정보를_초기화_할_수_없다(String invalidTypeName) {
         // when & then
         assertThatThrownBy(() -> new Pronunciation("어써라이제이션", invalidTypeName))
                 .isInstanceOf(InvalidPronunciationTypeNameException.class)
