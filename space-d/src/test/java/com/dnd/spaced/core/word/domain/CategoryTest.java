@@ -29,7 +29,7 @@ class CategoryTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 카테고리에_없는_이름으로_조회하면_예외가_발생한다(String invalidName) {
+    void 카테고리에_없는_이름으로_조회하면_카테고리를_조회할_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> Category.findBy(invalidName))
                 .isInstanceOf(InvalidCategoryNameException.class)
