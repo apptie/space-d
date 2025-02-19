@@ -50,7 +50,7 @@ class BlacklistTokenTest {
         assertDoesNotThrow(() -> new BlacklistToken("user1@naver.com", LocalDateTime.now()));
     }
 
-    @ParameterizedTest(name = "id가 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "id가 {0}일 때 블랙리스트 토큰을 초기화 할 수 없다")
     @NullAndEmptySource
     void 블랙리스트_토큰_초기화_시_비어_있는_식별자라면_블랙리스트_토큰을_초기화_할_수_없다(String invalidId) {
         // when & then
