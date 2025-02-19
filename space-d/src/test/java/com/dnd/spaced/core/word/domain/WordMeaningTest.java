@@ -26,7 +26,7 @@ class WordMeaningTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 용어_뜻_초기화_시_글자_수가_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 글자_수가_유효하지_않은_단어_뜻이라면_용어_뜻을_초기화_할_수_없다(String invalidMeaning) {
         // when & then
         assertThatThrownBy(() -> new WordMeaning(invalidMeaning))
                 .isInstanceOf(InvalidWordMeaningException.class)
@@ -46,9 +46,9 @@ class WordMeaningTest {
         assertThat(wordMeaning.getMeaning()).isEqualTo(changedMeaning);
     }
 
-    @ParameterizedTest(name = "변경하려는 용어 뜻이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "변경하려는 용어 뜻이 {0}일 때 용어 뜻을 변경할 수 없다")
     @NullAndEmptySource
-    void 용어_뜻_변경_시_글자_수가_유효하지_않은_단어_뜻이라면_예외가_발생한다(String invalidMeaning) {
+    void 글자_수가_유효하지_않은_단어_뜻이라면_용어_뜻을_변경할_수_없다(String invalidMeaning) {
         // given
         WordMeaning wordMeaning = new WordMeaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘");
 
