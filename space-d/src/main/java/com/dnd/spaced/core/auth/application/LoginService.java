@@ -2,8 +2,8 @@ package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
-import com.dnd.spaced.core.account.domain.ProfileImageName;
-import com.dnd.spaced.core.account.domain.Role;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;

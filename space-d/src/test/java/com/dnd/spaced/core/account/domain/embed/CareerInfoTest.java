@@ -1,11 +1,11 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.embed;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
-import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
-import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

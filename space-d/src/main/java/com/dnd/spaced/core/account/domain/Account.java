@@ -1,5 +1,8 @@
 package com.dnd.spaced.core.account.domain;
 
+import com.dnd.spaced.core.account.domain.embed.CareerInfo;
+import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Embedded;

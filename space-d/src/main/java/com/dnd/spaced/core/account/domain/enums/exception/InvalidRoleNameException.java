@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.account.domain.exception;
+package com.dnd.spaced.core.account.domain.enums.exception;
 
 import com.dnd.spaced.global.exception.base.AccountServerException;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;

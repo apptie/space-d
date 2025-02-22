@@ -1,8 +1,8 @@
 package com.dnd.spaced.core.account.application.dto.response;
 
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.CareerInfo;
-import com.dnd.spaced.core.account.domain.ProfileInfo;
+import com.dnd.spaced.core.account.domain.embed.CareerInfo;
+import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
 
 public record AccountInfoDto(
         String nickname,

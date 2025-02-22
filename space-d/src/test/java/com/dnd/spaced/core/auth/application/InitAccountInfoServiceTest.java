@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
-import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
-import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.auth.application.exception.ForbiddenInitCareerInfoException;
 import org.junit.jupiter.api.DisplayNameGeneration;

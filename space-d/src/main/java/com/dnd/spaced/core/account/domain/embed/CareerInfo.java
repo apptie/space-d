@@ -1,5 +1,8 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.embed;
 
+import com.dnd.spaced.core.account.domain.enums.Company;
+import com.dnd.spaced.core.account.domain.enums.Experience;
+import com.dnd.spaced.core.account.domain.enums.JobGroup;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

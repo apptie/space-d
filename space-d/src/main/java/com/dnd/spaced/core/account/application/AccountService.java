@@ -3,7 +3,7 @@ package com.dnd.spaced.core.account.application;
 import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.ProfileImageName;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

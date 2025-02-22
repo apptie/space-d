@@ -1,6 +1,6 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.enums;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidRoleNameException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidRoleNameException;
 import java.util.Arrays;
 
 public enum Role {

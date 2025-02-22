@@ -1,10 +1,10 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageNameException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidProfileImageNameException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
