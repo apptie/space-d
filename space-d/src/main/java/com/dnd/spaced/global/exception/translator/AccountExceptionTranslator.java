@@ -58,6 +58,11 @@ public enum AccountExceptionTranslator implements ExceptionTranslator {
             AccountErrorCode.INVALID_PROFILE_NAME,
             HttpStatus.BAD_REQUEST,
             "유효한 프로필 이미지 이름이 아닙니다."
+    ),
+    INVALID_REGISTRATION_ID(
+            AccountErrorCode.INVALID_REGISTRATION_ID,
+            HttpStatus.BAD_REQUEST,
+            "지원하는 소셜 로그인 방식이 아닙니다."
     );
 
     private final ErrorCode errorCode;
