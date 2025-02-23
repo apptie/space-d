@@ -5,13 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidCompanyException;
-import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
-import com.dnd.spaced.core.account.domain.exception.InvalidExperienceException;
-import com.dnd.spaced.core.account.domain.exception.InvalidJobGroupException;
-import com.dnd.spaced.core.account.domain.exception.InvalidNicknameException;
-import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageException;
-import com.dnd.spaced.core.account.domain.exception.InvalidRoleNameException;
+import com.dnd.spaced.core.account.domain.embed.CareerInfo;
+import com.dnd.spaced.core.account.domain.embed.exception.InvalidNicknameException;
+import com.dnd.spaced.core.account.domain.embed.exception.InvalidProfileImageException;
+import com.dnd.spaced.core.account.domain.enums.Company;
+import com.dnd.spaced.core.account.domain.enums.Experience;
+import com.dnd.spaced.core.account.domain.enums.JobGroup;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.enums.Role;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -20,6 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -28,29 +33,23 @@ class AccountTest {
     @Test
     void 회원을_초기화한다() {
         // when & then
-        assertDoesNotThrow(
+        Account actual = assertDoesNotThrow(
                 () -> Account.builder()
-                             .id("user1@naver.com")
+                             .registrationId(RegistrationId.KAKAO)
+                             .socialIdentifier("12345")
                              .nickname("재빠른지구001")
                              .profileImage("earth.png")
-                             .roleName("ROLE_USER")
+                             .role(Role.ROLE_USER)
                              .build()
         );
-    }
 
-    @ParameterizedTest(name = " {0}일 때 예외가 발생한다")
-    @NullAndEmptySource
-    void 회원을_초기화할_때_식별자가_없다면_회원을_초기화할_수_없다(String invalidId) {
-        // when & then
-        assertThatThrownBy(
-                () -> Account.builder()
-                             .id(invalidId)
-                             .nickname("재빠른지구001")
-                             .profileImage("earth.png")
-                             .roleName("ROLE_USER")
-                             .build()
-        ).isInstanceOf(InvalidIdException.class)
-         .hasMessageContaining("ID는 null이나 비어 있을 수 없습니다.");
+        assertAll(
+                () -> assertThat(actual.getSocialInfo().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
+                () -> assertThat(actual.getSocialInfo().getSocialIdentifier()).isEqualTo("12345"),
+                () -> assertThat(actual.getProfileInfo().getNickname()).isEqualTo("재빠른지구001"),
+                () -> assertThat(actual.getProfileInfo().getProfileImage()).isEqualTo("earth.png"),
+                () -> assertThat(actual.getRole()).isEqualTo(Role.ROLE_USER)
+        );
     }
 
     private static Stream<Arguments> builderTestWithInvalidNickname() {
@@ -69,10 +68,11 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .id("user1@naver.com")
+                             .registrationId(RegistrationId.KAKAO)
+                             .socialIdentifier("12345")
                              .nickname(invalidNickname)
                              .profileImage("earth.png")
-                             .roleName("ROLE_USER")
+                             .role(Role.ROLE_USER)
                              .build()
         ).isInstanceOf(InvalidNicknameException.class)
          .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
@@ -84,38 +84,25 @@ class AccountTest {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
-                             .id("user1@naver.com")
+                             .registrationId(RegistrationId.KAKAO)
+                             .socialIdentifier("12345")
                              .nickname("재빠른지구001")
                              .profileImage(invalidProfileImage)
-                             .roleName("ROLE_USER")
+                             .role(Role.ROLE_USER)
                              .build()
         ).isInstanceOf(InvalidProfileImageException.class)
          .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
-    }
-
-    @ParameterizedTest(name = "권한 정보가 {0}일 때 예외가 발생한다")
-    @NullAndEmptySource
-    void 회원을_초기화할_때_유효한_권한_정보가_아니라면_회원을_초기화할_수_없다(String invalidRoleName) {
-        // when & then
-        assertThatThrownBy(
-                () -> Account.builder()
-                             .id("user1@naver.com")
-                             .nickname("재빠른지구001")
-                             .profileImage("earth.png")
-                             .roleName(invalidRoleName)
-                             .build()
-        ).isInstanceOf(InvalidRoleNameException.class)
-         .hasMessageContaining("잘못된 권한 정보 이름");
     }
 
     @Test
     void 회원의_경력_정보를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when
@@ -136,10 +123,11 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
@@ -159,10 +147,11 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
@@ -182,10 +171,11 @@ class AccountTest {
     void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
@@ -204,10 +194,11 @@ class AccountTest {
     void 회원의_프로필_정보를_변경한다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when
@@ -228,10 +219,11 @@ class AccountTest {
     void 회원의_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
@@ -255,10 +247,11 @@ class AccountTest {
     void 회원의_프로필_정보_변경_시_비어_있거나_유효한_길이가_아닌_닉네임이면_프로필_정보를_변환할_수_없다(String invalidNickname) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
@@ -267,57 +260,25 @@ class AccountTest {
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
 
-    @Test
-    void 회원_식별자를_반환한다() {
-        // given
-        Account account = Account.builder()
-                                 .id("user1@naver.com")
-                                 .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
-                                 .build();
-
-        // when
-        String actual = account.getId();
-
-        // then
-        assertThat(actual).isEqualTo(account.getId());
-    }
-
-    @Test
-    void 회원의_영속화_여부를_반환한다() {
-        // given
-        Account account = Account.builder()
-                                 .id("user1@naver.com")
-                                 .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
-                                 .build();
-
-        // when
-        boolean actual = account.isNew();
-
-        // then
-        assertThat(actual).isTrue();
-    }
-
     private static Stream<Object> isEqualToTestArguments() {
         return Stream.of(
-                Arguments.of("user1@naver.com", true),
-                Arguments.of("user2@naver.com", false)
+                Arguments.of(1L, true),
+                Arguments.of(2L, false)
         );
     }
 
     @ParameterizedTest(name = "회원의 식별자를 {0}과 비교하면 {1}을 반환한다")
     @MethodSource("isEqualToTestArguments")
-    void 회원의_식별자가_일치하는지_비교한다(String id, boolean expected) {
+    void 회원의_식별자가_일치하는지_비교한다(Long id, boolean expected) {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
+        ReflectionTestUtils.setField(account, "id", 1L);
 
         // when
         boolean actual = account.isEqualTo(id);

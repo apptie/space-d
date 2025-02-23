@@ -9,5 +9,5 @@ public interface LikeRepository {
 
     void delete(Like like);
 
-    Optional<Like> findBy(String accountId, Long commentId);
+    Optional<Like> findBy(Long accountId, Long commentId);
 }

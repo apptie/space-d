@@ -24,7 +24,7 @@ public class LikeService {
     private final LikeCountRepository likeCountRepository;
 
     @Transactional
-    public void processLike(String accountId, Long commentId) {
+    public void processLike(Long accountId, Long commentId) {
         Account account = findAccount(accountId);
         Comment targetComment = findTargetComment(commentId);
 
@@ -40,7 +40,7 @@ public class LikeService {
                                 .orElseThrow(() -> new AssociationCommentNotFoundException("좋아요 대상인 댓글을 찾을 수 없습니다."));
     }
 
-    private Account findAccount(String accountId) {
+    private Account findAccount(Long accountId) {
         return accountRepository.findBy(accountId)
                                 .orElseThrow(() -> new ForbiddenLikeException("좋아요를 제어할 권한이 없습니다."));
     }

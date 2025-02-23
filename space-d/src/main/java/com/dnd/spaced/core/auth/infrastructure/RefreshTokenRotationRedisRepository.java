@@ -18,7 +18,7 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void save(String accountId, String refreshToken) {
+    public void save(Long accountId, String refreshToken) {
         redisTemplate.opsForValue()
                      .set(
                              calculateKey(accountId),
@@ -29,7 +29,7 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
     }
 
     @Override
-    public Optional<String> findBy(String accountId) {
+    public Optional<String> findBy(Long accountId) {
         String refreshToken = redisTemplate.opsForValue()
                                            .get(calculateKey(accountId));
 
@@ -40,7 +40,7 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
         return Optional.of(refreshToken);
     }
 
-    private String calculateKey(String accountId) {
+    private String calculateKey(Long accountId) {
         return RTT_KEY_PREFIX + accountId;
     }
 }

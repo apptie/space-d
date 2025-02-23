@@ -1,6 +1,6 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.enums;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageNameException;
+import com.dnd.spaced.core.account.domain.enums.exception.InvalidProfileImageNameException;
 import java.util.Arrays;
 import lombok.Getter;
 

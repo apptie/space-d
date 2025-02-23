@@ -12,7 +12,7 @@ public interface CommentRepository {
 
     Optional<Comment> findBy(Long id);
 
-    List<LikedCommentDto> findAllBy(String accountId, Long wordId, CommentPageRequest pageRequest);
+    List<LikedCommentDto> findAllBy(Long accountId, Long wordId, CommentPageRequest pageRequest);
 
     void delete(Comment comment);
 }

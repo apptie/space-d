@@ -30,15 +30,12 @@ class LoginServiceTest {
 
     @Test
     void 회원가입하지_않은_회원이_로그인하면_회원_가입과_로그인_절차를_진행한다() {
-        // given
-        String id = "user1@naver.com";
-
         // when
-        LoggedInAccountInfoDto actual = loginService.login(id);
+        LoggedInAccountInfoDto actual = loginService.login("kakao", "12345");
 
         // then
         assertAll(
-                () -> assertThat(actual.id()).isEqualTo(id),
+                () -> assertThat(actual.id()).isPositive(),
                 () -> assertThat(actual.roleName()).isEqualTo("ROLE_USER"),
                 () -> assertThat(actual.isSignUp()).isTrue()
         );
@@ -47,16 +44,14 @@ class LoginServiceTest {
     @Test
     void 회원가입한_회원이_로그인하면_로그인_절차를_진행한다() {
         // given
-        String id = "user1@naver.com";
-
-        loginService.login(id);
+        loginService.login("kakao", "12345");
 
         // when
-        LoggedInAccountInfoDto actual = loginService.login(id);
+        LoggedInAccountInfoDto actual = loginService.login("kakao", "12345");
 
         // then
         assertAll(
-                () -> assertThat(actual.id()).isEqualTo(id),
+                () -> assertThat(actual.id()).isPositive(),
                 () -> assertThat(actual.roleName()).isEqualTo("ROLE_USER"),
                 () -> assertThat(actual.isSignUp()).isFalse()
         );
@@ -65,21 +60,18 @@ class LoginServiceTest {
     @Test
     void 회원가입하지_않은_회원이_로그인하면서_회원_가입_절차에서_기존_닉네임과_동일한_닉네임을_부여받으면_닉네임_메타데이터를_갱신하고_로그인_절차를_진행한다() {
         // given
-        String id1 = "user1@naver.com";
-        String id2 = "user2@naver.com";
-
-        loginService.login(id1);
+        LoggedInAccountInfoDto loggedInAccountInfo1 = loginService.login("kakao", "12345");
 
         // when
-        LoggedInAccountInfoDto loggedInAccountInfo = loginService.login(id2);
+        LoggedInAccountInfoDto loggedInAccountInfo2 = loginService.login("kakao", "54321");
         NicknameMetadata nicknameMetadata = nicknameMetadataRepository.findBy("재빠른지구")
                                                                       .get();
 
         // then
         assertAll(
-                () -> assertThat(loggedInAccountInfo.id()).isEqualTo(id2),
-                () -> assertThat(loggedInAccountInfo.roleName()).isEqualTo("ROLE_USER"),
-                () -> assertThat(loggedInAccountInfo.isSignUp()).isTrue(),
+                () -> assertThat(loggedInAccountInfo2.id()).isNotEqualTo(loggedInAccountInfo1.id()),
+                () -> assertThat(loggedInAccountInfo2.roleName()).isEqualTo("ROLE_USER"),
+                () -> assertThat(loggedInAccountInfo2.isSignUp()).isTrue(),
                 () -> assertThat(nicknameMetadata.getCount()).isEqualTo(2)
         );
     }

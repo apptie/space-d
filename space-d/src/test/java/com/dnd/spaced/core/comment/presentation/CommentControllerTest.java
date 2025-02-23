@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 댓글_작성_요청_성공_테스트() throws Exception {
         // given
         SaveCommentRequest request = new SaveCommentRequest("이 용어 언제 쓰는건가요?");
@@ -45,8 +45,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 post("/words/{wordId}/comments", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(request))
+                                                    .contentType(MediaType.APPLICATION_JSON)
+                                                    .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
                 status().isCreated(),
                 header().string("Location", "/words/1")
@@ -72,7 +72,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 댓글_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -98,7 +98,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 댓글_수정_요청_성공() throws Exception {
         // given
         UpdateCommentRequest request = new UpdateCommentRequest("이 용어 쓰기는 하는건가요?");
@@ -135,7 +135,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     void 댓글_전체_조회_성공_테스트() throws Exception {
         // given
         CommentInfoDto commentInfoDto = new CommentInfoDto(1L, 1L, "이 용어 언제 쓰는건가요?", 0);
-        WriterInfoDto writerInfoDto = new WriterInfoDto("user1@naver.com", "재빠른지구001", "earth.png");
+        WriterInfoDto writerInfoDto = new WriterInfoDto(1L, "재빠른지구001", "earth.png");
         ReadAllCommentDto readAllCommentDto = new ReadAllCommentDto(commentInfoDto, writerInfoDto, false);
 
         given(commentService.readAllBy(eq(null), anyLong(), eq(null), any())).willReturn(List.of(readAllCommentDto));
@@ -151,7 +151,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("comments[*].commentInfo.content").value("이 용어 언제 쓰는건가요?"),
                 jsonPath("comments[*].commentInfo.likeCount").value(0),
                 jsonPath("comments[*].writerInfo").exists(),
-                jsonPath("comments[*].writerInfo.id").value("user1@naver.com"),
+                jsonPath("comments[*].writerInfo.id").exists(),
                 jsonPath("comments[*].writerInfo.writerNickname").value("재빠른지구001"),
                 jsonPath("comments[*].writerInfo.writerProfileImage").value("earth.png")
         );

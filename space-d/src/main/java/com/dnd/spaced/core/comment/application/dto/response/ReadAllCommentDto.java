@@ -9,7 +9,7 @@ public record ReadAllCommentDto(CommentInfoDto commentInfo, WriterInfoDto writer
     public record CommentInfoDto(Long id, Long wordId, String content, int likeCount) {
     }
 
-    public record WriterInfoDto(String id, String writerNickname, String writerProfileImage) {
+    public record WriterInfoDto(Long id, String writerNickname, String writerProfileImage) {
     }
 
     public static ReadAllCommentDto of(LikedCommentDto dto, Map<Long, Integer> cacheLikeCount) {

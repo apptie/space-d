@@ -25,7 +25,7 @@ public class JwtEncoder implements TokenEncoder {
     private final TokenProperties tokenProperties;
 
     @Override
-    public String encode(LocalDateTime publishTime, TokenType tokenType, String accountId, String roleName) {
+    public String encode(LocalDateTime publishTime, TokenType tokenType, Long accountId, String roleName) {
         Date targetDate = convertDate(publishTime);
         String key = tokenProperties.findTokenKey(tokenType);
         Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);

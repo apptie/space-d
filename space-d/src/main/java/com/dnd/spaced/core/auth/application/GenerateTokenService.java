@@ -21,7 +21,7 @@ public class GenerateTokenService {
     private final RefreshTokenRotationRepository refreshTokenRotationRepository;
 
     @Transactional
-    public TokenDto generate(String accountId, String roleName) {
+    public TokenDto generate(Long accountId, String roleName) {
         String accessToken = tokenEncoder.encode(LocalDateTime.now(clock), TokenType.ACCESS, accountId, roleName);
         String refreshToken = tokenEncoder.encode(LocalDateTime.now(clock), TokenType.REFRESH, accountId, roleName);
 

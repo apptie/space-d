@@ -1,7 +1,7 @@
-package com.dnd.spaced.core.account.domain;
+package com.dnd.spaced.core.account.domain.embed;
 
-import com.dnd.spaced.core.account.domain.exception.InvalidNicknameException;
-import com.dnd.spaced.core.account.domain.exception.InvalidProfileImageException;
+import com.dnd.spaced.core.account.domain.embed.exception.InvalidNicknameException;
+import com.dnd.spaced.core.account.domain.embed.exception.InvalidProfileImageException;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -21,11 +21,11 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String accountId;
+    private Long accountId;
 
     private Long commentId;
 
-    public Like(String accountId, Long commentId) {
+    public Like(Long accountId, Long commentId) {
         this.accountId = accountId;
         this.commentId = commentId;
     }

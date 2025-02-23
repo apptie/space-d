@@ -24,7 +24,7 @@ public class BlacklistTokenService {
     }
 
     @Transactional
-    public void register(String accountId) {
+    public void register(Long accountId) {
         BlacklistToken blacklistToken = new BlacklistToken(accountId, LocalDateTime.now(clock));
 
         blacklistTokenRepository.save(blacklistToken);

@@ -15,7 +15,7 @@ public class InitAccountInfoService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void initCareerInfo(String accountId, String jobGroupName, String companyName, String experienceName) {
+    public void initCareerInfo(Long accountId, String jobGroupName, String companyName, String experienceName) {
         Account account = accountRepository.findSignedUpAccountBy(accountId)
                                            .orElseThrow(
                                                    () -> new ForbiddenInitCareerInfoException(

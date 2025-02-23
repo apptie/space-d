@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
@@ -48,7 +50,7 @@ class LikeServiceTest {
     @Test
     void 좋아요를_누른_회원이_아닌_다른_회원은_좋아요를_취소할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> likeService.processLike("user1@naver.com", 1L))
+        assertThatThrownBy(() -> likeService.processLike(1L, 1L))
                 .isInstanceOf(ForbiddenLikeException.class)
                 .hasMessage("좋아요를 제어할 권한이 없습니다.");
     }
@@ -57,10 +59,11 @@ class LikeServiceTest {
     void 존재하지_않는_댓글_식별자로_좋아요를_할_수_없다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -75,10 +78,11 @@ class LikeServiceTest {
     void 좋아요를_취소한다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")
@@ -107,10 +111,11 @@ class LikeServiceTest {
     void 좋아요를_추가한다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
         Word word = Word.builder()
                         .name("Authorization")

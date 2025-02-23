@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class OAuth2UserDetails implements UserDetails {
 
-    private final String id;
+    private final Long id;
     private final Set<GrantedAuthority> authorities;
 
     @Override
@@ -25,7 +25,7 @@ public class OAuth2UserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id;
+        return String.valueOf(id);
     }
 
     @Override

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -33,10 +35,11 @@ class AccountCrudRepositoryTest {
     void 회원을_식별자로_삭제한다() {
         // given
         Account account = Account.builder()
-                                 .id("user1@naver.com")
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountCrudRepository.save(account);
@@ -56,16 +59,18 @@ class AccountCrudRepositoryTest {
     void 삭제되지_않은_회원을_식별자로_조회한다() {
         // given
         Account account1 = Account.builder()
-                                 .id("user1@naver.com")
-                                 .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
-                                 .build();
+                                  .registrationId(RegistrationId.KAKAO)
+                                  .socialIdentifier("12345")
+                                  .nickname("재빠른지구001")
+                                  .profileImage("earth.png")
+                                  .role(Role.ROLE_USER)
+                                  .build();
         Account account2 = Account.builder()
-                                  .id("user2@naver.com")
-                                  .nickname("행복한화성001")
-                                  .profileImage("mars.png")
-                                  .roleName("ROLE_USER")
+                                  .registrationId(RegistrationId.KAKAO)
+                                  .socialIdentifier("54321")
+                                  .nickname("재빠른지구002")
+                                  .profileImage("earth.png")
+                                  .role(Role.ROLE_USER)
                                   .build();
 
         accountCrudRepository.saveAll(List.of(account1, account2));

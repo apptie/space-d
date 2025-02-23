@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -41,9 +42,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             Authentication authentication
     ) {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String id = (String) oAuth2User.getAttributes()
-                                       .get(StandardClaimNames.SUB);
-        LoggedInAccountInfoDto accountInfoDto = loginService.login(id);
+        String socialIdentifier = (String) oAuth2User.getAttributes()
+                                                     .get(StandardClaimNames.SUB);
+        String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+        LoggedInAccountInfoDto accountInfoDto = loginService.login(registrationId, socialIdentifier);
         TokenDto tokenDto = generateTokenService.generate(accountInfoDto.id(), accountInfoDto.roleName());
 
         writeResponse(response, tokenDto, accountInfoDto.isSignUp());

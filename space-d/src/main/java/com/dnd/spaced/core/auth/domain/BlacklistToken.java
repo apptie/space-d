@@ -9,18 +9,18 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = false, of = "accountId")
 public class BlacklistToken {
 
-    private final String accountId;
+    private final Long accountId;
     private final LocalDateTime registeredAt;
 
-    public BlacklistToken(String accountId, LocalDateTime registeredAt) {
+    public BlacklistToken(Long accountId, LocalDateTime registeredAt) {
         validateContent(accountId, registeredAt);
 
         this.accountId = accountId;
         this.registeredAt = registeredAt;
     }
 
-    private void validateContent(String accountId, LocalDateTime registeredAt) {
-        if (accountId == null || accountId.isBlank()) {
+    private void validateContent(Long accountId, LocalDateTime registeredAt) {
+        if (accountId == null) {
             throw new InvalidBlacklistTokenContentException("유효한 ID가 아닙니다.");
         }
 

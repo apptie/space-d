@@ -51,7 +51,7 @@ class JwtDecoderTest {
         String token = jwtEncoder.encode(
                 LocalDateTime.of(2022, 2, 2, 13, 13),
                 tokenType,
-                "user1@naver.com",
+                1L,
                 "ROLE_USER"
         );
 
@@ -86,7 +86,7 @@ class JwtDecoderTest {
         // given
         JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
         LocalDateTime publishTime = LocalDateTime.now();
-        String token = jwtEncoder.encode(publishTime, tokenType, "user1@naver.com", "ROLE_USER");
+        String token = jwtEncoder.encode(publishTime, tokenType, 1L, "ROLE_USER");
 
         // when
         Optional<PrivateClaims> actual = jwtDecoder.decode(tokenType, token);
@@ -94,7 +94,7 @@ class JwtDecoderTest {
         // then
         assertAll(
                 () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual.get().accountId()).isEqualTo("user1@naver.com"),
+                () -> assertThat(actual.get().accountId()).isEqualTo(1L),
                 () -> assertThat(actual.get().roleName()).isEqualTo("ROLE_USER"),
                 () -> assertThat(actual.get().issuedAt()).isEqualTo(publishTime.truncatedTo(ChronoUnit.SECONDS))
         );
@@ -115,7 +115,7 @@ class JwtDecoderTest {
         );
 
         JwtEncoder jwtEncoder = new JwtEncoder(otherIssuerTokenProperties);
-        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, "user1@naver.com", "ROLE_USER");
+        String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, 1L, "ROLE_USER");
 
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, token))

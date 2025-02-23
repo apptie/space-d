@@ -3,6 +3,7 @@ package com.dnd.spaced.core.account.infrastructure.repository;
 import static com.dnd.spaced.core.account.domain.QAccount.account;
 
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,12 +24,24 @@ public class AccountQuerydslRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findBy(String id) {
+    public Optional<Account> findBy(Long id) {
         return accountCrudRepository.findById(id);
     }
 
     @Override
-    public Optional<Account> findSignedUpAccountBy(String id) {
+    public Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier) {
+        Account result = queryFactory.selectFrom(account)
+                                     .where(
+                                             account.socialInfo.registrationId.eq(registrationId),
+                                             account.socialInfo.socialIdentifier.eq(socialIdentifier)
+                                     )
+                                     .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Account> findSignedUpAccountBy(Long id) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
                                              notWithdrawal(),

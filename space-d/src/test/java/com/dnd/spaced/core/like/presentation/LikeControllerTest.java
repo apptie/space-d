@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class LikeControllerTest extends CommonControllerSliceTest {
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 좋아요_처리_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class LikeQueryRepository implements LikeRepository {
+public class LikeQuerydslRepository implements LikeRepository {
 
     private final JPAQueryFactory queryFactory;
     private final LikeCrudRepository likeCrudRepository;
@@ -27,7 +27,7 @@ public class LikeQueryRepository implements LikeRepository {
     }
 
     @Override
-    public Optional<Like> findBy(String accountId, Long commentId) {
+    public Optional<Like> findBy(Long accountId, Long commentId) {
         Like result = queryFactory.selectFrom(like)
                                   .where(like.accountId.eq(accountId), like.commentId.eq(commentId))
                                   .fetchOne();

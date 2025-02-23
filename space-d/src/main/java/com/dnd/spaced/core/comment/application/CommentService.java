@@ -26,15 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private static final String NOT_AUTHENTICATION_ACCOUNT = "notAuthenticationAccount";
-
     private final WordRepository wordRepository;
     private final AccountRepository accountRepository;
     private final CommentRepository commentRepository;
     private final LikeCountRepository likeCountRepository;
 
     @Transactional
-    public void save(String accountId, Long wordId, String content) {
+    public void save(Long accountId, Long wordId, String content) {
         Account writer = findAccount(accountId);
         Word word = findWord(wordId);
         Comment comment = new Comment(writer.getId(), word.getId(), content);
@@ -43,7 +41,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void delete(String accountId, Long commentId) {
+    public void delete(Long accountId, Long commentId) {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
@@ -55,7 +53,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(String accountId, Long commentId, String content) {
+    public void update(Long accountId, Long commentId, String content) {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
@@ -66,13 +64,9 @@ public class CommentService {
         comment.changeContent(content);
     }
 
-    public List<ReadAllCommentDto> readAllBy(String accountId, Long wordId, Long lastCommentId, Pageable pageable) {
+    public List<ReadAllCommentDto> readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         CommentPageRequest commentPageRequest = new CommentPageRequest(pageable, lastCommentId);
-        List<LikedCommentDto> result = commentRepository.findAllBy(
-                calculateLikeAccountId(accountId),
-                wordId,
-                commentPageRequest
-        );
+        List<LikedCommentDto> result = commentRepository.findAllBy(accountId, wordId, commentPageRequest);
         List<Object> commentIds = result.stream()
                                         .map(dto -> (Object) dto.comment().getId())
                                         .toList();
@@ -83,7 +77,7 @@ public class CommentService {
                      .toList();
     }
 
-    private Account findAccount(String accountId) {
+    private Account findAccount(Long accountId) {
         return accountRepository.findBy(accountId)
                                 .orElseThrow(() -> new AssociationAccountNotFoundException("유효하지 않은 회원입니다."));
     }
@@ -96,13 +90,5 @@ public class CommentService {
     private Comment findComment(Long commentId) {
         return commentRepository.findBy(commentId)
                                 .orElseThrow(() -> new CommentNotFoundException("지정한 ID에 해당하는 댓글이 없습니다."));
-    }
-
-    private String calculateLikeAccountId(String accountId) {
-        if (accountId == null) {
-            return NOT_AUTHENTICATION_ACCOUNT;
-        }
-
-        return accountId;
     }
 }
