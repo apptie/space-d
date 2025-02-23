@@ -22,7 +22,7 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Optional<BlacklistToken> findBy(String accountId) {
+    public Optional<BlacklistToken> findBy(Long accountId) {
         String registeredAt = redisTemplate.opsForValue()
                                            .get(calculateKey(accountId));
 
@@ -44,7 +44,7 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
                      );
     }
 
-    private String calculateKey(String accountId) {
+    private String calculateKey(Long accountId) {
         return BLACKLIST_KEY_PREFIX + accountId;
     }
 }

@@ -24,13 +24,13 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void 회원_식별자를_key로_refreshToken을_rotation으로_등록한다() {
         // when & then
-        assertDoesNotThrow(() -> refreshTokenRotationRepository.save("user1@naver.com", "Bearer refreshToken"));
+        assertDoesNotThrow(() -> refreshTokenRotationRepository.save(1L, "Bearer refreshToken"));
     }
 
     @Test
     void 등록하지_않은_회원_식별자로_refreshToken_rotation을_조회하면_빈_값을_반환한다() {
         // when
-        Optional<String> actual = refreshTokenRotationRepository.findBy("user1@naver.com");
+        Optional<String> actual = refreshTokenRotationRepository.findBy(1L);
 
         // then
         assertThat(actual).isEmpty();
@@ -39,13 +39,13 @@ class RefreshTokenRotationRedisRepositoryTest {
     @Test
     void 등록한_이메일로_refreshToken_rotation을_조회한다() {
         // given
-        String id = "user1@naver.com";
+        Long accountId = 1L;
         String refreshToken = "Bearer refreshToken";
 
-        refreshTokenRotationRepository.save(id, refreshToken);
+        refreshTokenRotationRepository.save(accountId, "Bearer refreshToken");
 
         // when
-        Optional<String> actual = refreshTokenRotationRepository.findBy(id);
+        Optional<String> actual = refreshTokenRotationRepository.findBy(accountId);
 
         // then
         assertThat(actual).isPresent()

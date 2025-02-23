@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceException;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
@@ -36,12 +38,12 @@ class InitAccountInfoServiceTest {
     @Test
     void 경력_정보를_초기화한다() {
         // given
-        String id = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(id)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -49,7 +51,7 @@ class InitAccountInfoServiceTest {
         // when & then
         assertDoesNotThrow(
                 () -> initAccountInfoService.initCareerInfo(
-                        id,
+                        account.getId(),
                         "개발자",
                         "비공개",
                         "1~2년 차"
@@ -61,12 +63,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // given
-        String id = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(id)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -74,7 +76,7 @@ class InitAccountInfoServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        id,
+                        account.getId(),
                         "개발자",
                         invalidCompanyName,
                         "1~2년 차"
@@ -88,12 +90,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // given
-        String id = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(id)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -101,7 +103,7 @@ class InitAccountInfoServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        id,
+                        account.getId(),
                         invalidJobGroupName,
                         "비공개",
                         "1~2년 차"
@@ -115,12 +117,12 @@ class InitAccountInfoServiceTest {
     @NullAndEmptySource
     void 경력_정보_초기화_시_유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // given
-        String id = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(id)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -128,7 +130,7 @@ class InitAccountInfoServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        id,
+                        account.getId(),
                         "개발자",
                         "비공개",
                         invalidExperienceName
@@ -143,7 +145,7 @@ class InitAccountInfoServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> initAccountInfoService.initCareerInfo(
-                        "user1@naver.com",
+                        1L,
                         "개발자",
                         "비공개",
                         "1~2년 차"

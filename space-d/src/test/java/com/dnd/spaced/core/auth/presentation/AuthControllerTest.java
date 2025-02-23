@@ -2,6 +2,7 @@ package com.dnd.spaced.core.auth.presentation;
 
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -34,11 +35,11 @@ import org.springframework.test.web.servlet.ResultActions;
 class AuthControllerTest extends CommonControllerSliceTest {
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 회원_프로필_초기화_요청_성공_테스트() throws Exception {
         // given
         willDoNothing().given(initAccountInfoService)
-                       .initCareerInfo(anyString(), anyString(), anyString(), anyString());
+                       .initCareerInfo(anyLong(), anyString(), anyString(), anyString());
 
         UpdateAccountCareerInfoRequest request = new UpdateAccountCareerInfoRequest(
                 "개발자",

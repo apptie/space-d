@@ -10,7 +10,7 @@ public record ReadAllCommentResponse(List<CommentInfoResponse> comments) {
         private record DetailCommentInfoResponse(Long id, Long wordId, String content, int likeCount) {
         }
 
-        private record WriterInfoResponse(String id, String writerNickname, String writerProfileImage) {
+        private record WriterInfoResponse(Long id, String writerNickname, String writerProfileImage) {
         }
 
         static CommentInfoResponse from(ReadAllCommentDto dto) {

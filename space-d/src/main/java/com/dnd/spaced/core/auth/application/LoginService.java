@@ -3,6 +3,7 @@ package com.dnd.spaced.core.auth.application;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
@@ -18,28 +19,35 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private static final String DEFAULT_ROLE_NAME = Role.ROLE_USER.name();
+    private static final Role DEFAULT_ROLE = Role.ROLE_USER;
 
     private final NicknameProperties nicknameProperties;
     private final AccountRepository accountRepository;
     private final NicknameMetadataRepository nicknameMetadataRepository;
 
     @Transactional
-    public LoggedInAccountInfoDto login(String accountId) {
+    public LoggedInAccountInfoDto login(String registrationIdName, String socialIdentifier) {
         AtomicBoolean isSignUp = new AtomicBoolean();
-        Account account = accountRepository.findBy(accountId)
-                                           .orElseGet(() -> processSignUpAccount(accountId, isSignUp));
+        RegistrationId registrationId = RegistrationId.findBy(registrationIdName);
+        Account account = accountRepository.findBy(registrationId, socialIdentifier)
+                                           .orElseGet(
+                                                   () -> processSignUpAccount(
+                                                           registrationId,
+                                                           socialIdentifier,
+                                                           isSignUp
+                                                   )
+                                           );
 
         return new LoggedInAccountInfoDto(account.getId(), account.getRole().name(), isSignUp.get());
     }
 
-    private Account processSignUpAccount(String accountId, AtomicBoolean isSignUp) {
+    private Account processSignUpAccount(RegistrationId registrationId, String socialIdentifier, AtomicBoolean isSignUp) {
         isSignUp.set(true);
 
-        return signUp(accountId);
+        return signUp(registrationId, socialIdentifier);
     }
 
-    private Account signUp(String accountId) {
+    private Account signUp(RegistrationId registrationId, String socialIdentifier) {
         String nickname = nicknameProperties.generate();
         String profileImageName = ProfileImageName.findRandom()
                                                   .getImageName();
@@ -47,43 +55,61 @@ public class LoginService {
         return nicknameMetadataRepository.findBy(nickname)
                                          .map(
                                                  nicknameMetadata -> processExistsNicknameMetadata(
-                                                         accountId,
+                                                         registrationId,
+                                                         socialIdentifier,
                                                          nicknameMetadata,
                                                          profileImageName
                                                  )
                                          )
                                          .orElseGet(
                                                  () -> processNotExistsNicknameMetadata(
-                                                         accountId,
+                                                         registrationId,
+                                                         socialIdentifier,
                                                          nickname,
                                                          profileImageName
                                                  )
                                          );
     }
 
-    private Account processExistsNicknameMetadata(String accountId, NicknameMetadata nicknameMetadata, String profileImageName) {
+    private Account processExistsNicknameMetadata(
+            RegistrationId registrationId,
+            String socialIdentifier,
+            NicknameMetadata nicknameMetadata,
+            String profileImageName
+    ) {
         nicknameMetadata.addCount();
 
-        return saveAccount(accountId, profileImageName, nicknameMetadata);
+        return saveAccount(registrationId, socialIdentifier, profileImageName, nicknameMetadata);
     }
 
-    private Account processNotExistsNicknameMetadata(String accountId, String nickname, String profileImageName) {
+    private Account processNotExistsNicknameMetadata(
+            RegistrationId registrationId,
+            String socialIdentifier,
+            String nickname,
+            String profileImageName
+    ) {
         NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
 
         nicknameMetadataRepository.save(nicknameMetadata);
 
-        return saveAccount(accountId, profileImageName, nicknameMetadata);
+        return saveAccount(registrationId, socialIdentifier, profileImageName, nicknameMetadata);
     }
 
-    private Account saveAccount(String accountId, String profileImage, NicknameMetadata nicknameMetadata) {
+    private Account saveAccount(
+            RegistrationId registrationId,
+            String socialIdentifier,
+            String profileImage,
+            NicknameMetadata nicknameMetadata
+    ) {
         String nickname = nicknameProperties.format(
                 nicknameMetadata.getNickname(),
                 nicknameMetadata.getCount()
         );
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(registrationId)
+                                 .socialIdentifier(socialIdentifier)
                                  .nickname(nickname)
-                                 .roleName(DEFAULT_ROLE_NAME)
+                                 .role(DEFAULT_ROLE)
                                  .profileImage(profileImage)
                                  .build();
 

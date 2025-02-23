@@ -30,7 +30,7 @@ class BlacklistTokenServiceTest {
     void 토큰_블랙리스트에_등록되지_않은_회원의_토큰은_유효한_토큰이다() {
         // given
         PrivateClaims privateClaims = new PrivateClaims(
-                "user1@naver.com",
+                1L,
                 "ROLE_USER",
                 LocalDateTimeFixture.from("2022-02-02 13:13:00")
         );
@@ -45,7 +45,7 @@ class BlacklistTokenServiceTest {
     @Test
     void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_미래라면_유효한_토큰이다() {
         // given
-        String accountId = "user1@naver.com";
+        Long accountId = 1L;
         PrivateClaims privateClaims = new PrivateClaims(
                 accountId,
                 "ROLE_USER",
@@ -66,7 +66,7 @@ class BlacklistTokenServiceTest {
     @Test
     void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_과거라면_차단된_토큰이다() {
         // given
-        String accountId = "user1@naver.com";
+        Long accountId = 1L;
         PrivateClaims privateClaims = new PrivateClaims(
                 accountId,
                 "ROLE_USER",

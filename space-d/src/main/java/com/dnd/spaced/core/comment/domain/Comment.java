@@ -27,7 +27,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String accountId;
+    private Long accountId;
 
     private Long wordId;
 
@@ -35,7 +35,7 @@ public class Comment extends BaseTimeEntity {
 
     private int likeCount = 0;
 
-    public Comment(String accountId, Long wordId, String content) {
+    public Comment(Long accountId, Long wordId, String content) {
         if (isInvalidContent(content)) {
             throw new InvalidCommentContentException("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
         }

@@ -52,7 +52,7 @@ class TokenServiceTest {
     @Test
     void 기존_refreshToken을_통해_토큰을_갱신한다() {
         // given
-        String accountId = "user1@naver.com";
+        Long accountId = 1L;
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
@@ -71,7 +71,7 @@ class TokenServiceTest {
                 () -> assertThat(rtt).isPresent()
         );
     }
-    
+
     @Test
     void 토큰을_갱신할_때_Bearer_타입의_토큰이_아니라면_토큰_갱신을_할_수_없다() {
         // when & then
@@ -86,7 +86,7 @@ class TokenServiceTest {
         String refreshToken = tokenEncoder.encode(
                 LocalDateTimeFixture.from("2000-02-02 13:13:00"),
                 TokenType.REFRESH,
-                "user1@naver.com",
+                1L,
                 "ROLE_USER"
         );
 
@@ -128,7 +128,7 @@ class TokenServiceTest {
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
-                "user1@naver.com",
+                1L,
                 "ROLE_USER"
         );
 
@@ -141,7 +141,7 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_블랙리스트로_등록된_회원의_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "user1@naver.com";
+        Long accountId = 1L;
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now().minusMinutes(3L),
                 TokenType.REFRESH,
@@ -160,7 +160,7 @@ class TokenServiceTest {
     @Test
     void 토큰을_갱신할_때_전달한_refreshToken_값이_RTT로_저장한_값과_일치하지_않으면_토큰_갱신을_할_수_없다() {
         // given
-        String accountId = "user1@naver.com";
+        Long accountId = 1L;
         String refreshToken = tokenEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,

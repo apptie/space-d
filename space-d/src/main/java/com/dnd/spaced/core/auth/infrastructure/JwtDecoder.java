@@ -72,7 +72,7 @@ public class JwtDecoder implements TokenDecoder {
         Date issuedAt = claims.get(CLAIM_ISSUED_AT, Date.class);
 
         return new PrivateClaims(
-                claims.get(CLAIM_ID, String.class),
+                claims.get(CLAIM_ID, Long.class),
                 claims.get(CLAIM_ROLE, String.class),
                 LocalDateTime.ofInstant(issuedAt.toInstant(), ZoneId.systemDefault())
         );

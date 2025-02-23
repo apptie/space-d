@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface RefreshTokenRotationRepository {
 
-    void save(String accountId, String refreshToken);
+    void save(Long accountId, String refreshToken);
 
-    Optional<String> findBy(String accountId);
+    Optional<String> findBy(Long accountId);
 }

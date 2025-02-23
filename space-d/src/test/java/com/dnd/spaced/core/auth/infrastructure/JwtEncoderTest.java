@@ -32,7 +32,7 @@ class JwtEncoderTest {
         String actual = jwtEncoder.encode(
                 LocalDateTime.now(),
                 tokenType,
-                "user1@naver.com",
+                1L,
                 "ROLE_USER"
         );
 

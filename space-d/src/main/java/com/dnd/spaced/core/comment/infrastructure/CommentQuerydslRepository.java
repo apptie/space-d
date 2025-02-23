@@ -24,6 +24,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class CommentQuerydslRepository implements CommentRepository {
 
+    private static final String COMMENT_ID = "id";
+
     private final JPAQueryFactory queryFactory;
     private final CommentCrudRepository commentCrudRepository;
 
@@ -38,7 +40,7 @@ public class CommentQuerydslRepository implements CommentRepository {
     }
 
     @Override
-    public List<LikedCommentDto> findAllBy(String accountId, Long wordId, CommentPageRequest pageRequest) {
+    public List<LikedCommentDto> findAllBy(Long accountId, Long wordId, CommentPageRequest pageRequest) {
         if (accountId == null) {
             return findAllWithoutIsLikedBy(wordId, pageRequest);
         }
@@ -51,7 +53,7 @@ public class CommentQuerydslRepository implements CommentRepository {
         commentCrudRepository.delete(comment);
     }
 
-    private List<LikedCommentDto> findAllWithIsLikedBy(String accountId, Long wordId, CommentPageRequest pageRequest) {
+    private List<LikedCommentDto> findAllWithIsLikedBy(Long accountId, Long wordId, CommentPageRequest pageRequest) {
         return queryFactory.select(
                                    Projections.constructor(
                                            LikedCommentDto.class,
@@ -119,7 +121,7 @@ public class CommentQuerydslRepository implements CommentRepository {
     private boolean isLastCommentIdGt(Pageable pageable) {
         return pageable.getSort()
                        .get()
-                       .anyMatch(order -> "id".equals(order.getProperty()) && order.isAscending());
+                       .anyMatch(order -> COMMENT_ID.equals(order.getProperty()) && order.isAscending());
     }
 
     private BooleanExpression lastCommentIdGt(Long id) {

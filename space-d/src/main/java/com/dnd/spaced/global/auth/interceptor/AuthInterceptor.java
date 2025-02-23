@@ -30,7 +30,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String id = ((UserDetails) authentication.getPrincipal()).getUsername();
 
-        store.set(new AuthAccountInfo(id));
+        store.set(new AuthAccountInfo(Long.parseLong(id)));
         return true;
     }
 

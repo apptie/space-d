@@ -2,7 +2,7 @@ package com.dnd.spaced.core.account.presentation;
 
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class AccountControllerTest extends CommonControllerSliceTest {
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 회원_탈퇴_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -53,7 +53,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 회원_경력_정보_변경_요청_성공_테스트() throws Exception {
         // given
         UpdateCareerInfoRequest request = new UpdateCareerInfoRequest("개발자", "중소기업", "비공개");
@@ -86,7 +86,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
         // given
         UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("행복한금성001", "금성");
@@ -118,7 +118,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    @WithMockUser("account")
+    @WithMockUser("1")
     void 회원_정보_조회_요청_성공_테스트() throws Exception {
         // given
         AccountInfoDto accountInfoDto = new AccountInfoDto(
@@ -129,7 +129,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 "1~2년 차"
         );
 
-        given(accountService.findAccountInfo(anyString())).willReturn(accountInfoDto);
+        given(accountService.findAccountInfo(anyLong())).willReturn(accountInfoDto);
 
         // when
         ResultActions resultActions = mockMvc.perform(

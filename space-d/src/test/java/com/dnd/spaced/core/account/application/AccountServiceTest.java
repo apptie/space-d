@@ -9,6 +9,8 @@ import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceException;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
@@ -44,30 +46,27 @@ class AccountServiceTest {
     @Test
     void 지정한_회원을_탈퇴_처리한다() {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
 
         // when
-        accountService.withdrawal(accountId);
+        accountService.withdrawal(account.getId());
 
         // then
-        assertThat(accountRepository.findBy(accountId)).isEmpty();
+        assertThat(accountRepository.findBy(account.getId())).isEmpty();
     }
 
     @Test
     void 탈퇴_시_없거나_탈퇴한_회원_식별자라면_아니라면_탈퇴할_수_없다() {
-        // given
-        String accountId = "user1@naver.com";
-
         // when & then
-        assertThatThrownBy(() -> accountService.withdrawal(accountId))
+        assertThatThrownBy(() -> accountService.withdrawal(-999L))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
@@ -75,26 +74,26 @@ class AccountServiceTest {
     @Test
     void 회원_경력_정보를_변경한다() {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
 
         // when
         accountService.changeCareerInfo(
-                accountId,
+                account.getId(),
                 "개발자",
                 "비공개",
                 "1~2년 차"
         );
 
         // then
-        AccountInfoDto actual = accountService.findAccountInfo(accountId);
+        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
 
         assertAll(
                 () -> assertThat(actual.jobGroupName()).isEqualTo("개발자"),
@@ -107,12 +106,12 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -120,7 +119,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
-                        accountId,
+                        account.getId(),
                         invalidJobGroupName,
                         "비공개",
                         "1~2년 차"
@@ -133,12 +132,12 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -146,7 +145,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
-                        accountId,
+                        account.getId(),
                         "개발자",
                         invalidCompanyName,
                         "1~2년 차"
@@ -159,12 +158,12 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -172,7 +171,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
-                        accountId,
+                        account.getId(),
                         "개발자",
                         "비공개",
                         invalidExperienceName
@@ -186,7 +185,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeCareerInfo(
-                        "user1@naver.com",
+                        1L,
                         "개발자",
                         "비공개",
                         "1~2년 차"
@@ -204,22 +203,22 @@ class AccountServiceTest {
     @MethodSource("changeProfileInfoTestWithProfileImageKoreanName")
     void 회원_프로필_정보를_변경한다(ProfileImageName profileImageName) {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         account.changeCareerInfo("개발자", "비공개", "1~2년 차");
         accountRepository.save(account);
 
         // when
-        accountService.changeProfileInfo(accountId, "행복한지구001", profileImageName.getKorean());
+        accountService.changeProfileInfo(account.getId(), "행복한지구001", profileImageName.getKorean());
 
         // then
-        AccountInfoDto actual = accountService.findAccountInfo(accountId);
+        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
 
         assertAll(
                 () -> assertThat(actual.nickname()).isEqualTo("행복한지구001"),
@@ -231,12 +230,12 @@ class AccountServiceTest {
     @NullAndEmptySource
     void 회원_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         accountRepository.save(account);
@@ -244,7 +243,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
-                        accountId,
+                        account.getId(),
                         "재빠른지구001",
                         invalidProfileImageKoreanName
                 )
@@ -257,7 +256,7 @@ class AccountServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> accountService.changeProfileInfo(
-                        "user1@naver.com",
+                        1L,
                         "재빠른지구001",
                         "earth.png"
                 )
@@ -268,19 +267,19 @@ class AccountServiceTest {
     @Test
     void 회원_정보를_조회한다() {
         // given
-        String accountId = "user1@naver.com";
         Account account = Account.builder()
-                                 .id(accountId)
+                                 .registrationId(RegistrationId.KAKAO)
+                                 .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
                                  .profileImage("earth.png")
-                                 .roleName("ROLE_USER")
+                                 .role(Role.ROLE_USER)
                                  .build();
 
         account.changeCareerInfo("개발자", "비공개", "1~2년 차");
         accountRepository.save(account);
 
         // when
-        AccountInfoDto actual = accountService.findAccountInfo(accountId);
+        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
 
         // then
         assertAll(
@@ -295,7 +294,7 @@ class AccountServiceTest {
     @Test
     void 회원_정보_조회_시_없거나_탈퇴한_회원_식별자라면_회원_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> accountService.findAccountInfo("user1@naver.com"))
+        assertThatThrownBy(() -> accountService.findAccountInfo(1L))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }

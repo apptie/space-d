@@ -24,7 +24,7 @@ class GenerateTokenServiceTest {
     @Test
     void accessToken과_refreshToken을_생성한다() {
         // when
-        TokenDto actual = generateTokenService.generate("user1@naver.com", "ROLE_USER");
+        TokenDto actual = generateTokenService.generate(1L, "ROLE_USER");
 
         // then
         assertAll(

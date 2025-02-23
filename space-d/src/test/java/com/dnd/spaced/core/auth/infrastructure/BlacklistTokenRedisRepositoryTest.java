@@ -26,8 +26,7 @@ class BlacklistTokenRedisRepositoryTest {
     @Test
     void 블랙리스트_토큰을_저장한다() {
         // given
-        String email = "user1@naver.com";
-        BlacklistToken blacklistToken = new BlacklistToken(email, LocalDateTime.now());
+        BlacklistToken blacklistToken = new BlacklistToken(1L, LocalDateTime.now());
 
         // when & then
         assertDoesNotThrow(() -> blacklistTokenRepository.save(blacklistToken));
@@ -36,7 +35,7 @@ class BlacklistTokenRedisRepositoryTest {
     @Test
     void 블랙리스트로_등록되지_않은_회원_식별자로_블랙리스트_토큰을_조회한다() {
         // when
-        Optional<BlacklistToken> actual = blacklistTokenRepository.findBy("user1@naver.com");
+        Optional<BlacklistToken> actual = blacklistTokenRepository.findBy(1L);
 
         // then
         assertThat(actual).isEmpty();
@@ -45,13 +44,13 @@ class BlacklistTokenRedisRepositoryTest {
     @Test
     void 블랙리스트로_등록된_회원_식별자로_블랙리스트_토큰을_조회한다() {
         // given
-        String email = "user1@naver.com";
-        BlacklistToken blacklistToken = new BlacklistToken(email, LocalDateTime.now());
+        Long accountId = 1L;
+        BlacklistToken blacklistToken = new BlacklistToken(accountId, LocalDateTime.now());
 
         blacklistTokenRepository.save(blacklistToken);
 
         // when
-        Optional<BlacklistToken> actual = blacklistTokenRepository.findBy(email);
+        Optional<BlacklistToken> actual = blacklistTokenRepository.findBy(accountId);
 
         // then
         assertThat(actual).isPresent()

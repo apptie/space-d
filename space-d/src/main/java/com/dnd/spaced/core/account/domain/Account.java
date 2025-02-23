@@ -2,13 +2,16 @@ package com.dnd.spaced.core.account.domain;
 
 import com.dnd.spaced.core.account.domain.embed.CareerInfo;
 import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
+import com.dnd.spaced.core.account.domain.embed.SocialInfo;
+import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
-import com.dnd.spaced.core.account.domain.exception.InvalidIdException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -18,7 +21,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.domain.Persistable;
 
 @Table(name = "accounts")
 @Getter
@@ -27,15 +29,19 @@ import org.springframework.data.domain.Persistable;
 @SQLRestriction("deleted = false")
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account extends CreateTimeEntity implements Persistable<String> {
+public class Account extends CreateTimeEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     private boolean deleted = false;
+
+    @Embedded
+    SocialInfo socialInfo;
 
     @Embedded
     private ProfileInfo profileInfo;
@@ -44,18 +50,16 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     private CareerInfo careerInfo;
 
     @Builder
-    private Account(String id, String nickname, String profileImage, String roleName) {
-        validateContent(id);
-
-        this.id = id;
+    private Account(
+            String nickname,
+            String profileImage,
+            Role role,
+            RegistrationId registrationId,
+            String socialIdentifier
+    ) {
         this.profileInfo = new ProfileInfo(nickname, profileImage);
-        this.role = Role.findBy(roleName);
-    }
-
-    private void validateContent(String id) {
-        if (isInvalidId(id)) {
-            throw new InvalidIdException("ID는 null이나 비어 있을 수 없습니다.");
-        }
+        this.role = role;
+        this.socialInfo = new SocialInfo(registrationId, socialIdentifier);
     }
 
     public void changeCareerInfo(String jobGroupName, String companyName, String experienceName) {
@@ -67,24 +71,11 @@ public class Account extends CreateTimeEntity implements Persistable<String> {
     }
 
     public void changeProfileInfo(String changedNickname, String changedProfileImage) {
-        this.profileInfo.changeProfileInfo(changedNickname, changedProfileImage);
+        this.profileInfo = new ProfileInfo(changedNickname, changedProfileImage);
     }
 
-    public boolean isEqualTo(String id) {
+    public boolean isEqualTo(Long id) {
         return this.id.equals(id);
     }
-
-    private boolean isInvalidId(String id) {
-        return id == null || id.isBlank();
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreatedAt() == null;
-    }
 }
+
