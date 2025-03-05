@@ -45,6 +45,7 @@ class LikeCountBufferTest {
         currentBufferField.setAccessible(true);
         AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
         int bufferSizeAfterFlush = currentBuffer.get().size();
+        bufferThreadPool.shutdown();
 
         System.out.println(bufferSizeBeforeFlush.get());
         assertAll(
@@ -79,6 +80,7 @@ class LikeCountBufferTest {
         currentBufferField.setAccessible(true);
         AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
         int bufferSizeAfterFlush = currentBuffer.get().size();
+        bufferThreadPool.shutdown();
 
         assertAll(
                 () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(120),
@@ -113,6 +115,7 @@ class LikeCountBufferTest {
         currentBufferField.setAccessible(true);
         AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
         int bufferSizeAfterFlush = currentBuffer.get().size();
+        bufferThreadPool.shutdown();
 
         assertAll(
                 () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(20),
@@ -209,6 +212,8 @@ class LikeCountBufferTest {
         currentBufferField.setAccessible(true);
         AtomicReference<Map<LikeCountIdentifier, Integer>> currentBuffer = (AtomicReference<Map<LikeCountIdentifier, Integer>>) currentBufferField.get(buffer);
         int bufferSizeAfterFlush = currentBuffer.get().size();
+        bufferThreadPool.shutdown();
+        testThreadPool.shutdown();
 
         assertAll(
                 () -> assertThat(bufferSizeBeforeFlush.get() + bufferSizeAfterFlush).isEqualTo(110),
