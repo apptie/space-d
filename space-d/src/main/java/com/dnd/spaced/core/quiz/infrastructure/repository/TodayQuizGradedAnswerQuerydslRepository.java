@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.quiz.persistance.repository;
+package com.dnd.spaced.core.quiz.infrastructure.repository;
 
 import static com.dnd.spaced.core.quiz.domain.QTodayQuizGradedAnswer.todayQuizGradedAnswer;
 
