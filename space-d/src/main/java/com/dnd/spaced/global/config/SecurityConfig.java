@@ -13,6 +13,7 @@ import com.dnd.spaced.global.auth.security.handler.OAuth2AuthenticationFailureHa
 import com.dnd.spaced.global.auth.security.handler.OAuth2SuccessHandler;
 import com.dnd.spaced.global.config.properties.CorsProperties;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
+import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
@@ -54,7 +55,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(
-        value = {TokenProperties.class, CorsProperties.class, NicknameProperties.class}
+        value = {TokenProperties.class, CorsProperties.class, NicknameProperties.class, QuizQuestionProperties.class}
 )
 public class SecurityConfig {
 

@@ -2,20 +2,22 @@ package com.dnd.spaced.core.word.infrastructure;
 
 import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
+import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
 import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
+import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
-import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordQuerydslRepository implements WordRepository {
+public class WordGatewayRepository implements WordRepository {
 
     private final JPAQueryFactory queryFactory;
     private final WordCrudRepository wordCrudRepository;
@@ -104,6 +106,18 @@ public class WordQuerydslRepository implements WordRepository {
                            )
                            .limit(pageRequest.pageable().getPageSize())
                            .fetch();
+    }
+
+    @Override
+    public List<Word> findAllBy(List<Long> ids) {
+        List<Word> words = queryFactory.selectFrom(word)
+                                       .leftJoin(word.wordExamples, wordExample)
+                                       .where(word.id.in(ids.toArray(Long[]::new)))
+                                       .fetch();
+
+        Collections.shuffle(words);
+
+        return words;
     }
 
     private BooleanExpression lastWordNameGt(String lastWordName) {
