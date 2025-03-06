@@ -12,6 +12,7 @@ import com.dnd.spaced.global.auth.security.handler.OAuth2AuthenticationEntryPoin
 import com.dnd.spaced.global.auth.security.handler.OAuth2AuthenticationFailureHandler;
 import com.dnd.spaced.global.auth.security.handler.OAuth2SuccessHandler;
 import com.dnd.spaced.global.config.properties.CorsProperties;
+import com.dnd.spaced.global.config.properties.ImageStorePathProperties;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import com.dnd.spaced.global.config.properties.TokenProperties;
@@ -55,7 +56,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(
-        value = {TokenProperties.class, CorsProperties.class, NicknameProperties.class, QuizQuestionProperties.class}
+        value = {
+                TokenProperties.class, CorsProperties.class, NicknameProperties.class, QuizQuestionProperties.class,
+                ImageStorePathProperties.class
+        }
 )
 public class SecurityConfig {
 
