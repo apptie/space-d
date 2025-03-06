@@ -74,6 +74,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.pronunciationType").withSubsectionId("pronunciationType"),
                                       attributes(key("title").value("PronunciationType 허용 값")),
                                       enumConvertFieldDescriptor(data.getPronunciationType())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.quizCategory").withSubsectionId("quizCategory"),
+                                      attributes(key("title").value("QuizCategory 허용 값")),
+                                      enumConvertFieldDescriptor(data.getQuizCategory())
                               )
                       ));
     }
@@ -185,6 +191,72 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.processLikeException").withSubsectionId("processLikeException"),
                                       attributes(key("title").value("`POST /comments/{commentId}/likes` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getProcessLikeException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.createQuizException").withSubsectionId("createQuizException"),
+                                      attributes(key("title").value("`POST /quizzes` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getCreateQuizException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.gradeQuizException").withSubsectionId("gradeQuizException"),
+                                      attributes(key("title").value("`POST /quizzes/{quizId}/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getGradeQuizException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findGradedAnswersAllByException").withSubsectionId("findGradedAnswersAllByException"),
+                                      attributes(key("title").value("`GET /quizzes/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindGradedAnswersAllByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findGradedAnswersAllByQuizException").withSubsectionId("findGradedAnswersAllByQuizException"),
+                                      attributes(key("title").value("`GET /quizzes/{quizId}/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindGradedAnswersAllByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findQuizByException").withSubsectionId("findQuizByException"),
+                                      attributes(key("title").value("`GET /quizzes/{quizId}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindQuizByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findLatestTodayQuizException").withSubsectionId("findLatestTodayQuizException"),
+                                      attributes(key("title").value("`GET /today-quizzes/latest` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindLatestTodayQuizException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findTodayQuizByException").withSubsectionId("findTodayQuizByException"),
+                                      attributes(key("title").value("`GET /today-quizzes/{todayQuizId}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindTodayQuizByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.gradeTodayQuizException").withSubsectionId("gradeTodayQuizException"),
+                                      attributes(key("title").value("`POST /today-quizzes/{todayQuizId}/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getGradeTodayQuizException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findTodayQuizGradedAnswerByException").withSubsectionId("findTodayQuizGradedAnswerByException"),
+                                      attributes(key("title").value("`GET /today-quizzes/{todayQuizId}/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindTodayQuizGradedAnswerByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findTodayQuizGradedAnswersAllByException").withSubsectionId("findTodayQuizGradedAnswersAllByException"),
+                                      attributes(key("title").value("`GET /today-quizzes/graded-answers` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindTodayQuizGradedAnswersAllByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.createTodayQuizException").withSubsectionId("createTodayQuizException"),
+                                      attributes(key("title").value("`POST /admin/today-quizzes` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindTodayQuizGradedAnswersAllByException())
                               )
                       )
               );
@@ -224,14 +296,14 @@ class DocsControllerTest extends CommonControllerSliceTest {
 
     private static FieldDescriptor[] exceptionConvertFieldDescriptor(Map<String, ExceptionContent> exceptionValues) {
         return exceptionValues.entrySet()
-                .stream()
-                .map(
-                        exceptionValue -> fieldWithPath(exceptionValue.getKey()).description(exceptionValue.getValue().httpStatus().name())
-                                                                                .attributes(
-                                                                                        field("status", String.valueOf(exceptionValue.getValue().httpStatus().value())),
-                                                                                        field("message", exceptionValue.getValue().message())
-                                                                                )
-                ).toArray(FieldDescriptor[]::new);
+                              .stream()
+                              .map(
+                                      exceptionValue -> fieldWithPath(exceptionValue.getKey()).description(exceptionValue.getValue().httpStatus().name())
+                                                                                              .attributes(
+                                                                                                      field("status", String.valueOf(exceptionValue.getValue().httpStatus().value())),
+                                                                                                      field("message", exceptionValue.getValue().message())
+                                                                                              )
+                              ).toArray(FieldDescriptor[]::new);
     }
 
     private ExceptionDocs findExceptionData(MvcResult result) throws IOException {

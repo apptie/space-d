@@ -639,9 +639,9 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "jobGroupName" : "jobGroupName",
-  "companyName" : "companyName",
-  "experienceName" : "experienceName"
+  "jobGroupName" : "개발자",
+  "companyName" : "중소기업",
+  "experienceName" : "1년 차 미만"
 }</code></pre>
 </div>
 </div>
@@ -675,9 +675,9 @@ Authorization: Bearer AccessToken
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-json" data-lang="json">{
-  "jobGroupName" : "jobGroupName",
-  "companyName" : "companyName",
-  "experienceName" : "experienceName"
+  "jobGroupName" : "개발자",
+  "companyName" : "중소기업",
+  "experienceName" : "1년 차 미만"
 }</code></pre>
 </div>
 </div>
@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Mon, 18 Nov 2024 13:21:59 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 9 Mar 2025 11:44:04 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -961,7 +961,7 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "accountId" : "id"
+  "accountId" : 1
 }</code></pre>
 </div>
 </div>
@@ -1012,7 +1012,7 @@ Authorization: Bearer AccessToken
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>accountId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가입한 회원 ID만 가능</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">블랙리스트 토큰으로 등록할 회원 ID</p></td>
@@ -1299,6 +1299,12 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_METADATA_COUNTER_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 메타데이터에 변경사항을 반영하지 못했습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1599,6 +1605,91 @@ Authorization: Bearer AccessToken</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="Create-Today-Quiz"><a class="link" href="#Create-Today-Quiz">오늘의 퀴즈 수동 생성 API</a></h3>
+<div class="sect3">
+<h4 id="Create-Today-Quiz_http_request"><a class="link" href="#Create-Today-Quiz_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /admin/today-quizzes HTTP/1.1
+Authorization: Bearer AccessToken
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Create-Today-Quiz_request_headers"><a class="link" href="#Create-Today-Quiz_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 관리자 Access Token</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Create-Today-Quiz_response_headers"><a class="link" href="#Create-Today-Quiz_response_headers">Response headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성한 오늘의 퀴즈를 확인할 수 있는 API</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>POST /admin/today-quizzes</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1838,8 +1929,8 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "nickname" : "nickname",
-  "profileImageKoreanName" : "profileImageKoreanName"
+  "nickname" : "행복한금성001",
+  "profileImageKoreanName" : "금성"
 }</code></pre>
 </div>
 </div>
@@ -2008,11 +2099,11 @@ Authorization: Bearer AccessToken</code></pre>
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname" : "nickname",
-  "profileImage" : "profileImage",
-  "jobGroupName" : "jobGroup",
-  "companyName" : "company",
-  "experienceName" : "experience"
+  "nickname" : "재빠른지구001",
+  "profileImage" : "earth.png",
+  "jobGroupName" : "개발자",
+  "companyName" : "비공개",
+  "experienceName" : "1~2년 차"
 }</code></pre>
 </div>
 </div>
@@ -2098,119 +2189,27 @@ Content-Type: application/json;charset=UTF-8
 <h3 id="Read-Word"><a class="link" href="#Read-Word">용어 상세 조회 API</a></h3>
 <div class="sect3">
 <h4 id="Read-Word_http_request"><a class="link" href="#Read-Word_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/1 HTTP/1.1
-Accept: application/json</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::word-controller-test/read_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-Word_path_parameters"><a class="link" href="#Read-Word_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">조회하고자 하는 용어 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::word-controller-test/read_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Read-Word_http_response"><a class="link" href="#Read-Word_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "id" : 1,
-  "name" : "name",
-  "categoryName" : "categoryName",
-  "meaning" : "meaning",
-  "examples" : [ "examples" ],
-  "pronunciationInfo" : [ {
-    "pronunciation" : "pronunciation",
-    "typeName" : "typeName"
-  } ],
-  "viewCount" : 1
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::word-controller-test/read_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-Word_response_fields"><a class="link" href="#Read-Word_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categoryName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 카테고리</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meaning</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>examples</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pronunciationInfo</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 발음</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pronunciationInfo[*].pronunciation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발음 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pronunciationInfo[*].typeName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발음 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>viewCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::word-controller-test/read_성공_테스트</p>
+</div>
 </div>
 <div class="paragraph">
 <p><code>GET /words/{id}</code> 예외 상황</p>
@@ -2244,306 +2243,75 @@ Content-Type: application/json;charset=UTF-8
 <h3 id="Read-All-Word"><a class="link" href="#Read-All-Word">용어 목록 조회 API</a></h3>
 <div class="sect3">
 <h4 id="Read-All-Word_http_request"><a class="link" href="#Read-All-Word_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words?categoryName=categoryName&amp;lastWordName=lastWordName HTTP/1.1
-Accept: application/json</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::word-controller-test/read-all-by_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Word_query_parameters"><a class="link" href="#Read-All-Word_query_parameters">Query parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">파라미터</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categoryName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="common/category.html" class="popup">카테고리</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">필터링할 용어 카테고리</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastWordName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 조회한 용어 이름</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet query-parameters not found for operation::word-controller-test/read-all-by_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Word_http_response"><a class="link" href="#Read-All-Word_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "words" : [ {
-    "id" : 1,
-    "name" : "name",
-    "meaning" : "meaning",
-    "category" : "category",
-    "viewCount" : 1
-  } ]
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::word-controller-test/read-all-by_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Word_response_fields"><a class="link" href="#Read-All-Word_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 검색 결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].meaning</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].category</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 카테고리</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].viewCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::word-controller-test/read-all-by_성공_테스트</p>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="Search-Word"><a class="link" href="#Search-Word">용어 검색 API</a></h3>
 <div class="sect3">
 <h4 id="Search-Word_http_request"><a class="link" href="#Search-Word_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/search?name=name&amp;categoryName=categoryName&amp;pronunciation=pronunciation&amp;lastWordName=lastWordName HTTP/1.1
-Accept: application/json</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::word-controller-test/search_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Search-Word_query_parameters"><a class="link" href="#Search-Word_query_parameters">Query parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">파라미터</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">검색할 용어 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categoryName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="common/category.html" class="popup">카테고리</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">검색할 용어 카테고리</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pronunciation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">검색할 용어 발음</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastWordName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 조회한 용어 이름</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet query-parameters not found for operation::word-controller-test/search_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Search-Word_http_response"><a class="link" href="#Search-Word_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "words" : [ {
-    "id" : 1,
-    "name" : "name",
-    "meaning" : "meaning",
-    "category" : "category",
-    "viewCount" : 1
-  } ]
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::word-controller-test/search_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Search-Word_response_fields"><a class="link" href="#Search-Word_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 검색 결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].meaning</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].category</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 카테고리</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].viewCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::word-controller-test/search_성공_테스트</p>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="Read-All-Popular-Word"><a class="link" href="#Read-All-Popular-Word">많이 조회한 용어 목록 조회 API</a></h3>
 <div class="sect3">
 <h4 id="Read-All-Popular-Word_http_request"><a class="link" href="#Read-All-Popular-Word_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/popular HTTP/1.1
-Accept: application/json</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::word-controller-test/read-popular-words-all_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Popular-Word_http_response"><a class="link" href="#Read-All-Popular-Word_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "words" : [ {
-    "rank" : 1,
-    "id" : 1,
-    "name" : "name"
-  } ]
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::word-controller-test/read-popular-words-all_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Popular-Word_response_fields"><a class="link" href="#Read-All-Popular-Word_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">많이 조회한 용어 검색 결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].rank</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">많이 조회한 용어 랭킹</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 이름</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::word-controller-test/read-popular-words-all_성공_테스트</p>
+</div>
 </div>
 </div>
 </div>
@@ -2555,100 +2323,32 @@ Content-Type: application/json;charset=UTF-8
 <h3 id="Save-Comment"><a class="link" href="#Save-Comment">댓글 추가 API</a></h3>
 <div class="sect3">
 <h4 id="Save-Comment_http_request"><a class="link" href="#Save-Comment_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /words/1/comments HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer AccessToken
-
-{
-  "content" : "content"
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::comment-controller-test/save_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Save-Comment_request_headers"><a class="link" href="#Save-Comment_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::comment-controller-test/save_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Save-Comment_path_parameters"><a class="link" href="#Save-Comment_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wordId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글을 추가할 용어 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::comment-controller-test/save_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Save-Comment_request_fields"><a class="link" href="#Save-Comment_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 내용</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::comment-controller-test/save_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Save-Comment_http_response"><a class="link" href="#Save-Comment_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Location: /words/1</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::comment-controller-test/save_성공_테스트</p>
 </div>
 </div>
 <div class="paragraph">
@@ -2695,64 +2395,26 @@ Location: /words/1</code></pre>
 <h3 id="Delete-Comment"><a class="link" href="#Delete-Comment">댓글 삭제 API</a></h3>
 <div class="sect3">
 <h4 id="Delete-Comment_http_request"><a class="link" href="#Delete-Comment_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /comments/1 HTTP/1.1
-Authorization: Bearer AccessToken</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::comment-controller-test/delete_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Delete-Comment_request_headers"><a class="link" href="#Delete-Comment_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::comment-controller-test/delete_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Delete-Comment_path_parameters"><a class="link" href="#Delete-Comment_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">삭제할 댓글 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::comment-controller-test/delete_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Delete-Comment_http_response"><a class="link" href="#Delete-Comment_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::comment-controller-test/delete_성공_테스트</p>
 </div>
 </div>
 <div class="paragraph">
@@ -2799,99 +2461,32 @@ Authorization: Bearer AccessToken</code></pre>
 <h3 id="Update-Comment"><a class="link" href="#Update-Comment">댓글 수정 API</a></h3>
 <div class="sect3">
 <h4 id="Update-Comment_http_request"><a class="link" href="#Update-Comment_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /comments/1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer AccessToken
-
-{
-  "content" : "change content"
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::comment-controller-test/update_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Update-Comment_request_headers"><a class="link" href="#Update-Comment_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::comment-controller-test/update_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Update-Comment_path_parameters"><a class="link" href="#Update-Comment_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정할 댓글 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::comment-controller-test/update_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Update-Comment_request_fields"><a class="link" href="#Update-Comment_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">제약조건</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정할 댓글 내용</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::comment-controller-test/update_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Update-Comment_http_response"><a class="link" href="#Update-Comment_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::comment-controller-test/update_성공_테스트</p>
 </div>
 </div>
 <div class="paragraph">
@@ -2944,151 +2539,33 @@ Authorization: Bearer AccessToken
 <h3 id="Read-All-Comments"><a class="link" href="#Read-All-Comments">댓글 목록 조회 API</a></h3>
 <div class="sect3">
 <h4 id="Read-All-Comments_http_request"><a class="link" href="#Read-All-Comments_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/1/comments HTTP/1.1
-Accept: application/json</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::comment-controller-test/read-all-by_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Comments_request_headers"><a class="link" href="#Read-All-Comments_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::comment-controller-test/read-all-by_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Comments_path_parameters"><a class="link" href="#Read-All-Comments_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wordId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 목록을 조회할 용어 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::comment-controller-test/read-all-by_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Comments_http_response"><a class="link" href="#Read-All-Comments_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "comments" : [ {
-    "commentInfo" : {
-      "id" : 1,
-      "wordId" : 1,
-      "content" : "content",
-      "likeCount" : 0
-    },
-    "writerInfo" : {
-      "id" : "accountId",
-      "writerNickname" : "writer",
-      "writerProfileImage" : "profileImage"
-    }
-  } ]
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::comment-controller-test/read-all-by_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Read-All-Comments_response_fields"><a class="link" href="#Read-All-Comments_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 목록 조회 결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].commentInfo</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].commentInfo.id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].commentInfo.wordId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글이 추가된 용어 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].commentInfo.content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].commentInfo.likeCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">댓글 좋아요 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].writerInfo</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].writerInfo.id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].writerInfo.writerNickname</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 닉네임</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>comments[*].writerInfo.writerProfileImage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 프로필 이미지</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::comment-controller-test/read-all-by_성공_테스트</p>
+</div>
 </div>
 </div>
 </div>
@@ -3100,65 +2577,26 @@ Content-Type: application/json;charset=UTF-8
 <h3 id="Process-Like"><a class="link" href="#Process-Like">좋아요 API</a></h3>
 <div class="sect3">
 <h4 id="Process-Like_http_request"><a class="link" href="#Process-Like_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /comments/1/likes HTTP/1.1
-Authorization: Bearer AccessToken
-Content-Type: application/x-www-form-urlencoded</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::like-controller-test/process-like_성공_테스트</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="Process-Like_request_headers"><a class="link" href="#Process-Like_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">필수여부</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::like-controller-test/process-like_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Process-Like_path_parameters"><a class="link" href="#Process-Like_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">이름</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 추가/취소를 수소할 댓글 ID</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet path-parameters not found for operation::like-controller-test/process-like_성공_테스트</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="Process-Like_http_response"><a class="link" href="#Process-Like_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::like-controller-test/process-like_성공_테스트</p>
 </div>
 </div>
 <div class="paragraph">
@@ -3197,11 +2635,1250 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Quiz-API"><a class="link" href="#Quiz-API">퀴즈 API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Create-Quiz"><a class="link" href="#Create-Quiz">퀴즈 생성 API</a></h3>
+<div class="sect3">
+<h4 id="Create-Quiz_http_request"><a class="link" href="#Create-Quiz_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /quizzes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer AccessToken
+
+{
+  "quizCategoryName" : "전체 실무"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Create-Quiz_request_headers"><a class="link" href="#Create-Quiz_request_headers">Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::quiz-controller-test/퀴즈_생성_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Create-Quiz_request_fields"><a class="link" href="#Create-Quiz_request_fields">Request fields</a></h4>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::quiz-controller-test/퀴즈_생성_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Create-Quiz_http_response"><a class="link" href="#Create-Quiz_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Location: /quizzes/1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Create-Quiz_response_headers"><a class="link" href="#Create-Quiz_response_headers">Response headers</a></h4>
+<div class="paragraph">
+<p>Snippet response-headers not found for operation::quiz-controller-test/퀴즈_생성_요청_성공_테스트</p>
+</div>
+</div>
+<div class="paragraph">
+<p><code>POST /quizzes</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_QUIZ_CATEGORY_NAME_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 퀴즈 카테고리 이름입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_METADATA_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 메타데이터가 정상적으로 초기화되지 않았습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_QUIZ_WORD_COUNT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 생성에 실패했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Find-Quiz"><a class="link" href="#Find-Quiz">퀴즈 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-Quiz_http_request"><a class="link" href="#Find-Quiz_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/1 HTTP/1.1
+Authorization: Bearer AccessToken</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Quiz_request_headers"><a class="link" href="#Find-Quiz_request_headers">Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::quiz-controller-test/퀴즈_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Quiz_http_response"><a class="link" href="#Find-Quiz_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id" : 1,
+  "accountId" : 1,
+  "quizQuestions" : [ {
+    "id" : 1,
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+    "quizOptions" : [ {
+      "id" : 1,
+      "content" : "Authorization"
+    }, {
+      "id" : 2,
+      "content" : "status"
+    }, {
+      "id" : 3,
+      "content" : "gradient"
+    }, {
+      "id" : 4,
+      "content" : "locale"
+    } ],
+    "answerOptionWordId" : 1
+  }, {
+    "id" : 2,
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다.",
+    "quizOptions" : [ {
+      "id" : 5,
+      "content" : "YAML"
+    }, {
+      "id" : 6,
+      "content" : "jar"
+    }, {
+      "id" : 7,
+      "content" : "redirect"
+    }, {
+      "id" : 8,
+      "content" : "empty"
+    } ],
+    "answerOptionWordId" : 2
+  }, {
+    "id" : 3,
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다.",
+    "quizOptions" : [ {
+      "id" : 9,
+      "content" : "TOML"
+    }, {
+      "id" : 10,
+      "content" : "directory"
+    }, {
+      "id" : 11,
+      "content" : "SaaS"
+    }, {
+      "id" : 12,
+      "content" : "usage"
+    } ],
+    "answerOptionWordId" : 3
+  }, {
+    "id" : 4,
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다.",
+    "quizOptions" : [ {
+      "id" : 13,
+      "content" : "deprecated"
+    }, {
+      "id" : 14,
+      "content" : "GUI"
+    }, {
+      "id" : 15,
+      "content" : "JWT"
+    }, {
+      "id" : 16,
+      "content" : "Dequeue"
+    } ],
+    "answerOptionWordId" : 4
+  }, {
+    "id" : 5,
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다.",
+    "quizOptions" : [ {
+      "id" : 17,
+      "content" : "execute"
+    }, {
+      "id" : 18,
+      "content" : "COALESCE"
+    }, {
+      "id" : 19,
+      "content" : "Queue"
+    }, {
+      "id" : 20,
+      "content" : "carousel"
+    } ],
+    "answerOptionWordId" : 5
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>GET /quizzes/{quizId}</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Graded-Quiz-Answers"><a class="link" href="#Graded-Quiz-Answers">퀴즈 채점 API</a></h3>
+<div class="sect3">
+<h4 id="Graded-Quiz-Answers_http_request"><a class="link" href="#Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /quizzes/1/graded-answers HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer AccessToken
+
+{
+  "answers" : [ 0, 1, 2, 3, 2 ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Graded-Quiz-Answers_request_headers"><a class="link" href="#Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::quiz-controller-test/퀴즈_채점_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Graded-Quiz-Answers_http_response"><a class="link" href="#Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Location: /quizzes/1/graded-answer</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Graded-Quiz-Answers_response_headers"><a class="link" href="#Graded-Quiz-Answers_response_headers">Response headers</a></h4>
+<div class="paragraph">
+<p>Snippet response-headers not found for operation::quiz-controller-test/퀴즈_채점_요청_성공_테스트</p>
+</div>
+</div>
+<div class="paragraph">
+<p><code>GET /quizzes/{quizId}</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Find-All-Graded-Quiz-Answers"><a class="link" href="#Find-All-Graded-Quiz-Answers">퀴즈 채점 목록 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-All-Graded-Quiz-Answers_http_request"><a class="link" href="#Find-All-Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/1/graded-answers HTTP/1.1
+Authorization: Bearer AccessToken
+Accept: application/json</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-All-Graded-Quiz-Answers_request_headers"><a class="link" href="#Find-All-Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::quiz-controller-test/특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-All-Graded-Quiz-Answers_http_response"><a class="link" href="#Find-All-Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "answers" : [ {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 1,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+    },
+    "selectedQuizOptionContent" : "Authorization",
+    "answerQuizOptionContent" : "Authorization",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 2,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
+    },
+    "selectedQuizOptionContent" : "YAML",
+    "answerQuizOptionContent" : "YAML",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 3,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
+    },
+    "selectedQuizOptionContent" : "TOML",
+    "answerQuizOptionContent" : "XML",
+    "isCorrect" : false
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 4,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
+    },
+    "selectedQuizOptionContent" : "deprecated",
+    "answerQuizOptionContent" : "deprecated",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 5,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
+    },
+    "selectedQuizOptionContent" : "execute",
+    "answerQuizOptionContent" : "execute",
+    "isCorrect" : true
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-All-Graded-Quiz-Answers_response_fields"><a class="link" href="#Find-All-Graded-Quiz-Answers_response_fields">Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::quiz-controller-test/특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="paragraph">
+<p><code>GET /quizzes/{quizId}/graded-answers</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Find-Graded-Quiz-Answers"><a class="link" href="#Find-Graded-Quiz-Answers">특정 퀴즈 채점 목록 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-Graded-Quiz-Answers_http_request"><a class="link" href="#Find-Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/graded-answers HTTP/1.1
+Authorization: Bearer AccessToken
+Accept: application/json</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Quiz-Answers_request_headers"><a class="link" href="#Find-Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::quiz-controller-test/회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Quiz-Answers_query_parameters"><a class="link" href="#Find-Graded-Quiz-Answers_query_parameters">Query parameters</a></h4>
+<div class="paragraph">
+<p>Snippet query-parameters not found for operation::quiz-controller-test/회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Quiz-Answers_http_response"><a class="link" href="#Find-Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "answers" : [ {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 1,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+    },
+    "selectedQuizOptionContent" : "Authorization",
+    "answerQuizOptionContent" : "Authorization",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 2,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
+    },
+    "selectedQuizOptionContent" : "YAML",
+    "answerQuizOptionContent" : "YAML",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 3,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
+    },
+    "selectedQuizOptionContent" : "TOML",
+    "answerQuizOptionContent" : "XML",
+    "isCorrect" : false
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 4,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
+    },
+    "selectedQuizOptionContent" : "deprecated",
+    "answerQuizOptionContent" : "deprecated",
+    "isCorrect" : true
+  }, {
+    "id" : 1,
+    "accountId" : 1,
+    "quizId" : 1,
+    "readQuizQuestion" : {
+      "id" : 5,
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
+    },
+    "selectedQuizOptionContent" : "execute",
+    "answerQuizOptionContent" : "execute",
+    "isCorrect" : true
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Quiz-Answers_response_fields"><a class="link" href="#Find-Graded-Quiz-Answers_response_fields">Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::quiz-controller-test/회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트</p>
+</div>
+</div>
+<div class="paragraph">
+<p><code>GET /quizzes/graded-answers</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Today-Quiz-API"><a class="link" href="#Today-Quiz-API">오늘의 퀴즈 API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Find-Today-Latest-Quiz-API"><a class="link" href="#Find-Today-Latest-Quiz-API">최신 오늘의 퀴즈 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-Today-Latest-Quiz-API_http_request"><a class="link" href="#Find-Today-Latest-Quiz-API_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/latest HTTP/1.1
+Accept: application/json</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Today-Latest-Quiz-API_http_response"><a class="link" href="#Find-Today-Latest-Quiz-API_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id" : 1,
+  "todayQuizQuestion" : {
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+    "todayQuizOptions" : [ {
+      "id" : 1,
+      "content" : "Authorization"
+    }, {
+      "id" : 2,
+      "content" : "Controller"
+    }, {
+      "id" : 3,
+      "content" : "Domain"
+    }, {
+      "id" : 4,
+      "content" : "Repository"
+    } ],
+    "answerWordId" : 1
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Today-Latest-Quiz-API_response_fields"><a class="link" href="#Find-Today-Latest-Quiz-API_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.quizCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.question</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerWordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /today-quizzes/latest</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="Find-Today-Quiz-API"><a class="link" href="#Find-Today-Quiz-API">오늘의 퀴즈 조회 API</a></h4>
+<div class="sect4">
+<h5 id="Find-Today-Quiz-API_http_request"><a class="link" href="#Find-Today-Quiz-API_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/1 HTTP/1.1
+Accept: application/json</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="Find-Today-Quiz-API_http_response"><a class="link" href="#Find-Today-Quiz-API_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id" : 1,
+  "todayQuizQuestion" : {
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+    "todayQuizOptions" : [ {
+      "id" : 1,
+      "content" : "Authorization"
+    }, {
+      "id" : 2,
+      "content" : "Controller"
+    }, {
+      "id" : 3,
+      "content" : "Domain"
+    }, {
+      "id" : 4,
+      "content" : "Repository"
+    } ],
+    "answerWordId" : 1
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="Find-Today-Quiz-API_response_fields"><a class="link" href="#Find-Today-Quiz-API_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.quizCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.question</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerWordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /today-quizzes/{todayQuizId}</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Graded-Today-Quiz-API"><a class="link" href="#Graded-Today-Quiz-API">오늘의 퀴즈 채점 요청 API</a></h3>
+<div class="sect3">
+<h4 id="Graded-Today-Quiz-API_http_request"><a class="link" href="#Graded-Today-Quiz-API_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /today-quizzes/1/graded-answers HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer AccessToken
+
+{
+  "answer" : 0
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Graded-Today-Quiz-API_http_response"><a class="link" href="#Graded-Today-Quiz-API_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Location: /today-quizzes/1/graded-answers</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Graded-Today-Quiz-API_response_headers"><a class="link" href="#Graded-Today-Quiz-API_response_headers">Response headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 채점 결과를 확인할 수 있는 API</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>POST /today-quizzes/{todayQuizId}/graded-answers</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (answer)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_SUBMITTED_TODAY_QUIZ_OPTION_INDEX_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">없는 보기를 선택했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Find-All-Graded-Today-Quiz-Answers"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers">오늘의 퀴즈 채점 목록 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-All-Graded-Today-Quiz-Answers_http_request"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/graded-answers HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer AccessToken
+
+{
+  "lastTodayQuizGradedAnswerId" : null
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-All-Graded-Today-Quiz-Answers_http_response"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "answers" : [ {
+    "id" : 1,
+    "todayQuizId" : 1,
+    "accountId" : 1,
+    "todayQuizQuestion" : {
+      "quizCategory" : "개발",
+      "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+    },
+    "selectedQuizOptionContent" : "Authorization",
+    "answerQuizOptionContent" : "Authorization",
+    "isCorrect" : true
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-All-Graded-Today-Quiz-Answers_response_fields"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 제출한 오늘의 퀴즈 채점 결과</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채점 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].accountId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion.quizCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion.question</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].selectedQuizOptionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈에서 회원이 제출한 답</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].answerQuizOptionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈 답</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /today-quizzes/graded-answers</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Find-Graded-Today-Quiz-Answers"><a class="link" href="#Find-Graded-Today-Quiz-Answers">특정 오늘의 퀴즈 채점 목록 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_http_request"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/1/graded-answers HTTP/1.1
+Authorization: Bearer AccessToken</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_http_response"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id" : 1,
+  "todayQuizId" : 1,
+  "accountId" : 1,
+  "todayQuizQuestion" : {
+    "quizCategory" : "개발",
+    "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
+    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+  },
+  "selectedQuizOptionContent" : "Authorization",
+  "answerQuizOptionContent" : "Authorization",
+  "isCorrect" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_response_fields"><a class="link" href="#Find-Graded-Today-Quiz-Answers_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채점 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accountId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.quizCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.question</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectedQuizOptionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈에서 회원이 제출한 답</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answerQuizOptionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈 답</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /today-quizzes/{todayQuizId}/graded-answers</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-11-09 22:21:30 +0900
+Last updated 2025-03-06 20:41:52 +0900
 </div>
 </div>
 </body>

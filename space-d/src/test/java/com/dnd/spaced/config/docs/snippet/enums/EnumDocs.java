@@ -14,4 +14,5 @@ public class EnumDocs {
     private Map<String, String> profileImageName;
     private Map<String, String> category;
     private Map<String, String> pronunciationType;
+    private Map<String, String> quizCategory;
 }

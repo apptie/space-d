@@ -28,4 +28,15 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> deleteCommentException;
     private Map<String, ExceptionContent> updateCommentException;
     private Map<String, ExceptionContent> processLikeException;
+    private Map<String, ExceptionContent> createQuizException;
+    private Map<String, ExceptionContent> gradeQuizException;
+    private Map<String, ExceptionContent> findGradedAnswersAllByException;
+    private Map<String, ExceptionContent> findGradedAnswersAllByQuizException;
+    private Map<String, ExceptionContent> findQuizByException;
+    private Map<String, ExceptionContent> findLatestTodayQuizException;
+    private Map<String, ExceptionContent> findTodayQuizByException;
+    private Map<String, ExceptionContent> gradeTodayQuizException;
+    private Map<String, ExceptionContent> findTodayQuizGradedAnswerByException;
+    private Map<String, ExceptionContent> findTodayQuizGradedAnswersAllByException;
+    private Map<String, ExceptionContent> createTodayQuizException;
 }

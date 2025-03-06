@@ -8,12 +8,14 @@ import com.dnd.spaced.core.account.domain.enums.Company;
 import com.dnd.spaced.core.account.domain.enums.Experience;
 import com.dnd.spaced.core.account.domain.enums.JobGroup;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
+import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
 import com.dnd.spaced.global.exception.code.LikeErrorCode;
+import com.dnd.spaced.global.exception.code.QuizErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
@@ -21,6 +23,7 @@ import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.LikeExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -56,6 +59,10 @@ public class DocsController {
                                                       .collect(
                                                               Collectors.toMap(Enum::name, PronunciationType::getName)
                                                       );
+        Map<String, String> quizCategory = Arrays.stream(QuizCategory.values())
+                                                 .collect(
+                                                         Collectors.toMap(Enum::name, QuizCategory::getName)
+                                                 );
 
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
@@ -64,6 +71,7 @@ public class DocsController {
                                     .profileImageName(profileImageName)
                                     .category(category)
                                     .pronunciationType(pronunciationType)
+                                    .quizCategory(quizCategory)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -74,9 +82,7 @@ public class DocsController {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .authProfileException(calculateAuthProfileException())
                                                    .refreshTokenException(calculateRefreshTokenException())
-                                                   .registerBlacklistTokenException(
-                                                           calculateRegisterBlacklistTokenException()
-                                                   )
+                                                   .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
                                                    .withdrawalException(calculateWithdrawalException())
                                                    .changeCareerInfoException(calculateChangeCareerInfoException())
                                                    .changeProfileInfoException(calculateChangeProfileInfoException())
@@ -84,17 +90,154 @@ public class DocsController {
                                                    .saveWordException(calculateSaveWordException())
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
-                                                   .deletePronunciationException(
-                                                           calculateDeletePronunciationException()
-                                                   )
+                                                   .deletePronunciationException(calculateDeletePronunciationException())
                                                    .readWordException(calculateReadWordException())
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
                                                    .updateCommentException(calculateUpdateCommentException())
                                                    .processLikeException(calculateProcessLikeException())
+                                                   .createQuizException(calculateCreateQuizException())
+                                                   .gradeQuizException(calculateGradeQuizException())
+                                                   .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
+                                                   .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
+                                                   .findQuizByException(calculateFindQuizByException())
+                                                   .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
+                                                   .findTodayQuizByException(calculateFindTodayQuizByException())
+                                                   .gradeTodayQuizException(calculateGradeTodayQuizException())
+                                                   .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
+                                                   .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
+                                                   .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateCreateTodayQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        putForbiddenExceptionContent(exceptionContent);
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
+                QuizErrorCode.INVALID_TODAY_QUIZ_WORD_COUNT_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindLatestTodayQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindTodayQuizByException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateGradeTodayQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        putMethodArgumentNotValidExceptionContent(exceptionContent, "answer");
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION,
+                QuizErrorCode.INVALID_SUBMITTED_TODAY_QUIZ_OPTION_INDEX_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindTodayQuizGradedAnswerByException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindTodayQuizGradedAnswersAllByException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateCreateQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.INVALID_QUIZ_CATEGORY_NAME_EXCEPTION,
+                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
+                QuizErrorCode.INVALID_QUIZ_WORD_COUNT_EXCEPTION,
+                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateGradeQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        putMethodArgumentNotValidExceptionContent(exceptionContent, "answers");
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION,
+                QuizErrorCode.INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindGradedAnswersAllByException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindGradedAnswersAllByQuizException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateFindQuizByException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        processQuizException(
+                exceptionContent,
+                QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateProcessLikeException() {
@@ -328,6 +471,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processQuizException(Map<String, ExceptionContent> target, QuizErrorCode... errorCodes) {
+        for (QuizErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = QuizExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processLikeException(Map<String, ExceptionContent> target, LikeErrorCode... errorCodes) {
