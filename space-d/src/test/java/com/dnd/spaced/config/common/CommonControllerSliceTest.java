@@ -2,21 +2,26 @@ package com.dnd.spaced.config.common;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
+import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
+import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminController;
-import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
+import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
 import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.presentation.CommentController;
 import com.dnd.spaced.core.like.application.LikeService;
 import com.dnd.spaced.core.like.presentation.LikeController;
+import com.dnd.spaced.core.quiz.application.QuizService;
+import com.dnd.spaced.core.quiz.application.TodayQuizService;
+import com.dnd.spaced.core.quiz.presentation.QuizController;
+import com.dnd.spaced.core.quiz.presentation.TodayQuizController;
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
@@ -24,6 +29,7 @@ import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
 import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +53,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @WebMvcTest(
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
-                WordController.class, CommentController.class, LikeController.class
+                WordController.class, CommentController.class, LikeController.class, QuizController.class,
+                TodayQuizController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -93,6 +100,12 @@ public class CommonControllerSliceTest {
     @Autowired
     protected LikeController likeController;
 
+    @Autowired
+    QuizController quizController;
+
+    @Autowired
+    protected TodayQuizController todayQuizController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -117,6 +130,15 @@ public class CommonControllerSliceTest {
     @MockBean
     protected LikeService likeService;
 
+    @MockBean
+    protected AdminTodayQuizService adminTodayQuizService;
+
+    @MockBean
+    protected QuizService quizService;
+
+    @MockBean
+    protected TodayQuizService todayQuizService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -126,6 +148,7 @@ public class CommonControllerSliceTest {
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
         CommonWordPageableArgumentResolver commonWordPageableArgumentResolver = new CommonWordPageableArgumentResolver();
         CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver = new CommonCommentPageableArgumentResolver();
+        CommonGradedAnswerPageableArgumentResolver commonGradedAnswerPageableArgumentResolver = new CommonGradedAnswerPageableArgumentResolver();
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
@@ -134,14 +157,17 @@ public class CommonControllerSliceTest {
                                               commonDocsController,
                                               wordController,
                                               commentController,
-                                              likeController
+                                              likeController,
+                                              quizController,
+                                              todayQuizController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(
                                               authAccountInfoArgumentResolver,
                                               commonWordPageableArgumentResolver,
-                                              commonCommentPageableArgumentResolver
+                                              commonCommentPageableArgumentResolver,
+                                              commonGradedAnswerPageableArgumentResolver
                                       )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))

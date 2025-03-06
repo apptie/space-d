@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.admin.presentation;
 
+import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
 import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/admin")
@@ -26,6 +28,7 @@ public class AdminController {
 
     private final AdminWordService adminWordService;
     private final BlacklistTokenService blacklistTokenService;
+    private final AdminTodayQuizService adminTodayQuizService;
 
     @PostMapping("/blacklist-token")
     public ResponseEntity<Void> registerBlacklistToken(@Valid @RequestBody UpdateBlacklistTokenRequest request) {
@@ -66,5 +69,16 @@ public class AdminController {
         adminWordService.deletePronunciation(wordId, pronunciationId);
 
         return ResponseEntityConst.NO_CONTENT;
+    }
+
+    @PostMapping("/today-quizzes")
+    public ResponseEntity<Void> createTodayQuiz() {
+        Long todayQuizId = adminTodayQuizService.create();
+        URI location = UriComponentsBuilder.fromPath("/today-quizzes/{todayQuizId}")
+                                           .buildAndExpand(todayQuizId)
+                                           .toUri();
+
+        return ResponseEntity.created(location)
+                             .build();
     }
 }
