@@ -23,5 +23,7 @@ public interface WordRepository {
 
     List<Word> findAllBy(WordCondition wordCondition, WordPageRequest pageRequest);
 
+    List<Word> findAllBy(List<Long> ids);
+
     List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest);
 }

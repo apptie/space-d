@@ -61,6 +61,9 @@ class AdminControllerTest extends CommonControllerSliceTest {
                         requestFields(
                                 fieldWithPath("accountId").attributes(field("constraints", "가입한 회원 ID만 가능"))
                                                           .description("블랙리스트 토큰으로 등록할 회원 ID")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("생성한 오늘의 퀴즈를 확인할 수 있는 API")
                         )
                 )
         );
@@ -205,6 +208,36 @@ class AdminControllerTest extends CommonControllerSliceTest {
                         pathParameters(
                                 parameterWithName("wordId").description("삭제하고자 하는 용어 발음 정보를 가진 용어 ID"),
                                 parameterWithName("pronunciationId").description("삭제하고자 하는 용어 발음 정보 ID")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @WithMockUser(value = "1", roles = "ADMIN")
+    void 오늘의_퀴즈_수동_생성_요청_성공_테스트() throws Exception {
+        // given
+        given(adminTodayQuizService.create()).willReturn(1L);
+
+        // when & then
+        ResultActions resultActions = mockMvc.perform(
+                post("/admin/today-quizzes").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+        ).andExpectAll(
+                status().isCreated(),
+                header().string("Location", "/today-quizzes/1")
+        );
+
+        오늘의_퀴즈_수동_생성_요청_문서화(resultActions);
+    }
+
+    private void 오늘의_퀴즈_수동_생성_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("생성한 오늘의 퀴즈를 확인할 수 있는 API")
                         )
                 )
         );

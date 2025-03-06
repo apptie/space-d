@@ -58,6 +58,11 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
             HttpStatus.BAD_REQUEST,
             "해당 용어의 발음 정보 개수가 최소치입니다."
+    ),
+    WORD_METADATA_COUNTER_NOT_FOUND_EXCEPTION(
+            WordErrorCode.WORD_METADATA_COUNTER_NOT_FOUND_EXCEPTION,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "용어 메타데이터에 변경사항을 반영하지 못했습니다."
     );
 
     private final ErrorCode errorCode;

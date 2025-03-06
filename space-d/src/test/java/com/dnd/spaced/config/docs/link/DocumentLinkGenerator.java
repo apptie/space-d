@@ -17,7 +17,8 @@ public final class DocumentLinkGenerator {
         EXPERIENCE("experience", "경력"),
         PROFILE_IMAGE_NAME("profile-image-name", "프로필 이미지 이름"),
         CATEGORY("category", "카테고리"),
-        PRONUNCIATION_TYPE("pronunciationType", "용어 발음 타입");
+        PRONUNCIATION_TYPE("pronunciationType", "용어 발음 타입"),
+        QUIZ_CATEGORY("quiz-category", "퀴즈 카테고리");
 
         DocsUrl(String pageId, String text) {
             this.pageId = pageId;
