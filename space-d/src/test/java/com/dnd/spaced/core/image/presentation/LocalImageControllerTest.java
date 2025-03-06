@@ -25,10 +25,25 @@ class LocalImageControllerTest extends CommonControllerSliceTest {
         given(localImageService.readImage(anyString())).willReturn(mock(UrlResource.class));
 
         // when
-        mockMvc.perform(get("/images/{imageName}", "earth.png"))
-               .andExpectAll(
-                       status().isOk(),
-                       header().string("Content-Type", "image/png;charset=UTF-8")
-               );
+        ResultActions resultActions = mockMvc.perform(get("/images/{imageName}", "earth.png"))
+                                             .andExpectAll(
+                                                     status().isOk(),
+                                                     header().string("Content-Type", "image/png;charset=UTF-8")
+                                             );
+
+        로컬_이미지_요청_문서화(resultActions);
+    }
+
+    private void 로컬_이미지_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        pathParameters(
+                                parameterWithName("imageName").description("조회 요청 이미지 이름(확장자 포함)")
+                        ),
+                        responseHeaders(
+                                headerWithName("Content-Type").description("이미지 확장자 표현 헤더")
+                        )
+                )
+        );
     }
 }
