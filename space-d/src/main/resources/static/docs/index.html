@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 9 Mar 2025 11:44:04 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 9 Mar 2025 15:51:53 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -3871,6 +3871,78 @@ Content-Type: application/json;charset=UTF-8
 </tr>
 </tbody>
 </table>
+<div id="Local-Image-API" class="paragraph">
+<p>로컬 이미지 API</p>
+</div>
+<div id="Read-Local-Image" class="paragraph">
+<p>로컬 이미지 조회</p>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_http_request"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /images/earth.png HTTP/1.1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_http_response"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: image/png;charset=UTF-8
+Accept-Ranges: bytes</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Graded-Today-Quiz-Answers_response_headers"><a class="link" href="#Find-Graded-Today-Quiz-Answers_response_headers">Response headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 확장자 표현 헤더</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /images/{imageName}</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IMAGE_FILE_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 이미지 파일을 찾지 못했습니다.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -3878,7 +3950,7 @@ Content-Type: application/json;charset=UTF-8
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-03-06 20:41:52 +0900
+Last updated 2025-03-07 00:51:35 +0900
 </div>
 </div>
 </body>

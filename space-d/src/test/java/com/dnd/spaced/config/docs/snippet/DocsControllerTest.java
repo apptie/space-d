@@ -257,6 +257,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.createTodayQuizException").withSubsectionId("createTodayQuizException"),
                                       attributes(key("title").value("`POST /admin/today-quizzes` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindTodayQuizGradedAnswersAllByException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.readLocalImageException").withSubsectionId("readLocalImageException"),
+                                      attributes(key("title").value("`GET /images/{imageName}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getReadLocalImageException())
                               )
                       )
               );

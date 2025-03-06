@@ -5,6 +5,7 @@ import com.dnd.spaced.global.exception.base.AccountServerException;
 import com.dnd.spaced.global.exception.base.AuthClientException;
 import com.dnd.spaced.global.exception.base.AuthServerException;
 import com.dnd.spaced.global.exception.base.CommentClientException;
+import com.dnd.spaced.global.exception.base.ImageServerException;
 import com.dnd.spaced.global.exception.base.LikeClientException;
 import com.dnd.spaced.global.exception.base.QuizClientException;
 import com.dnd.spaced.global.exception.base.QuizServerException;
@@ -12,6 +13,7 @@ import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
 import java.util.stream.Collectors;
 import org.springframework.beans.TypeMismatchException;
@@ -112,6 +114,16 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
 
         ExceptionTranslator translator = QuizExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
+    @ExceptionHandler(ImageServerException.class)
+    private ResponseEntity<ExceptionDto> handleImageClientException(ImageServerException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = ImageExceptionTranslator.findBy(ex.getErrorCode());
 
         return ResponseEntity.status(translator.getHttpStatus())
                              .body(translator.translate());

@@ -14,6 +14,7 @@ import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
+import com.dnd.spaced.global.exception.code.ImageErrorCode;
 import com.dnd.spaced.global.exception.code.LikeErrorCode;
 import com.dnd.spaced.global.exception.code.QuizErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
@@ -22,6 +23,7 @@ import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.LikeExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
@@ -107,9 +109,18 @@ public class DocsController {
                                                    .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
                                                    .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
                                                    .createTodayQuizException(calculateCreateTodayQuizException())
+                                                   .readLocalImageException(calculateLocalImageNotFoundException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateLocalImageNotFoundException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        processImageException(exceptionContent, ImageErrorCode.IMAGE_FILE_NOT_FOUND_EXCEPTION);
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateCreateTodayQuizException() {
@@ -471,6 +482,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processImageException(Map<String, ExceptionContent> target, ImageErrorCode... errorCodes) {
+        for (ImageErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = ImageExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processQuizException(Map<String, ExceptionContent> target, QuizErrorCode... errorCodes) {

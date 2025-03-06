@@ -81,3 +81,5 @@ app:
       format: "%s%03d"
   quiz:
     question: "다음 예문을 보고 예문에 맞는 용어를 선택해주세요."
+  image:
+    path: /home/

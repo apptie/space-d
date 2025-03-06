@@ -12,10 +12,11 @@ import com.dnd.spaced.core.admin.presentation.AdminController;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.application.TokenService;
-import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.presentation.AuthController;
 import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.presentation.CommentController;
+import com.dnd.spaced.core.image.application.LocalImageService;
+import com.dnd.spaced.core.image.presentation.LocalImageController;
 import com.dnd.spaced.core.like.application.LikeService;
 import com.dnd.spaced.core.like.presentation.LikeController;
 import com.dnd.spaced.core.quiz.application.QuizService;
@@ -54,7 +55,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
-                TodayQuizController.class
+                TodayQuizController.class, LocalImageController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -79,32 +80,32 @@ public class CommonControllerSliceTest {
     @Autowired
     protected RestDocumentationContextProvider provider;
 
-    @MockBean
-    protected TokenDecoder tokenDecoder;
+    @Autowired
+    AuthController authController;
 
     @Autowired
-    protected AuthController authController;
+    AdminController adminController;
 
     @Autowired
-    protected AdminController adminController;
+    AccountController accountController;
 
     @Autowired
-    protected AccountController accountController;
+    WordController wordController;
 
     @Autowired
-    protected WordController wordController;
+    CommentController commentController;
 
     @Autowired
-    protected CommentController commentController;
-
-    @Autowired
-    protected LikeController likeController;
+    LikeController likeController;
 
     @Autowired
     QuizController quizController;
 
     @Autowired
-    protected TodayQuizController todayQuizController;
+    TodayQuizController todayQuizController;
+
+    @Autowired
+    LocalImageController localImageController;
 
     @MockBean
     protected AccountService accountService;
@@ -139,6 +140,9 @@ public class CommonControllerSliceTest {
     @MockBean
     protected TodayQuizService todayQuizService;
 
+    @MockBean
+    protected LocalImageService localImageService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -159,7 +163,8 @@ public class CommonControllerSliceTest {
                                               commentController,
                                               likeController,
                                               quizController,
-                                              todayQuizController
+                                              todayQuizController,
+                                              localImageController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)

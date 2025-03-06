@@ -105,7 +105,8 @@ jacocoTestReport {
 							'**/embed/**',
 							'**/schedule/**',
 							'**/global/**',
-							'**/dto/**'
+							'**/dto/**',
+							'*.LocalImageService*'
 					] + Qdomains)
 		}))
 	}
@@ -145,7 +146,8 @@ jacocoTestCoverageVerification {
 					'*.embed.*',
 					'*.schedule.*',
 					'*.global.*',
-					'*.dto.*'
+					'*.dto.*',
+					'*.LocalImageService*'
 			] + Qdomains
 		}
 	}

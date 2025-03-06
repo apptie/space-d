@@ -12,6 +12,7 @@ import com.dnd.spaced.global.auth.security.handler.OAuth2AuthenticationEntryPoin
 import com.dnd.spaced.global.auth.security.handler.OAuth2AuthenticationFailureHandler;
 import com.dnd.spaced.global.auth.security.handler.OAuth2SuccessHandler;
 import com.dnd.spaced.global.config.properties.CorsProperties;
+import com.dnd.spaced.global.config.properties.ImageStorePathProperties;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import com.dnd.spaced.global.config.properties.TokenProperties;
@@ -55,7 +56,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(
-        value = {TokenProperties.class, CorsProperties.class, NicknameProperties.class, QuizQuestionProperties.class}
+        value = {
+                TokenProperties.class, CorsProperties.class, NicknameProperties.class, QuizQuestionProperties.class,
+                ImageStorePathProperties.class
+        }
 )
 public class SecurityConfig {
 
@@ -88,6 +92,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/auths/refresh-token").permitAll()
                     .requestMatchers(HttpMethod.GET, "/words/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/words/{wordId}/comments").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/today-quizzes/latest").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/today-quizzes/{todayQuizId}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/images/{imageName}").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
