@@ -15,6 +15,7 @@ import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
+import com.dnd.spaced.global.exception.code.BookmarkErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
 import com.dnd.spaced.global.exception.code.ImageErrorCode;
 import com.dnd.spaced.global.exception.code.LikeErrorCode;
@@ -24,6 +25,7 @@ import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.BookmarkExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
@@ -126,9 +128,45 @@ public class DocsController {
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
                                                    .reportException(calculateReportException())
                                                    .processReportException(calculateProcessReportException())
+                                                   .createBookmarkException(calculateCreateBookmarkException())
+                                                   .deleteBookmarkException(calculateDeleteBookmarkException())
+                                                   .findAllBookmarkException(calculateFindAllBookmarkException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateFindAllBookmarkException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateDeleteBookmarkException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        processBookmarkException(
+                exceptionContent,
+                BookmarkErrorCode.BOOKMARK_NOT_FOUND_EXCEPTION,
+                BookmarkErrorCode.FORBIDDEN_DELETE_BOOKMARK_EXCEPTION
+        );
+
+        return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateCreateBookmarkException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        processBookmarkException(
+                exceptionContent,
+                BookmarkErrorCode.WORD_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateProcessReportException() {
@@ -527,6 +565,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processBookmarkException(Map<String, ExceptionContent> target, BookmarkErrorCode... errorCodes) {
+        for (BookmarkErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = BookmarkExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processReportException(Map<String, ExceptionContent> target, ReportErrorCode... errorCodes) {

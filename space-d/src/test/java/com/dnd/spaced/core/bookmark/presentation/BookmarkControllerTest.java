@@ -4,8 +4,15 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,7 +28,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class BookmarkControllerTest extends CommonControllerSliceTest {
@@ -32,20 +41,50 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
         // when & then
         CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
 
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/bookmarks").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                                  .contentType(MediaType.APPLICATION_JSON)
+                                  .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
+
+        북마크_생성_요청_문서화(resultActions);
+    }
+
+    private void 북마크_생성_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        requestFields(
+                                fieldWithPath("wordId").description("북마크를 추가할 용어 ID")
+                        )
+                )
+        );
     }
 
     @Test
     @WithMockUser("1")
     void 북마크_삭제_요청_성공_테스트() throws Exception {
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 delete("/bookmarks/{bookmarkId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(status().isNoContent());
+
+        북마크_삭제_요청_문서화(resultActions);
+    }
+
+    private void 북마크_삭제_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("bookmarkId").description("삭제할 북마크 ID")
+                        )
+                )
+        );
     }
 
     @Test
@@ -59,7 +98,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/bookmarks").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isOk(),
@@ -69,6 +108,26 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 jsonPath("bookmarks[0].wordId", is(1L), Long.class),
                 jsonPath("bookmarks[0].createdAt").exists(),
                 jsonPath("lastBookmarkId", is(1L), Long.class)
+        );
+
+        북마크_목록_조회_요청_문서화(resultActions);
+    }
+
+    private void 북마크_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("bookmarks").type(JsonFieldType.ARRAY).description("북마크 목록"),
+                                fieldWithPath("bookmarks[*].bookmarkId").type(JsonFieldType.NUMBER).description("북마크 ID"),
+                                fieldWithPath("bookmarks[*].accountId").type(JsonFieldType.NUMBER).description("북마크 생성자 ID"),
+                                fieldWithPath("bookmarks[*].wordId").type(JsonFieldType.NUMBER).description("용어 ID"),
+                                fieldWithPath("bookmarks[*].createdAt").type(JsonFieldType.STRING).description("용어 생성 일자"),
+                                fieldWithPath("lastBookmarkId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 북마크 ID")
+                        )
+                )
         );
     }
 }
