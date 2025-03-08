@@ -13,9 +13,15 @@ public interface WordRepository {
 
     Word save(Word word);
 
+    boolean existsBy(Long id);
+
     void updateViewCount(Long id);
 
     void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos);
+
+    void addBookmarkCount(Long id);
+
+    void updateSubtractBookmarkCount(Long id);
 
     Optional<Word> findBy(Long id);
 
