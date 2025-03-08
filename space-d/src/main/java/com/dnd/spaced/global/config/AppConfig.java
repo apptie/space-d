@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -105,5 +108,17 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login/**", "/words/**");
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        ResourceHttpMessageConverter converter = new ResourceHttpMessageConverter();
+        converter.setSupportedMediaTypes(
+                List.of(
+                        MediaType.IMAGE_PNG,
+                        MediaType.IMAGE_JPEG,
+                        MediaType.IMAGE_GIF
+                )
+        );
     }
 }
