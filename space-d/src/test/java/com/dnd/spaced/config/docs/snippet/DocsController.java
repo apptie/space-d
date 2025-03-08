@@ -9,6 +9,7 @@ import com.dnd.spaced.core.account.domain.enums.Experience;
 import com.dnd.spaced.core.account.domain.enums.JobGroup;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
+import com.dnd.spaced.core.report.domain.enums.ReportReason;
 import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
@@ -17,6 +18,7 @@ import com.dnd.spaced.global.exception.code.CommentErrorCode;
 import com.dnd.spaced.global.exception.code.ImageErrorCode;
 import com.dnd.spaced.global.exception.code.LikeErrorCode;
 import com.dnd.spaced.global.exception.code.QuizErrorCode;
+import com.dnd.spaced.global.exception.code.ReportErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
@@ -26,6 +28,7 @@ import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.LikeExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.ReportExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -65,6 +68,10 @@ public class DocsController {
                                                  .collect(
                                                          Collectors.toMap(Enum::name, QuizCategory::getName)
                                                  );
+        Map<String, String> reportReason = Arrays.stream(ReportReason.values())
+                                                 .collect(
+                                                         Collectors.toMap(Enum::name, ReportReason::getCause)
+                                                 );
 
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
@@ -74,6 +81,7 @@ public class DocsController {
                                     .category(category)
                                     .pronunciationType(pronunciationType)
                                     .quizCategory(quizCategory)
+                                    .reportReason(reportReason)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -110,9 +118,25 @@ public class DocsController {
                                                    .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
                                                    .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
+                                                   .reportException(calculateReportException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateReportException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        putMethodArgumentNotValidExceptionContent(exceptionContent, "commentId", "cause");
+        processReportException(
+                exceptionContent,
+                ReportErrorCode.CANNOT_REPORT_OWN_COMMENT_EXCEPTION,
+                ReportErrorCode.REPORT_REASON_NOT_FOUND_EXCEPTION,
+                ReportErrorCode.COMMENT_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateLocalImageNotFoundException() {
@@ -482,6 +506,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processReportException(Map<String, ExceptionContent> target, ReportErrorCode... errorCodes) {
+        for (ReportErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = ReportExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processImageException(Map<String, ExceptionContent> target, ImageErrorCode... errorCodes) {

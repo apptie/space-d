@@ -80,6 +80,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.quizCategory").withSubsectionId("quizCategory"),
                                       attributes(key("title").value("QuizCategory 허용 값")),
                                       enumConvertFieldDescriptor(data.getQuizCategory())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.reportReason").withSubsectionId("reportReason"),
+                                      attributes(key("title").value("ReportReason 허용 값")),
+                                      enumConvertFieldDescriptor(data.getReportReason())
                               )
                       ));
     }
@@ -263,6 +269,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.readLocalImageException").withSubsectionId("readLocalImageException"),
                                       attributes(key("title").value("`GET /images/{imageName}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getReadLocalImageException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.reportException").withSubsectionId("reportException"),
+                                      attributes(key("title").value("`POST /reports` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getReportException())
                               )
                       )
               );

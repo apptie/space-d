@@ -2,7 +2,9 @@ package com.dnd.spaced.core.report.domain.enums;
 
 import java.util.Arrays;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public enum ReportReason {
 
     SPAM("광고 및 홍보성 내용"),
