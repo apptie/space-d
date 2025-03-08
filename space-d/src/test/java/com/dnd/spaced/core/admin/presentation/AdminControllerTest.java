@@ -2,12 +2,14 @@ package com.dnd.spaced.core.admin.presentation;
 
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -15,11 +17,16 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
+import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
+import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse.ReportResponse;
 import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest;
 import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest.PronunciationInfoRequest;
 import com.dnd.spaced.core.admin.presentation.dto.request.UpdateBlacklistTokenRequest;
@@ -241,5 +248,40 @@ class AdminControllerTest extends CommonControllerSliceTest {
                         )
                 )
         );
+    }
+
+    @Test
+    @WithMockUser(value = "1", roles = "ADMIN")
+    void 신고_목록_조회_요청_성공_테스트() throws Exception {
+        // given
+        ReportResponse reportResponse = new ReportResponse(1L, 1L, 3L, "기타");
+        ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
+        given(adminReportService.findAllBy(any(ReadReportSearchRequest.class))).willReturn(reportCollectionResponse);
+
+        // when & then
+        mockMvc.perform(
+                get("/admin/reports").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+        ).andExpectAll(
+                status().isOk(),
+                jsonPath("reports").exists(),
+                jsonPath("reports[0].id", is(1L), Long.class),
+                jsonPath("reports[0].commentId", is(1L), Long.class),
+                jsonPath("reports[0].reporterId", is(3L), Long.class),
+                jsonPath("reports[0].reportStatus").value("기타"),
+                jsonPath("lastReportId", is(1L), Long.class)
+        );
+    }
+
+    @Test
+    @WithMockUser(value = "1", roles = "ADMIN")
+    void 신고_처리_요청_성공_테스트() throws Exception {
+        // when & then
+        ProcessReportRequest request = new ProcessReportRequest("신고 처리");
+
+        mockMvc.perform(
+                post("/admin/reports/{reportId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                                                     .contentType(MediaType.APPLICATION_JSON)
+                                                     .content(objectMapper.writeValueAsString(request))
+        ).andExpectAll(status().isNoContent());
     }
 }

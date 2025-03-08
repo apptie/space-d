@@ -6,6 +6,7 @@ import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
+import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminController;
@@ -150,6 +151,9 @@ public class CommonControllerSliceTest {
 
     @MockBean
     protected ReportService reportService;
+
+    @MockBean
+    protected AdminReportService adminReportService;
 
     protected MockMvc mockMvc;
 
