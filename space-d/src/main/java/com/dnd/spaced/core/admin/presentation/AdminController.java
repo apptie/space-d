@@ -1,8 +1,12 @@
 package com.dnd.spaced.core.admin.presentation;
 
+import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
+import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
+import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest;
 import com.dnd.spaced.core.admin.presentation.dto.request.UpdateBlacklistTokenRequest;
 import com.dnd.spaced.core.admin.presentation.dto.request.UpdateWordExampleRequest;
@@ -13,6 +17,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +34,7 @@ public class AdminController {
     private final AdminWordService adminWordService;
     private final BlacklistTokenService blacklistTokenService;
     private final AdminTodayQuizService adminTodayQuizService;
+    private final AdminReportService adminReportService;
 
     @PostMapping("/blacklist-token")
     public ResponseEntity<Void> registerBlacklistToken(@Valid @RequestBody UpdateBlacklistTokenRequest request) {
@@ -80,5 +86,22 @@ public class AdminController {
 
         return ResponseEntity.created(location)
                              .build();
+    }
+
+    @GetMapping("/reports")
+    public ResponseEntity<ReportCollectionResponse> findAllBy(ReadReportSearchRequest request) {
+        ReportCollectionResponse response = adminReportService.findAllBy(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reports/{reportId}")
+    public ResponseEntity<Void> processReport(
+            @PathVariable Long reportId,
+            @RequestBody @Valid ProcessReportRequest request
+    ) {
+        adminReportService.process(reportId, request);
+
+        return ResponseEntityConst.NO_CONTENT;
     }
 }

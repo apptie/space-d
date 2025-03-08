@@ -44,7 +44,7 @@ class CommentTest {
     }
 
     @Test
-    void 댓글의_작성자가_아닌지_확인한다() {
+    void 지정한_회원이_댓글의_작성자가_아닌지_확인한다() {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -64,7 +64,7 @@ class CommentTest {
     }
 
     @Test
-    void 댓글의_작성자인지_확인한다() {
+    void 지정한_회원이_댓글의_작성자인지_확인한다() {
         // given
         Account writer = Account.builder()
                                 .registrationId(RegistrationId.KAKAO)
@@ -81,6 +81,26 @@ class CommentTest {
 
         // then
         assertThat(actual).isFalse();
+    }
+
+    @Test
+    void 회원_식별자로_댓글의_작성자인지_확인한다() {
+        // given
+        Account writer = Account.builder()
+                                .registrationId(RegistrationId.KAKAO)
+                                .socialIdentifier("12345")
+                                .nickname("재빠른지구001")
+                                .profileImage("earth.png")
+                                .role(Role.ROLE_USER)
+                                .build();
+        ReflectionTestUtils.setField(writer, "id", 1L);
+        Comment comment = new Comment(writer.getId(), 1L, "이 용어 언제 쓰는건가요?");
+
+        // when
+        boolean actual = comment.isWriter(1L);
+
+        // then
+        assertThat(actual).isTrue();
     }
 
     @Test
@@ -108,5 +128,30 @@ class CommentTest {
         assertThatThrownBy(() -> comment.changeContent(invalidContent))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
+    }
+
+    @Test
+    void 댓글을_삭제한다() {
+        // given
+        Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
+
+        // when
+        comment.delete();
+
+        // then
+        assertThat(comment.isDeleted()).isTrue();
+    }
+
+    @Test
+    void 삭제한_댓글을_복구한다() {
+        // given
+        Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
+        comment.delete();
+
+        // when
+        comment.recover();
+
+        // then
+        assertThat(comment.isDeleted()).isFalse();
     }
 }

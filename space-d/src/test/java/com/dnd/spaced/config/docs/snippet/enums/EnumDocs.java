@@ -15,4 +15,6 @@ public class EnumDocs {
     private Map<String, String> category;
     private Map<String, String> pronunciationType;
     private Map<String, String> quizCategory;
+    private Map<String, String> reportReason;
+    private Map<String, String> reportStatus;
 }

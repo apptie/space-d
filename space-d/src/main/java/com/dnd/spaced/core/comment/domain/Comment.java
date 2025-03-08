@@ -35,6 +35,8 @@ public class Comment extends BaseTimeEntity {
 
     private int likeCount = 0;
 
+    private boolean isDeleted = false;
+
     public Comment(Long accountId, Long wordId, String content) {
         if (isInvalidContent(content)) {
             throw new InvalidCommentContentException("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
@@ -48,6 +50,18 @@ public class Comment extends BaseTimeEntity {
     private boolean isInvalidContent(String content) {
         return content == null || content.isBlank()
                 || !(CONTENT_MIN_LENGTH <= content.length() && content.length() <= CONTENT_MAX_LENGTH);
+    }
+
+    public void delete() {
+        isDeleted = true;
+    }
+
+    public void recover() {
+        isDeleted = false;
+    }
+
+    public boolean isWriter(Long accountId) {
+        return this.accountId.equals(accountId);
     }
 
     public boolean isWriter(Account account) {

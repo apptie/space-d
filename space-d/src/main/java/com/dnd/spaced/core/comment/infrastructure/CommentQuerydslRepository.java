@@ -66,7 +66,11 @@ public class CommentQuerydslRepository implements CommentRepository {
                            .from(comment)
                            .join(account).on(comment.accountId.eq(account.id))
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
-                           .where(comment.wordId.eq(wordId), calculateLastCommentIdBooleanExpression(pageRequest))
+                           .where(
+                                   comment.wordId.eq(wordId),
+                                   calculateLastCommentIdBooleanExpression(pageRequest),
+                                   comment.isDeleted.isFalse()
+                           )
                            .orderBy(
                                    CommentSortConditionConverter.convert(pageRequest.pageable())
                                                                 .toArray(OrderSpecifier[]::new)
@@ -83,8 +87,11 @@ public class CommentQuerydslRepository implements CommentRepository {
                                            )
                                            .from(comment)
                                            .join(account).on(comment.accountId.eq(account.id))
-                                           .where(comment.wordId.eq(wordId),
-                                                   calculateLastCommentIdBooleanExpression(pageRequest))
+                                           .where(
+                                                   comment.wordId.eq(wordId),
+                                                   calculateLastCommentIdBooleanExpression(pageRequest),
+                                                   comment.isDeleted.isFalse()
+                                           )
                                            .orderBy(
                                                    CommentSortConditionConverter.convert(pageRequest.pageable())
                                                                                 .toArray(OrderSpecifier[]::new)

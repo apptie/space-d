@@ -6,6 +6,7 @@ import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
+import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminController;
@@ -23,6 +24,8 @@ import com.dnd.spaced.core.quiz.application.QuizService;
 import com.dnd.spaced.core.quiz.application.TodayQuizService;
 import com.dnd.spaced.core.quiz.presentation.QuizController;
 import com.dnd.spaced.core.quiz.presentation.TodayQuizController;
+import com.dnd.spaced.core.report.application.ReportService;
+import com.dnd.spaced.core.report.presentation.ReportController;
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
@@ -55,7 +58,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
-                TodayQuizController.class, LocalImageController.class
+                TodayQuizController.class, LocalImageController.class, ReportController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -107,6 +110,9 @@ public class CommonControllerSliceTest {
     @Autowired
     LocalImageController localImageController;
 
+    @Autowired
+    ReportController reportController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -143,6 +149,12 @@ public class CommonControllerSliceTest {
     @MockBean
     protected LocalImageService localImageService;
 
+    @MockBean
+    protected ReportService reportService;
+
+    @MockBean
+    protected AdminReportService adminReportService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -164,7 +176,8 @@ public class CommonControllerSliceTest {
                                               likeController,
                                               quizController,
                                               todayQuizController,
-                                              localImageController
+                                              localImageController,
+                                              reportController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .addInterceptors(authInterceptor)
