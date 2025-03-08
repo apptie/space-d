@@ -287,6 +287,24 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.processReportException").withSubsectionId("processReportException"),
                                       attributes(key("title").value("`POST /reports/{id}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getProcessReportException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.createBookmarkException").withSubsectionId("createBookmarkException"),
+                                      attributes(key("title").value("`POST /bookmarks` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getCreateBookmarkException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.deleteBookmarkException").withSubsectionId("deleteBookmarkException"),
+                                      attributes(key("title").value("`DELETE /bookmarks/{bookmarkId}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getDeleteBookmarkException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findAllBookmarkException").withSubsectionId("findAllBookmarkException"),
+                                      attributes(key("title").value("`DELETE /bookmarks/{bookmarkId}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindAllBookmarkException())
                               )
                       )
               );

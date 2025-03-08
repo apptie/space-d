@@ -14,6 +14,8 @@ import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.presentation.AuthController;
+import com.dnd.spaced.core.bookmark.application.BookmarkService;
+import com.dnd.spaced.core.bookmark.presentation.BookmarkController;
 import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.presentation.CommentController;
 import com.dnd.spaced.core.image.application.LocalImageService;
@@ -32,10 +34,12 @@ import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
+import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -46,6 +50,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
@@ -58,7 +65,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         controllers = {
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
-                TodayQuizController.class, LocalImageController.class, ReportController.class
+                TodayQuizController.class, LocalImageController.class, ReportController.class,
+                BookmarkController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -113,6 +121,9 @@ public class CommonControllerSliceTest {
     @Autowired
     ReportController reportController;
 
+    @Autowired
+    BookmarkController bookmarkController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -155,6 +166,9 @@ public class CommonControllerSliceTest {
     @MockBean
     protected AdminReportService adminReportService;
 
+    @MockBean
+    protected BookmarkService bookmarkService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -165,6 +179,17 @@ public class CommonControllerSliceTest {
         CommonWordPageableArgumentResolver commonWordPageableArgumentResolver = new CommonWordPageableArgumentResolver();
         CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver = new CommonCommentPageableArgumentResolver();
         CommonGradedAnswerPageableArgumentResolver commonGradedAnswerPageableArgumentResolver = new CommonGradedAnswerPageableArgumentResolver();
+        BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver = new BookmarkPageableArgumentResolver();
+        MappingJackson2HttpMessageConverter jacksonMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
+        ResourceHttpMessageConverter resourceMessageConverter = new ResourceHttpMessageConverter();
+        resourceMessageConverter.setSupportedMediaTypes(
+                List.of(
+                        MediaType.IMAGE_PNG,
+                        MediaType.IMAGE_JPEG,
+                        MediaType.IMAGE_GIF
+                )
+        );
+
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
@@ -177,15 +202,18 @@ public class CommonControllerSliceTest {
                                               quizController,
                                               todayQuizController,
                                               localImageController,
-                                              reportController
+                                              reportController,
+                                              bookmarkController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
+                                      .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(
                                               authAccountInfoArgumentResolver,
                                               commonWordPageableArgumentResolver,
                                               commonCommentPageableArgumentResolver,
-                                              commonGradedAnswerPageableArgumentResolver
+                                              commonGradedAnswerPageableArgumentResolver,
+                                              bookmarkPageableArgumentResolver
                                       )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))

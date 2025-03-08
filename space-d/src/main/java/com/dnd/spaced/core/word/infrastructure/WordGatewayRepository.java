@@ -36,6 +36,11 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
+    public boolean existsBy(Long id) {
+        return wordCrudRepository.existsById(id);
+    }
+
+    @Override
     public void updateViewCount(Long id) {
         queryFactory.update(word)
                     .set(word.viewCount, word.viewCount.add(1))
@@ -51,6 +56,22 @@ public class WordGatewayRepository implements WordRepository {
                         .where(word.id.eq(dto.id()))
                         .execute();
         }
+    }
+
+    @Override
+    public void addBookmarkCount(Long id) {
+        queryFactory.update(word)
+                    .set(word.bookmarkCount, word.bookmarkCount.add(1))
+                    .where(word.id.eq(id))
+                    .execute();
+    }
+
+    @Override
+    public void updateSubtractBookmarkCount(Long id) {
+        queryFactory.update(word)
+                    .set(word.bookmarkCount, word.bookmarkCount.subtract(1))
+                    .where(word.id.eq(id))
+                    .execute();
     }
 
     @Override

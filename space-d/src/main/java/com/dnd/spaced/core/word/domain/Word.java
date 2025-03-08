@@ -47,6 +47,8 @@ public class Word extends BaseTimeEntity {
 
     private long viewCount = 0L;
 
+    private long bookmarkCount = 0L;
+
     @Builder
     private Word(String name, String meaning, String categoryName) {
         validateContent(name);

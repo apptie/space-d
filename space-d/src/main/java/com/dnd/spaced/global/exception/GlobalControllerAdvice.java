@@ -4,6 +4,7 @@ import com.dnd.spaced.global.exception.base.AccountClientException;
 import com.dnd.spaced.global.exception.base.AccountServerException;
 import com.dnd.spaced.global.exception.base.AuthClientException;
 import com.dnd.spaced.global.exception.base.AuthServerException;
+import com.dnd.spaced.global.exception.base.BookmarkClientException;
 import com.dnd.spaced.global.exception.base.CommentClientException;
 import com.dnd.spaced.global.exception.base.ImageServerException;
 import com.dnd.spaced.global.exception.base.LikeClientException;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -141,6 +143,16 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
                              .body(translator.translate());
     }
 
+    @ExceptionHandler(BookmarkClientException.class)
+    private ResponseEntity<ExceptionDto> handleBookmarkClientException(BookmarkClientException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = ReportExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
     @ExceptionHandler(Exception.class)
     private ResponseEntity<ExceptionDto> handleException(Exception ex) {
         logger.error(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
@@ -233,6 +245,24 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         ExceptionDto exceptionDto = new ExceptionDto(
                 "HTTP_MESSAGE_NOT_READABLE",
                 "HTTP 메시지를 읽을 수 없습니다."
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(exceptionDto);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(
+            HttpMessageNotWritableException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionDto exceptionDto = new ExceptionDto(
+                "HTTP_MESSAGE_NOT_READABLE",
+                "HTTP 메시지를 쓸 수 없습니다."
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
