@@ -41,4 +41,5 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> createTodayQuizException;
     private Map<String, ExceptionContent> readLocalImageException;
     private Map<String, ExceptionContent> reportException;
+    private Map<String, ExceptionContent> processReportException;
 }

@@ -19,7 +19,8 @@ public final class DocumentLinkGenerator {
         CATEGORY("category", "카테고리"),
         PRONUNCIATION_TYPE("pronunciationType", "용어 발음 타입"),
         QUIZ_CATEGORY("quiz-category", "퀴즈 카테고리"),
-        REPORT_REASON("report-reason", "신고 사유");
+        REPORT_REASON("report-reason", "신고 사유"),
+        REPORT_STATUS("report-status", "신고 상태");
 
         DocsUrl(String pageId, String text) {
             this.pageId = pageId;

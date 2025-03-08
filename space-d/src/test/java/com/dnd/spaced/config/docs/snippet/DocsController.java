@@ -10,6 +10,7 @@ import com.dnd.spaced.core.account.domain.enums.JobGroup;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.report.domain.enums.ReportReason;
+import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.PronunciationType;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
@@ -72,6 +73,10 @@ public class DocsController {
                                                  .collect(
                                                          Collectors.toMap(Enum::name, ReportReason::getCause)
                                                  );
+        Map<String, String> reportStatus = Arrays.stream(ReportStatus.values())
+                                                 .collect(
+                                                         Collectors.toMap(Enum::name, ReportStatus::getName)
+                                                 );
 
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
@@ -82,6 +87,7 @@ public class DocsController {
                                     .pronunciationType(pronunciationType)
                                     .quizCategory(quizCategory)
                                     .reportReason(reportReason)
+                                    .reportStatus(reportStatus)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -119,9 +125,24 @@ public class DocsController {
                                                    .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
                                                    .reportException(calculateReportException())
+                                                   .processReportException(calculateProcessReportException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateProcessReportException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        putForbiddenExceptionContent(exceptionContent);
+        processReportException(
+                exceptionContent,
+                ReportErrorCode.REPORT_NOT_FOUND_EXCEPTION,
+                ReportErrorCode.REPORT_STATUS_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateReportException() {

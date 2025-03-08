@@ -23,6 +23,16 @@ public enum ReportExceptionTranslator implements ExceptionTranslator {
             ReportErrorCode.CANNOT_REPORT_OWN_COMMENT_EXCEPTION,
             HttpStatus.BAD_REQUEST,
             "자신이 작성한 댓글은 신고할 수 없습니다."
+    ),
+    REPORT_NOT_FOUND_EXCEPTION(
+            ReportErrorCode.REPORT_NOT_FOUND_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "지정한 신고 식별자로 신고 내역을 찾을 수 없습니다."
+    ),
+    REPORT_STATUS_NOT_FOUND_EXCEPTION(
+            ReportErrorCode.REPORT_STATUS_NOT_FOUND_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "지정한 신고 상태를 찾을 수 없습니다."
     );
 
     private final ErrorCode errorCode;

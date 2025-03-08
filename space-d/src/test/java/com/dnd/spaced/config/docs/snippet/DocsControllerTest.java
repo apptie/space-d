@@ -86,6 +86,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.reportReason").withSubsectionId("reportReason"),
                                       attributes(key("title").value("ReportReason 허용 값")),
                                       enumConvertFieldDescriptor(data.getReportReason())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.reportStatus").withSubsectionId("reportStatus"),
+                                      attributes(key("title").value("ReportStatus 허용 값")),
+                                      enumConvertFieldDescriptor(data.getReportStatus())
                               )
                       ));
     }
@@ -275,6 +281,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.reportException").withSubsectionId("reportException"),
                                       attributes(key("title").value("`POST /reports` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getReportException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.processReportException").withSubsectionId("processReportException"),
+                                      attributes(key("title").value("`POST /reports/{id}` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getProcessReportException())
                               )
                       )
               );

@@ -11,11 +11,13 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +37,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -115,11 +118,13 @@ class AdminControllerTest extends CommonControllerSliceTest {
                         requestFields(
                                 fieldWithPath("name").description("용어 이름"),
                                 fieldWithPath("meaning").description("용어 뜻"),
-                                fieldWithPath("categoryName").attributes(field("constraints", generateLinkCode(DocsUrl.CATEGORY)))
+                                fieldWithPath("categoryName").attributes(
+                                                                     field("constraints", generateLinkCode(DocsUrl.CATEGORY)))
                                                              .description("용어 카테고리 이름"),
                                 fieldWithPath("pronunciations").description("용어 발음 정보"),
                                 fieldWithPath("pronunciations[*].pronunciation").description("용어 발음"),
-                                fieldWithPath("pronunciations[*].typeName").attributes(field("constraints", generateLinkCode(DocsUrl.PRONUNCIATION_TYPE)))
+                                fieldWithPath("pronunciations[*].typeName").attributes(
+                                                                                   field("constraints", generateLinkCode(DocsUrl.PRONUNCIATION_TYPE)))
                                                                            .description("용어 발음 타입"),
                                 fieldWithPath("examples").description("용어 예문")
                         ),
@@ -171,7 +176,8 @@ class AdminControllerTest extends CommonControllerSliceTest {
     void 용어_예문_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                delete("/admin/words/{wordId}/examples/{exampleId}", 1L,  1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/admin/words/{wordId}/examples/{exampleId}", 1L, 1L).header(HttpHeaders.AUTHORIZATION,
+                        "Bearer AccessToken")
         ).andExpectAll(
                 status().isNoContent()
         );
@@ -198,7 +204,8 @@ class AdminControllerTest extends CommonControllerSliceTest {
     void 용어_발음_정보_삭제_요청_성공_테스트() throws Exception {
         // when & then
         ResultActions resultAction = mockMvc.perform(
-                delete("/admin/words/{wordId}/pronunciations/{pronunciationId}", 1L, 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/admin/words/{wordId}/pronunciations/{pronunciationId}", 1L, 1L).header(
+                        HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isNoContent()
         );
@@ -254,21 +261,48 @@ class AdminControllerTest extends CommonControllerSliceTest {
     @WithMockUser(value = "1", roles = "ADMIN")
     void 신고_목록_조회_요청_성공_테스트() throws Exception {
         // given
-        ReportResponse reportResponse = new ReportResponse(1L, 1L, 3L, "기타");
+        ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "기타");
         ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
         given(adminReportService.findAllBy(any(ReadReportSearchRequest.class))).willReturn(reportCollectionResponse);
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/admin/reports").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                        .param("reportStatus", "기타")
+                        .param("lastReportId", "5")
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("reports").exists(),
-                jsonPath("reports[0].id", is(1L), Long.class),
+                jsonPath("reports[0].id", is(6L), Long.class),
                 jsonPath("reports[0].commentId", is(1L), Long.class),
                 jsonPath("reports[0].reporterId", is(3L), Long.class),
                 jsonPath("reports[0].reportStatus").value("기타"),
                 jsonPath("lastReportId", is(1L), Long.class)
+        );
+
+        신고_목록_조회_요청_문서화(resultActions);
+    }
+
+    private void 신고_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
+                        ),
+                        queryParameters(
+                                parameterWithName("reportStatus").optional().description("조회할 신고 상태")
+                                                             .attributes(field("constraints", generateLinkCode(DocsUrl.REPORT_STATUS))),
+                                parameterWithName("lastReportId").optional().description("마지막으로 조회한 신고 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("reports").type(JsonFieldType.ARRAY).description("신고 목록"),
+                                fieldWithPath("reports[*].id").type(JsonFieldType.NUMBER).description("신고 ID"),
+                                fieldWithPath("reports[*].commentId").type(JsonFieldType.NUMBER).description("신고 대상 댓글 ID"),
+                                fieldWithPath("reports[*].reporterId").type(JsonFieldType.NUMBER).description("신고자 ID"),
+                                fieldWithPath("reports[*].reportStatus").type(JsonFieldType.STRING).description("신고 사유"),
+                                fieldWithPath("lastReportId").type(JsonFieldType.NUMBER).optional().description("마지막으로 조회한 신고 ID")
+                        )
+                )
         );
     }
 
@@ -278,10 +312,29 @@ class AdminControllerTest extends CommonControllerSliceTest {
         // when & then
         ProcessReportRequest request = new ProcessReportRequest("신고 처리");
 
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/admin/reports/{reportId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                                      .contentType(MediaType.APPLICATION_JSON)
                                                      .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
+
+        신고_처리_요청_문서화(resultActions);
+    }
+
+    private void 신고_처리_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("reportId").description("처리할 신고 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("reportStatus").optional().description("처리할 신고 상태")
+                                                             .attributes(field("constraints", generateLinkCode(DocsUrl.REPORT_STATUS)))
+                        )
+                )
+        );
     }
 }

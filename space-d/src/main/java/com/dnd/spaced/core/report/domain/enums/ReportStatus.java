@@ -2,7 +2,9 @@ package com.dnd.spaced.core.report.domain.enums;
 
 import java.util.Arrays;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public enum ReportStatus {
     PENDING("처리 전"),
     PROCESSED("신고 처리"),
