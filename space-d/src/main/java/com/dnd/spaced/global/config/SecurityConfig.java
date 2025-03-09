@@ -95,6 +95,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/today-quizzes/latest").permitAll()
                     .requestMatchers(HttpMethod.GET, "/today-quizzes/{todayQuizId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/images/{imageName}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/words/{wordId}/comments").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )

@@ -61,7 +61,7 @@ public class CommentController {
     }
 
     @GetMapping("/words/{wordId}/comments")
-    public ResponseEntity<ReadAllCommentResponse> readAlLBy(
+    public ResponseEntity<ReadAllCommentResponse> readAllBy(
             @AuthAccount(required = false) AuthAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
