@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class AccountQuerydslRepository implements AccountRepository {
+public class AccountGatewayRepository implements AccountRepository {
 
     private final JPAQueryFactory queryFactory;
     private final AccountCrudRepository accountCrudRepository;

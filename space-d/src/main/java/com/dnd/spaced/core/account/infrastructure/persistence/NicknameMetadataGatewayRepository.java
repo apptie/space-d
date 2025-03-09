@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class NicknameMetadataQuerydslRepository implements NicknameMetadataRepository {
+public class NicknameMetadataGatewayRepository implements NicknameMetadataRepository {
 
     private final JPAQueryFactory queryFactory;
     private final NicknameMetadataCrudRepository nicknameMetadataCrudRepository;
