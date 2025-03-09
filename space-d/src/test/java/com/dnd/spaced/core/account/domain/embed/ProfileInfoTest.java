@@ -38,7 +38,7 @@ class ProfileInfoTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 프로필 정보를 초기화할 수 없다")
     @MethodSource("constructorTestWithInvalidNickname")
-    void 프로필_정보를_초기화할_때_유효한_길이의_닉네임이_아니라면_프로필_정보를_초기화할_수_없다(String invalidNickname) {
+    void 유효한_길이의_닉네임이_아니라면_프로필_정보를_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(() -> ProfileInfo.of(invalidNickname, "earth.png"))
                 .isInstanceOf(InvalidNicknameException.class)
@@ -47,7 +47,7 @@ class ProfileInfoTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 프로필 정보를 초기화할 수 없다")
     @NullAndEmptySource
-    void 프로필_정보를_초기화할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_초기화할_수_없다(String invalidProfileImage) {
+    void 비어_있는_프로필_이미지_경로라면_프로필_정보를_초기화할_수_없다(String invalidProfileImage) {
         // when & then
         assertThatThrownBy(() -> ProfileInfo.of("행복한지구001", invalidProfileImage))
                 .isInstanceOf(InvalidProfileImageException.class)
@@ -74,7 +74,7 @@ class ProfileInfoTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 프로필 정보를 변경할 수 없다")
     @NullAndEmptySource
-    void 프로필_정보를_변경할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_변경할_수_없다(String invalidProfileImage) {
+    void 비어_있는_프로필_이미지_경로라면_프로필_정보를_변경할_수_없다(String invalidProfileImage) {
         // given
         ProfileInfo profileInfo = ProfileInfo.of("재빠른지구001", "earth.png");
 
@@ -96,7 +96,7 @@ class ProfileInfoTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 프로필 정보를 변경할 수 없다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
-    void 프로필_정보를_변경할_때_유효한_닉네임_길이가_아니라면_프로필_정보를_변경할_수_없다(String invalidNickname) {
+    void 유효한_닉네임_길이가_아니라면_프로필_정보를_변경할_수_없다(String invalidNickname) {
         // given
         ProfileInfo profileInfo = ProfileInfo.of("nickname", "profileImage");
 

@@ -64,7 +64,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("builderTestWithInvalidNickname")
-    void 회원을_초기화할_때_비어_있거나_유효한_길이의_닉네임이_아니라면_회원을_초기화할_수_없다(String invalidNickname) {
+    void 비어_있거나_유효한_길이의_닉네임이_아니라면_회원을_초기화할_수_없다(String invalidNickname) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -80,7 +80,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원을_초기화할_때_비어_있는_프로필_이미지_경로라면_회원을_초기화할_수_없다(String invalidProfileImage) {
+    void 비어_있는_프로필_이미지_경로라면_회원을_초기화할_수_없다(String invalidProfileImage) {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
@@ -120,7 +120,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
+    void 유효한_회사명이_아니라면_회원_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -144,7 +144,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
+    void 유효한_직군_이름이_아니라면_회원_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -168,7 +168,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
+    void 유효한_경력이_아니라면_회원_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -216,7 +216,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 회원의_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
+    void 프로필_이미지_경로가_비어_있으면_회원_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -244,7 +244,7 @@ class AccountTest {
 
     @ParameterizedTest(name = "닉네임이 {0}일 때 예외가 발생한다")
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
-    void 회원의_프로필_정보_변경_시_비어_있거나_유효한_길이가_아닌_닉네임이면_프로필_정보를_변환할_수_없다(String invalidNickname) {
+    void 비어_있거나_유효한_길이가_아닌_닉네임이면_프로필_정보를_변환할_수_없다(String invalidNickname) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)

@@ -66,7 +66,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 탈퇴_시_없거나_탈퇴한_회원_식별자라면_아니라면_탈퇴할_수_없다() {
+    void 없거나_이미_탈퇴한_회원의_ID라면_아니라면_탈퇴할_수_없다() {
         // when & then
         assertThatThrownBy(() -> accountService.withdrawal(1L))
                 .isInstanceOf(ForbiddenAccountException.class)
@@ -105,9 +105,9 @@ class AccountServiceTest {
         );
     }
 
-    @ParameterizedTest(name = "직군 이름이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "직군 이름이 {0}일 때 경력 정보를 변경할 수 없다.")
     @NullAndEmptySource
-    void 회원_경력_정보_변경_시_유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
+    void 유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -131,9 +131,9 @@ class AccountServiceTest {
                 .hasMessageContaining("잘못된 직군 이름");
     }
 
-    @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "회사명이 {0}일 때 경력 정보를 변경할 수 없다.")
     @NullAndEmptySource
-    void 회원_경력_정보_변경_시_유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
+    void 유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -157,9 +157,9 @@ class AccountServiceTest {
                 .hasMessageContaining("잘못된 회사 이름");
     }
 
-    @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "경력이 {0}일 때 경력 정보를 변경할 수 없다.")
     @NullAndEmptySource
-    void 회원_경력_정보_변경_시_유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
+    void 유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -184,7 +184,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원_경력_정보_변경_시_지정한_식별자가_없거나_탈퇴한_회원이라면_경력_정보를_변경할_수_없다() {
+    void 없거나_탈퇴한_회원의_ID라면_경력_정보를_변경할_수_없다() {
         // when & then
         ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
                 "개발자",
@@ -234,9 +234,9 @@ class AccountServiceTest {
         );
     }
 
-    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
+    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 프로필 정보를 변경할 수 없다.")
     @NullAndEmptySource
-    void 회원_프로필_정보_변경_시_프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
+    void 프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -260,7 +260,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원_프로필_정보_변경_시_없거나_탈퇴한_회원_식별자라면_프로필_정보를_변경할_수_없다() {
+    void 없거나_탈퇴한_회원의_ID라면_프로필_정보를_변경할_수_없다() {
         // when & then
         ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
                 "재빠른지구001",
@@ -304,7 +304,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void 회원_정보_조회_시_없거나_탈퇴한_회원_식별자라면_회원_정보를_조회할_수_없다() {
+    void 없거나_탈퇴한_회원의_ID라면_회원_정보를_조회할_수_없다() {
         // when & then
         assertThatThrownBy(() -> accountService.findAccountInfo(1L))
                 .isInstanceOf(ForbiddenAccountException.class)
