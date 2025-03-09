@@ -113,7 +113,6 @@ class JwtDecoderTest {
                 43200000L,
                 259200000L
         );
-
         JwtEncoder jwtEncoder = new JwtEncoder(otherIssuerTokenProperties);
         String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, 1L, "ROLE_USER");
 

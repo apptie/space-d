@@ -7,7 +7,7 @@ import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class InitAccountInfoServiceHelper {
+public abstract class WithAccountTestHelper {
 
     @Autowired
     AccountRepository accountRepository;

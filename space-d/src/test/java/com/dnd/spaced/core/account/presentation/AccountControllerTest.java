@@ -60,8 +60,10 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 회원_경력_정보_변경_요청_성공_테스트() throws Exception {
-        // when & then
+        // given
         ChangeCareerInfoRequest request = new ChangeCareerInfoRequest("개발자", "중소기업", "비공개");
+
+        // when & then
 
         ResultActions resultActions = mockMvc.perform(
                 put("/accounts/career-info").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -95,8 +97,10 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
-        // when & then
+        // given
         ChangeProfileInfoRequest request = new ChangeProfileInfoRequest("행복한금성001", "금성");
+
+        // when & then
 
         ResultActions resultActions = mockMvc.perform(
                 put("/accounts/profile-info").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")

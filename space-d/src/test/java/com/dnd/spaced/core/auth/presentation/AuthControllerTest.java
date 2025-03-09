@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
@@ -41,7 +43,6 @@ class AuthControllerTest extends CommonControllerSliceTest {
         // given
         willDoNothing().given(initAccountInfoService)
                        .initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
-
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",
                 "중소기업",
@@ -56,6 +57,9 @@ class AuthControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(initAccountInfoService, times(1))
+                .initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
 
         회원_프로필_초기화_요청_문서화(resultActions);
     }

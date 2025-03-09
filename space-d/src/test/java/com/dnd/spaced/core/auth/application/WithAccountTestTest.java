@@ -9,7 +9,7 @@ import com.dnd.spaced.core.account.domain.enums.exception.InvalidExperienceExcep
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidJobGroupException;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.application.exception.ForbiddenInitCareerInfoException;
-import com.dnd.spaced.core.auth.application.helper.InitAccountInfoServiceHelper;
+import com.dnd.spaced.core.auth.application.helper.WithAccountTestHelper;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class InitAccountInfoServiceTest extends InitAccountInfoServiceHelper {
+class WithAccountTestTest extends WithAccountTestHelper {
 
     @Autowired
     InitAccountInfoService initAccountInfoService;
@@ -45,7 +45,7 @@ class InitAccountInfoServiceTest extends InitAccountInfoServiceHelper {
 
     @ParameterizedTest(name = "회사명이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
-    void 경력_정보_초기화_시_유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
+    void 유효한_회사명이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // given
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",
@@ -61,7 +61,7 @@ class InitAccountInfoServiceTest extends InitAccountInfoServiceHelper {
 
     @ParameterizedTest(name = "직군이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
-    void 경력_정보_초기화_시_유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
+    void 유효한_직군이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // given
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 invalidJobGroupName,
@@ -77,7 +77,7 @@ class InitAccountInfoServiceTest extends InitAccountInfoServiceHelper {
 
     @ParameterizedTest(name = "경력이 {0}일 때 경력 정보를 초기화할 수 없다")
     @NullAndEmptySource
-    void 경력_정보_초기화_시_유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
+    void 유효한_경력이_아닌_경우_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // given
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",
@@ -92,7 +92,7 @@ class InitAccountInfoServiceTest extends InitAccountInfoServiceHelper {
     }
 
     @Test
-    void 경력_정보_초기화_시_회원_식별자가_없거나_탈퇴한_경우_경력_정보를_초기화할_수_없다() {
+    void 회원_ID가_없거나_이미_탈퇴한_경우_경력_정보를_초기화할_수_없다() {
         // given
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",

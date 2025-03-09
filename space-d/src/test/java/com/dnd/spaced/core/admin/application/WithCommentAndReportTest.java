@@ -11,11 +11,7 @@ import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionRespon
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.ReportStatusNotFoundException;
-import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.report.domain.Report;
-import com.dnd.spaced.core.report.domain.enums.ReportReason;
-import com.dnd.spaced.core.report.domain.repository.ReportRepository;
+import com.dnd.spaced.core.admin.application.helper.WithCommentAndReportTestHelper;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -34,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AdminReportServiceTest {
+class WithCommentAndReportTest extends WithCommentAndReportTestHelper {
 
     @Autowired
     AdminReportService adminReportService;
@@ -42,21 +38,8 @@ class AdminReportServiceTest {
     @Autowired
     ApplicationEvents events;
 
-    @Autowired
-    CommentRepository commentRepository;
-
-    @Autowired
-    ReportRepository reportRepository;
-
     @Test
     void 신고를_처리한다() {
-        // given
-        Comment comment = new Comment(1L, 1L, "친구초대 특별이벤트 링크 : ");
-        commentRepository.save(comment);
-
-        Report report = new Report(ReportReason.SPAM, comment.getId(), 2L);
-        reportRepository.save(report);
-
         // when
         ProcessReportRequest request = new ProcessReportRequest("신고 처리");
 
@@ -71,10 +54,12 @@ class AdminReportServiceTest {
 
     @Test
     void 지정한_신고_식별자에_해당하는_신고가_없다면_신고_처리를_할_수_없다() {
-        // when & then
+        // given
         ProcessReportRequest request = new ProcessReportRequest("신고 처리");
 
-        assertThatThrownBy(() -> adminReportService.process(1L, request))
+        // when & then
+
+        assertThatThrownBy(() -> adminReportService.process(-999L, request))
                 .isInstanceOf(ReportNotFoundException.class)
                 .hasMessage("지정한 신고 식별자로 신고 내역을 찾을 수 없습니다.");
     }
@@ -83,14 +68,9 @@ class AdminReportServiceTest {
     @NullAndEmptySource
     void 지정한_신고_상태가_없다면_신고_처리를_할_수_없다(String invalidCause) {
         // given
-        Comment comment = new Comment(1L, 1L, "친구초대 특별이벤트 링크 : ");
-        commentRepository.save(comment);
-
-        Report report = new Report(ReportReason.SPAM, comment.getId(), 2L);
-        reportRepository.save(report);
+        ProcessReportRequest request = new ProcessReportRequest(invalidCause);
 
         // when & then
-        ProcessReportRequest request = new ProcessReportRequest(invalidCause);
 
         assertThatThrownBy(() -> adminReportService.process(report.getId(), request))
                 .isInstanceOf(ReportStatusNotFoundException.class)
@@ -100,14 +80,9 @@ class AdminReportServiceTest {
     @Test
     void 신고_목록을_조회한다() {
         // given
-        Comment comment = new Comment(1L, 1L, "친구초대 특별이벤트 링크 : ");
-        commentRepository.save(comment);
-
-        Report report = new Report(ReportReason.SPAM, comment.getId(), 2L);
-        reportRepository.save(report);
+        ReadAllReportSearchRequest request = new ReadAllReportSearchRequest(null, null);
 
         // when
-        ReadAllReportSearchRequest request = new ReadAllReportSearchRequest(null, null);
         ReportCollectionResponse actual = adminReportService.findAllBy(request);
 
         // then
