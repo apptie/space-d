@@ -28,6 +28,8 @@ import com.dnd.spaced.core.quiz.presentation.QuizController;
 import com.dnd.spaced.core.quiz.presentation.TodayQuizController;
 import com.dnd.spaced.core.report.application.ReportService;
 import com.dnd.spaced.core.report.presentation.ReportController;
+import com.dnd.spaced.core.skill.application.SkillService;
+import com.dnd.spaced.core.skill.presentation.SkillController;
 import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
@@ -66,7 +68,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 AuthController.class, DocsController.class, AdminController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
                 TodayQuizController.class, LocalImageController.class, ReportController.class,
-                BookmarkController.class
+                BookmarkController.class, SkillController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -124,6 +126,9 @@ public class CommonControllerSliceTest {
     @Autowired
     BookmarkController bookmarkController;
 
+    @Autowired
+    SkillController skillController;
+
     @MockBean
     protected AccountService accountService;
 
@@ -169,6 +174,9 @@ public class CommonControllerSliceTest {
     @MockBean
     protected BookmarkService bookmarkService;
 
+    @MockBean
+    protected SkillService skillService;
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -203,7 +211,8 @@ public class CommonControllerSliceTest {
                                               todayQuizController,
                                               localImageController,
                                               reportController,
-                                              bookmarkController
+                                              bookmarkController,
+                                              skillController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)
