@@ -456,6 +456,8 @@ public class DocsController {
                 "meaning",
                 "categoryName",
                 "pronunciations",
+                "pronunciation",
+                "typeName",
                 "examples"
         );
         processWordException(saveWordException, WordErrorCode.values());

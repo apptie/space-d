@@ -21,12 +21,16 @@ public enum QuizWordCountValidator {
         this.validator = validator;
     }
 
-    public static boolean validate(QuizCategory category, WordMetadata wordMetadata, int requiredWordCount) {
+    public static boolean isValidate(QuizCategory category, WordMetadata wordMetadata, int requiredWordCount) {
         return Arrays.stream(QuizWordCountValidator.values())
                      .filter(validator -> validator.category.equals(category))
                      .findAny()
                      .orElseThrow(() -> new QuizCategoryNotFoundException("지정한 퀴즈 카테고리를 찾을 수 없습니다."))
                      .validator
                      .test(wordMetadata, requiredWordCount);
+    }
+
+    public static boolean isInvalidate(QuizCategory category, WordMetadata wordMetadata, int requiredWordCount) {
+        return !isValidate(category, wordMetadata, requiredWordCount);
     }
 }

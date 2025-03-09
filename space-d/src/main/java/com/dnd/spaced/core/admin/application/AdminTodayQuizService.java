@@ -51,33 +51,33 @@ public class AdminTodayQuizService {
     }
 
     private void validateQuizCreation(QuizCategory quizCategory) {
-        WordMetadata wordMetadata = wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
-                                                          .orElseThrow(() -> new WordMetadataNotFoundException("용어 메타데이터가 정상적으로 설정되지 않았습니다."));
+        WordMetadata wordMetadata = findWordMetadata();
 
-        if (!QuizWordCountValidator.validate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        validateQuizWordCount(quizCategory, wordMetadata);
+    }
+
+    private WordMetadata findWordMetadata() {
+        return wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
+                                     .orElseThrow(
+                                             () -> new WordMetadataNotFoundException("용어 메타데이터가 정상적으로 설정되지 않았습니다.")
+                                     );
+    }
+
+    private void validateQuizWordCount(QuizCategory quizCategory, WordMetadata wordMetadata) {
+        if (QuizWordCountValidator.isInvalidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidTodayQuizWordCountException("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }
 
     private TodayQuiz createTodayQuiz(QuizCategory quizCategory) {
         List<Word> randomWords = findRandomWords(quizCategory);
-        Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
-        TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
-                answerWord.getId(),
-                answerWord.getName()
-        );
-        TodayQuizQuestion todayQuizQuestion = TodayQuizQuestion.of(
-                quizCategory,
-                quizQuestionProperties.getQuestion(),
-                answerWord.getWordMeaning().getMeaning(),
-                todayQuizAnswerOption
-        );
-        TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
+        TodayQuiz todayQuiz = initTodayQuiz(quizCategory, randomWords);
 
         persistTodayQuizOptions(randomWords, todayQuiz);
 
         TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
-        eventPublisher.publishEvent(new AddedTodayQuizQuestionEvent());
+
+        publishAddedTodayQuizQuestionEvent();
 
         return savedTodayQuiz;
     }
@@ -91,6 +91,22 @@ public class AdminTodayQuizService {
         return wordRepository.findAllBy(wordIds);
     }
 
+    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<Word> randomWords) {
+        Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
+        TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
+                answerWord.getId(),
+                answerWord.getName()
+        );
+        TodayQuizQuestion todayQuizQuestion = TodayQuizQuestion.of(
+                quizCategory,
+                quizQuestionProperties.getQuestion(),
+                answerWord.getWordMeaning().getMeaning(),
+                todayQuizAnswerOption
+        );
+
+        return new TodayQuiz(todayQuizQuestion);
+    }
+
     private void persistTodayQuizOptions(List<Word> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
 
@@ -100,5 +116,9 @@ public class AdminTodayQuizService {
             TodayQuizOption todayQuizOption = TodayQuizOption.of(word.getId(), word.getName(), i, todayQuiz);
             todayQuizOptionRepository.save(todayQuizOption);
         }
+    }
+
+    private void publishAddedTodayQuizQuestionEvent() {
+        eventPublisher.publishEvent(new AddedTodayQuizQuestionEvent());
     }
 }

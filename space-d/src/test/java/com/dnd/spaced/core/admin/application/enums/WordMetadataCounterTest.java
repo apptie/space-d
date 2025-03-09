@@ -23,7 +23,7 @@ class WordMetadataCounterTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        WordMetadataCounter.count(Category.DESIGN, wordMetadata);
+        WordMetadataCounter.add(Category.DESIGN, wordMetadata);
 
         // then
         assertAll(
@@ -40,7 +40,7 @@ class WordMetadataCounterTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        WordMetadataCounter.count(Category.DEVELOP, wordMetadata);
+        WordMetadataCounter.add(Category.DEVELOP, wordMetadata);
 
         // then
         assertAll(
@@ -57,7 +57,7 @@ class WordMetadataCounterTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        WordMetadataCounter.count(Category.BUSINESS, wordMetadata);
+        WordMetadataCounter.add(Category.BUSINESS, wordMetadata);
 
         // then
         assertAll(
@@ -75,7 +75,7 @@ class WordMetadataCounterTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when & then
-        assertThatThrownBy(() -> WordMetadataCounter.count(invalidCategory, wordMetadata))
+        assertThatThrownBy(() -> WordMetadataCounter.add(invalidCategory, wordMetadata))
                 .isInstanceOf(WordMetadataCounterNotFoundException.class)
                 .hasMessage("용어 메타데이터에 변경사항을 반영하지 못했습니다.");
     }

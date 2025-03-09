@@ -1,7 +1,7 @@
-package com.dnd.spaced.core.admin.application.event;
+package com.dnd.spaced.core.admin.application.event.listener;
 
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
-import com.dnd.spaced.core.admin.application.event.exception.CommentNotFoundException;
+import com.dnd.spaced.core.admin.application.event.listener.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
@@ -19,10 +19,18 @@ public class ReportEventListener {
     @EventListener
     @Transactional
     public void processReport(ProcessedReportEvent event) {
-        Comment comment = commentRepository.findBy(event.commentId())
-                                           .orElseThrow(() -> new CommentNotFoundException("지정한 댓글을 찾을 수 없습니다."));
+        Comment comment = findComment(event);
         ReportStatus reportStatus = event.reportStatus();
 
+        processCommentBy(reportStatus, comment);
+    }
+
+    private Comment findComment(ProcessedReportEvent event) {
+        return commentRepository.findBy(event.commentId())
+                                .orElseThrow(() -> new CommentNotFoundException("지정한 댓글을 찾을 수 없습니다."));
+    }
+
+    private void processCommentBy(ReportStatus reportStatus, Comment comment) {
         if (reportStatus.isProcess()) {
             comment.delete();
             return;
