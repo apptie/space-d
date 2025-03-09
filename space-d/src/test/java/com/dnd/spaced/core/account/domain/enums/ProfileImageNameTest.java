@@ -49,7 +49,7 @@ class ProfileImageNameTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 프로필_이미지를_찾을_때_유효한_프로필_이미지_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidKoreanName) {
+    void 유효한_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidKoreanName) {
         // when & then
         assertThatThrownBy(() -> ProfileImageName.findBy(invalidKoreanName))
                 .isInstanceOf(InvalidProfileImageNameException.class)

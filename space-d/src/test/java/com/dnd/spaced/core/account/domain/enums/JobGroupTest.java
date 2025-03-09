@@ -36,7 +36,7 @@ class JobGroupTest {
 
     @ParameterizedTest(name = "직군이 {0}일 때 예외가 발생한다")
     @NullAndEmptySource
-    void 직군_정보를_찾을_때_유효한_직군이_아닌_경우_직군_정보를_찾을_수_없다(String invalidName) {
+    void 유효한_직군이_아닌_경우_직군_정보를_찾을_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> JobGroup.findBy(invalidName))
                 .isInstanceOf(InvalidJobGroupException.class)

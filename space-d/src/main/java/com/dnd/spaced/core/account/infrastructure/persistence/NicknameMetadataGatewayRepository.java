@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.account.infrastructure.repository;
+package com.dnd.spaced.core.account.infrastructure.persistence;
 
 import static com.dnd.spaced.core.account.domain.QNicknameMetadata.nicknameMetadata;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class NicknameMetadataQuerydslRepository implements NicknameMetadataRepository {
+public class NicknameMetadataGatewayRepository implements NicknameMetadataRepository {
 
     private final JPAQueryFactory queryFactory;
     private final NicknameMetadataCrudRepository nicknameMetadataCrudRepository;

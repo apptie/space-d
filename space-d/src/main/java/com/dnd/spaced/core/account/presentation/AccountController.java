@@ -1,10 +1,9 @@
 package com.dnd.spaced.core.account.presentation;
 
 import com.dnd.spaced.core.account.application.AccountService;
-import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
-import com.dnd.spaced.core.account.presentation.dto.request.UpdateCareerInfoRequest;
-import com.dnd.spaced.core.account.presentation.dto.request.UpdateProfileInfoRequest;
-import com.dnd.spaced.core.account.presentation.dto.response.AccountInfoResponse;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
@@ -35,14 +34,9 @@ public class AccountController {
     @PutMapping("/career-info")
     public ResponseEntity<Void> changeCareerInfo(
             @AuthAccount AuthAccountInfo accountInfo,
-            @Valid @RequestBody UpdateCareerInfoRequest request
+            @Valid @RequestBody ChangeCareerInfoRequest request
     ) {
-        accountService.changeCareerInfo(
-                accountInfo.id(),
-                request.jobGroupName(),
-                request.companyName(),
-                request.experienceName()
-        );
+        accountService.changeCareerInfo(accountInfo.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -50,17 +44,17 @@ public class AccountController {
     @PutMapping("/profile-info")
     public ResponseEntity<Void> changeProfileInfo(
             @AuthAccount AuthAccountInfo accountInfo,
-            @Valid @RequestBody UpdateProfileInfoRequest request
+            @Valid @RequestBody ChangeProfileInfoRequest request
     ) {
-        accountService.changeProfileInfo(accountInfo.id(), request.nickname(), request.profileImageKoreanName());
+        accountService.changeProfileInfo(accountInfo.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @GetMapping
-    public ResponseEntity<Object> findAccountInfo(@AuthAccount AuthAccountInfo accountInfo) {
-        AccountInfoDto result = accountService.findAccountInfo(accountInfo.id());
+    public ResponseEntity<AccountResponse> findAccountInfo(@AuthAccount AuthAccountInfo accountInfo) {
+        AccountResponse response = accountService.findAccountInfo(accountInfo.id());
 
-        return ResponseEntity.ok(AccountInfoResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 }

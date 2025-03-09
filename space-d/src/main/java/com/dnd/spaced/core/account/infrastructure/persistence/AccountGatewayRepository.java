@@ -1,11 +1,10 @@
-package com.dnd.spaced.core.account.infrastructure.repository;
+package com.dnd.spaced.core.account.infrastructure.persistence;
 
 import static com.dnd.spaced.core.account.domain.QAccount.account;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class AccountQuerydslRepository implements AccountRepository {
+public class AccountGatewayRepository implements AccountRepository {
 
     private final JPAQueryFactory queryFactory;
     private final AccountCrudRepository accountCrudRepository;
@@ -25,7 +24,11 @@ public class AccountQuerydslRepository implements AccountRepository {
 
     @Override
     public Optional<Account> findBy(Long id) {
-        return accountCrudRepository.findById(id);
+        Account result = queryFactory.selectFrom(account)
+                                       .where(account.id.eq(id), account.deleted.isFalse())
+                                       .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -33,7 +36,8 @@ public class AccountQuerydslRepository implements AccountRepository {
         Account result = queryFactory.selectFrom(account)
                                      .where(
                                              account.socialInfo.registrationId.eq(registrationId),
-                                             account.socialInfo.socialIdentifier.eq(socialIdentifier)
+                                             account.socialInfo.socialIdentifier.eq(socialIdentifier),
+                                             account.deleted.isFalse()
                                      )
                                      .fetchOne();
 
@@ -44,10 +48,10 @@ public class AccountQuerydslRepository implements AccountRepository {
     public Optional<Account> findSignedUpAccountBy(Long id) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
-                                             notWithdrawal(),
                                              account.careerInfo.company.isNull(),
                                              account.careerInfo.experience.isNull(),
-                                             account.careerInfo.jobGroup.isNull()
+                                             account.careerInfo.jobGroup.isNull(),
+                                             account.deleted.isFalse()
                                      )
                                      .fetchOne();
 
@@ -57,9 +61,5 @@ public class AccountQuerydslRepository implements AccountRepository {
     @Override
     public void delete(Account account) {
         accountCrudRepository.delete(account);
-    }
-
-    private BooleanExpression notWithdrawal() {
-        return account.deleted.isFalse();
     }
 }

@@ -88,7 +88,7 @@ public class LoginService {
             String nickname,
             String profileImageName
     ) {
-        NicknameMetadata nicknameMetadata = new NicknameMetadata(nickname);
+        NicknameMetadata nicknameMetadata = NicknameMetadata.from(nickname);
 
         nicknameMetadataRepository.save(nicknameMetadata);
 

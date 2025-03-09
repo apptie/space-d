@@ -23,9 +23,31 @@ public class ProfileInfo {
     private String nickname;
     private String profileImage;
 
-    public ProfileInfo(String nickname, String profileImage) {
+    public static ProfileInfo of(String nickname, String profileImage) {
         validateContent(nickname, profileImage);
 
+        return new ProfileInfo(nickname, profileImage);
+    }
+
+    private static void validateContent(String nickname, String profileImage) {
+        if (isInvalidNickname(nickname)) {
+            throw new InvalidNicknameException(NICKNAME_EXCEPTION_MESSAGE);
+        }
+        if (isInvalidProfileImage(profileImage)) {
+            throw new InvalidProfileImageException("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
+        }
+    }
+
+    private static boolean isInvalidNickname(String nickname) {
+        return nickname == null || nickname.isBlank()
+                || nickname.length() < NICKNAME_MIN_LENGTH || nickname.length() > NICKNAME_MAX_LENGTH;
+    }
+
+    private static boolean isInvalidProfileImage(String profileImage) {
+        return profileImage == null || profileImage.isBlank();
+    }
+
+    private ProfileInfo(String nickname, String profileImage) {
         this.nickname = nickname;
         this.profileImage = profileImage;
     }
@@ -35,23 +57,5 @@ public class ProfileInfo {
 
         this.nickname = changedNickname;
         this.profileImage = changedProfileImage;
-    }
-
-    private void validateContent(String nickname, String profileImage) {
-        if (isInvalidNickname(nickname)) {
-            throw new InvalidNicknameException(NICKNAME_EXCEPTION_MESSAGE);
-        }
-        if (isInvalidProfileImage(profileImage)) {
-            throw new InvalidProfileImageException("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
-        }
-    }
-
-    private boolean isInvalidNickname(String nickname) {
-        return nickname == null || nickname.isBlank()
-                || nickname.length() < NICKNAME_MIN_LENGTH || nickname.length() > NICKNAME_MAX_LENGTH;
-    }
-
-    private boolean isInvalidProfileImage(String profileImage) {
-        return profileImage == null || profileImage.isBlank();
     }
 }

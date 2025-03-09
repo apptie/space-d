@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.account.infrastructure.repository;
+package com.dnd.spaced.core.account.infrastructure.persistence;
 
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
 import org.springframework.data.repository.CrudRepository;

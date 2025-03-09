@@ -21,9 +21,4 @@ public enum RegistrationId {
                      .findAny()
                      .orElseThrow(() -> new InvalidRegistrationIdException(String.format(EXCEPTION_FORMAT, name)));
     }
-
-    public static boolean supports(String name) {
-        return Arrays.stream(RegistrationId.values())
-                     .anyMatch(id -> id.name.equals(name));
-    }
 }

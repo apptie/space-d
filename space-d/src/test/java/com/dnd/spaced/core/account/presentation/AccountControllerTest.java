@@ -2,8 +2,11 @@ package com.dnd.spaced.core.account.presentation;
 
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -17,9 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
-import com.dnd.spaced.core.account.presentation.dto.request.UpdateCareerInfoRequest;
-import com.dnd.spaced.core.account.presentation.dto.request.UpdateProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,6 +42,8 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
+        verify(accountService, times(1)).withdrawal(anyLong());
+
         회원_탈퇴_요청_문서화(resultActions);
     }
 
@@ -55,10 +60,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 회원_경력_정보_변경_요청_성공_테스트() throws Exception {
-        // given
-        UpdateCareerInfoRequest request = new UpdateCareerInfoRequest("개발자", "중소기업", "비공개");
-
         // when & then
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest("개발자", "중소기업", "비공개");
+
         ResultActions resultActions = mockMvc.perform(
                 put("/accounts/career-info").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                             .contentType(MediaType.APPLICATION_JSON)
@@ -66,6 +70,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(accountService, times(1))
+                .changeCareerInfo(anyLong(), any(ChangeCareerInfoRequest.class));
 
         회원_경력_정보_변경_요청_문서화(resultActions);
     }
@@ -77,9 +84,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         requestFields(
-                                fieldWithPath("jobGroupName").attributes(field("constraints", generateLinkCode(DocsUrl.JOB_GROUP))).description("회원 직군"),
-                                fieldWithPath("companyName").attributes(field("constraints", generateLinkCode(DocsUrl.COMPANY))).description("회원 회사 종류"),
-                                fieldWithPath("experienceName").attributes(field("constraints", generateLinkCode(DocsUrl.EXPERIENCE))).description("회원 경력")
+                                fieldWithPath("changedJobGroupName").attributes(field("constraints", generateLinkCode(DocsUrl.JOB_GROUP))).description("회원 직군"),
+                                fieldWithPath("changedCompanyName").attributes(field("constraints", generateLinkCode(DocsUrl.COMPANY))).description("회원 회사 종류"),
+                                fieldWithPath("changedExperienceName").attributes(field("constraints", generateLinkCode(DocsUrl.EXPERIENCE))).description("회원 경력")
                         )
                 )
         );
@@ -88,10 +95,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
-        // given
-        UpdateProfileInfoRequest request = new UpdateProfileInfoRequest("행복한금성001", "금성");
-
         // when & then
+        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest("행복한금성001", "금성");
+
         ResultActions resultActions = mockMvc.perform(
                 put("/accounts/profile-info").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                              .contentType(MediaType.APPLICATION_JSON)
@@ -99,6 +105,9 @@ class AccountControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(accountService, times(1))
+                .changeProfileInfo(anyLong(), any(ChangeProfileInfoRequest.class));
 
         회원_프로필_정보_변경_요청_문서화(resultActions);
     }
@@ -110,8 +119,8 @@ class AccountControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         requestFields(
-                                fieldWithPath("nickname").attributes(field("constraints", "기존 닉네임 입력")).description("회원 직군"),
-                                fieldWithPath("profileImageKoreanName").attributes(field("constraints", generateLinkCode(DocsUrl.PROFILE_IMAGE_NAME))).description("회원 회사 종류")
+                                fieldWithPath("changedNickname").attributes(field("constraints", "기존 닉네임 입력")).description("회원 직군"),
+                                fieldWithPath("changedProfileImageKoreanName").attributes(field("constraints", generateLinkCode(DocsUrl.PROFILE_IMAGE_NAME))).description("회원 회사 종류")
                         )
                 )
         );
@@ -121,7 +130,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원_정보_조회_요청_성공_테스트() throws Exception {
         // given
-        AccountInfoDto accountInfoDto = new AccountInfoDto(
+        AccountResponse accountResponse = new AccountResponse(
                 "재빠른지구001",
                 "earth.png",
                 "개발자",
@@ -129,7 +138,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 "1~2년 차"
         );
 
-        given(accountService.findAccountInfo(anyLong())).willReturn(accountInfoDto);
+        given(accountService.findAccountInfo(anyLong())).willReturn(accountResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -142,6 +151,8 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 jsonPath("$.companyName").value("비공개"),
                 jsonPath("$.experienceName").value("1~2년 차")
         );
+
+        verify(accountService, times(1)).findAccountInfo(anyLong());
 
         회원_정보_조회_요청_문서화(resultActions);
     }

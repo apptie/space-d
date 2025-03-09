@@ -16,26 +16,7 @@ class RegistrationIdTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 지원하지_않는_소셜_로그인_방식인지_확인한다(String invalidName) {
-        // when
-        boolean actual = RegistrationId.supports(invalidName);
-
-        // then
-        assertThat(actual).isFalse();
-    }
-
-    @Test
-    void 지원하는_소셜_로그인_방식인지_확인한다() {
-        // when
-        boolean actual = RegistrationId.supports("kakao");
-
-        // then
-        assertThat(actual).isTrue();
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 지원하지_않는_소셜_로그인_방식_이름을_전달하면_소셜_로그인_방식을_조회할_수_없다(String invalidName) {
+    void 지원하지_않는_소셜_로그인_공급자_이름을_전달하면_소셜_로그인_방식을_조회할_수_없다(String invalidName) {
         // when & then
         assertThatThrownBy(() -> RegistrationId.findBy(invalidName))
                 .isInstanceOf(InvalidRegistrationIdException.class)
@@ -43,7 +24,7 @@ class RegistrationIdTest {
     }
 
     @Test
-    void 지원하는_소셜_로그인_방식_이름을_전달하면_이름에_맞는_소셜_로그인_방식을_조회한다() {
+    void 지원하는_소셜_로그인_공급자_이름을_전달하면_이름에_맞는_방식을_조회한다() {
         // when
         RegistrationId actual = RegistrationId.findBy("kakao");
 
