@@ -3,8 +3,11 @@ package com.dnd.spaced.core.admin.presentation;
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -58,6 +61,9 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastReportId", is(1L), Long.class)
         );
 
+        verify(adminReportService, times(1))
+                .findAllBy(any(ReadAllReportSearchRequest.class));
+
         신고_목록_조회_요청_문서화(resultActions);
     }
 
@@ -95,6 +101,9 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                                                      .contentType(MediaType.APPLICATION_JSON)
                                                      .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
+
+        verify(adminReportService, times(1))
+                .process(anyLong(), any(ProcessReportRequest.class));
 
         신고_처리_요청_문서화(resultActions);
     }

@@ -3,7 +3,11 @@ package com.dnd.spaced.core.admin.presentation;
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -60,6 +64,8 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 header().stringValues("Location", "/words/1")
         );
 
+        verify(adminWordService, times(1)).createWord(any(CreateWordRequest.class));
+
         용어_등록_요청_문서화(resultActions);
     }
 
@@ -106,6 +112,8 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
+        verify(adminWordService, times(1)).updateWordExample(anyLong(), anyString());
+
         용어_예문_변경_요청_문서화(resultActions);
     }
 
@@ -136,6 +144,8 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
+        verify(adminWordService, times(1)).deleteWordExample(anyLong(), anyLong());
+
         용어_예문_삭제_요청_문서화(resultActions);
     }
 
@@ -163,6 +173,8 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(adminWordService, times(1)).deletePronunciation(anyLong(), anyLong());
 
         용어_발음_정보_삭제_요청_문서화(resultAction);
     }
