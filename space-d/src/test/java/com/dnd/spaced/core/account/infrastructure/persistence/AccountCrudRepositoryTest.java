@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.account.infrastructure.repository;
+package com.dnd.spaced.core.account.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
