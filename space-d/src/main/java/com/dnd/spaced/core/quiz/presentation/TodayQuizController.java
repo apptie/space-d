@@ -8,7 +8,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerRe
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthAccountInfo;
-import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageable;
+import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +68,7 @@ public class TodayQuizController {
     public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> findTodayQuizGradedAnswerAllBy(
             @AuthAccount AuthAccountInfo accountInfo,
             ReadTodayQuizGradedAnswerSearchRequest request,
-            @CommonGradedAnswerPageable Pageable pageable
+            @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
                 todayQuizService.findTodayQuizGradedAnswerAllBy(accountInfo.id(), request, pageable)

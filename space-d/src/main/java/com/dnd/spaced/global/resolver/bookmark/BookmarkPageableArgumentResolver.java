@@ -1,11 +1,8 @@
 package com.dnd.spaced.global.resolver.bookmark;
 
-import com.dnd.spaced.global.consts.resolver.ResolverConst;
-import com.dnd.spaced.global.resolver.comment.CommonCommentPageable;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

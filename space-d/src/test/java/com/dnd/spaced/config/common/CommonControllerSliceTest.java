@@ -41,9 +41,9 @@ import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
 import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
-import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
-import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageableArgumentResolver;
-import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.word.WordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -198,9 +198,9 @@ public class CommonControllerSliceTest {
         AuthStore store = new AuthStore();
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
-        CommonWordPageableArgumentResolver commonWordPageableArgumentResolver = new CommonWordPageableArgumentResolver();
-        CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver = new CommonCommentPageableArgumentResolver();
-        CommonGradedAnswerPageableArgumentResolver commonGradedAnswerPageableArgumentResolver = new CommonGradedAnswerPageableArgumentResolver();
+        WordPageableArgumentResolver wordPageableArgumentResolver = new WordPageableArgumentResolver();
+        CommentPageableArgumentResolver commentPageableArgumentResolver = new CommentPageableArgumentResolver();
+        GradedAnswerPageableArgumentResolver gradedAnswerPageableArgumentResolver = new GradedAnswerPageableArgumentResolver();
         BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver = new BookmarkPageableArgumentResolver();
         ReportPageableArgumentResolver reportPageableArgumentResolver = new ReportPageableArgumentResolver();
         MappingJackson2HttpMessageConverter jacksonMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
@@ -237,9 +237,9 @@ public class CommonControllerSliceTest {
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(
                                               authAccountInfoArgumentResolver,
-                                              commonWordPageableArgumentResolver,
-                                              commonCommentPageableArgumentResolver,
-                                              commonGradedAnswerPageableArgumentResolver,
+                                              wordPageableArgumentResolver,
+                                              commentPageableArgumentResolver,
+                                              gradedAnswerPageableArgumentResolver,
                                               bookmarkPageableArgumentResolver,
                                               reportPageableArgumentResolver
                                       )

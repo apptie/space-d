@@ -2,8 +2,8 @@ package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
-import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
-import com.dnd.spaced.global.resolver.word.CommonWordPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.word.WordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.Clock;
@@ -33,8 +33,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
     private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
-    private final CommonWordPageableArgumentResolver commonWordPageableArgumentResolver;
-    private final CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver;
+    private final WordPageableArgumentResolver wordPageableArgumentResolver;
+    private final CommentPageableArgumentResolver commentPageableArgumentResolver;
 
     @Bean
     public Clock clock() {
@@ -99,8 +99,8 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authAccountInfoArgumentResolver);
-        resolvers.add(commonWordPageableArgumentResolver);
-        resolvers.add(commonCommentPageableArgumentResolver);
+        resolvers.add(wordPageableArgumentResolver);
+        resolvers.add(commentPageableArgumentResolver);
     }
 
     @Override

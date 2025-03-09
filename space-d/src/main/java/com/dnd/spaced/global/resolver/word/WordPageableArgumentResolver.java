@@ -11,7 +11,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class CommonWordPageableArgumentResolver implements HandlerMethodArgumentResolver {
+public class WordPageableArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final int IGNORED_PAGE = 0;
     private static final int DEFAULT_SIZE = 10;
@@ -20,8 +20,8 @@ public class CommonWordPageableArgumentResolver implements HandlerMethodArgument
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CommonWordPageable.class) && parameter.getParameterType()
-                                                                                      .equals(Pageable.class);
+        return parameter.hasParameterAnnotation(WordPageable.class) && parameter.getParameterType()
+                                                                                .equals(Pageable.class);
     }
 
     @Override

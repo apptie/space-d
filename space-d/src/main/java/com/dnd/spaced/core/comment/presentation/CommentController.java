@@ -9,7 +9,7 @@ import com.dnd.spaced.core.comment.presentation.dto.response.ReadAllCommentRespo
 import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
-import com.dnd.spaced.global.resolver.comment.CommonCommentPageable;
+import com.dnd.spaced.global.resolver.comment.CommentPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -65,7 +65,7 @@ public class CommentController {
             @AuthAccount(required = false) AuthAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
-            @CommonCommentPageable Pageable pageable
+            @CommentPageable Pageable pageable
     ) {
         List<ReadAllCommentDto> result = commentService.readAllBy(
                 accountInfo.id(),
