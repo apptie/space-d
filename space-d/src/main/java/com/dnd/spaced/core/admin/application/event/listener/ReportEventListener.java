@@ -1,7 +1,7 @@
-package com.dnd.spaced.core.admin.application.event;
+package com.dnd.spaced.core.admin.application.event.listener;
 
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
-import com.dnd.spaced.core.admin.application.event.exception.CommentNotFoundException;
+import com.dnd.spaced.core.admin.application.event.listener.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
