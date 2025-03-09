@@ -67,10 +67,10 @@ public class AdminWordService {
     }
 
     @Transactional
-    public void deletePronunciation(Long wordId, Long pronunciation) {
+    public void deletePronunciation(Long wordId, Long pronunciationId) {
         validatePronunciationCount(wordId);
 
-        pronunciationRepository.deleteBy(pronunciation);
+        pronunciationRepository.deleteBy(pronunciationId);
     }
 
     private Word buildWordFromRequest(CreateWordRequest request) {
