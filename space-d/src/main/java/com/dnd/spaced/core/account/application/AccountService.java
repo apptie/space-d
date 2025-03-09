@@ -20,7 +20,7 @@ public class AccountService {
     public void withdrawal(Long accountId) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        accountRepository.delete(authorizedAccount);
+        authorizedAccount.withdrawal();
     }
 
     @Transactional

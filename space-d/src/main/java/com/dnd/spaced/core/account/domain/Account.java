@@ -19,14 +19,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Table(name = "accounts")
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE accounts SET deleted = true WHERE id = ?")
-@SQLRestriction("deleted = false")
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends BaseTimeEntity {
@@ -60,6 +56,10 @@ public class Account extends BaseTimeEntity {
         this.profileInfo = ProfileInfo.of(nickname, profileImage);
         this.role = role;
         this.socialInfo = new SocialInfo(registrationId, socialIdentifier);
+    }
+
+    public void withdrawal() {
+        this.deleted = true;
     }
 
     public void changeCareerInfo(
