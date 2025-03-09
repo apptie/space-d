@@ -9,7 +9,6 @@ import com.dnd.spaced.core.comment.application.exception.CommentNotFoundExceptio
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.comment.domain.repository.dto.request.CommentPageRequest;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
@@ -61,12 +60,10 @@ public class CommentService {
     }
 
     public List<ReadAllCommentDto> readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        CommentPageRequest commentPageRequest = new CommentPageRequest(pageable, lastCommentId);
-
-        return commentRepository.findAllBy(accountId, wordId, commentPageRequest)
-                .stream()
-                .map(dto -> ReadAllCommentDto.from(dto))
-                .toList();
+        return commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable)
+                                .stream()
+                                .map(ReadAllCommentDto::from)
+                                .toList();
     }
 
     private Account findAccount(Long accountId) {

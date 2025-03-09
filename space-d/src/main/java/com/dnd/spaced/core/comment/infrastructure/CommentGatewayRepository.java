@@ -6,7 +6,6 @@ import static com.dnd.spaced.core.like.domain.QLike.like;
 
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.comment.domain.repository.dto.request.CommentPageRequest;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
 import com.dnd.spaced.core.comment.infrastructure.util.CommentSortConditionConverter;
 import com.querydsl.core.Tuple;
@@ -25,6 +24,10 @@ import org.springframework.stereotype.Repository;
 public class CommentGatewayRepository implements CommentRepository {
 
     private static final String COMMENT_ID = "id";
+    private static final int TUPLE_COMMENT_INDEX = 0;
+    private static final int TUPLE_WRITER_NICKNAME_INDEX = 1;
+    private static final int TUPLE_WRITER_PROFILE_IMAGE_INDEX = 2;
+    private static final int TUPLE_WRITER_ID_INDEX = 3;
 
     private final JPAQueryFactory queryFactory;
     private final CommentCrudRepository commentCrudRepository;
@@ -40,12 +43,12 @@ public class CommentGatewayRepository implements CommentRepository {
     }
 
     @Override
-    public List<LikedCommentDto> findAllBy(Long accountId, Long wordId, CommentPageRequest pageRequest) {
+    public List<LikedCommentDto> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         if (accountId == null) {
-            return findAllWithoutIsLikedBy(wordId, pageRequest);
+            return findAllWithoutIsLikedBy(wordId, lastCommentId, pageable);
         }
 
-        return findAllWithIsLikedBy(accountId, wordId, pageRequest);
+        return findAllWithIsLikedBy(accountId, wordId, lastCommentId, pageable);
     }
 
     @Override
@@ -69,14 +72,20 @@ public class CommentGatewayRepository implements CommentRepository {
                     .execute();
     }
 
-    private List<LikedCommentDto> findAllWithIsLikedBy(Long accountId, Long wordId, CommentPageRequest pageRequest) {
+    private List<LikedCommentDto> findAllWithIsLikedBy(
+            Long accountId,
+            Long wordId,
+            Long lastCommentId,
+            Pageable pageable
+    ) {
         return queryFactory.select(
                                    Projections.constructor(
                                            LikedCommentDto.class,
                                            comment,
                                            like.id.isNotNull(),
                                            account.profileInfo.nickname,
-                                           account.profileInfo.profileImage
+                                           account.profileInfo.profileImage,
+                                           account.id
                                    )
                            )
                            .from(comment)
@@ -84,35 +93,36 @@ public class CommentGatewayRepository implements CommentRepository {
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
                            .where(
                                    comment.wordId.eq(wordId),
-                                   calculateLastCommentIdBooleanExpression(pageRequest),
+                                   calculateLastIdExpression(lastCommentId, pageable),
                                    comment.isDeleted.isFalse()
                            )
                            .orderBy(
-                                   CommentSortConditionConverter.convert(pageRequest.pageable())
+                                   CommentSortConditionConverter.convert(pageable)
                                                                 .toArray(OrderSpecifier[]::new)
                            )
-                           .limit(pageRequest.pageable().getPageSize())
+                           .limit(pageable.getPageSize())
                            .fetch();
     }
 
-    private List<LikedCommentDto> findAllWithoutIsLikedBy(Long wordId, CommentPageRequest pageRequest) {
+    private List<LikedCommentDto> findAllWithoutIsLikedBy(Long wordId, Long lastCommentId, Pageable pageable) {
         List<Tuple> comments = queryFactory.select(
                                                    comment,
                                                    account.profileInfo.nickname,
-                                                   account.profileInfo.profileImage
+                                                   account.profileInfo.profileImage,
+                                                   account.id
                                            )
                                            .from(comment)
                                            .join(account).on(comment.accountId.eq(account.id))
                                            .where(
                                                    comment.wordId.eq(wordId),
-                                                   calculateLastCommentIdBooleanExpression(pageRequest),
+                                                   calculateLastIdExpression(lastCommentId, pageable),
                                                    comment.isDeleted.isFalse()
                                            )
                                            .orderBy(
-                                                   CommentSortConditionConverter.convert(pageRequest.pageable())
+                                                   CommentSortConditionConverter.convert(pageable)
                                                                                 .toArray(OrderSpecifier[]::new)
                                            )
-                                           .limit(pageRequest.pageable().getPageSize())
+                                           .limit(pageable.getPageSize())
                                            .fetch();
 
         return comments.stream()
@@ -122,44 +132,45 @@ public class CommentGatewayRepository implements CommentRepository {
 
     private LikedCommentDto convertLikedCommentDto(Tuple tuple) {
         return new LikedCommentDto(
-                tuple.get(0, Comment.class),
+                tuple.get(TUPLE_COMMENT_INDEX, Comment.class),
                 false,
-                tuple.get(1, String.class),
-                tuple.get(2, String.class)
+                tuple.get(TUPLE_WRITER_NICKNAME_INDEX, String.class),
+                tuple.get(TUPLE_WRITER_PROFILE_IMAGE_INDEX, String.class),
+                tuple.get(TUPLE_WRITER_ID_INDEX, Long.class)
         );
     }
 
-    private BooleanExpression calculateLastCommentIdBooleanExpression(CommentPageRequest pageRequest) {
-        if (pageRequest.lastCommentId() == null) {
+    private BooleanExpression calculateLastIdExpression(Long lastCommentId, Pageable pageable) {
+        if (lastCommentId == null) {
             return null;
         }
 
-        if (isLastCommentIdGt(pageRequest.pageable())) {
-            return lastCommentIdGt(pageRequest.lastCommentId());
+        if (isAscending(pageable)) {
+            return gtLastCommentId(lastCommentId);
         }
 
-        return lastCommentIdLt(pageRequest.lastCommentId());
+        return ltLastCommentId(lastCommentId);
     }
 
-    private boolean isLastCommentIdGt(Pageable pageable) {
+    private boolean isAscending(Pageable pageable) {
         return pageable.getSort()
                        .get()
                        .anyMatch(order -> COMMENT_ID.equals(order.getProperty()) && order.isAscending());
     }
 
-    private BooleanExpression lastCommentIdGt(Long id) {
-        if (id == null) {
+    private BooleanExpression gtLastCommentId(Long commentId) {
+        if (commentId == null) {
             return null;
         }
 
-        return comment.id.gt(id);
+        return comment.id.gt(commentId);
     }
 
-    private BooleanExpression lastCommentIdLt(Long id) {
-        if (id == null) {
+    private BooleanExpression ltLastCommentId(Long commentId) {
+        if (commentId == null) {
             return null;
         }
 
-        return comment.id.lt(id);
+        return comment.id.lt(commentId);
     }
 }
