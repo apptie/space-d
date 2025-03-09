@@ -8,6 +8,7 @@ import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
+import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AdminTodayQuizServiceTest {
+
+    @Autowired
+    ApplicationEvents events;
 
     @Autowired
     AdminWordService adminWordService;
@@ -79,7 +84,8 @@ class AdminTodayQuizServiceTest {
         assertAll(
                 () -> assertThat(actual).isPresent(),
                 () -> assertThat(actual.get().getId()).isEqualTo(1L),
-                () -> assertThat(actual.get().getTodayQuizOptions()).hasSize(4)
+                () -> assertThat(actual.get().getTodayQuizOptions()).hasSize(4),
+                () -> assertThat(events.stream(AddedTodayQuizQuestionEvent.class).count()).isOne()
         );
     }
 

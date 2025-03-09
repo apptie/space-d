@@ -22,6 +22,7 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
+import com.dnd.spaced.core.skill.application.event.dto.GradedTodayQuizEvent;
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TodayQuizServiceTest {
+
+    @Autowired
+    ApplicationEvents events;
 
     @Autowired
     TodayQuizService todayQuizService;
@@ -129,7 +134,8 @@ class TodayQuizServiceTest {
         assertAll(
                 () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(savedTodayQuiz.getId()),
                 () -> assertThat(actual.getAccountId()).isEqualTo(1L),
-                () -> assertThat(actual.getSelectedOptionIndex()).isEqualTo(1)
+                () -> assertThat(actual.getSelectedOptionIndex()).isEqualTo(1),
+                () -> assertThat(events.stream(GradedTodayQuizEvent.class).count()).isOne()
         );
     }
 

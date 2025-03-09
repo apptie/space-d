@@ -11,8 +11,10 @@ import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
+import com.dnd.spaced.core.skill.application.event.dto.GradedTodayQuizEvent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TodayQuizService {
 
+    private static final long TODAY_QUIZ_CORRECT_COUNT = 1L;
+
+    private final ApplicationEventPublisher eventPublisher;
     private final TodayQuizRepository todayQuizRepository;
     private final TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
@@ -43,6 +48,7 @@ public class TodayQuizService {
         TodayQuizGradedAnswer gradedAnswer = todayQuiz.grade(accountId, request.answer());
 
         todayQuizGradedAnswerRepository.save(gradedAnswer);
+        eventPublisher.publishEvent(new GradedTodayQuizEvent(accountId, calculateCorrectCount(gradedAnswer)));
     }
 
     public TodayQuizGradedAnswerCollectionResponse findTodayQuizGradedAnswerAllBy(
@@ -78,5 +84,13 @@ public class TodayQuizService {
                                                  .orElseThrow(() -> new TodayQuizNotFoundException("지정한 id의 오늘의 퀴즈를 찾지 못했습니다."));
 
         return TodayQuizApplicationMapper.toDto(todayQuiz);
+    }
+
+    private long calculateCorrectCount(TodayQuizGradedAnswer answer) {
+        if (answer.isCorrect()) {
+            return TODAY_QUIZ_CORRECT_COUNT;
+        }
+
+        return 0L;
     }
 }

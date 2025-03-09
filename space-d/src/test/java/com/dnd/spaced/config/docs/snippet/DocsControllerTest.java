@@ -305,6 +305,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.findAllBookmarkException").withSubsectionId("findAllBookmarkException"),
                                       attributes(key("title").value("`DELETE /bookmarks/{bookmarkId}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindAllBookmarkException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
+                                      attributes(key("title").value("`GET /skills` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getFindSkillException())
                               )
                       )
               );
