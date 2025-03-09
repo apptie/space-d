@@ -46,14 +46,15 @@ class BlacklistTokenServiceTest {
     void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_미래라면_유효한_토큰이다() {
         // given
         Long accountId = 1L;
+
+        blacklistTokenRepository.save(
+                BlacklistToken.of(accountId, LocalDateTimeFixture.from("2022-02-01 13:13:00"))
+        );
+
         PrivateClaims privateClaims = new PrivateClaims(
                 accountId,
                 "ROLE_USER",
                 LocalDateTimeFixture.from("2022-02-02 13:13:00")
-        );
-
-        blacklistTokenRepository.save(
-                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-01 13:13:00"))
         );
 
         // when
@@ -67,14 +68,15 @@ class BlacklistTokenServiceTest {
     void 토큰_블랙리스트에_회원이_등록된_날짜보다_토큰의_생성_일자가_과거라면_차단된_토큰이다() {
         // given
         Long accountId = 1L;
+
+        blacklistTokenRepository.save(
+                BlacklistToken.of(accountId, LocalDateTimeFixture.from("2022-02-03 13:13:00"))
+        );
+
         PrivateClaims privateClaims = new PrivateClaims(
                 accountId,
                 "ROLE_USER",
                 LocalDateTimeFixture.from("2022-02-02 13:13:00")
-        );
-
-        blacklistTokenRepository.save(
-                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-03 13:13:00"))
         );
 
         // when

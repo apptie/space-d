@@ -1,10 +1,10 @@
 package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
-import com.dnd.spaced.core.auth.domain.TokenScheme;
+import com.dnd.spaced.core.auth.domain.enums.TokenScheme;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;

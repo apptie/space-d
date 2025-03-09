@@ -10,11 +10,11 @@ import com.dnd.spaced.core.auth.application.exception.BlockedTokenException;
 import com.dnd.spaced.core.auth.application.exception.ExpiredTokenException;
 import com.dnd.spaced.core.auth.application.exception.RotationRefreshTokenMismatchException;
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
-import com.dnd.spaced.core.auth.infrastructure.JwtEncoder;
-import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
+import com.dnd.spaced.core.auth.infrastructure.jwt.JwtEncoder;
+import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
@@ -62,9 +62,10 @@ class TokenServiceTest {
 
         // when
         TokenDto token = tokenService.refreshToken(refreshToken);
-        Optional<String> rtt = refreshTokenRotationRepository.findBy(accountId);
 
         // then
+        Optional<String> rtt = refreshTokenRotationRepository.findBy(accountId);
+
         assertAll(
                 () -> assertThat(token.accessToken()).isNotBlank(),
                 () -> assertThat(token.refreshToken()).isNotBlank(),
@@ -73,7 +74,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_Bearer_타입의_토큰이_아니라면_토큰_갱신을_할_수_없다() {
+    void Bearer_타입의_토큰이_아니라면_토큰_갱신을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken("Basic refresh token"))
                 .isInstanceOf(InvalidTokenException.class)
@@ -81,7 +82,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
+    void 만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
         String refreshToken = tokenEncoder.encode(
                 LocalDateTimeFixture.from("2000-02-02 13:13:00"),
@@ -97,7 +98,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
+    void 길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken("Bearer abcde"))
                 .isInstanceOf(InvalidTokenException.class)
@@ -106,7 +107,7 @@ class TokenServiceTest {
 
     @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
     @NullAndEmptySource
-    void 토큰을_갱신할_때_비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
+    void 비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
         // when & then
         assertThatThrownBy(() -> tokenService.refreshToken(invalidRefreshToken))
                 .isInstanceOf(InvalidTokenException.class)
@@ -114,7 +115,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
+    void 다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
         TokenProperties tokenProperties = new TokenProperties(
                 "thisistoolargeaccesstokenkeyfordummykeydatafortest",
                 "thisistoolargerefreshtokenkeyfordummykeydatafortest",
@@ -139,7 +140,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_블랙리스트로_등록된_회원의_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
+    void 블랙리스트로_등록된_회원의_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
         Long accountId = 1L;
         String refreshToken = tokenEncoder.encode(
@@ -158,7 +159,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void 토큰을_갱신할_때_전달한_refreshToken_값이_RTT로_저장한_값과_일치하지_않으면_토큰_갱신을_할_수_없다() {
+    void 전달한_refreshToken_값이_RTT로_저장한_값과_일치하지_않으면_토큰_갱신을_할_수_없다() {
         // given
         Long accountId = 1L;
         String refreshToken = tokenEncoder.encode(
@@ -171,11 +172,10 @@ class TokenServiceTest {
         refreshTokenRotationRepository.save(accountId, "refresh token");
 
         // when & then
-        assertAll(
-                () -> assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
-                        .isInstanceOf(RotationRefreshTokenMismatchException.class)
-                        .hasMessage("기존 Refresh Token과 일치하지 않습니다."),
-                () -> assertThat(blacklistTokenRepository.findBy(accountId)).isPresent()
-        );
+        assertThatThrownBy(() -> tokenService.refreshToken(refreshToken))
+                .isInstanceOf(RotationRefreshTokenMismatchException.class)
+                .hasMessage("기존 Refresh Token과 일치하지 않습니다.");
+
+        assertThat(blacklistTokenRepository.findBy(accountId)).isPresent();
     }
 }

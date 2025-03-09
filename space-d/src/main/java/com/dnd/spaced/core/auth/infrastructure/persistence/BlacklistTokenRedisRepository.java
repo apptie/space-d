@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.persistence;
 
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
 import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
@@ -30,7 +30,8 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
             return Optional.empty();
         }
 
-        return Optional.of(new BlacklistToken(accountId, LocalDateTime.parse(registeredAt, formatter)));
+        BlacklistToken blacklistToken = BlacklistToken.of(accountId, LocalDateTime.parse(registeredAt, formatter));
+        return Optional.of(blacklistToken);
     }
 
     @Override

@@ -93,8 +93,10 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")
     void 신고_처리_요청_성공_테스트() throws Exception {
-        // when & then
+        // given
         ProcessReportRequest request = new ProcessReportRequest("신고 처리");
+
+        // when & then
 
         ResultActions resultActions = mockMvc.perform(
                 post("/admin/reports/{reportId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")

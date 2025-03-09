@@ -3,7 +3,7 @@ package com.dnd.spaced.core.auth.presentation;
 import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
-import com.dnd.spaced.core.auth.presentation.dto.request.UpdateAccountCareerInfoRequest;
+import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
 import com.dnd.spaced.core.auth.presentation.exception.RefreshTokenNotFoundException;
 import com.dnd.spaced.global.auth.AuthAccount;
@@ -40,14 +40,9 @@ public class AuthController {
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountProfile(
             @AuthAccount AuthAccountInfo accountInfo,
-            @Valid @RequestBody UpdateAccountCareerInfoRequest request
+            @Valid @RequestBody InitAccountCareerInfoRequest request
     ) {
-        initAccountInfoService.initCareerInfo(
-                accountInfo.id(),
-                request.jobGroupName(),
-                request.companyName(),
-                request.experienceName()
-        );
+        initAccountInfoService.initCareerInfo(accountInfo.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -59,13 +54,7 @@ public class AuthController {
         );
 
         TokenDto tokenDto = tokenService.refreshToken(refreshToken);
-        HttpCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_KEY, tokenDto.refreshToken())
-                                          .httpOnly(true)
-                                          .secure(true)
-                                          .sameSite(SameSite.NONE.name())
-                                          .maxAge(tokenProperties.refreshExpiredSeconds())
-                                          .path(COOKIE_DOMAIN)
-                                          .build();
+        HttpCookie cookie = createCookie(tokenDto);
 
         return ResponseEntity.ok()
                              .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -80,5 +69,15 @@ public class AuthController {
         }
 
         return Optional.empty();
+    }
+
+    private HttpCookie createCookie(TokenDto tokenDto) {
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_KEY, tokenDto.refreshToken())
+                             .httpOnly(true)
+                             .secure(true)
+                             .sameSite(SameSite.NONE.name())
+                             .maxAge(tokenProperties.refreshExpiredSeconds())
+                             .path(COOKIE_DOMAIN)
+                             .build();
     }
 }

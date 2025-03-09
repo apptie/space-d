@@ -2,6 +2,7 @@ package com.dnd.spaced.core.auth.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.auth.domain.exception.InvalidBlacklistTokenContentException;
@@ -27,14 +28,13 @@ class BlacklistTokenTest {
         );
     }
 
-    @ParameterizedTest(name = "registeredAt이 {0}이며, issuedAt이 {1}일 때 {2}를 반환한다")
+    @ParameterizedTest(name = "registeredAt이 {0}이며, issuedAt이 {1}일 때 블랙리스트에 등록되었는지 여부는 {2}이다.")
     @MethodSource("isBlacklistTokenTestWithRegisteredAtAndIssuedAtAndExpected")
     void 등록_일자를_통해_블랙리스트에_등록된_토큰인지_판단한다(String targetRegisteredAt, String targetIssuedAt, boolean expected) {
         // given
         LocalDateTime registeredAt = LocalDateTimeFixture.from(targetRegisteredAt);
         LocalDateTime issuedAt = LocalDateTimeFixture.from(targetIssuedAt);
-
-        BlacklistToken blacklistToken = new BlacklistToken(1L, registeredAt);
+        BlacklistToken blacklistToken = BlacklistToken.of(1L, registeredAt);
 
         // when
         boolean actual = blacklistToken.isBlacklistToken(issuedAt);
@@ -44,24 +44,32 @@ class BlacklistTokenTest {
     }
 
     @Test
-    void 블랙리스트_토큰에_등록될_회원_식별자와_등록_일자로_블랙리스트_토큰을_초기화한다() {
+    void 회원_ID와_등록_일자로_블랙리스트_토큰을_초기화한다() {
+        // given
+        LocalDateTime now = LocalDateTime.now();
+
         // when & then
-        assertDoesNotThrow(() -> new BlacklistToken(1L, LocalDateTime.now()));
+        BlacklistToken actual = assertDoesNotThrow(() -> BlacklistToken.of(1L, now));
+
+        assertAll(
+                () -> assertThat(actual.getAccountId()).isEqualTo(1L),
+                () -> assertThat(actual.getRegisteredAt()).isEqualTo(now)
+        );
     }
 
-    @ParameterizedTest(name = "id가 {0}일 때 블랙리스트 토큰을 초기화 할 수 없다")
+    @ParameterizedTest(name = "회원 ID가 {0}일 때 블랙리스트 토큰을 초기화 할 수 없다")
     @NullSource
-    void 블랙리스트_토큰_초기화_시_비어_있는_식별자라면_블랙리스트_토큰을_초기화_할_수_없다(Long invalidId) {
+    void 비어_있는_회원_ID라면_블랙리스트_토큰을_초기화_할_수_없다(Long invalidId) {
         // when & then
-        assertThatThrownBy(() -> new BlacklistToken(invalidId, LocalDateTime.now()))
+        assertThatThrownBy(() -> BlacklistToken.of(invalidId, LocalDateTime.now()))
                 .isInstanceOf(InvalidBlacklistTokenContentException.class)
                 .hasMessage("유효한 ID가 아닙니다.");
     }
 
     @Test
-    void 블랙리스트_토큰_초기화_시_유효한_블랙리스트_등록_일자가_아니라면_초기화_할_수_없다() {
+    void 유효한_블랙리스트_등록_일자가_아니라면_블랙리스트_토큰을_초기화_할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> new BlacklistToken(1L, null))
+        assertThatThrownBy(() -> BlacklistToken.of(1L, null))
                 .isInstanceOf(InvalidBlacklistTokenContentException.class)
                 .hasMessage("유효한 등록 일자가 아닙니다.");
     }

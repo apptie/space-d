@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -22,13 +22,13 @@ class RefreshTokenRotationRedisRepositoryTest {
     RefreshTokenRotationRedisRepository refreshTokenRotationRepository;
 
     @Test
-    void 회원_식별자를_key로_refreshToken을_rotation으로_등록한다() {
+    void 회원_ID를_key로_refreshToken을_rotation으로_등록한다() {
         // when & then
         assertDoesNotThrow(() -> refreshTokenRotationRepository.save(1L, "Bearer refreshToken"));
     }
 
     @Test
-    void 등록하지_않은_회원_식별자로_refreshToken_rotation을_조회하면_빈_값을_반환한다() {
+    void 등록하지_않은_회원_ID로_refreshToken_rotation을_조회하면_빈_값을_반환한다() {
         // when
         Optional<String> actual = refreshTokenRotationRepository.findBy(1L);
 
