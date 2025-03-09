@@ -32,7 +32,7 @@ public class AdminReportController {
     @PostMapping("/{reportId}")
     public ResponseEntity<Void> processReport(
             @PathVariable Long reportId,
-            @RequestBody @Valid ProcessReportRequest request
+            @Valid @RequestBody ProcessReportRequest request
     ) {
         adminReportService.process(reportId, request);
 

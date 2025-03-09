@@ -1,8 +1,8 @@
-package com.dnd.spaced.core.auth.presentation.dto.request;
+package com.dnd.spaced.core.auth.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record UpdateAccountCareerInfoRequest(
+public record InitAccountCareerInfoRequest(
         @NotBlank
         String jobGroupName,
 
