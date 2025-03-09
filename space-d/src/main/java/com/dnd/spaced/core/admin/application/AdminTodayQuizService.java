@@ -2,6 +2,7 @@ package com.dnd.spaced.core.admin.application;
 
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
+import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
@@ -20,6 +21,7 @@ import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class AdminTodayQuizService {
     private final WordMetadataRepository wordMetadataRepository;
     private final TodayQuizOptionRepository todayQuizOptionRepository;
     private final QuizQuestionProperties quizQuestionProperties;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long create() {
@@ -71,9 +74,12 @@ public class AdminTodayQuizService {
         );
         TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
 
-        persistTodayQuiz(randomWords, todayQuiz);
+        persistTodayQuizOptions(randomWords, todayQuiz);
 
-        return todayQuizRepository.save(todayQuiz);
+        TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
+        eventPublisher.publishEvent(new AddedTodayQuizQuestionEvent());
+
+        return savedTodayQuiz;
     }
 
     private List<Word> findRandomWords(QuizCategory quizCategory) {
@@ -85,7 +91,7 @@ public class AdminTodayQuizService {
         return wordRepository.findAllBy(wordIds);
     }
 
-    private void persistTodayQuiz(List<Word> randomWords, TodayQuiz todayQuiz) {
+    private void persistTodayQuizOptions(List<Word> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
 
         for (int i = 0; i < randomWords.size(); i++) {
