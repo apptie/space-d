@@ -5,8 +5,10 @@ import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
+import com.dnd.spaced.global.resolver.admin.report.ReportPageable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +25,11 @@ public class AdminReportController {
     private final AdminReportService adminReportService;
 
     @GetMapping
-    public ResponseEntity<ReportCollectionResponse> findAllBy(ReadAllReportSearchRequest request) {
-        ReportCollectionResponse response = adminReportService.findAllBy(request);
+    public ResponseEntity<ReportCollectionResponse> findAllBy(
+            ReadAllReportSearchRequest request,
+            @ReportPageable Pageable pageable
+    ) {
+        ReportCollectionResponse response = adminReportService.findAllBy(request, pageable);
 
         return ResponseEntity.ok(response);
     }

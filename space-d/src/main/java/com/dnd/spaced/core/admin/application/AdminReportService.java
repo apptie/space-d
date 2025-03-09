@@ -13,6 +13,7 @@ import com.dnd.spaced.core.report.domain.repository.ReportRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +34,9 @@ public class AdminReportService {
         publishProcessedReportEvent(reportStatus, report);
     }
 
-    public ReportCollectionResponse findAllBy(ReadAllReportSearchRequest request) {
+    public ReportCollectionResponse findAllBy(ReadAllReportSearchRequest request, Pageable pageable) {
         ReportStatus reportStatus = findReportStatus(request);
-        List<Report> reports = findAllReportsBy(request, reportStatus);
+        List<Report> reports = findAllReportsBy(request, reportStatus, pageable);
 
         return AdminApplicationMapper.toDto(reports);
     }
@@ -67,7 +68,11 @@ public class AdminReportService {
                            .orElse(null);
     }
 
-    private List<Report> findAllReportsBy(ReadAllReportSearchRequest request, ReportStatus reportStatus) {
-        return reportRepository.findAllBy(reportStatus, request.lastReportId());
+    private List<Report> findAllReportsBy(
+            ReadAllReportSearchRequest request,
+            ReportStatus reportStatus,
+            Pageable pageable
+    ) {
+        return reportRepository.findAllBy(reportStatus, request.lastReportId(), pageable);
     }
 }

@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,9 +82,10 @@ class WithCommentAndReportTest extends WithCommentAndReportTestHelper {
     void 신고_목록을_조회한다() {
         // given
         ReadAllReportSearchRequest request = new ReadAllReportSearchRequest(null, null);
+        PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        ReportCollectionResponse actual = adminReportService.findAllBy(request);
+        ReportCollectionResponse actual = adminReportService.findAllBy(request, pageable);
 
         // then
         assertAll(

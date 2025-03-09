@@ -29,6 +29,7 @@ import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionRespon
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse.ReportResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -44,7 +45,8 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
         // given
         ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "기타");
         ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
-        given(adminReportService.findAllBy(any(ReadAllReportSearchRequest.class))).willReturn(reportCollectionResponse);
+        given(adminReportService.findAllBy(any(ReadAllReportSearchRequest.class), any(Pageable.class)))
+                .willReturn(reportCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -62,7 +64,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
         );
 
         verify(adminReportService, times(1))
-                .findAllBy(any(ReadAllReportSearchRequest.class));
+                .findAllBy(any(ReadAllReportSearchRequest.class), any(Pageable.class));
 
         신고_목록_조회_요청_문서화(resultActions);
     }

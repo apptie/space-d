@@ -39,6 +39,7 @@ import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
+import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.comment.CommonCommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageableArgumentResolver;
@@ -201,6 +202,7 @@ public class CommonControllerSliceTest {
         CommonCommentPageableArgumentResolver commonCommentPageableArgumentResolver = new CommonCommentPageableArgumentResolver();
         CommonGradedAnswerPageableArgumentResolver commonGradedAnswerPageableArgumentResolver = new CommonGradedAnswerPageableArgumentResolver();
         BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver = new BookmarkPageableArgumentResolver();
+        ReportPageableArgumentResolver reportPageableArgumentResolver = new ReportPageableArgumentResolver();
         MappingJackson2HttpMessageConverter jacksonMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
         ResourceHttpMessageConverter resourceMessageConverter = new ResourceHttpMessageConverter();
         resourceMessageConverter.setSupportedMediaTypes(
@@ -238,7 +240,8 @@ public class CommonControllerSliceTest {
                                               commonWordPageableArgumentResolver,
                                               commonCommentPageableArgumentResolver,
                                               commonGradedAnswerPageableArgumentResolver,
-                                              bookmarkPageableArgumentResolver
+                                              bookmarkPageableArgumentResolver,
+                                              reportPageableArgumentResolver
                                       )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))

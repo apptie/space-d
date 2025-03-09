@@ -4,6 +4,7 @@ import com.dnd.spaced.core.report.domain.Report;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 public interface ReportRepository {
 
@@ -11,5 +12,5 @@ public interface ReportRepository {
 
     Optional<Report> findBy(Long reportId);
 
-    List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId);
+    List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable);
 }
