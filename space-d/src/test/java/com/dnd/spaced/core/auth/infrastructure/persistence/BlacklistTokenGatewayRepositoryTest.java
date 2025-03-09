@@ -18,10 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BlacklistTokenRedisRepositoryTest {
+class BlacklistTokenGatewayRepositoryTest {
 
     @Autowired
-    BlacklistTokenRedisRepository blacklistTokenRepository;
+    BlacklistTokenGatewayRepository blacklistTokenRepository;
 
     @Test
     void 블랙리스트_토큰을_저장한다() {

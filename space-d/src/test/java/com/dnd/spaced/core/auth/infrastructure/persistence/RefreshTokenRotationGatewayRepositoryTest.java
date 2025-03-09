@@ -16,10 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class RefreshTokenRotationRedisRepositoryTest {
+class RefreshTokenRotationGatewayRepositoryTest {
 
     @Autowired
-    RefreshTokenRotationRedisRepository refreshTokenRotationRepository;
+    RefreshTokenRotationGatewayRepository refreshTokenRotationRepository;
 
     @Test
     void 회원_ID를_key로_refreshToken을_rotation으로_등록한다() {

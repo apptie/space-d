@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
+public class BlacklistTokenGatewayRepository implements BlacklistTokenRepository {
 
     private static final String BLACKLIST_KEY_PREFIX = "blacklist:token:";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
