@@ -54,7 +54,7 @@ public class AdminTodayQuizService {
         WordMetadata wordMetadata = wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
                                                           .orElseThrow(() -> new WordMetadataNotFoundException("용어 메타데이터가 정상적으로 설정되지 않았습니다."));
 
-        if (!QuizWordCountValidator.validate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        if (!QuizWordCountValidator.isValidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidTodayQuizWordCountException("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }
