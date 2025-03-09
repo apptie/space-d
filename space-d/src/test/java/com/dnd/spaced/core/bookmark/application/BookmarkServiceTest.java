@@ -10,10 +10,9 @@ import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkReque
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.exception.ForbiddenDeleteBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
+import com.dnd.spaced.core.bookmark.application.helper.WithWordTestHelper;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountDecrementedEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountIncrementedEvent;
-import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BookmarkServiceTest {
+class BookmarkServiceTest extends WithWordTestHelper {
 
     @Autowired
     ApplicationEvents events;
@@ -39,25 +38,12 @@ class BookmarkServiceTest {
     @Autowired
     BookmarkService bookmarkService;
 
-    @Autowired
-    WordRepository wordRepository;
-
     @Test
     void 북마크를_추가한다() {
         // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-
-        wordRepository.save(word);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
 
         // when
-        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
 
         bookmarkService.create(1L, request);
 
@@ -67,9 +53,10 @@ class BookmarkServiceTest {
 
     @Test
     void 지정한_용어_식별자로_용어를_찾지_못하면_북마크를_추가할_수_없다() {
-        // when & then
-        CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
+        // given
+        CreateBookmarkRequest request = new CreateBookmarkRequest(-999L);
 
+        // when & then
         assertThatThrownBy(() -> bookmarkService.create(1L, request))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 식별자의 용어를 찾지 못했습니다.");
@@ -78,17 +65,6 @@ class BookmarkServiceTest {
 
     @Test
     void 북마크를_삭제한다() {
-        // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-
-        wordRepository.save(word);
         bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
 
         // when
@@ -107,16 +83,6 @@ class BookmarkServiceTest {
     @Test
     void 지정한_식별자의_북마크를_작성한_회원이_아니라면_북마크를_삭제할_수_없다() {
         // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-
-        wordRepository.save(word);
         bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
 
         // when & then
@@ -128,16 +94,6 @@ class BookmarkServiceTest {
     @Test
     void 회원이_생성한_북마크를_모두_조회한다() {
         // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-
-        wordRepository.save(word);
         bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
 
         // when

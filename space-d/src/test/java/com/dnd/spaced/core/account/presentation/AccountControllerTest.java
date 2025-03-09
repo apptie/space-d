@@ -5,7 +5,6 @@ import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLink
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -20,9 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
 import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -42,7 +41,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService, times(1)).withdrawal(anyLong());
+        verify(accountService).withdrawal(anyLong());
 
         회원_탈퇴_요청_문서화(resultActions);
     }
@@ -73,8 +72,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService, times(1))
-                .changeCareerInfo(anyLong(), any(ChangeCareerInfoRequest.class));
+        verify(accountService).changeCareerInfo(anyLong(), any(ChangeCareerInfoRequest.class));
 
         회원_경력_정보_변경_요청_문서화(resultActions);
     }
@@ -110,8 +108,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService, times(1))
-                .changeProfileInfo(anyLong(), any(ChangeProfileInfoRequest.class));
+        verify(accountService).changeProfileInfo(anyLong(), any(ChangeProfileInfoRequest.class));
 
         회원_프로필_정보_변경_요청_문서화(resultActions);
     }
@@ -156,7 +153,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 jsonPath("$.experienceName").value("1~2년 차")
         );
 
-        verify(accountService, times(1)).findAccountInfo(anyLong());
+        verify(accountService).findAccountInfo(anyLong());
 
         회원_정보_조회_요청_문서화(resultActions);
     }
