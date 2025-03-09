@@ -24,15 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
-import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse.ReportResponse;
-import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest;
-import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest.PronunciationInfoRequest;
-import com.dnd.spaced.core.admin.presentation.dto.request.UpdateBlacklistTokenRequest;
-import com.dnd.spaced.core.admin.presentation.dto.request.UpdateWordExampleRequest;
+import com.dnd.spaced.core.admin.application.dto.request.UpdateBlacklistTokenRequest;
+import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -83,10 +82,11 @@ class AdminControllerTest extends CommonControllerSliceTest {
     @WithMockUser(value = "1", roles = "ADMIN")
     void 용어_등록_요청_성공_테스트() throws Exception {
         // given
-        List<PronunciationInfoRequest> pronunciationInfo = List.of(
-                new PronunciationInfoRequest("어써라이제이션", "한글 발음"));
+        List<CreatePronunciationRequest> pronunciationInfo = List.of(
+                new CreatePronunciationRequest("어써라이제이션", "한글 발음")
+        );
         List<String> example = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
-        SaveWordRequest request = new SaveWordRequest(
+        CreateWordRequest request = new CreateWordRequest(
                 "Authorization",
                 "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 "개발",
@@ -94,7 +94,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
                 example
         );
 
-        given(adminWordService.saveWord(any(SaveWordDto.class))).willReturn(1L);
+        given(adminWordService.createWord(any(CreateWordRequest.class))).willReturn(1L);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -263,7 +263,7 @@ class AdminControllerTest extends CommonControllerSliceTest {
         // given
         ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "기타");
         ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
-        given(adminReportService.findAllBy(any(ReadReportSearchRequest.class))).willReturn(reportCollectionResponse);
+        given(adminReportService.findAllBy(any(ReadAllReportSearchRequest.class))).willReturn(reportCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(

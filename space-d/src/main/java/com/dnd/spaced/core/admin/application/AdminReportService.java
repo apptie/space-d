@@ -2,7 +2,7 @@ package com.dnd.spaced.core.admin.application;
 
 import com.dnd.spaced.core.admin.application.dto.AdminApplicationMapper;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
-import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
+import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
@@ -33,7 +33,7 @@ public class AdminReportService {
         publishProcessedReportEvent(reportStatus, report);
     }
 
-    public ReportCollectionResponse findAllBy(ReadReportSearchRequest request) {
+    public ReportCollectionResponse findAllBy(ReadAllReportSearchRequest request) {
         ReportStatus reportStatus = findReportStatus(request);
         List<Report> reports = findAllReportsBy(request, reportStatus);
 
@@ -62,12 +62,12 @@ public class AdminReportService {
         eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
     }
 
-    private ReportStatus findReportStatus(ReadReportSearchRequest request) {
+    private ReportStatus findReportStatus(ReadAllReportSearchRequest request) {
         return ReportStatus.findBy(request.reportStatus())
                            .orElse(null);
     }
 
-    private List<Report> findAllReportsBy(ReadReportSearchRequest request, ReportStatus reportStatus) {
+    private List<Report> findAllReportsBy(ReadAllReportSearchRequest request, ReportStatus reportStatus) {
         return reportRepository.findAllBy(reportStatus, request.lastReportId());
     }
 }

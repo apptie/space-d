@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.enums.WordMetadataCounter;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
@@ -35,20 +35,21 @@ public class AdminWordService {
     private final WordExampleRepository wordExampleRepository;
     private final WordMetadataRepository wordMetadataRepository;
     private final PronunciationRepository pronunciationRepository;
+
     @Transactional
-    public Long saveWord(SaveWordDto saveWordDto) {
+    public Long createWord(CreateWordRequest createWordRequest) {
         Word word = Word.builder()
-                        .name(saveWordDto.name())
-                        .meaning(saveWordDto.meaning())
-                        .categoryName(saveWordDto.categoryName())
+                        .name(createWordRequest.name())
+                        .meaning(createWordRequest.meaning())
+                        .categoryName(createWordRequest.categoryName())
                         .build();
 
-        for (String example : saveWordDto.examples()) {
+        for (String example : createWordRequest.examples()) {
             WordExample wordExample = new WordExample(example);
 
             word.addWordExample(wordExample);
         }
-        for (PronunciationInfoDto dto : saveWordDto.pronunciations()) {
+        for (CreatePronunciationRequest dto : createWordRequest.pronunciations()) {
             Pronunciation pronunciation = new Pronunciation(dto.pronunciation(), dto.typeName());
 
             word.addPronunciation(pronunciation);

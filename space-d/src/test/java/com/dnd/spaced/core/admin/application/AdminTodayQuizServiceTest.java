@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
@@ -183,12 +183,13 @@ class AdminTodayQuizServiceTest {
             String wordMeaning,
             QuizCategory quizCategory
     ) {
-        List<PronunciationInfoDto> pronunciationInfoDtos = List.of(
-                new PronunciationInfoDto(pronunciationKorean, "한글 발음")
+        List<CreatePronunciationRequest> createPronunciationRequests = List.of(
+                new CreatePronunciationRequest(pronunciationKorean, "한글 발음")
         );
         List<String> examples = List.of(exampleContent);
-        SaveWordDto saveWordDto = new SaveWordDto(wordName, wordMeaning, quizCategory.getName(), pronunciationInfoDtos, examples);
+        CreateWordRequest createWordRequest = new CreateWordRequest(wordName, wordMeaning, quizCategory.getName(),
+                createPronunciationRequests, examples);
 
-        adminWordService.saveWord(saveWordDto);
+        adminWordService.createWord(createWordRequest);
     }
 }

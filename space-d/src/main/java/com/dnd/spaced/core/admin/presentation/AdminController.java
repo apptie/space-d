@@ -4,12 +4,11 @@ import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
-import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
+import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
-import com.dnd.spaced.core.admin.presentation.dto.request.SaveWordRequest;
-import com.dnd.spaced.core.admin.presentation.dto.request.UpdateBlacklistTokenRequest;
-import com.dnd.spaced.core.admin.presentation.dto.request.UpdateWordExampleRequest;
+import com.dnd.spaced.core.admin.application.dto.request.UpdateBlacklistTokenRequest;
+import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleRequest;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.validation.Valid;
@@ -44,12 +43,13 @@ public class AdminController {
     }
 
     @PostMapping("/words")
-    public ResponseEntity<Void> saveWord(@Valid @RequestBody SaveWordRequest request) {
-        SaveWordDto dto = request.to();
+    public ResponseEntity<Void> createWord(@Valid @RequestBody CreateWordRequest request) {
+        Long wordId = adminWordService.createWord(request);
+        URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
+                                           .buildAndExpand(wordId)
+                                           .toUri();
 
-        Long wordId = adminWordService.saveWord(dto);
-
-        return ResponseEntity.created(URI.create("/words/" + wordId))
+        return ResponseEntity.created(location)
                              .build();
     }
 
@@ -89,7 +89,7 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public ResponseEntity<ReportCollectionResponse> findAllBy(ReadReportSearchRequest request) {
+    public ResponseEntity<ReportCollectionResponse> findAllBy(ReadAllReportSearchRequest request) {
         ReportCollectionResponse response = adminReportService.findAllBy(request);
 
         return ResponseEntity.ok(response);

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
-import com.dnd.spaced.core.admin.application.dto.request.ReadReportSearchRequest;
+import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
@@ -107,7 +107,7 @@ class AdminReportServiceTest {
         reportRepository.save(report);
 
         // when
-        ReadReportSearchRequest request = new ReadReportSearchRequest(null, null);
+        ReadAllReportSearchRequest request = new ReadAllReportSearchRequest(null, null);
         ReportCollectionResponse actual = adminReportService.findAllBy(request);
 
         // then

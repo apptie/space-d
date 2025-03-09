@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.AdminWordService;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
-import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
+import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
@@ -384,12 +384,13 @@ class TodayQuizServiceTest {
     }
 
     private void createWord(String pronunciationKorean, String exampleContent, String wordName, String wordMeaning) {
-        List<PronunciationInfoDto> pronunciationInfoDtos = List.of(
-                new PronunciationInfoDto(pronunciationKorean, "한글 발음")
+        List<CreatePronunciationRequest> createPronunciationRequests = List.of(
+                new CreatePronunciationRequest(pronunciationKorean, "한글 발음")
         );
         List<String> examples = List.of(exampleContent);
-        SaveWordDto saveWordDto = new SaveWordDto(wordName, wordMeaning, "개발", pronunciationInfoDtos, examples);
+        CreateWordRequest createWordRequest = new CreateWordRequest(wordName, wordMeaning, "개발",
+                createPronunciationRequests, examples);
 
-        adminWordService.saveWord(saveWordDto);
+        adminWordService.createWord(createWordRequest);
     }
 }
