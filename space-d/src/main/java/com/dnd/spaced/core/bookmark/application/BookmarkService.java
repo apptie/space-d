@@ -30,27 +30,19 @@ public class BookmarkService {
 
     @Transactional
     public void create(Long accountId, CreateBookmarkRequest request) {
-        if (!wordRepository.existsBy(request.wordId())) {
-            throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
-        }
+        validateWordId(request);
 
         Bookmark bookmark = new Bookmark(accountId, request.wordId());
 
         bookmarkRepository.save(bookmark);
-        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getId()));
+        publishAddedBookmarkEvent(bookmark);
     }
 
     @Transactional
     public void delete(Long accountId, Long bookmarkId) {
-        Bookmark bookmark = bookmarkRepository.findBy(bookmarkId)
-                                              .orElseThrow(
-                                                      () -> new BookmarkNotFoundException(
-                                                              "지정한 식별자의 북마크를 찾지 못했습니다."
-                                                      )
-                                              );
-        if (bookmark.isNotCreator(accountId)) {
-            throw new ForbiddenDeleteBookmarkException("북마크 삭제는 생성자만이 가능합니다.");
-        }
+        Bookmark bookmark = findBookmark(bookmarkId);
+
+        validateBookmarkCreator(accountId, bookmark);
 
         bookmarkRepository.delete(bookmark);
         eventPublisher.publishEvent(new WordBookmarkCountDecrementedEvent(bookmark.getId()));
@@ -60,5 +52,30 @@ public class BookmarkService {
         List<Bookmark> bookmarks = bookmarkRepository.findAllBy(accountId, request.lastBookmarkId(), pageable);
 
         return BookmarkApplicationMapper.toDto(bookmarks);
+    }
+
+    private void publishAddedBookmarkEvent(Bookmark bookmark) {
+        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getId()));
+    }
+
+    private void validateBookmarkCreator(Long accountId, Bookmark bookmark) {
+        if (bookmark.isNotCreator(accountId)) {
+            throw new ForbiddenDeleteBookmarkException("북마크 삭제는 생성자만이 가능합니다.");
+        }
+    }
+
+    private void validateWordId(CreateBookmarkRequest request) {
+        if (!wordRepository.existsBy(request.wordId())) {
+            throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
+        }
+    }
+
+    private Bookmark findBookmark(Long bookmarkId) {
+        return bookmarkRepository.findBy(bookmarkId)
+                                 .orElseThrow(
+                                         () -> new BookmarkNotFoundException(
+                                                 "지정한 식별자의 북마크를 찾지 못했습니다."
+                                         )
+                                 );
     }
 }
