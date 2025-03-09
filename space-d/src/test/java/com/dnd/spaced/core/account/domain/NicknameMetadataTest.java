@@ -20,7 +20,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new NicknameMetadata("재빠른지구"));
+        assertDoesNotThrow(() -> NicknameMetadata.from("재빠른지구"));
     }
 
     private static Stream<Arguments> constructorTestWithInvalidNickname() {
@@ -37,7 +37,7 @@ class NicknameMetadataTest {
     @MethodSource("constructorTestWithInvalidNickname")
     void 닉네임_메타데이터를_초기화할_때_길이가_유효하지_않은_닉네임이라면_닉네임_메타데이터를_초기화할_수_없다(String invalidNickname) {
         // when & then
-        assertThatThrownBy(() -> new NicknameMetadata(invalidNickname))
+        assertThatThrownBy(() -> NicknameMetadata.from(invalidNickname))
                 .isInstanceOf(InvalidNicknameMetadataException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 6글자 이하여야 합니다.");
     }
@@ -45,7 +45,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터의_닉네임_생성_횟수를_1_증가시킨다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
+        NicknameMetadata nicknameMetadata = NicknameMetadata.from("재빠른지구");
         long beforeCount = nicknameMetadata.getCount();
 
         // when
@@ -58,7 +58,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터_식별자를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
+        NicknameMetadata nicknameMetadata = NicknameMetadata.from("재빠른지구");
 
         // when
         String actual = nicknameMetadata.getId();
@@ -70,7 +70,7 @@ class NicknameMetadataTest {
     @Test
     void 닉네임_메타데이터의_영속화_여부를_반환한다() {
         // given
-        NicknameMetadata nicknameMetadata = new NicknameMetadata("재빠른지구");
+        NicknameMetadata nicknameMetadata = NicknameMetadata.from("재빠른지구");
 
         // when
         boolean actual = nicknameMetadata.isNew();

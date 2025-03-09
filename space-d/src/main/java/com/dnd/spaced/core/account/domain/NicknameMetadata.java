@@ -28,25 +28,29 @@ public class NicknameMetadata extends CreateTimeEntity implements Persistable<St
 
     private long count = START_COUNT_VALUE;
 
-    public void addCount() {
-        this.count++;
-    }
-
-    public NicknameMetadata(String nickname) {
+    public static NicknameMetadata from(String nickname) {
         validateContent(nickname);
 
-        this.nickname = nickname;
+        return new NicknameMetadata(nickname);
     }
 
-    private void validateContent(String nickname) {
+    private static void validateContent(String nickname) {
         if (isInvalidNickname(nickname)) {
             throw new InvalidNicknameMetadataException(NICKNAME_EXCEPTION_MESSAGE);
         }
     }
 
-    private boolean isInvalidNickname(String nickname) {
+    private static boolean isInvalidNickname(String nickname) {
         return nickname == null || nickname.isBlank()
                 || nickname.length() < NICKNAME_MIN_LENGTH || nickname.length() > NICKNAME_MAX_LENGTH;
+    }
+
+    private NicknameMetadata(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void addCount() {
+        this.count++;
     }
 
     @Override
