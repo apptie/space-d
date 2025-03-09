@@ -33,7 +33,7 @@ public class Comment extends BaseTimeEntity {
 
     private String content;
 
-    private int likeCount = 0;
+    private long likeCount = 0L;
 
     private boolean isDeleted = false;
 

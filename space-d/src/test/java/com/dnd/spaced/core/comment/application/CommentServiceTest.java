@@ -10,15 +10,16 @@ import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto;
+import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
-import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,11 @@ class CommentServiceTest {
 
     @Test
     void 없거나_탈퇴한_회원_식별자로는_댓글을_작성할_수_없다() {
+        // given
+        CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
+
         // when & then
-        assertThatThrownBy(() -> commentService.save(1L, 1L, "이 용어는 언제 쓰는건가요?"))
+        assertThatThrownBy(() -> commentService.create(1L, 1L, request))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
                 .hasMessage("유효하지 않은 회원입니다.");
     }
@@ -66,9 +70,10 @@ class CommentServiceTest {
                                 .build();
 
         accountRepository.save(writer);
+        CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.save(writer.getId(), -1L, "이 용어는 언제 쓰는건가요?"))
+        assertThatThrownBy(() -> commentService.create(writer.getId(), -1L, request))
                 .isInstanceOf(AssociationWordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
@@ -92,9 +97,10 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
+        CreateCommentRequest request = new CreateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.save(writer.getId(), word.getId(), invalidContent))
+        assertThatThrownBy(() -> commentService.create(writer.getId(), word.getId(), request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -117,10 +123,11 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
+        CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when & then
         assertDoesNotThrow(() ->
-                commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?")
+                commentService.create(writer.getId(), word.getId(), request)
         );
     }
 
@@ -177,7 +184,7 @@ class CommentServiceTest {
         accountRepository.save(writer);
         accountRepository.save(reader);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
 
         // when & then
         assertThatThrownBy(() -> commentService.delete(reader.getId(), 1L))
@@ -203,7 +210,7 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
 
         // when & then
         assertDoesNotThrow(() -> commentService.delete(writer.getId(), 1L));
@@ -211,12 +218,16 @@ class CommentServiceTest {
 
     @Test
     void 없거나_탈퇴한_회원의_식별자로는_댓글을_수정할_수_없다() {
+        // given
+        UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
+
         // when & then
         assertThatThrownBy(() ->
                 commentService.update(
                         1L,
                         1L,
-                        "처음 보는 용어인데 잘 쓰지는 않나보네요")
+                        request
+                )
         ).isInstanceOf(AssociationAccountNotFoundException.class)
          .hasMessage("유효하지 않은 회원입니다.");
     }
@@ -234,8 +245,10 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
 
+        UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
+
         // when & then
-        assertThatThrownBy(() -> commentService.update(writer.getId(), 1L, "이 용어는 언제 쓰는건가요?"))
+        assertThatThrownBy(() -> commentService.update(writer.getId(), 1L, request))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
@@ -266,10 +279,12 @@ class CommentServiceTest {
         accountRepository.save(writer);
         accountRepository.save(reader);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
+        UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
+
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(reader.getId(), 1L, "처음 보는 용어인데 잘 쓰지는 않나보네요"))
+        assertThatThrownBy(() -> commentService.update(reader.getId(), 1L, request))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 수정할 권한이 없습니다.");
     }
@@ -293,10 +308,11 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
+        UpdateCommentRequest request = new UpdateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(writer.getId(), word.getId(), invalidContent))
+        assertThatThrownBy(() -> commentService.update(writer.getId(), word.getId(), request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -319,10 +335,11 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
+        UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertDoesNotThrow(() -> commentService.update(writer.getId(), 1L, "처음 보는 용어인데 잘 쓰지는 않나보네요"));
+        assertDoesNotThrow(() -> commentService.update(writer.getId(), 1L, request));
     }
 
     @Test
@@ -343,11 +360,11 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
-        commentService.save(writer.getId(), word.getId(), "쓰는걸 본 적이 없는 것 같네요");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("쓰는걸 본 적이 없는 것 같네요"));
 
         // when
-        List<ReadAllCommentDto> actual = commentService.readAllBy(
+        CommentCollectionResponse actual = commentService.readAllBy(
                 null,
                 word.getId(),
                 null,
@@ -356,9 +373,9 @@ class CommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual).hasSize(2),
-                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
-                () -> assertThat(actual.get(1).commentInfo().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
+                () -> assertThat(actual.comments()).hasSize(2),
+                () -> assertThat(actual.comments().get(0).commentContent().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.comments().get(1).commentContent().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
         );
     }
 
@@ -380,11 +397,11 @@ class CommentServiceTest {
 
         accountRepository.save(writer);
         wordRepository.save(word);
-        commentService.save(writer.getId(), word.getId(), "이 용어는 언제 쓰는건가요?");
-        commentService.save(writer.getId(), word.getId(), "쓰는걸 본 적이 없는 것 같네요");
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("이 용어는 언제 쓰는건가요?"));
+        commentService.create(writer.getId(), word.getId(), new CreateCommentRequest("쓰는걸 본 적이 없는 것 같네요"));
 
         // when
-        List<ReadAllCommentDto> actual = commentService.readAllBy(
+        CommentCollectionResponse actual = commentService.readAllBy(
                 writer.getId(),
                 word.getId(),
                 null,
@@ -393,9 +410,9 @@ class CommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual).hasSize(2),
-                () -> assertThat(actual.get(0).commentInfo().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
-                () -> assertThat(actual.get(1).commentInfo().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
+                () -> assertThat(actual.comments()).hasSize(2),
+                () -> assertThat(actual.comments().get(0).commentContent().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.comments().get(1).commentContent().content()).isEqualTo("쓰는걸 본 적이 없는 것 같네요")
         );
     }
 }

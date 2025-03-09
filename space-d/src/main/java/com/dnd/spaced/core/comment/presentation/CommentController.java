@@ -1,18 +1,16 @@
 package com.dnd.spaced.core.comment.presentation;
 
 import com.dnd.spaced.core.comment.application.CommentService;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto;
-import com.dnd.spaced.core.comment.presentation.dto.request.ReadAllCommentRequest;
-import com.dnd.spaced.core.comment.presentation.dto.request.SaveCommentRequest;
-import com.dnd.spaced.core.comment.presentation.dto.request.UpdateCommentRequest;
-import com.dnd.spaced.core.comment.presentation.dto.response.ReadAllCommentResponse;
+import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
+import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.comment.CommentPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,47 +32,51 @@ public class CommentController {
     @PostMapping("/words/{wordId}/comments")
     public ResponseEntity<Void> save(
             @AuthAccount AuthAccountInfo accountInfo,
-            @Valid @RequestBody SaveCommentRequest request,
+            @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
-        commentService.save(accountInfo.id(), wordId, request.content());
+        commentService.create(accountInfo.id(), wordId, request);
 
-        return ResponseEntity.created(URI.create("/words/" + wordId))
+        URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
+                                           .buildAndExpand(wordId)
+                                           .toUri();
+
+        return ResponseEntity.created(location)
                              .build();
     }
 
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long id) {
-        commentService.delete(accountInfo.id(), id);
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+        commentService.delete(accountInfo.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
-    @PutMapping("/comments/{id}")
+    @PutMapping("/comments/{commentId}")
     public ResponseEntity<Void> update(
             @AuthAccount AuthAccountInfo accountInfo,
             @Valid @RequestBody UpdateCommentRequest request,
-            @PathVariable Long id
+            @PathVariable Long commentId
     ) {
-        commentService.update(accountInfo.id(), id, request.content());
+        commentService.update(accountInfo.id(), commentId, request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @GetMapping("/words/{wordId}/comments")
-    public ResponseEntity<ReadAllCommentResponse> readAllBy(
+    public ResponseEntity<CommentCollectionResponse> readAllBy(
             @AuthAccount(required = false) AuthAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable
     ) {
-        List<ReadAllCommentDto> result = commentService.readAllBy(
+        CommentCollectionResponse response = commentService.readAllBy(
                 accountInfo.id(),
                 wordId,
                 request.lastCommentId(),
                 pageable
         );
 
-        return ResponseEntity.ok(ReadAllCommentResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 }
