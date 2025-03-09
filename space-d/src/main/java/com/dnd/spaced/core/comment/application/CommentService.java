@@ -9,13 +9,10 @@ import com.dnd.spaced.core.comment.application.exception.CommentNotFoundExceptio
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.like.domain.repository.LikeCountRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.request.CommentPageRequest;
-import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,6 @@ public class CommentService {
     private final WordRepository wordRepository;
     private final AccountRepository accountRepository;
     private final CommentRepository commentRepository;
-    private final LikeCountRepository likeCountRepository;
 
     @Transactional
     public void save(Long accountId, Long wordId, String content) {
@@ -66,15 +62,11 @@ public class CommentService {
 
     public List<ReadAllCommentDto> readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         CommentPageRequest commentPageRequest = new CommentPageRequest(pageable, lastCommentId);
-        List<LikedCommentDto> result = commentRepository.findAllBy(accountId, wordId, commentPageRequest);
-        List<Object> commentIds = result.stream()
-                                        .map(dto -> (Object) dto.comment().getId())
-                                        .toList();
-        Map<Long, Integer> cacheLikeCount = likeCountRepository.findLikeCountAllBy(wordId, commentIds);
 
-        return result.stream()
-                     .map(dto -> ReadAllCommentDto.of(dto, cacheLikeCount))
-                     .toList();
+        return commentRepository.findAllBy(accountId, wordId, commentPageRequest)
+                .stream()
+                .map(dto -> ReadAllCommentDto.from(dto))
+                .toList();
     }
 
     private Account findAccount(Long accountId) {

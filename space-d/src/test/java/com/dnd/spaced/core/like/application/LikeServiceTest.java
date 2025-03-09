@@ -2,12 +2,14 @@ package com.dnd.spaced.core.like.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
+import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
+import com.dnd.spaced.core.comment.application.event.dto.LikedEvent;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.like.application.exception.AssociationCommentNotFoundException;
@@ -23,12 +25,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
-@CleanUpPersistence
+@RecordApplicationEvents
+@CleanUpDatabase
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class LikeServiceTest {
 
@@ -47,6 +52,9 @@ class LikeServiceTest {
     @Autowired
     LikeRepository likeRepository;
 
+    @Autowired
+    ApplicationEvents events;
+
     @Test
     void 좋아요를_누른_회원이_아닌_다른_회원은_좋아요를_취소할_수_없다() {
         // when & then
@@ -56,7 +64,7 @@ class LikeServiceTest {
     }
 
     @Test
-    void 존재하지_않는_댓글_식별자로_좋아요를_할_수_없다() {
+    void 존재하지_않는_댓글_ID로_좋아요를_할_수_없다() {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
@@ -104,7 +112,10 @@ class LikeServiceTest {
         // then
         Optional<Like> actual = likeRepository.findBy(account.getId(), comment.getId());
 
-        assertThat(actual).isEmpty();
+        assertAll(
+                () -> assertThat(actual).isEmpty(),
+                () -> assertThat(events.stream(LikedEvent.class).count()).isOne()
+        );
     }
 
     @Test
@@ -136,6 +147,9 @@ class LikeServiceTest {
         // then
         Optional<Like> actual = likeRepository.findBy(account.getId(), comment.getId());
 
-        assertThat(actual).isPresent();
+        assertAll(
+                () -> assertThat(actual).isPresent(),
+                () -> assertThat(events.stream(LikedEvent.class).count()).isOne()
+        );
     }
 }

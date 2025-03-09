@@ -2,7 +2,6 @@ package com.dnd.spaced.core.comment.application.dto.response;
 
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
-import java.util.Map;
 
 public record ReadAllCommentDto(CommentInfoDto commentInfo, WriterInfoDto writerInfo, boolean isLike) {
 
@@ -12,7 +11,7 @@ public record ReadAllCommentDto(CommentInfoDto commentInfo, WriterInfoDto writer
     public record WriterInfoDto(Long id, String writerNickname, String writerProfileImage) {
     }
 
-    public static ReadAllCommentDto of(LikedCommentDto dto, Map<Long, Integer> cacheLikeCount) {
+    public static ReadAllCommentDto from(LikedCommentDto dto) {
         Comment comment = dto.comment();
         WriterInfoDto writerInfoDto = new WriterInfoDto(
                 comment.getAccountId(),
@@ -23,23 +22,9 @@ public record ReadAllCommentDto(CommentInfoDto commentInfo, WriterInfoDto writer
                 comment.getId(),
                 comment.getWordId(),
                 comment.getContent(),
-                calculateLikeCount(
-                        cacheLikeCount.compute(
-                                comment.getId(),
-                                (key, value) -> value == null ? comment.getLikeCount() : value
-                        ),
-                        dto.isLiked()
-                )
+                comment.getLikeCount()
         );
 
         return new ReadAllCommentDto(commentInfoDto, writerInfoDto, dto.isLiked());
-    }
-
-    private static int calculateLikeCount(int likeCount, boolean isLiked) {
-        if (isLiked) {
-            return likeCount + 1;
-        }
-
-        return likeCount;
     }
 }

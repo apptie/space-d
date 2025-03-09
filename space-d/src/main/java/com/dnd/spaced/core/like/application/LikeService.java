@@ -2,14 +2,16 @@ package com.dnd.spaced.core.like.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
+import com.dnd.spaced.core.comment.application.event.dto.LikedEvent;
+import com.dnd.spaced.core.comment.application.event.dto.UnlikedEvent;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.like.application.exception.ForbiddenLikeException;
 import com.dnd.spaced.core.like.application.exception.AssociationCommentNotFoundException;
+import com.dnd.spaced.core.like.application.exception.ForbiddenLikeException;
 import com.dnd.spaced.core.like.domain.Like;
-import com.dnd.spaced.core.like.domain.repository.LikeCountRepository;
 import com.dnd.spaced.core.like.domain.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final AccountRepository accountRepository;
-    private final LikeCountRepository likeCountRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void processLike(Long accountId, Long commentId) {
@@ -47,11 +49,19 @@ public class LikeService {
 
     private void processDeleteLike(Like like, Comment comment) {
         likeRepository.delete(like);
-        likeCountRepository.deleteLikeCount(comment.getWordId(), comment.getId());
+        publishDeletedLikeEvent(comment);
     }
 
     private void processAddLike(Account account, Comment comment) {
         likeRepository.save(new Like(account.getId(), comment.getId()));
-        likeCountRepository.addLikeCount(comment.getWordId(), comment.getId());
+        publishAddedLikeEvent(comment);
+    }
+
+    private void publishDeletedLikeEvent(Comment comment) {
+        eventPublisher.publishEvent(new UnlikedEvent(comment.getId()));
+    }
+
+    private void publishAddedLikeEvent(Comment comment) {
+        eventPublisher.publishEvent(new LikedEvent(comment.getId()));
     }
 }
