@@ -29,25 +29,32 @@ public class LoginService {
     public LoggedInAccountInfoDto login(String registrationIdName, String socialIdentifier) {
         AtomicBoolean isSignUp = new AtomicBoolean();
         RegistrationId registrationId = RegistrationId.findBy(registrationIdName);
-        Account account = accountRepository.findBy(registrationId, socialIdentifier)
-                                           .orElseGet(
-                                                   () -> processSignUpAccount(
-                                                           registrationId,
-                                                           socialIdentifier,
-                                                           isSignUp
-                                                   )
-                                           );
+        Account account = findAuthorizedAccount(socialIdentifier, registrationId, isSignUp);
 
         return new LoggedInAccountInfoDto(account.getId(), account.getRole().name(), isSignUp.get());
     }
 
-    private Account processSignUpAccount(RegistrationId registrationId, String socialIdentifier, AtomicBoolean isSignUp) {
-        isSignUp.set(true);
-
-        return signUp(registrationId, socialIdentifier);
+    private Account findAuthorizedAccount(
+            String socialIdentifier,
+            RegistrationId registrationId,
+            AtomicBoolean isSignUp
+    ) {
+        return accountRepository.findBy(registrationId, socialIdentifier)
+                                .orElseGet(
+                                        () -> processSignUpAccount(
+                                                registrationId,
+                                                socialIdentifier,
+                                                isSignUp
+                                        )
+                                );
     }
 
-    private Account signUp(RegistrationId registrationId, String socialIdentifier) {
+    private Account processSignUpAccount(
+            RegistrationId registrationId,
+            String socialIdentifier,
+            AtomicBoolean isSignUp) {
+        isSignUp.set(true);
+
         String nickname = nicknameProperties.generate();
         String profileImageName = ProfileImageName.findRandom()
                                                   .getImageName();
