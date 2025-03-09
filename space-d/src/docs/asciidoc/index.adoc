@@ -406,4 +406,12 @@ include::{snippets}/docs-controller-test/exceptions/exception-response-fields-de
 
 operation::bookmark-controller-test/북마크_목록_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
 
+[[Skill-API]]
+== 스킬 API
 
+[[Find-Skill]]
+=== 스킬 조회
+
+operation::skill-controller-test/스킬_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
+
+include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findSkillException.adoc[]

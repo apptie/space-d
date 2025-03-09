@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Tue, 11 Mar 2025 15:49:18 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Wed, 12 Mar 2025 04:36:44 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -4599,7 +4599,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-09T00:49:18.315273"
+    "createdAt" : "2025-03-09T13:36:44.9196"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
@@ -4658,11 +4658,158 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Skill-API"><a class="link" href="#Skill-API">스킬 API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Find-Skill"><a class="link" href="#Find-Skill">스킬 조회</a></h3>
+<div class="sect3">
+<h4 id="Find-Skill_http_request"><a class="link" href="#Find-Skill_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /skills HTTP/1.1
+Authorization: Bearer AccessToken</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Skill_request_headers"><a class="link" href="#Find-Skill_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Find-Skill_http_response"><a class="link" href="#Find-Skill_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "accountId" : 1,
+  "submitQuizQuestionCount" : 5,
+  "quizQuestionCorrectCount" : 1,
+  "submitTodayQuizQuestionCount" : 0,
+  "todayQuizQuestionCorrectCount" : 0,
+  "totalQuizQuestionCorrectPercent" : 20.0,
+  "totalTodayQuizQuestionCorrectPercent" : 0.0
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Find-Skill_response_fields"><a class="link" href="#Find-Skill_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accountId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>submitQuizQuestionCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 제출한 퀴즈 문제 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestionCorrectCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 맞춘 퀴즈 문제 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>submitTodayQuizQuestionCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 제출한 오늘의 퀴즈 문제 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestionCorrectCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 제출한 오늘의 퀴즈 문제 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalQuizQuestionCorrectPercent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 퀴즈 문제 중 회원이 맞춘 퀴즈 문제 비율(퍼센트)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalTodayQuizQuestionCorrectPercent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 오늘의 퀴즈 문제 중 회원이 맞춘 오늘의 퀴즈 문제 비율(퍼센트)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /skills</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>QUIZ_METADATA_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 메타데이터 정보가 정상적으로 초기화되지 않았습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-03-09 00:48:55 +0900
+Last updated 2025-03-09 13:36:28 +0900
 </div>
 </div>
 </body>

@@ -21,6 +21,7 @@ import com.dnd.spaced.global.exception.code.ImageErrorCode;
 import com.dnd.spaced.global.exception.code.LikeErrorCode;
 import com.dnd.spaced.global.exception.code.QuizErrorCode;
 import com.dnd.spaced.global.exception.code.ReportErrorCode;
+import com.dnd.spaced.global.exception.code.SkillErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
@@ -32,6 +33,7 @@ import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.LikeExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ReportExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.SkillExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -131,9 +133,22 @@ public class DocsController {
                                                    .createBookmarkException(calculateCreateBookmarkException())
                                                    .deleteBookmarkException(calculateDeleteBookmarkException())
                                                    .findAllBookmarkException(calculateFindAllBookmarkException())
+                                                   .findSkillException(calculateFindSkillException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
+    }
+
+    private Map<String, ExceptionContent> calculateFindSkillException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+        processSkillException(
+                exceptionContent,
+                SkillErrorCode.QUIZ_METADATA_NOT_FOUND_EXCEPTION
+        );
+
+        return exceptionContent;
     }
 
     private Map<String, ExceptionContent> calculateFindAllBookmarkException() {
@@ -565,6 +580,14 @@ public class DocsController {
 
     private void putMethodArgumentNotValidExceptionContent(Map<String, ExceptionContent> target, String... inputs) {
         target.put("INVALID_DATA", createMethodArgumentNotValidExceptionDto(inputs));
+    }
+
+    private void processSkillException(Map<String, ExceptionContent> target, SkillErrorCode... errorCodes) {
+        for (SkillErrorCode errorCode : errorCodes) {
+            ExceptionTranslator translator = SkillExceptionTranslator.findBy(errorCode);
+
+            processExceptionContent(target, translator);
+        }
     }
 
     private void processBookmarkException(Map<String, ExceptionContent> target, BookmarkErrorCode... errorCodes) {

@@ -9,11 +9,6 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum SkillExceptionTranslator implements ExceptionTranslator {
-    SKILL_NOT_FOUND_EXCEPTION(
-            SkillErrorCode.SKILL_NOT_FOUND_EXCEPTION,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            "회원의 스킬 정보가 정상적으로 초기화되지 않았습니다."
-    ),
     QUIZ_METADATA_NOT_FOUND_EXCEPTION(
             SkillErrorCode.QUIZ_METADATA_NOT_FOUND_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
