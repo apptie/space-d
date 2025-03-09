@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentQuerydslRepository implements CommentRepository {
+public class CommentGatewayRepository implements CommentRepository {
 
     private static final String COMMENT_ID = "id";
 
@@ -51,6 +51,22 @@ public class CommentQuerydslRepository implements CommentRepository {
     @Override
     public void delete(Comment comment) {
         commentCrudRepository.delete(comment);
+    }
+
+    @Override
+    public void increaseLikeCount(Long commentId) {
+        queryFactory.update(comment)
+                    .set(comment.likeCount, comment.likeCount.add(1))
+                    .where(comment.id.eq(commentId))
+                    .execute();
+    }
+
+    @Override
+    public void decreaseLikeCount(Long commentId) {
+        queryFactory.update(comment)
+                    .set(comment.likeCount, comment.likeCount.subtract(1))
+                    .where(comment.id.eq(commentId))
+                    .execute();
     }
 
     private List<LikedCommentDto> findAllWithIsLikedBy(Long accountId, Long wordId, CommentPageRequest pageRequest) {
