@@ -20,7 +20,7 @@ public enum WordMetadataCounter {
         this.counter = counter;
     }
 
-    public static void count(Category category, WordMetadata wordMetadata) {
+    public static void add(Category category, WordMetadata wordMetadata) {
         Arrays.stream(WordMetadataCounter.values())
               .filter(counter -> counter.category.equals(category))
               .findAny()

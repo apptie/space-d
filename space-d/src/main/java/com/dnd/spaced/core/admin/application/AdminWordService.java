@@ -105,7 +105,7 @@ public class AdminWordService {
     }
 
     private void addWordMetadata(Word word, WordMetadata wordMetadata) {
-        WordMetadataCounter.count(word.getCategory(), wordMetadata);
+        WordMetadataCounter.add(word.getCategory(), wordMetadata);
     }
 
     private void createRandomWord(Word savedWord) {
