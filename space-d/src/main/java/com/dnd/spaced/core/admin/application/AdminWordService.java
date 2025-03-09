@@ -38,30 +38,16 @@ public class AdminWordService {
 
     @Transactional
     public Long createWord(CreateWordRequest createWordRequest) {
-        Word word = Word.builder()
-                        .name(createWordRequest.name())
-                        .meaning(createWordRequest.meaning())
-                        .categoryName(createWordRequest.categoryName())
-                        .build();
+        Word word = buildWordFromRequest(createWordRequest);
 
-        for (String example : createWordRequest.examples()) {
-            WordExample wordExample = new WordExample(example);
-
-            word.addWordExample(wordExample);
-        }
-        for (CreatePronunciationRequest dto : createWordRequest.pronunciations()) {
-            Pronunciation pronunciation = new Pronunciation(dto.pronunciation(), dto.typeName());
-
-            word.addPronunciation(pronunciation);
-        }
+        addExamplesToWord(word, createWordRequest);
+        addPronunciationsToWord(word, createWordRequest);
 
         Word savedWord = wordRepository.save(word);
-        WordMetadata wordMetadata = wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
-                                                          .orElseThrow(() -> new WordMetadataNotFoundException(
-                                                                  "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
-                                                          );
-        WordMetadataCounter.count(word.getCategory(), wordMetadata);
-        wordRandomRepository.saveWith(savedWord.getId(), savedWord.getCategory());
+        WordMetadata wordMetadata = findWordMetadata();
+
+        addWordMetadata(word, wordMetadata);
+        createRandomWord(savedWord);
 
         return savedWord.getId();
     }
@@ -70,26 +56,77 @@ public class AdminWordService {
     public void updateWordExample(Long id, String example) {
         long updateCount = wordExampleRepository.update(id, example);
 
-        if (updateCount != SUCCESS_UPDATE_COUNT) {
-            throw new UnexpectedUpdateWordExampleCountException("용어 예문이 정상적으로 변경되지 않았습니다.");
-        }
+        validateUpdateCount(updateCount);
     }
 
     @Transactional
     public void deleteWordExample(Long wordId, Long exampleId) {
-        if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
-            throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
-        }
+        validateExampleCount(wordId);
 
         wordExampleRepository.deleteBy(exampleId);
     }
 
     @Transactional
     public void deletePronunciation(Long wordId, Long pronunciation) {
+        validatePronunciationCount(wordId);
+
+        pronunciationRepository.deleteBy(pronunciation);
+    }
+
+    private Word buildWordFromRequest(CreateWordRequest request) {
+        return Word.builder()
+                   .name(request.name())
+                   .meaning(request.meaning())
+                   .categoryName(request.categoryName())
+                   .build();
+    }
+
+    private void addExamplesToWord(Word word, CreateWordRequest request) {
+        for (String example : request.examples()) {
+            word.addWordExample(new WordExample(example));
+        }
+    }
+
+    private void addPronunciationsToWord(Word word, CreateWordRequest request) {
+        for (CreatePronunciationRequest dto : request.pronunciations()) {
+            Pronunciation pronunciation = new Pronunciation(
+                    dto.pronunciation(),
+                    dto.typeName()
+            );
+            word.addPronunciation(pronunciation);
+        }
+    }
+
+    private WordMetadata findWordMetadata() {
+        return wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
+                                     .orElseThrow(() -> new WordMetadataNotFoundException(
+                                             "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
+                                     );
+    }
+
+    private void addWordMetadata(Word word, WordMetadata wordMetadata) {
+        WordMetadataCounter.count(word.getCategory(), wordMetadata);
+    }
+
+    private void createRandomWord(Word savedWord) {
+        wordRandomRepository.saveWith(savedWord.getId(), savedWord.getCategory());
+    }
+
+    private void validateUpdateCount(long updateCount) {
+        if (updateCount != SUCCESS_UPDATE_COUNT) {
+            throw new UnexpectedUpdateWordExampleCountException("용어 예문이 정상적으로 변경되지 않았습니다.");
+        }
+    }
+
+    private void validateExampleCount(Long wordId) {
+        if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
+            throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
+        }
+    }
+
+    private void validatePronunciationCount(Long wordId) {
         if (pronunciationRepository.countBy(wordId) <= PRONUNCIATION_MIN_COUNT) {
             throw new PronunciationDeletionNotAllowedException("해당 용어의 발음 정보 개수가 최소치입니다.");
         }
-
-        pronunciationRepository.deleteBy(pronunciation);
     }
 }
