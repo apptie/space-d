@@ -5,7 +5,7 @@ import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
 import com.dnd.spaced.core.account.domain.embed.SocialInfo;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
+import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +29,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("deleted = false")
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account extends CreateTimeEntity {
+public class Account extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,11 +62,14 @@ public class Account extends CreateTimeEntity {
         this.socialInfo = new SocialInfo(registrationId, socialIdentifier);
     }
 
-    public void changeCareerInfo(String jobGroupName, String companyName, String experienceName) {
+    public void changeCareerInfo(
+            String changedJobGroupName,
+            String changedCompanyName,
+            String changedExperienceName) {
         this.careerInfo = CareerInfo.builder()
-                                    .jobGroupName(jobGroupName)
-                                    .companyName(companyName)
-                                    .experienceName(experienceName)
+                                    .jobGroupName(changedJobGroupName)
+                                    .companyName(changedCompanyName)
+                                    .experienceName(changedExperienceName)
                                     .build();
     }
 
