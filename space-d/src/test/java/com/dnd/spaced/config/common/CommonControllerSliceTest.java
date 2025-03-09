@@ -9,7 +9,10 @@ import com.dnd.spaced.core.account.presentation.AccountController;
 import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
 import com.dnd.spaced.core.admin.application.AdminWordService;
-import com.dnd.spaced.core.admin.presentation.AdminController;
+import com.dnd.spaced.core.admin.presentation.AdminAuthenticationController;
+import com.dnd.spaced.core.admin.presentation.AdminReportController;
+import com.dnd.spaced.core.admin.presentation.AdminTodayQuizController;
+import com.dnd.spaced.core.admin.presentation.AdminWordController;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.application.InitAccountInfoService;
 import com.dnd.spaced.core.auth.application.TokenService;
@@ -65,10 +68,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                AuthController.class, DocsController.class, AdminController.class, AccountController.class,
+                AuthController.class, DocsController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
                 TodayQuizController.class, LocalImageController.class, ReportController.class,
-                BookmarkController.class, SkillController.class
+                BookmarkController.class, SkillController.class, AdminAuthenticationController.class,
+                AdminWordController.class, AdminTodayQuizController.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
@@ -97,7 +101,7 @@ public class CommonControllerSliceTest {
     AuthController authController;
 
     @Autowired
-    AdminController adminController;
+    AdminReportController adminReportController;
 
     @Autowired
     AccountController accountController;
@@ -128,6 +132,15 @@ public class CommonControllerSliceTest {
 
     @Autowired
     SkillController skillController;
+
+    @Autowired
+    AdminWordController adminWordController;
+
+    @Autowired
+    AdminAuthenticationController adminAuthenticationController;
+
+    @Autowired
+    AdminTodayQuizController adminTodayQuizController;
 
     @MockBean
     protected AccountService accountService;
@@ -201,7 +214,7 @@ public class CommonControllerSliceTest {
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
-                                              adminController,
+                                              adminReportController,
                                               accountController,
                                               commonDocsController,
                                               wordController,
@@ -212,7 +225,10 @@ public class CommonControllerSliceTest {
                                               localImageController,
                                               reportController,
                                               bookmarkController,
-                                              skillController
+                                              skillController,
+                                              adminWordController,
+                                              adminAuthenticationController,
+                                              adminTodayQuizController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)
