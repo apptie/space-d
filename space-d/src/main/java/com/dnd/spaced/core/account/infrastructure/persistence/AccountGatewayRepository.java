@@ -48,6 +48,7 @@ public class AccountGatewayRepository implements AccountRepository {
     public Optional<Account> findSignedUpAccountBy(Long id) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
+                                             account.id.eq(id),
                                              account.careerInfo.company.isNull(),
                                              account.careerInfo.experience.isNull(),
                                              account.careerInfo.jobGroup.isNull(),
