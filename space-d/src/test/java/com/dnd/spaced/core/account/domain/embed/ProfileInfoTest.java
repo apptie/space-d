@@ -23,7 +23,7 @@ class ProfileInfoTest {
     @Test
     void 프로필_정보를_초기화한다() {
         // when & then
-        assertDoesNotThrow(() -> new ProfileInfo("재빠른지구001", "earth.png"));
+        assertDoesNotThrow(() -> ProfileInfo.of("재빠른지구001", "earth.png"));
     }
 
     private static Stream<Arguments> constructorTestWithInvalidNickname() {
@@ -40,7 +40,7 @@ class ProfileInfoTest {
     @MethodSource("constructorTestWithInvalidNickname")
     void 프로필_정보를_초기화할_때_유효한_길이의_닉네임이_아니라면_프로필_정보를_초기화할_수_없다(String invalidNickname) {
         // when & then
-        assertThatThrownBy(() -> new ProfileInfo(invalidNickname, "earth.png"))
+        assertThatThrownBy(() -> ProfileInfo.of(invalidNickname, "earth.png"))
                 .isInstanceOf(InvalidNicknameException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
@@ -49,7 +49,7 @@ class ProfileInfoTest {
     @NullAndEmptySource
     void 프로필_정보를_초기화할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_초기화할_수_없다(String invalidProfileImage) {
         // when & then
-        assertThatThrownBy(() -> new ProfileInfo("행복한지구001", invalidProfileImage))
+        assertThatThrownBy(() -> ProfileInfo.of("행복한지구001", invalidProfileImage))
                 .isInstanceOf(InvalidProfileImageException.class)
                 .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
     }
@@ -57,7 +57,7 @@ class ProfileInfoTest {
     @Test
     void 프로필_정보를_변경한다() {
         // given
-        ProfileInfo profileInfo = new ProfileInfo("재빠른지구001", "earth.png");
+        ProfileInfo profileInfo = ProfileInfo.of("재빠른지구001", "earth.png");
 
         // when
         String changedNickname = "행복한화성001";
@@ -76,7 +76,7 @@ class ProfileInfoTest {
     @NullAndEmptySource
     void 프로필_정보를_변경할_때_비어_있는_프로필_이미지_경로라면_프로필_정보를_변경할_수_없다(String invalidProfileImage) {
         // given
-        ProfileInfo profileInfo = new ProfileInfo("재빠른지구001", "earth.png");
+        ProfileInfo profileInfo = ProfileInfo.of("재빠른지구001", "earth.png");
 
         // when & then
         assertThatThrownBy(() -> profileInfo.changeProfileInfo("행복한화성001", invalidProfileImage))
@@ -98,7 +98,7 @@ class ProfileInfoTest {
     @MethodSource("changeProfileInfoTestWithInvalidNickname")
     void 프로필_정보를_변경할_때_유효한_닉네임_길이가_아니라면_프로필_정보를_변경할_수_없다(String invalidNickname) {
         // given
-        ProfileInfo profileInfo = new ProfileInfo("nickname", "profileImage");
+        ProfileInfo profileInfo = ProfileInfo.of("nickname", "profileImage");
 
         // when & then
         assertThatThrownBy(() -> profileInfo.changeProfileInfo(invalidNickname, "profileImage"))

@@ -57,7 +57,7 @@ public class Account extends BaseTimeEntity {
             RegistrationId registrationId,
             String socialIdentifier
     ) {
-        this.profileInfo = new ProfileInfo(nickname, profileImage);
+        this.profileInfo = ProfileInfo.of(nickname, profileImage);
         this.role = role;
         this.socialInfo = new SocialInfo(registrationId, socialIdentifier);
     }
@@ -74,7 +74,7 @@ public class Account extends BaseTimeEntity {
     }
 
     public void changeProfileInfo(String changedNickname, String changedProfileImage) {
-        this.profileInfo = new ProfileInfo(changedNickname, changedProfileImage);
+        this.profileInfo = ProfileInfo.of(changedNickname, changedProfileImage);
     }
 
     public boolean isEqualTo(Long id) {
