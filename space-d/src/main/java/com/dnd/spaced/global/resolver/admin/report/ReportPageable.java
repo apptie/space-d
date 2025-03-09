@@ -1,4 +1,4 @@
-package com.dnd.spaced.global.resolver.quiz;
+package com.dnd.spaced.global.resolver.admin.report;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommonGradedAnswerPageable {
+public @interface ReportPageable {
 }

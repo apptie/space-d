@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -38,14 +39,18 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 북마크_생성_요청_성공_테스트() throws Exception {
-        // when & then
+        // given
         CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
+
+        // when & then
 
         ResultActions resultActions = mockMvc.perform(
                 post("/bookmarks").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                   .contentType(MediaType.APPLICATION_JSON)
                                   .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
+
+        verify(bookmarkService).create(anyLong(), any(CreateBookmarkRequest.class));
 
         북마크_생성_요청_문서화(resultActions);
     }
@@ -70,6 +75,8 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
         ResultActions resultActions = mockMvc.perform(
                 delete("/bookmarks/{bookmarkId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(status().isNoContent());
+
+        verify(bookmarkService).delete(anyLong(), anyLong());
 
         북마크_삭제_요청_문서화(resultActions);
     }
@@ -109,6 +116,8 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 jsonPath("bookmarks[0].createdAt").exists(),
                 jsonPath("lastBookmarkId", is(1L), Long.class)
         );
+
+        verify(bookmarkService).findAllBy(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class));
 
         북마크_목록_조회_요청_문서화(resultActions);
     }

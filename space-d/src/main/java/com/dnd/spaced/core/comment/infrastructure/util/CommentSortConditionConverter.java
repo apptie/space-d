@@ -2,7 +2,7 @@ package com.dnd.spaced.core.comment.infrastructure.util;
 
 import static com.dnd.spaced.core.comment.domain.QComment.comment;
 
-import com.dnd.spaced.global.repository.OrderByNull;
+import com.dnd.spaced.global.persistence.OrderByNull;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import java.util.ArrayList;

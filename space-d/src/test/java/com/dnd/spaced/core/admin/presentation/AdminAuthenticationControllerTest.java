@@ -2,7 +2,6 @@ package com.dnd.spaced.core.admin.presentation;
 
 import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -36,7 +35,7 @@ class AdminAuthenticationControllerTest extends CommonControllerSliceTest {
                                               .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isCreated());
 
-        verify(blacklistTokenService, times(1)).register(anyLong());
+        verify(blacklistTokenService).register(anyLong());
 
         토큰_블랙리스트_등록_요청_문서화(resultAction);
     }

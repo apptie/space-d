@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.admin.presentation;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -33,7 +32,7 @@ class AdminTodayQuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/today-quizzes/1")
         );
 
-        verify(adminTodayQuizService, times(1)).create();
+        verify(adminTodayQuizService).create();
 
         오늘의_퀴즈_수동_생성_요청_문서화(resultActions);
     }

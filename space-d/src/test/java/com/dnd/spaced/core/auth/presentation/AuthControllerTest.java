@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -25,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
+import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -58,8 +57,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(initAccountInfoService, times(1))
-                .initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
+        verify(initAccountInfoService).initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
 
         회원_프로필_초기화_요청_문서화(resultActions);
     }

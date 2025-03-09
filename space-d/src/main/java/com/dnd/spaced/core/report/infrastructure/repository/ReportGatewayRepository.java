@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,10 +31,11 @@ public class ReportGatewayRepository implements ReportRepository {
     }
 
     @Override
-    public List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId) {
+    public List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable) {
         return queryFactory.selectFrom(report)
                            .where(ltLastReportId(lastReportId), eqReportStatus(reportStatus))
                            .orderBy(report.id.desc())
+                           .limit(pageable.getPageSize())
                            .fetch();
     }
 

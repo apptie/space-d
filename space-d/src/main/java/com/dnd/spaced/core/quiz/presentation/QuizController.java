@@ -8,7 +8,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionR
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthAccountInfo;
-import com.dnd.spaced.global.resolver.quiz.CommonGradedAnswerPageable;
+import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +62,7 @@ public class QuizController {
     public ResponseEntity<GradedAnswerCollectionResponse> findGradedAnswersAllBy(
             @AuthAccount AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
-            @CommonGradedAnswerPageable Pageable pageable
+            @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
                 quizService.findGradedAnswersAllBy(accountInfo.id(), request, pageable)

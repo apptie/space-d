@@ -1,4 +1,4 @@
-package com.dnd.spaced.global.resolver.quiz;
+package com.dnd.spaced.global.resolver.admin.report;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
@@ -10,15 +10,15 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class CommonGradedAnswerPageableArgumentResolver implements HandlerMethodArgumentResolver {
+public class ReportPageableArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final int IGNORED_PAGE = 0;
     private static final int DEFAULT_SIZE = 10;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CommonGradedAnswerPageable.class) && parameter.getParameterType()
-                                                                                      .equals(Pageable.class);
+        return parameter.hasParameterAnnotation(ReportPageable.class) && parameter.getParameterType()
+                                                                                  .equals(Pageable.class);
     }
 
     @Override

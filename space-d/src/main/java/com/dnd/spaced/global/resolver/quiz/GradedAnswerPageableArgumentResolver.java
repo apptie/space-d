@@ -1,4 +1,4 @@
-package com.dnd.spaced.global.resolver.bookmark;
+package com.dnd.spaced.global.resolver.quiz;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
@@ -10,15 +10,15 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class BookmarkPageableArgumentResolver implements HandlerMethodArgumentResolver {
+public class GradedAnswerPageableArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final int IGNORED_PAGE = 0;
     private static final int DEFAULT_SIZE = 10;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(BookmarkPageable.class) && parameter.getParameterType()
-                                                                                    .equals(Pageable.class);
+        return parameter.hasParameterAnnotation(GradedAnswerPageable.class) && parameter.getParameterType()
+                                                                                        .equals(Pageable.class);
     }
 
     @Override

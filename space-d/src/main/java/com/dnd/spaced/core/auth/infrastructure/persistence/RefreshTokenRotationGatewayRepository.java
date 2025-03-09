@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class RefreshTokenRotationRedisRepository implements RefreshTokenRotationRepository {
+public class RefreshTokenRotationGatewayRepository implements RefreshTokenRotationRepository {
 
     private static final String RTT_KEY_PREFIX = "rtt:";
 

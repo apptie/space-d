@@ -12,7 +12,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class CommonCommentPageableArgumentResolver implements HandlerMethodArgumentResolver {
+public class CommentPageableArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final int IGNORED_PAGE = 0;
     private static final int DEFAULT_SIZE = 10;
@@ -20,8 +20,8 @@ public class CommonCommentPageableArgumentResolver implements HandlerMethodArgum
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CommonCommentPageable.class) && parameter.getParameterType()
-                                                                                         .equals(Pageable.class);
+        return parameter.hasParameterAnnotation(CommentPageable.class) && parameter.getParameterType()
+                                                                                   .equals(Pageable.class);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.dnd.spaced.core.word.presentation.dto.response.PopularWordResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.ReadWordAllResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.ReadWordResponse;
 import com.dnd.spaced.core.word.presentation.dto.response.SearchedWordResponse;
-import com.dnd.spaced.global.resolver.word.CommonWordPageable;
+import com.dnd.spaced.global.resolver.word.WordPageable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +39,7 @@ public class WordController {
     @GetMapping
     public ResponseEntity<ReadWordAllResponse> readAllBy(
             ReadWordAllRequest request,
-            @CommonWordPageable Pageable pageable
+            @WordPageable Pageable pageable
     ) {
         List<ReadAllWordDto> result = wordService.readAllBy(
                 request.categoryName(),
@@ -53,7 +53,7 @@ public class WordController {
     @GetMapping("/search")
     public ResponseEntity<SearchedWordResponse> search(
             SearchWordRequest request,
-            @CommonWordPageable Pageable pageable
+            @WordPageable Pageable pageable
     ) {
         SearchConditionDto searchConditionDto = new SearchConditionDto(
                 request.name(),
