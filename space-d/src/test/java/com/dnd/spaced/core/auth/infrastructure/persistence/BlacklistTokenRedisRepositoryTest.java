@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

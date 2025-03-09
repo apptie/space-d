@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.persistence;
 
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
 import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;

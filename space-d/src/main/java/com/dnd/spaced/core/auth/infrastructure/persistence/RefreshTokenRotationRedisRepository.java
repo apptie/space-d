@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.persistence;
 
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.global.config.properties.TokenProperties;
@@ -30,14 +30,14 @@ public class RefreshTokenRotationRedisRepository implements RefreshTokenRotation
 
     @Override
     public Optional<String> findBy(Long accountId) {
-        String refreshToken = redisTemplate.opsForValue()
-                                           .get(calculateKey(accountId));
+        String refreshToken = findRefreshToken(accountId);
 
-        if (refreshToken == null) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(refreshToken);
+    }
 
-        return Optional.of(refreshToken);
+    private String findRefreshToken(Long accountId) {
+        return redisTemplate.opsForValue()
+                            .get(calculateKey(accountId));
     }
 
     private String calculateKey(Long accountId) {

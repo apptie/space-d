@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
-import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
+import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;

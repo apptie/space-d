@@ -1,9 +1,9 @@
-package com.dnd.spaced.core.auth.infrastructure;
+package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
-import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
+import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -46,13 +46,9 @@ public class JwtDecoder implements TokenDecoder {
         String key = tokenProperties.findTokenKey(tokenType);
 
         try {
-            Claims claims = Jwts.parserBuilder()
-                                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
-                                .build()
-                                .parseClaimsJws(token)
-                                .getBody();
+            Claims claims = parseJwtToken(token, key);
 
-            validateClaims(claims);
+            validateIssuer(claims);
 
             return Optional.of(claims);
         } catch (ExpiredJwtException ignored) {
@@ -62,7 +58,15 @@ public class JwtDecoder implements TokenDecoder {
         }
     }
 
-    private void validateClaims(Claims claims) {
+    private Claims parseJwtToken(String token, String key) {
+        return Jwts.parserBuilder()
+                   .setSigningKey(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
+    }
+
+    private void validateIssuer(Claims claims) {
         if (!tokenProperties.issuer().equals(claims.getIssuer())) {
             throw new InvalidTokenException("서비스에서 발급한 토큰이 아닙니다.");
         }
