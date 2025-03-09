@@ -3,7 +3,7 @@ package com.dnd.spaced.global.auth.security.core;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.global.auth.exception.BlockedTokenException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;

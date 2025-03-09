@@ -10,7 +10,7 @@ import com.dnd.spaced.core.auth.application.exception.BlockedTokenException;
 import com.dnd.spaced.core.auth.application.exception.ExpiredTokenException;
 import com.dnd.spaced.core.auth.application.exception.RotationRefreshTokenMismatchException;
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import com.dnd.spaced.core.auth.infrastructure.JwtEncoder;

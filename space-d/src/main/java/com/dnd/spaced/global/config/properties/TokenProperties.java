@@ -1,6 +1,6 @@
 package com.dnd.spaced.global.config.properties;
 
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("token")

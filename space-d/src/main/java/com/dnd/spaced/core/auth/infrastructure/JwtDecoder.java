@@ -2,7 +2,7 @@ package com.dnd.spaced.core.auth.infrastructure;
 
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
-import com.dnd.spaced.core.auth.domain.TokenType;
+import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.infrastructure.exception.InvalidTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import io.jsonwebtoken.Claims;
