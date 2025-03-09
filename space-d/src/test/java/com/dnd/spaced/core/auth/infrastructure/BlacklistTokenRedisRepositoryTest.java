@@ -26,7 +26,7 @@ class BlacklistTokenRedisRepositoryTest {
     @Test
     void 블랙리스트_토큰을_저장한다() {
         // given
-        BlacklistToken blacklistToken = new BlacklistToken(1L, LocalDateTime.now());
+        BlacklistToken blacklistToken = BlacklistToken.of(1L, LocalDateTime.now());
 
         // when & then
         assertDoesNotThrow(() -> blacklistTokenRepository.save(blacklistToken));
@@ -45,7 +45,7 @@ class BlacklistTokenRedisRepositoryTest {
     void 블랙리스트로_등록된_회원_식별자로_블랙리스트_토큰을_조회한다() {
         // given
         Long accountId = 1L;
-        BlacklistToken blacklistToken = new BlacklistToken(accountId, LocalDateTime.now());
+        BlacklistToken blacklistToken = BlacklistToken.of(accountId, LocalDateTime.now());
 
         blacklistTokenRepository.save(blacklistToken);
 

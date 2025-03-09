@@ -30,7 +30,8 @@ public class BlacklistTokenRedisRepository implements BlacklistTokenRepository {
             return Optional.empty();
         }
 
-        return Optional.of(new BlacklistToken(accountId, LocalDateTime.parse(registeredAt, formatter)));
+        BlacklistToken blacklistToken = BlacklistToken.of(accountId, LocalDateTime.parse(registeredAt, formatter));
+        return Optional.of(blacklistToken);
     }
 
     @Override

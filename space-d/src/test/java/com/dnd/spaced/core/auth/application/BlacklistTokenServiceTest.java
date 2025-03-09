@@ -48,7 +48,7 @@ class BlacklistTokenServiceTest {
         Long accountId = 1L;
 
         blacklistTokenRepository.save(
-                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-01 13:13:00"))
+                BlacklistToken.of(accountId, LocalDateTimeFixture.from("2022-02-01 13:13:00"))
         );
 
         PrivateClaims privateClaims = new PrivateClaims(
@@ -70,7 +70,7 @@ class BlacklistTokenServiceTest {
         Long accountId = 1L;
 
         blacklistTokenRepository.save(
-                new BlacklistToken(accountId, LocalDateTimeFixture.from("2022-02-03 13:13:00"))
+                BlacklistToken.of(accountId, LocalDateTimeFixture.from("2022-02-03 13:13:00"))
         );
 
         PrivateClaims privateClaims = new PrivateClaims(
