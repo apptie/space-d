@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.account.domain;
 
 import com.dnd.spaced.core.account.domain.exception.InvalidNicknameMetadataException;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
+import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.Persistable;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NicknameMetadata extends CreateTimeEntity implements Persistable<String> {
+public class NicknameMetadata extends BaseTimeEntity implements Persistable<String> {
 
     private static final long START_COUNT_VALUE = 1L;
     private static final int NICKNAME_MIN_LENGTH = 5;
