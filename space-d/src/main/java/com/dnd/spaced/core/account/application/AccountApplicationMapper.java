@@ -1,22 +1,20 @@
-package com.dnd.spaced.core.account.application.dto.response;
+package com.dnd.spaced.core.account.application;
 
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.embed.CareerInfo;
 import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-public record AccountInfoDto(
-        String nickname,
-        String profileImage,
-        String jobGroupName,
-        String companyName,
-        String experienceName
-) {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AccountApplicationMapper {
 
-    public static AccountInfoDto from(Account account) {
+    public static AccountResponse toDto(Account account) {
         ProfileInfo profileInfo = account.getProfileInfo();
         CareerInfo careerInfo = account.getCareerInfo();
 
-        return new AccountInfoDto(
+        return new AccountResponse(
                 profileInfo.getNickname(),
                 profileInfo.getProfileImage(),
                 careerInfo.getJobGroup().getName(),

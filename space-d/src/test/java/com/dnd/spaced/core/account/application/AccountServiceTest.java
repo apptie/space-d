@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
-import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
@@ -66,7 +68,7 @@ class AccountServiceTest {
     @Test
     void 탈퇴_시_없거나_탈퇴한_회원_식별자라면_아니라면_탈퇴할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> accountService.withdrawal(-999L))
+        assertThatThrownBy(() -> accountService.withdrawal(1L))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
@@ -85,15 +87,16 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when
-        accountService.changeCareerInfo(
-                account.getId(),
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
                 "개발자",
                 "비공개",
                 "1~2년 차"
         );
 
+        accountService.changeCareerInfo(account.getId(), request);
+
         // then
-        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.findAccountInfo(account.getId());
 
         assertAll(
                 () -> assertThat(actual.jobGroupName()).isEqualTo("개발자"),
@@ -117,15 +120,15 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeCareerInfo(
-                        account.getId(),
-                        invalidJobGroupName,
-                        "비공개",
-                        "1~2년 차"
-                )
-        ).isInstanceOf(InvalidJobGroupException.class)
-         .hasMessageContaining("잘못된 직군 이름");
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+                invalidJobGroupName,
+                "비공개",
+                "1~2년 차"
+        );
+
+        assertThatThrownBy(() -> accountService.changeCareerInfo(account.getId(), request))
+                .isInstanceOf(InvalidJobGroupException.class)
+                .hasMessageContaining("잘못된 직군 이름");
     }
 
     @ParameterizedTest(name = "회사명이 {0}일 때 예외가 발생한다")
@@ -143,15 +146,15 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeCareerInfo(
-                        account.getId(),
-                        "개발자",
-                        invalidCompanyName,
-                        "1~2년 차"
-                )
-        ).isInstanceOf(InvalidCompanyException.class)
-         .hasMessageContaining("잘못된 회사 이름");
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+                "개발자",
+                invalidCompanyName,
+                "1~2년 차"
+        );
+
+        assertThatThrownBy(() -> accountService.changeCareerInfo(account.getId(),request))
+                .isInstanceOf(InvalidCompanyException.class)
+                .hasMessageContaining("잘못된 회사 이름");
     }
 
     @ParameterizedTest(name = "경력이 {0}일 때 예외가 발생한다")
@@ -169,29 +172,29 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeCareerInfo(
-                        account.getId(),
-                        "개발자",
-                        "비공개",
-                        invalidExperienceName
-                )
-        ).isInstanceOf(InvalidExperienceException.class)
-         .hasMessageContaining("잘못된 경력");
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+                "개발자",
+                "비공개",
+                invalidExperienceName
+        );
+
+        assertThatThrownBy(() -> accountService.changeCareerInfo(account.getId(), request))
+                .isInstanceOf(InvalidExperienceException.class)
+                .hasMessageContaining("잘못된 경력");
     }
 
     @Test
     void 회원_경력_정보_변경_시_지정한_식별자가_없거나_탈퇴한_회원이라면_경력_정보를_변경할_수_없다() {
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeCareerInfo(
-                        1L,
-                        "개발자",
-                        "비공개",
-                        "1~2년 차"
-                )
-        ).isInstanceOf(ForbiddenAccountException.class)
-         .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
+        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+                "개발자",
+                "비공개",
+                "1~2년 차"
+        );
+
+        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+                .isInstanceOf(ForbiddenAccountException.class)
+                .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
     private static Stream<Arguments> changeProfileInfoTestWithProfileImageKoreanName() {
@@ -215,10 +218,15 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when
-        accountService.changeProfileInfo(account.getId(), "행복한지구001", profileImageName.getKorean());
+        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+                "행복한지구001",
+                profileImageName.getKorean()
+        );
+
+        accountService.changeProfileInfo(account.getId(), request);
 
         // then
-        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.findAccountInfo(account.getId());
 
         assertAll(
                 () -> assertThat(actual.nickname()).isEqualTo("행복한지구001"),
@@ -241,27 +249,27 @@ class AccountServiceTest {
         accountRepository.save(account);
 
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeProfileInfo(
-                        account.getId(),
-                        "재빠른지구001",
-                        invalidProfileImageKoreanName
-                )
-        ).isInstanceOf(InvalidProfileImageNameException.class)
-         .hasMessageContaining("잘못된 프로필 이미지 이름");
+        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+                "재빠른지구001",
+                invalidProfileImageKoreanName
+        );
+
+        assertThatThrownBy(() -> accountService.changeProfileInfo(account.getId(), request))
+                .isInstanceOf(InvalidProfileImageNameException.class)
+                .hasMessageContaining("잘못된 프로필 이미지 이름");
     }
 
     @Test
     void 회원_프로필_정보_변경_시_없거나_탈퇴한_회원_식별자라면_프로필_정보를_변경할_수_없다() {
         // when & then
-        assertThatThrownBy(
-                () -> accountService.changeProfileInfo(
-                        1L,
-                        "재빠른지구001",
-                        "earth.png"
-                )
-        ).isInstanceOf(ForbiddenAccountException.class)
-         .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
+        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+                "재빠른지구001",
+                "earth.png"
+        );
+
+        assertThatThrownBy(() -> accountService.changeProfileInfo(1L, request))
+                .isInstanceOf(ForbiddenAccountException.class)
+                .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
 
     @Test
@@ -275,11 +283,15 @@ class AccountServiceTest {
                                  .role(Role.ROLE_USER)
                                  .build();
 
-        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
+        account.changeCareerInfo(
+                "개발자",
+                "비공개",
+                "1~2년 차"
+        );
         accountRepository.save(account);
 
         // when
-        AccountInfoDto actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.findAccountInfo(account.getId());
 
         // then
         assertAll(

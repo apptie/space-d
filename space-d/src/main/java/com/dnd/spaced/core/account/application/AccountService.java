@@ -1,6 +1,8 @@
 package com.dnd.spaced.core.account.application;
 
-import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
@@ -24,24 +26,28 @@ public class AccountService {
     }
 
     @Transactional
-    public void changeCareerInfo(Long accountId, String jobGroupName, String companyName, String experienceName) {
+    public void changeCareerInfo(Long accountId, ChangeCareerInfoRequest request) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        authorizedAccount.changeCareerInfo(jobGroupName, companyName, experienceName);
+        authorizedAccount.changeCareerInfo(
+                request.changedJobGroupName(),
+                request.changedCompanyName(),
+                request.changedExperienceName()
+        );
     }
 
     @Transactional
-    public void changeProfileInfo(Long accountId, String changedNickname, String changedProfileImageKoreanName) {
+    public void changeProfileInfo(Long accountId, ChangeProfileInfoRequest request) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
-        ProfileImageName changedProfileImageName = ProfileImageName.findBy(changedProfileImageKoreanName);
+        ProfileImageName changedProfileImageName = ProfileImageName.findBy(request.changedProfileImageKoreanName());
 
-        authorizedAccount.changeProfileInfo(changedNickname, changedProfileImageName.getImageName());
+        authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName.getImageName());
     }
 
-    public AccountInfoDto findAccountInfo(Long accountId) {
+    public AccountResponse findAccountInfo(Long accountId) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        return AccountInfoDto.from(authorizedAccount);
+        return AccountApplicationMapper.toDto(authorizedAccount);
     }
 
     private Account findAuthorizedAccount(Long accountId) {

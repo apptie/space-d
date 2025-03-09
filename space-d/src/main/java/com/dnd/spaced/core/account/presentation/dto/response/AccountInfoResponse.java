@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.account.presentation.dto.response;
 
-import com.dnd.spaced.core.account.application.dto.response.AccountInfoDto;
+import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 
 public record AccountInfoResponse(
         String nickname,
@@ -10,7 +10,7 @@ public record AccountInfoResponse(
         String experienceName
 ) {
 
-    public static AccountInfoResponse from(AccountInfoDto dto) {
+    public static AccountInfoResponse from(AccountResponse dto) {
         return new AccountInfoResponse(
                 dto.nickname(),
                 dto.profileImage(),
