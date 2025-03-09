@@ -26,28 +26,48 @@ public class AdminReportService {
 
     @Transactional
     public void process(Long reportId, ProcessReportRequest request) {
-        Report report = reportRepository.findBy(reportId)
-                                        .orElseThrow(
-                                                () -> new ReportNotFoundException(
-                                                        "지정한 신고 식별자로 신고 내역을 찾을 수 없습니다."
-                                                )
-                                        );
-        ReportStatus reportStatus = ReportStatus.findBy(request.reportStatus())
-                                                .orElseThrow(
-                                                        () -> new ReportStatusNotFoundException(
-                                                                "지정한 신고 상태를 찾을 수 없습니다."
-                                                        )
-                                                );
+        Report report = findReport(reportId);
+        ReportStatus reportStatus = findReportStatus(request);
 
         report.process(reportStatus);
-        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
+        publishProcessedReportEvent(reportStatus, report);
     }
 
     public ReportCollectionResponse findAllBy(ReadReportSearchRequest request) {
-        ReportStatus reportStatus = ReportStatus.findBy(request.reportStatus())
-                                                .orElse(null);
-        List<Report> reports = reportRepository.findAllBy(reportStatus, request.lastReportId());
+        ReportStatus reportStatus = findReportStatus(request);
+        List<Report> reports = findAllReportsBy(request, reportStatus);
 
         return AdminApplicationMapper.toDto(reports);
+    }
+
+    private Report findReport(Long reportId) {
+        return reportRepository.findBy(reportId)
+                               .orElseThrow(
+                                       () -> new ReportNotFoundException(
+                                               "지정한 신고 식별자로 신고 내역을 찾을 수 없습니다."
+                                       )
+                               );
+    }
+
+    private ReportStatus findReportStatus(ProcessReportRequest request) {
+        return ReportStatus.findBy(request.reportStatus())
+                           .orElseThrow(
+                                   () -> new ReportStatusNotFoundException(
+                                           "지정한 신고 상태를 찾을 수 없습니다."
+                                   )
+                           );
+    }
+
+    private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
+        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
+    }
+
+    private ReportStatus findReportStatus(ReadReportSearchRequest request) {
+        return ReportStatus.findBy(request.reportStatus())
+                           .orElse(null);
+    }
+
+    private List<Report> findAllReportsBy(ReadReportSearchRequest request, ReportStatus reportStatus) {
+        return reportRepository.findAllBy(reportStatus, request.lastReportId());
     }
 }
