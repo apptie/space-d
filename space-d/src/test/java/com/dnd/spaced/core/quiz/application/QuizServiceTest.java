@@ -8,16 +8,18 @@ import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto;
 import com.dnd.spaced.core.admin.application.dto.request.SaveWordDto.PronunciationInfoDto;
-import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
+import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidQuizWordCountException;
 import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
+import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.domain.GradedAnswer;
 import com.dnd.spaced.core.quiz.domain.repository.GradedAnswerRepository;
+import com.dnd.spaced.core.skill.application.event.dto.GradedQuizEvent;
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class QuizServiceTest {
+
+    @Autowired
+    ApplicationEvents events;
 
     @Autowired
     QuizService quizService;
@@ -86,7 +92,10 @@ class QuizServiceTest {
         Long actual = quizService.save(1L, request);
 
         // then
-        assertThat(actual).isPositive();
+        assertAll(
+                () -> assertThat(actual).isPositive(),
+                () -> assertThat(events.stream(AddedQuizQuestionEvent.class).count()).isOne()
+        );
     }
 
     @Test
@@ -142,7 +151,8 @@ class QuizServiceTest {
                 () -> assertThat(actual.get(1).getSelectedOptionIndex()).isEqualTo(1),
                 () -> assertThat(actual.get(2).getSelectedOptionIndex()).isEqualTo(2),
                 () -> assertThat(actual.get(3).getSelectedOptionIndex()).isEqualTo(3),
-                () -> assertThat(actual.get(4).getSelectedOptionIndex()).isEqualTo(2)
+                () -> assertThat(actual.get(4).getSelectedOptionIndex()).isEqualTo(2),
+                () -> assertThat(events.stream(GradedQuizEvent.class).count()).isOne()
         );
     }
 

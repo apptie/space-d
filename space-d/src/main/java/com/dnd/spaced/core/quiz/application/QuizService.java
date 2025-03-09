@@ -8,6 +8,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionR
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
+import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidQuizWordCountException;
 import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
 import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
@@ -21,6 +22,7 @@ import com.dnd.spaced.core.quiz.domain.repository.GradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizQuestionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
+import com.dnd.spaced.core.skill.application.event.dto.GradedQuizEvent;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.WordRandom;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +57,7 @@ public class QuizService {
     private final WordMetadataRepository wordMetadataRepository;
     private final GradedAnswerRepository gradedAnswerRepository;
     private final QuizQuestionProperties quizQuestionProperties;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long save(Long accountId, CreateQuizRequest request) {
@@ -62,9 +66,10 @@ public class QuizService {
         validateQuizCreation(quizCategory);
 
         Quiz quiz = createQuiz(accountId, quizCategory);
+        Quiz savedQuiz = quizRepository.save(quiz);
 
-        return quizRepository.save(quiz)
-                             .getId();
+        eventPublisher.publishEvent(new AddedQuizQuestionEvent());
+        return savedQuiz.getId();
     }
 
     @Transactional
@@ -74,6 +79,10 @@ public class QuizService {
         List<GradedAnswer> gradedAnswers = quiz.grade(accountId, request.answers());
 
         gradedAnswerRepository.saveAll(gradedAnswers);
+        long correctCount = gradedAnswers.stream()
+                                  .filter(GradedAnswer::isCorrect)
+                                  .count();
+        eventPublisher.publishEvent(new GradedQuizEvent(accountId, correctCount));
     }
 
     public GradedAnswerCollectionResponse findGradedAnswersAllBy(
