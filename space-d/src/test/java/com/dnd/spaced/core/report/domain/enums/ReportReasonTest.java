@@ -36,7 +36,7 @@ class ReportReasonTest {
 
     @ParameterizedTest(name = "원인이 {0}일 때 신고 사유를 찾지 못한다")
     @NullAndEmptySource
-    void 신고_사유에_없는_원인이라면_신고_사유를_찾을_수_없다(String invalidCause) {
+    void 유효하지_않은_원인이라면_신고_사유를_찾을_수_없다(String invalidCause) {
         // when
         Optional<ReportReason> actual = ReportReason.findBy(invalidCause);
 
