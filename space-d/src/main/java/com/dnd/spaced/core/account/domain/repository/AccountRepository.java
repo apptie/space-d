@@ -8,11 +8,11 @@ public interface AccountRepository {
 
     Account save(Account account);
 
-    Optional<Account> findBy(Long id);
+    Optional<Account> findBy(Long accountId);
 
     Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier);
 
-    Optional<Account> findSignedUpAccountBy(Long id);
+    Optional<Account> findSignedUpAccountBy(Long accountId);
 
     void delete(Account account);
 }
