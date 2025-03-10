@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -30,6 +31,7 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -54,6 +56,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isCreated(),
                 header().string("Location", "/words/1")
         );
+
+        verify(commentService).create(anyLong(), anyLong(), any(CreateCommentRequest.class));
 
         댓글_작성_요청_문서화(resultActions);
     }
@@ -83,6 +87,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(commentService).delete(anyLong(), anyLong());
 
         댓글_삭제_요청_문서화(resultActions);
     }
@@ -114,6 +120,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(commentService).update(anyLong(), anyLong(), any(UpdateCommentRequest.class));
 
         댓글_수정_요청_문서화(resultActions);
     }
@@ -162,6 +170,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("comments[0].liked").value(false),
                 jsonPath("lastCommentId", is(1L), Long.class)
         );
+
+        verify(commentService).readAllBy(any(), anyLong(), any(), any(Pageable.class));
 
         댓글_전체_조회_문서화(resultActions);
     }
