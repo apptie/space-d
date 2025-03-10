@@ -2,7 +2,7 @@ package com.dnd.spaced.core.comment.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.core.comment.application.dto.CommentApplicationMapper;
+import com.dnd.spaced.core.comment.application.dto.mapper.CommentApplicationMapper;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
