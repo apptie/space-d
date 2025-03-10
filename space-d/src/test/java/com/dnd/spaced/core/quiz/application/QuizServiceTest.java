@@ -64,7 +64,7 @@ class QuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> quizService.save(1L, request))
+        assertThatThrownBy(() -> quizService.createQuiz(1L, request))
                 .isInstanceOf(WordMetadataNotFoundException.class)
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -79,7 +79,7 @@ class QuizServiceTest {
             wordMetadataRepository.save(new WordMetadata());
 
             // when & then
-            assertThatThrownBy(() -> quizService.save(1L, request))
+            assertThatThrownBy(() -> quizService.createQuiz(1L, request))
                     .isInstanceOf(InvalidQuizWordCountException.class)
                     .hasMessage("퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
@@ -93,7 +93,7 @@ class QuizServiceTest {
                 CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
                 // when
-                Long actual = quizService.save(1L, request);
+                Long actual = quizService.createQuiz(1L, request);
 
                 // then
                 assertAll(
@@ -106,7 +106,7 @@ class QuizServiceTest {
             void 퀴즈를_조회한다() {
                 // given
                 CreateQuizRequest request = new CreateQuizRequest("전체 실무");
-                Long quizId = quizService.save(1L, request);
+                Long quizId = quizService.createQuiz(1L, request);
 
                 // when
                 QuizResponse actual = quizService.findQuizBy(quizId);
@@ -147,7 +147,7 @@ class QuizServiceTest {
             void 퀴즈_정답을_제출한다() {
                 // given
                 CreateQuizRequest createQuizRequest = new CreateQuizRequest("전체 실무");
-                Long quizId = quizService.save(1L, createQuizRequest);
+                Long quizId = quizService.createQuiz(1L, createQuizRequest);
                 GradeQuizRequest gradeQuizRequest = new GradeQuizRequest(new int[]{0, 1, 2, 3, 2});
 
                 // when
@@ -170,11 +170,11 @@ class QuizServiceTest {
             @Test
             void 모든_퀴즈의_제출했던_답을_조회한다() {
                 // given
-                Long quizId = quizService.save(1L, new CreateQuizRequest("전체 실무"));
+                Long quizId = quizService.createQuiz(1L, new CreateQuizRequest("전체 실무"));
                 quizService.grade(1L, quizId, new GradeQuizRequest(new int[]{0, 1, 2, 3, 2}));
 
                 // when
-                GradedAnswerCollectionResponse actual = quizService.findGradedAnswersAllBy(
+                GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
                         1L,
                         new ReadQuizGradedAnswerSearchRequest(null),
                         PageRequest.of(0, 10)
@@ -194,13 +194,13 @@ class QuizServiceTest {
             @Test
             void 특정_퀴즈의_제출했던_답을_조회한다() {
                 // given
-                Long quizId = quizService.save(1L, new CreateQuizRequest("전체 실무"));
+                Long quizId = quizService.createQuiz(1L, new CreateQuizRequest("전체 실무"));
                 GradeQuizRequest request = new GradeQuizRequest(new int[]{0, 1, 2, 3, 2});
 
                 quizService.grade(1L, quizId, request);
 
                 // when
-                GradedAnswerCollectionResponse actual = quizService.findGradedAnswersAllBy(quizId);
+                GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(quizId);
 
                 // then
                 assertAll(

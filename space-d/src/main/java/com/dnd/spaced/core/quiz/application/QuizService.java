@@ -59,7 +59,7 @@ public class QuizService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long save(Long accountId, CreateQuizRequest request) {
+    public Long createQuiz(Long accountId, CreateQuizRequest request) {
         QuizCategory quizCategory = QuizCategory.findBy(request.quizCategoryName());
 
         validateQuizCreation(quizCategory);
@@ -83,7 +83,7 @@ public class QuizService {
         eventPublisher.publishEvent(new GradedQuizEvent(accountId, correctCount));
     }
 
-    public GradedAnswerCollectionResponse findGradedAnswersAllBy(
+    public GradedAnswerCollectionResponse readGradedAnswers(
             Long accountId,
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
@@ -97,7 +97,7 @@ public class QuizService {
         return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
-    public GradedAnswerCollectionResponse findGradedAnswersAllBy(Long quizId) {
+    public GradedAnswerCollectionResponse readGradedAnswers(Long quizId) {
         List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(quizId);
 
         return QuizApplicationMapper.toDto(gradedAnswers);
