@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.quiz.application.dto.mapper;
 
+import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse.TodayQuizQuestionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
@@ -14,6 +15,14 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TodayQuizApplicationMapper {
+
+    public static TodayQuizGradedAnswerCollectionResponse toDto(List<TodayQuizGradedAnswer> todayQuizGradedAnswers) {
+        List<TodayQuizGradedAnswerResponse> responses = todayQuizGradedAnswers.stream()
+                                                                              .map(TodayQuizApplicationMapper::toDto)
+                                                                              .toList();
+
+        return new TodayQuizGradedAnswerCollectionResponse(responses);
+    }
 
     public static TodayQuizGradedAnswerResponse toDto(TodayQuizGradedAnswer todayQuizGradedAnswer) {
         TodayQuiz quiz = todayQuizGradedAnswer.getTodayQuiz();
