@@ -41,16 +41,12 @@ class AdminTodayQuizServiceTest {
     @Autowired
     TodayQuizRepository todayQuizRepository;
 
-    @Nested
-    class WithoutWordMetadataTest {
-
-        @Test
-        void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
-            // when & then
-            assertThatThrownBy(() -> adminTodayQuizService.create())
-                    .isInstanceOf(WordMetadataNotFoundException.class)
-                    .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
-        }
+    @Test
+    void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> adminTodayQuizService.create())
+                .isInstanceOf(WordMetadataNotFoundException.class)
+                .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
 
     @Nested

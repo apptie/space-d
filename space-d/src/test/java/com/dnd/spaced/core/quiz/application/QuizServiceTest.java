@@ -58,19 +58,15 @@ class QuizServiceTest {
     @Autowired
     WordMetadataRepository wordMetadataRepository;
 
-    @Nested
-    class WithoutMetadataTest {
+    @Test
+    void 용어_메타데이터가_정상적으로_설정되지_않다면_퀴즈를_생성할_수_없다() {
+        // given
+        CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
-        @Test
-        void 용어_메타데이터가_정상적으로_설정되지_않다면_퀴즈를_생성할_수_없다() {
-            // given
-            CreateQuizRequest request = new CreateQuizRequest("전체 실무");
-
-            // when & then
-            assertThatThrownBy(() -> quizService.save(1L, request))
-                    .isInstanceOf(WordMetadataNotFoundException.class)
-                    .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
-        }
+        // when & then
+        assertThatThrownBy(() -> quizService.save(1L, request))
+                .isInstanceOf(WordMetadataNotFoundException.class)
+                .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
 
     @Nested

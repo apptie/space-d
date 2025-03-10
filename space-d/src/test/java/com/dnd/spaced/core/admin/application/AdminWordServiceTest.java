@@ -14,8 +14,6 @@ import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAll
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.admin.application.helper.WithWordMetadataTestHelper;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.WordMetadata;
-import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -40,29 +38,25 @@ class AdminWordServiceTest {
     @Autowired
     WordRepository wordRepository;
 
-    @Nested
-    class WithoutMetadataTest {
+    @Test
+    void 용어_메타데이터가_초기화되지_않았다면_용어를_추가할_수_없다() {
+        // given
+        List<CreatePronunciationRequest> createPronunciationRequests = List.of(
+                new CreatePronunciationRequest("어써라이제이션", "한글 발음")
+        );
+        List<String> examples = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
+        CreateWordRequest request = new CreateWordRequest(
+                "Authorization",
+                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+                "개발",
+                createPronunciationRequests,
+                examples
+        );
 
-        @Test
-        void 용어_메타데이터가_초기화되지_않았다면_용어를_추가할_수_없다() {
-            // given
-            List<CreatePronunciationRequest> createPronunciationRequests = List.of(
-                    new CreatePronunciationRequest("어써라이제이션", "한글 발음")
-            );
-            List<String> examples = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
-            CreateWordRequest request = new CreateWordRequest(
-                    "Authorization",
-                    "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                    "개발",
-                    createPronunciationRequests,
-                    examples
-            );
-
-            // when
-            assertThatThrownBy(() -> adminWordService.createWord(request))
-                    .isInstanceOf(WordMetadataNotFoundException.class)
-                    .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
-        }
+        // when
+        assertThatThrownBy(() -> adminWordService.createWord(request))
+                .isInstanceOf(WordMetadataNotFoundException.class)
+                .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
 
     @Nested
