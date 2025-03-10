@@ -47,6 +47,14 @@ public class CreateTodayQuizScheduler {
         validateQuizCreation(quizCategory);
 
         List<Word> randomWords = findRandomWords(quizCategory);
+        TodayQuiz todayQuiz = createTodayQuiz(randomWords, quizCategory);
+
+        todayQuizRepository.save(todayQuiz);
+
+        initTodayQuizOption(randomWords, todayQuiz);
+    }
+
+    private TodayQuiz createTodayQuiz(List<Word> randomWords, QuizCategory quizCategory) {
         Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
                 answerWord.getId(),
@@ -58,10 +66,11 @@ public class CreateTodayQuizScheduler {
                 answerWord.getWordMeaning().getMeaning(),
                 todayQuizAnswerOption
         );
-        TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
 
-        todayQuizRepository.save(todayQuiz);
+        return new TodayQuiz(todayQuizQuestion);
+    }
 
+    private void initTodayQuizOption(List<Word> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
         for (int i = 0; i < randomWords.size(); i++) {
             Word word = randomWords.get(i);
