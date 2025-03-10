@@ -83,6 +83,6 @@ class LikeServiceTest extends WithAccountAndCommentTestHelper {
         // when & then
         assertThatThrownBy(() -> likeService.processLike(-999L, comment.getId()))
                 .isInstanceOf(ForbiddenLikeException.class)
-                .hasMessage("좋아요를 제어할 권한이 없습니다.");
+                .hasMessage("지정한 ID에 대한 회원을 찾지 못했습니다.");
     }
 }
