@@ -1,19 +1,12 @@
 package com.dnd.spaced.core.word.presentation;
 
 import com.dnd.spaced.core.word.application.WordService;
-import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
-import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
-import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
-import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
-import com.dnd.spaced.core.word.application.dto.response.SearchedWordDto;
-import com.dnd.spaced.core.word.presentation.dto.request.ReadWordAllRequest;
-import com.dnd.spaced.core.word.presentation.dto.request.SearchWordRequest;
-import com.dnd.spaced.core.word.presentation.dto.response.PopularWordResponse;
-import com.dnd.spaced.core.word.presentation.dto.response.ReadWordAllResponse;
-import com.dnd.spaced.core.word.presentation.dto.response.ReadWordResponse;
-import com.dnd.spaced.core.word.presentation.dto.response.SearchedWordResponse;
+import com.dnd.spaced.core.word.application.dto.request.ReadAllWordRequest;
+import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
+import com.dnd.spaced.core.word.application.dto.response.WordCollectionResponse;
+import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.global.resolver.word.WordPageable;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,48 +22,37 @@ public class WordController {
 
     private final WordService wordService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReadWordResponse> read(@PathVariable Long id) {
-        ReadWordDto result = wordService.read(id);
+    @GetMapping("/{wordId}")
+    public ResponseEntity<WordResponse> read(@PathVariable Long wordId) {
+        WordResponse response = wordService.read(wordId);
 
-        return ResponseEntity.ok(ReadWordResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<ReadWordAllResponse> readAllBy(
-            ReadWordAllRequest request,
+    public ResponseEntity<WordCollectionResponse> readAllBy(
+            ReadAllWordRequest request,
             @WordPageable Pageable pageable
     ) {
-        List<ReadAllWordDto> result = wordService.readAllBy(
-                request.categoryName(),
-                request.lastWordName(),
-                pageable
-        );
+        WordCollectionResponse response = wordService.readAllBy(request, pageable);
 
-        return ResponseEntity.ok(ReadWordAllResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<SearchedWordResponse> search(
+    public ResponseEntity<WordCollectionResponse> search(
             SearchWordRequest request,
             @WordPageable Pageable pageable
     ) {
-        SearchConditionDto searchConditionDto = new SearchConditionDto(
-                request.name(),
-                request.categoryName(),
-                request.pronunciation(),
-                pageable,
-                request.lastWordName()
-        );
-        List<SearchedWordDto> result = wordService.search(searchConditionDto);
+        WordCollectionResponse response = wordService.search(request, pageable);
 
-        return ResponseEntity.ok(SearchedWordResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<PopularWordResponse> readPopularWordsAll() {
-        List<PopularWordDto> result = wordService.readPopularWordsAll();
+    public ResponseEntity<PopularWordCollectionResponse> readPopularWordsAll() {
+        PopularWordCollectionResponse response = wordService.readPopularWordsAll();
 
-        return ResponseEntity.ok(PopularWordResponse.from(result));
+        return ResponseEntity.ok(response);
     }
 }
