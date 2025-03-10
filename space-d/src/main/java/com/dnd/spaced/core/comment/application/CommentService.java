@@ -32,9 +32,8 @@ public class CommentService {
 
     @Transactional
     public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
-        Account writer = findAccount(accountId);
         Word word = findWord(wordId);
-        Comment comment = new Comment(writer.getId(), word.getId(), request.content());
+        Comment comment = new Comment(accountId, word.getId(), request.content());
 
         commentRepository.save(comment);
     }

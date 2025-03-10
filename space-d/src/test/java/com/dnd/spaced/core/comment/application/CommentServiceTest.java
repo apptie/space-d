@@ -48,17 +48,6 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     LikeRepository likeRepository;
 
     @Test
-    void 없거나_탈퇴한_회원_식별자로는_댓글을_작성할_수_없다() {
-        // given
-        CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-
-        // when & then
-        assertThatThrownBy(() -> commentService.createComment(-999L, word.getId(), request))
-                .isInstanceOf(AssociationAccountNotFoundException.class)
-                .hasMessage("유효하지 않은 회원입니다.");
-    }
-
-    @Test
     void 댓글을_작성할_용어가_없는_경우_댓글을_작성할_수_없다() {
         // given
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
