@@ -50,7 +50,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                                   .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
 
-        verify(bookmarkService).create(anyLong(), any(CreateBookmarkRequest.class));
+        verify(bookmarkService).createBookmark(anyLong(), any(CreateBookmarkRequest.class));
 
         북마크_생성_요청_문서화(resultActions);
     }
@@ -76,7 +76,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 delete("/bookmarks/{bookmarkId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(status().isNoContent());
 
-        verify(bookmarkService).delete(anyLong(), anyLong());
+        verify(bookmarkService).deleteBookmark(anyLong(), anyLong());
 
         북마크_삭제_요청_문서화(resultActions);
     }
@@ -101,7 +101,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
         BookmarkResponse bookmarkResponse = new BookmarkResponse(1L, 1L, 1L, LocalDateTime.now());
         BookmarkCollectionResponse response = new BookmarkCollectionResponse(List.of(bookmarkResponse), 1L);
 
-        given(bookmarkService.findAllBy(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class)))
+        given(bookmarkService.readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class)))
                 .willReturn(response);
 
         // when & then
@@ -117,7 +117,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastBookmarkId", is(1L), Long.class)
         );
 
-        verify(bookmarkService).findAllBy(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class));
+        verify(bookmarkService).readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class));
 
         북마크_목록_조회_요청_문서화(resultActions);
     }

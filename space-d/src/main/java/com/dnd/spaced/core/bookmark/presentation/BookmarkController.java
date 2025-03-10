@@ -33,7 +33,7 @@ public class BookmarkController {
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
-        BookmarkCollectionResponse response = bookmarkService.findAllBy(accountInfo.id(), request, pageable);
+        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.id(), request, pageable);
 
         return ResponseEntity.ok(response);
     }
@@ -43,14 +43,14 @@ public class BookmarkController {
             @AuthAccount AuthAccountInfo accountInfo,
             @RequestBody @Valid CreateBookmarkRequest request
     ) {
-        bookmarkService.create(accountInfo.id(), request);
+        bookmarkService.createBookmark(accountInfo.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("{bookmarkId}")
     public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long bookmarkId) {
-        bookmarkService.delete(accountInfo.id(), bookmarkId);
+        bookmarkService.deleteBookmark(accountInfo.id(), bookmarkId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
