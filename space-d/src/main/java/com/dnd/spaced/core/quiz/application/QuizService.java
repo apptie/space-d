@@ -124,7 +124,7 @@ public class QuizService {
                                                                   "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
                                                           );
 
-        if (!QuizWordCountValidator.isValidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        if (QuizWordCountValidator.isInvalidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidQuizWordCountException("퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }
