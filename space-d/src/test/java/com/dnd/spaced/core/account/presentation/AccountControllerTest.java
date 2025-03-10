@@ -139,7 +139,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 "1~2년 차"
         );
 
-        given(accountService.findAccountInfo(anyLong())).willReturn(accountResponse);
+        given(accountService.readAccount(anyLong())).willReturn(accountResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -153,7 +153,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 jsonPath("$.experienceName").value("1~2년 차")
         );
 
-        verify(accountService).findAccountInfo(anyLong());
+        verify(accountService).readAccount(anyLong());
 
         회원_정보_조회_요청_문서화(resultActions);
     }

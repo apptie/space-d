@@ -45,7 +45,7 @@ public class AccountService {
         authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName.getImageName());
     }
 
-    public AccountResponse findAccountInfo(Long accountId) {
+    public AccountResponse readAccount(Long accountId) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
         return AccountApplicationMapper.toDto(authorizedAccount);

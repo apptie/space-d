@@ -72,7 +72,7 @@ class AccountServiceTest extends AccountServiceTestHelper {
         accountService.changeCareerInfo(account.getId(), request);
 
         // then
-        AccountResponse actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.readAccount(account.getId());
 
         assertAll(
                 () -> assertThat(actual.jobGroupName()).isEqualTo("개발자"),
@@ -162,7 +162,7 @@ class AccountServiceTest extends AccountServiceTestHelper {
         accountService.changeProfileInfo(account.getId(), request);
 
         // then
-        AccountResponse actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.readAccount(account.getId());
 
         assertAll(
                 () -> assertThat(actual.nickname()).isEqualTo("행복한지구001"),
@@ -218,7 +218,7 @@ class AccountServiceTest extends AccountServiceTestHelper {
         accountRepository.save(account);
 
         // when
-        AccountResponse actual = accountService.findAccountInfo(account.getId());
+        AccountResponse actual = accountService.readAccount(account.getId());
 
         // then
         assertAll(
@@ -233,7 +233,7 @@ class AccountServiceTest extends AccountServiceTestHelper {
     @Test
     void 없거나_탈퇴한_회원의_ID라면_회원_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> accountService.findAccountInfo(-999L))
+        assertThatThrownBy(() -> accountService.readAccount(-999L))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
