@@ -2,7 +2,11 @@ package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.GuestAccountInfoArgumentResolver;
+import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.WordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -33,8 +37,13 @@ public class AppConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
     private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
-    private final WordPageableArgumentResolver wordPageableArgumentResolver;
+    private final GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver;
+    private final ReportPageableArgumentResolver reportPageableArgumentResolver;
+    private final BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver;
     private final CommentPageableArgumentResolver commentPageableArgumentResolver;
+    private final GradedAnswerPageableArgumentResolver gradedAnswerPageableArgumentResolver;
+    private final WordPageableArgumentResolver wordPageableArgumentResolver;
+
 
     @Bean
     public Clock clock() {
@@ -99,8 +108,12 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authAccountInfoArgumentResolver);
+        resolvers.add(guestAccountInfoArgumentResolver);
         resolvers.add(wordPageableArgumentResolver);
         resolvers.add(commentPageableArgumentResolver);
+        resolvers.add(reportPageableArgumentResolver);
+        resolvers.add(bookmarkPageableArgumentResolver);
+        resolvers.add(gradedAnswerPageableArgumentResolver);
     }
 
     @Override

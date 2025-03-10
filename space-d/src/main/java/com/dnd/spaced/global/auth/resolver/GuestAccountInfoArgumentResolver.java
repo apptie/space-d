@@ -1,9 +1,7 @@
 package com.dnd.spaced.global.auth.resolver;
 
-import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.auth.AuthStore;
-import com.dnd.spaced.global.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,15 +12,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentResolver {
+public class GuestAccountInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final AuthStore store;
-    private final AccountRepository accountRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentAccountInfo.class) && parameter.getParameterType()
-                                                                                      .equals(AuthAccountInfo.class);
+                                                                                      .equals(GuestAccountInfo.class);
     }
 
     @Override
@@ -34,24 +31,14 @@ public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentRes
     ) {
         AccountInfo accountInfo = store.get();
 
-        validateAccountPrincipal(accountInfo);
+        if (isInvalidAccountPrincipal(accountInfo)) {
+            return new GuestAccountInfo();
+        }
 
-        Long accountId = accountInfo.accountId();
-
-        validateExistsAccountId(accountId);
-
-        return new AuthAccountInfo(accountInfo.accountId());
+        return new GuestAccountInfo(accountInfo.accountId());
     }
 
-    private void validateAccountPrincipal(AccountInfo accountInfo) {
-        if (accountInfo == null || accountInfo.accountId() == null) {
-            throw new UnauthorizedException();
-        }
-    }
-
-    private void validateExistsAccountId(Long accountId) {
-        if (!accountRepository.existsBy(accountId)) {
-            throw new UnauthorizedException();
-        }
+    private boolean isInvalidAccountPrincipal(AccountInfo accountInfo) {
+        return accountInfo == null || accountInfo.accountId() == null;
     }
 }

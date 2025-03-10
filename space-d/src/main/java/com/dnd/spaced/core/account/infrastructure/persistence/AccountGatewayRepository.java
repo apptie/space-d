@@ -19,6 +19,16 @@ public class AccountGatewayRepository implements AccountRepository {
     private final AccountCrudRepository accountCrudRepository;
 
     @Override
+    public boolean existsBy(Long accountId) {
+        Integer result = queryFactory.selectOne()
+                                .from(account)
+                                .where(account.id.eq(accountId))
+                                .fetchFirst();
+
+        return result != null;
+    }
+
+    @Override
     public Account save(Account account) {
         return accountCrudRepository.save(account);
     }

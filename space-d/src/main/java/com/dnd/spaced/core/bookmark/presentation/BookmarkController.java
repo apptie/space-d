@@ -4,8 +4,8 @@ import com.dnd.spaced.core.bookmark.application.BookmarkService;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
-import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageable;
 import jakarta.validation.Valid;
@@ -29,31 +29,31 @@ public class BookmarkController {
 
     @GetMapping
     public ResponseEntity<BookmarkCollectionResponse> readBookmarks(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
-        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.id(), request, pageable);
+        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.accountId(), request, pageable);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<Void> createBookmark(
-            @AuthAccount AuthAccountInfo accountInfo,
-            @RequestBody @Valid CreateBookmarkRequest request
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @Valid @RequestBody CreateBookmarkRequest request
     ) {
-        bookmarkService.createBookmark(accountInfo.id(), request);
+        bookmarkService.createBookmark(accountInfo.accountId(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("{bookmarkId}")
     public ResponseEntity<Void> deleteBookmark(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long bookmarkId
     ) {
-        bookmarkService.deleteBookmark(accountInfo.id(), bookmarkId);
+        bookmarkService.deleteBookmark(accountInfo.accountId(), bookmarkId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

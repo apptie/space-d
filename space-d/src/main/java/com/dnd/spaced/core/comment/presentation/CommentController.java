@@ -2,11 +2,12 @@ package com.dnd.spaced.core.comment.presentation;
 
 import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
-import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
-import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
+import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
+import com.dnd.spaced.global.auth.resolver.GuestAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.comment.CommentPageable;
 import jakarta.validation.Valid;
@@ -31,11 +32,11 @@ public class CommentController {
 
     @PostMapping("/words/{wordId}/comments")
     public ResponseEntity<Void> save(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
-        commentService.createComment(accountInfo.id(), wordId, request);
+        commentService.createComment(accountInfo.accountId(), wordId, request);
 
         URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
                                            .buildAndExpand(wordId)
@@ -46,32 +47,32 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
-        commentService.deleteComment(accountInfo.id(), commentId);
+    public ResponseEntity<Void> delete(@CurrentAccountInfo AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+        commentService.deleteComment(accountInfo.accountId(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Void> update(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody UpdateCommentRequest request,
             @PathVariable Long commentId
     ) {
-        commentService.updateComment(accountInfo.id(), commentId, request);
+        commentService.updateComment(accountInfo.accountId(), commentId, request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @GetMapping("/words/{wordId}/comments")
     public ResponseEntity<CommentCollectionResponse> readAllBy(
-            @AuthAccount(required = false) AuthAccountInfo accountInfo,
+            @CurrentAccountInfo GuestAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable
     ) {
         CommentCollectionResponse response = commentService.readComments(
-                accountInfo.id(),
+                accountInfo.accountId(),
                 wordId,
                 request.lastCommentId(),
                 pageable

@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthStore {
 
-    private final ThreadLocal<AuthAccountInfo> threadLocalAuthenticationStore = new ThreadLocal<>();
+    private final ThreadLocal<AccountInfo> threadLocalAuthenticationStore = new ThreadLocal<>();
 
-    public void set(AuthAccountInfo userInfo) {
+    public void set(AccountInfo userInfo) {
         threadLocalAuthenticationStore.set(userInfo);
     }
 
-    public AuthAccountInfo get() {
+    public AccountInfo get() {
         return threadLocalAuthenticationStore.get();
     }
 
