@@ -35,19 +35,19 @@ public class AdminWordController {
                              .build();
     }
 
-    @PatchMapping("/examples/{id}")
+    @PatchMapping("/examples/{wordExampleId}")
     public ResponseEntity<Void> updateWordExample(
-            @PathVariable Long id,
+            @PathVariable Long wordExampleId,
             @Valid @RequestBody UpdateWordExampleRequest request
     ) {
-        adminWordService.updateWordExample(id, request.example());
+        adminWordService.updateWordExample(wordExampleId, request.example());
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
-    @DeleteMapping("/{wordId}/examples/{exampleId}")
-    public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long exampleId) {
-        adminWordService.deleteWordExample(exampleId);
+    @DeleteMapping("/{wordId}/examples/{wordExampleId}")
+    public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long wordExampleId) {
+        adminWordService.deleteWordExample(wordExampleId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
