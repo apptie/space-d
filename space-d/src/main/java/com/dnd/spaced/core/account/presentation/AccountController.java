@@ -5,7 +5,7 @@ import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoReque
 import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @DeleteMapping("/withdrawal")
-    public ResponseEntity<Void> withdrawal(@AuthAccount AuthAccountInfo accountInfo) {
+    public ResponseEntity<Void> withdrawal(@AuthAccount AccountInfo accountInfo) {
         accountService.withdrawal(accountInfo.id());
 
         return ResponseEntityConst.NO_CONTENT;
@@ -33,7 +33,7 @@ public class AccountController {
 
     @PutMapping("/career-info")
     public ResponseEntity<Void> changeCareerInfo(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @Valid @RequestBody ChangeCareerInfoRequest request
     ) {
         accountService.changeCareerInfo(accountInfo.id(), request);
@@ -43,7 +43,7 @@ public class AccountController {
 
     @PutMapping("/profile-info")
     public ResponseEntity<Void> changeProfileInfo(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @Valid @RequestBody ChangeProfileInfoRequest request
     ) {
         accountService.changeProfileInfo(accountInfo.id(), request);
@@ -52,7 +52,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<AccountResponse> readAccount(@AuthAccount AuthAccountInfo accountInfo) {
+    public ResponseEntity<AccountResponse> readAccount(@AuthAccount AccountInfo accountInfo) {
         AccountResponse response = accountService.readAccount(accountInfo.id());
 
         return ResponseEntity.ok(response);

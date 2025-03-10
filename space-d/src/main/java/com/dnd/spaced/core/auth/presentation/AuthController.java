@@ -7,7 +7,7 @@ import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoReq
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
 import com.dnd.spaced.core.auth.presentation.exception.RefreshTokenNotFoundException;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.servlet.http.Cookie;
@@ -39,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountCareerInfo(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @Valid @RequestBody InitAccountCareerInfoRequest request
     ) {
         initAccountCareerInfoService.initCareerInfo(accountInfo.id(), request);

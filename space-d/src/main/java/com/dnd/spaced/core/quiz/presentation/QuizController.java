@@ -7,7 +7,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSear
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -31,7 +31,7 @@ public class QuizController {
 
     @PostMapping
     public ResponseEntity<Void> createQuiz(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @RequestBody @Valid CreateQuizRequest request
     ) {
         Long savedQuizId = quizService.createQuiz(accountInfo.id(), request);
@@ -45,7 +45,7 @@ public class QuizController {
 
     @PostMapping("/{quizId}/graded-answers")
     public ResponseEntity<Void> grade(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @PathVariable Long quizId,
             @RequestBody @Valid GradeQuizRequest request
     ) {
@@ -60,7 +60,7 @@ public class QuizController {
 
     @GetMapping("/graded-answers")
     public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
@@ -71,7 +71,7 @@ public class QuizController {
 
     @GetMapping("/{quizId}/graded-answers")
     public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
         GradedAnswerCollectionResponse response = quizService.readGradedAnswers(quizId);

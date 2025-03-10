@@ -6,7 +6,7 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.comment.CommentPageable;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class CommentController {
 
     @PostMapping("/words/{wordId}/comments")
     public ResponseEntity<Void> save(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
@@ -46,7 +46,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+    public ResponseEntity<Void> delete(@AuthAccount AccountInfo accountInfo, @PathVariable Long commentId) {
         commentService.deleteComment(accountInfo.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
@@ -54,7 +54,7 @@ public class CommentController {
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Void> update(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @Valid @RequestBody UpdateCommentRequest request,
             @PathVariable Long commentId
     ) {
@@ -65,7 +65,7 @@ public class CommentController {
 
     @GetMapping("/words/{wordId}/comments")
     public ResponseEntity<CommentCollectionResponse> readAllBy(
-            @AuthAccount(required = false) AuthAccountInfo accountInfo,
+            @AuthAccount(required = false) AccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable

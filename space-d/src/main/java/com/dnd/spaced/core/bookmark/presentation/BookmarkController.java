@@ -5,7 +5,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageable;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class BookmarkController {
 
     @GetMapping
     public ResponseEntity<BookmarkCollectionResponse> readBookmarks(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
@@ -40,7 +40,7 @@ public class BookmarkController {
 
     @PostMapping
     public ResponseEntity<Void> createBookmark(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @RequestBody @Valid CreateBookmarkRequest request
     ) {
         bookmarkService.createBookmark(accountInfo.id(), request);
@@ -50,7 +50,7 @@ public class BookmarkController {
 
     @DeleteMapping("{bookmarkId}")
     public ResponseEntity<Void> deleteBookmark(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @AuthAccount AccountInfo accountInfo,
             @PathVariable Long bookmarkId
     ) {
         bookmarkService.deleteBookmark(accountInfo.id(), bookmarkId);

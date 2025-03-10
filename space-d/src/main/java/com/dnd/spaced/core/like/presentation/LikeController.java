@@ -2,7 +2,7 @@ package com.dnd.spaced.core.like.presentation;
 
 import com.dnd.spaced.core.like.application.LikeService;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AuthAccountInfo;
+import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<Void> processLike(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+    public ResponseEntity<Void> processLike(@AuthAccount AccountInfo accountInfo, @PathVariable Long commentId) {
         likeService.processLike(accountInfo.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
