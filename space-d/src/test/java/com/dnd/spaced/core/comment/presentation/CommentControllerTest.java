@@ -108,7 +108,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
 
     @Test
     @WithMockUser("1")
-    void 댓글_수정_요청_성공() throws Exception {
+    void 댓글_수정_요청_성공_테스트() throws Exception {
         // given
         UpdateCommentRequest request = new UpdateCommentRequest("이 용어 쓰기는 하는건가요?");
 
@@ -143,7 +143,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
-    void 댓글_전체_조회_성공_테스트() throws Exception {
+    void 댓글_목록_조회_성공_테스트() throws Exception {
         // given
         CommentContentResponse commentContentResponse = new CommentContentResponse(1L, 1L, "이 용어 언제 쓰는건가요?", 0);
         CommentWriterResponse commentWriterResponse = new CommentWriterResponse(1L, "재빠른지구001", "earth.png");

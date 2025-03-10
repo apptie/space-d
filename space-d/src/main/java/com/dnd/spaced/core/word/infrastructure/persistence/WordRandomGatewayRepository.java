@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QWordRandom.wordRandom;
 
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 public class WordRandomGatewayRepository implements WordRandomRepository {
 
     private static final int RANDOM_BOUND = 1_000_000;
-    private static final String IGNORE_CATEGORY_NAME = "전체 실무";
 
     private final WordRandomCrudRepository wordRandomCrudRepository;
     private final JPAQueryFactory queryFactory;
@@ -54,10 +53,13 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
     }
 
     private BooleanExpression eqCategory(String categoryName) {
-        if (IGNORE_CATEGORY_NAME.equals(categoryName)) {
+        Category category = Category.findBy(categoryName)
+                                    .orElse(null);
+
+        if (category == null) {
             return null;
         }
 
-        return wordRandom.category.eq(Category.findBy(categoryName));
+        return wordRandom.category.eq(category);
     }
 }

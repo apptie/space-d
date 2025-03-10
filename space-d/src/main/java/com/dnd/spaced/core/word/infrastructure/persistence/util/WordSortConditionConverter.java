@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure.util;
+package com.dnd.spaced.core.word.infrastructure.persistence.util;
 
 import static com.dnd.spaced.core.word.domain.QWord.word;
 

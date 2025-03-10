@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
-import com.dnd.spaced.core.word.application.dto.request.SearchConditionDto;
-import com.dnd.spaced.core.word.application.dto.response.PopularWordDto;
-import com.dnd.spaced.core.word.application.dto.response.ReadAllWordDto;
-import com.dnd.spaced.core.word.application.dto.response.ReadWordDto;
-import com.dnd.spaced.core.word.application.dto.response.SearchedWordDto;
+import com.dnd.spaced.core.word.application.dto.request.ReadAllWordRequest;
+import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
+import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
+import com.dnd.spaced.core.word.application.dto.response.WordCollectionResponse;
+import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
@@ -17,7 +17,7 @@ import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWordInfo;
+import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +66,12 @@ class WordServiceTest {
         wordRepository.save(word);
 
         // when
-        ReadWordDto actual = wordService.read(word.getId());
+        WordResponse actual = wordService.read(word.getId());
 
         // then
         assertAll(
                 () -> assertThat(actual.name()).isEqualTo(name),
-                () -> assertThat(actual.categoryName()).isEqualTo(categoryName),
+                () -> assertThat(actual.category()).isEqualTo(categoryName),
                 () -> assertThat(actual.meaning()).isEqualTo(meaning),
                 () -> assertThat(events.stream(WordViewCountIncrementEvent.class).count()).isOne(),
                 () -> assertThat(events.stream(WordViewCountStatisticsEvent.class).count()).isOne()
@@ -100,11 +100,16 @@ class WordServiceTest {
 
         wordRepository.save(word);
 
+        ReadAllWordRequest request = new ReadAllWordRequest(null, null);
+
         // when
-        List<ReadAllWordDto> actual = wordService.readAllBy(null, null, PageRequest.of(0, 3));
+        WordCollectionResponse actual = wordService.readAllBy(request, Pageable.ofSize(10));
 
         // then
-        assertThat(actual).hasSize(1);
+        assertAll(
+                () -> assertThat(actual.words()).hasSize(1),
+                () -> assertThat(actual.lastWordName()).isEqualTo("Authorization")
+        );
     }
 
     @Test
@@ -123,29 +128,33 @@ class WordServiceTest {
         word.addPronunciation(pronunciation);
         wordRepository.save(word);
 
+        SearchWordRequest request = new SearchWordRequest("Authorization", null, null, null);
+
         // when
-        SearchConditionDto dto = new SearchConditionDto("Authorization", null, null, PageRequest.of(0, 3), null);
-        List<SearchedWordDto> actual = wordService.search(dto);
+        WordCollectionResponse actual = wordService.search(request, Pageable.ofSize(10));
 
         // then
-        assertThat(actual).hasSize(1);
+        assertAll(
+                () -> assertThat(actual.words()).hasSize(1),
+                () -> assertThat(actual.lastWordName()).isEqualTo("Authorization")
+        );
     }
 
     @Test
     void 많이_찾아본_용어_목록을_조회한다() {
         // given
-        PopularWordInfo popularWordInfo = new PopularWordInfo(1, 1L, "Authorization");
-        popularWordRepository.saveAll(List.of(popularWordInfo), LocalDateTime.now());
+        PopularWord popularWord = new PopularWord(1, 1L, "Authorization");
+        popularWordRepository.saveAll(List.of(popularWord), LocalDateTime.now());
 
         // when
-        List<PopularWordDto> actual = wordService.readPopularWordsAll();
+        PopularWordCollectionResponse actual = wordService.readPopularWordsAll();
 
         // then
         assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).rank()).isEqualTo(popularWordInfo.rank()),
-                () -> assertThat(actual.get(0).name()).isEqualTo(popularWordInfo.name()),
-                () -> assertThat(actual.get(0).wordId()).isEqualTo(popularWordInfo.wordId())
+                () -> assertThat(actual.popularWords()).hasSize(1),
+                () -> assertThat(actual.popularWords().get(0).rank()).isEqualTo(popularWord.rank()),
+                () -> assertThat(actual.popularWords().get(0).name()).isEqualTo(popularWord.name()),
+                () -> assertThat(actual.popularWords().get(0).wordId()).isEqualTo(popularWord.wordId())
         );
     }
 }

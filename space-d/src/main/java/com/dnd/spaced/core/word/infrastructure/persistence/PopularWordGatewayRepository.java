@@ -1,7 +1,7 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWordInfo;
+import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PopularWordRedisRepository implements PopularWordRepository {
+public class PopularWordGatewayRepository implements PopularWordRepository {
 
     private static final String KEY_PREFIX = "popular:info:";
     private static final String CACHE_KEY_PREFIX = "popular:id:";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final RedisTemplate<String, Long> popularWordIdRedisTemplate;
-    private final RedisTemplate<String, PopularWordInfo> popularWordRedisTemplate;
+    private final RedisTemplate<String, PopularWord> popularWordRedisTemplate;
 
     @Override
     public boolean existsBy(Long wordId, LocalDateTime localDateTime) {
@@ -31,7 +31,7 @@ public class PopularWordRedisRepository implements PopularWordRepository {
     }
 
     @Override
-    public List<PopularWordInfo> findAllBy(LocalDateTime localDateTime) {
+    public List<PopularWord> findAllBy(LocalDateTime localDateTime) {
         return popularWordRedisTemplate.opsForList()
                                        .range(calculateKey(KEY_PREFIX, localDateTime), 0, -1);
     }
@@ -43,20 +43,20 @@ public class PopularWordRedisRepository implements PopularWordRepository {
     }
 
     @Override
-    public void saveAll(List<PopularWordInfo> popularWordInfos, LocalDateTime localDateTime) {
-        savePopularWordInfos(popularWordInfos, localDateTime);
-        cachePopularWordIds(popularWordInfos, localDateTime);
+    public void saveAll(List<PopularWord> popularWords, LocalDateTime localDateTime) {
+        savePopularWordInfos(popularWords, localDateTime);
+        cachePopularWordIds(popularWords, localDateTime);
     }
 
-    private void savePopularWordInfos(List<PopularWordInfo> popularWordInfos, LocalDateTime localDateTime) {
+    private void savePopularWordInfos(List<PopularWord> popularWords, LocalDateTime localDateTime) {
         popularWordRedisTemplate.opsForList()
-                                .leftPushAll(calculateKey(KEY_PREFIX, localDateTime), popularWordInfos);
+                                .leftPushAll(calculateKey(KEY_PREFIX, localDateTime), popularWords);
     }
 
-    private void cachePopularWordIds(List<PopularWordInfo> popularWordInfos, LocalDateTime localDateTime) {
-        Long[] popularWordIds = popularWordInfos.stream()
-                                                .map(PopularWordInfo::wordId)
-                                                .toArray(Long[]::new);
+    private void cachePopularWordIds(List<PopularWord> popularWords, LocalDateTime localDateTime) {
+        Long[] popularWordIds = popularWords.stream()
+                                            .map(PopularWord::wordId)
+                                            .toArray(Long[]::new);
 
         popularWordIdRedisTemplate.opsForSet()
                                   .add(calculateKey(CACHE_KEY_PREFIX, localDateTime), popularWordIds);

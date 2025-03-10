@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;

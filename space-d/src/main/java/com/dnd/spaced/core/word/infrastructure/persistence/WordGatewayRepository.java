@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
@@ -8,11 +8,9 @@ import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
-import com.dnd.spaced.core.word.infrastructure.util.WordSortConditionConverter;
+import com.dnd.spaced.core.word.infrastructure.persistence.util.WordSortConditionConverter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -94,17 +93,14 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(WordCondition wordCondition, WordPageRequest pageRequest) {
+    public List<Word> findAllBy(Category category, String lastWordName, Pageable pageable) {
         return queryFactory.selectFrom(word)
-                           .where(
-                                   lastWordNameGt(pageRequest.lastWordName()),
-                                   categoryEq(wordCondition.category())
-                           )
+                           .where(gtLastWordName(lastWordName), eqCategory(category))
                            .orderBy(
-                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                   WordSortConditionConverter.convert(pageable)
                                                              .toArray(OrderSpecifier[]::new)
                            )
-                           .limit(pageRequest.pageable().getPageSize())
+                           .limit(pageable.getPageSize())
                            .fetch();
     }
 
@@ -117,9 +113,9 @@ public class WordGatewayRepository implements WordRepository {
                                            .toArray(BooleanExpression[]::new)
                            )
                            .where(
-                                   lastWordNameGt(pageRequest.lastWordName()),
+                                   gtLastWordName(pageRequest.lastWordName()),
                                    nameStartsWith(condition.name()),
-                                   categoryEq(condition.category())
+                                   eqCategory(condition.category())
                            )
                            .orderBy(
                                    WordSortConditionConverter.convert(pageRequest.pageable())
@@ -141,7 +137,7 @@ public class WordGatewayRepository implements WordRepository {
         return words;
     }
 
-    private BooleanExpression lastWordNameGt(String lastWordName) {
+    private BooleanExpression gtLastWordName(String lastWordName) {
         if (lastWordName == null) {
             return null;
         }
@@ -157,7 +153,7 @@ public class WordGatewayRepository implements WordRepository {
         return word.name.startsWith(name);
     }
 
-    private BooleanExpression categoryEq(Category category) {
+    private BooleanExpression eqCategory(Category category) {
         if (category == null) {
             return null;
         }

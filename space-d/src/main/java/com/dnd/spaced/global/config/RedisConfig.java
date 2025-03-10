@@ -1,6 +1,6 @@
 package com.dnd.spaced.global.config;
 
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWordInfo;
+import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +17,8 @@ public class RedisConfig {
     private final RedisConnectionFactory redisConnectionFactory;
 
     @Bean
-    public RedisTemplate<String, PopularWordInfo> popularWordInfoRedisTemplate() {
-        RedisTemplate<String, PopularWordInfo> popularWordInfoRedisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, PopularWord> popularWordInfoRedisTemplate() {
+        RedisTemplate<String, PopularWord> popularWordInfoRedisTemplate = new RedisTemplate<>();
 
         popularWordInfoRedisTemplate.setConnectionFactory(redisConnectionFactory);
         popularWordInfoRedisTemplate.setKeySerializer(new StringRedisSerializer());

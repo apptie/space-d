@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PronunciationQuerydslRepository implements PronunciationRepository {
+public class PronunciationGatewayRepository implements PronunciationRepository {
 
     private final JPAQueryFactory queryFactory;
     private final PronunciationCrudRepository pronunciationCrudRepository;

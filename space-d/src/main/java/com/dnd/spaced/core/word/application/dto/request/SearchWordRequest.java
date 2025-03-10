@@ -1,12 +1,18 @@
 package com.dnd.spaced.core.word.application.dto.request;
 
-import org.springframework.data.domain.Pageable;
+import jakarta.annotation.Nullable;
 
-public record SearchConditionDto(
+public record SearchWordRequest(
+        @Nullable
         String name,
+
+        @Nullable
         String categoryName,
+
+        @Nullable
         String pronunciation,
-        Pageable pageable,
+
+        @Nullable
         String lastWordName
 ) {
 }

@@ -3,7 +3,7 @@ package com.dnd.spaced.core.word.application.schedule;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWordInfo;
+import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.dnd.spaced.core.word.domain.repository.dto.response.ViewCountStatisticsRankDto;
 import java.time.Clock;
@@ -42,32 +42,32 @@ public class PopularWordScheduler {
                               .map(ViewCountStatisticsRankDto::wordId)
                               .toArray(Long[]::new);
         List<String> names = wordRepository.findNameAllBy(ids);
-        List<PopularWordInfo> popularWordInfos = calculatePopularWordInfo(ranking, names);
+        List<PopularWord> popularWords = calculatePopularWordInfo(ranking, names);
 
-        popularWordRepository.saveAll(popularWordInfos, today);
+        popularWordRepository.saveAll(popularWords, today);
     }
 
     private void updatePopularWordViewCount(LocalDateTime yesterday) {
         List<Long> ids = popularWordRepository.findAllBy(yesterday)
                                               .stream()
-                                              .map(PopularWordInfo::wordId)
+                                              .map(PopularWord::wordId)
                                               .toList();
         List<WordViewCountStatisticsDto> dtos = wordViewCountStatisticsRepository.findAllBy(ids, yesterday);
 
         wordRepository.updateViewCount(dtos);
     }
 
-    private List<PopularWordInfo> calculatePopularWordInfo(List<ViewCountStatisticsRankDto> ranking, List<String> names) {
-        List<PopularWordInfo> popularWordInfos = new ArrayList<>();
+    private List<PopularWord> calculatePopularWordInfo(List<ViewCountStatisticsRankDto> ranking, List<String> names) {
+        List<PopularWord> popularWords = new ArrayList<>();
 
         for (int i = 0; i < ranking.size(); i++) {
             ViewCountStatisticsRankDto targetRankDto = ranking.get(i);
             String targetName = names.get(i);
 
-            popularWordInfos.add(new PopularWordInfo(targetRankDto.rank(), targetRankDto.wordId(), targetName));
+            popularWords.add(new PopularWord(targetRankDto.rank(), targetRankDto.wordId(), targetName));
         }
 
-        return popularWordInfos;
+        return popularWords;
     }
 
     private void clearViewCountMetadata(LocalDateTime yesterday, LocalDateTime beforeYesterday) {

@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordExampleQuerydslRepository implements WordExampleRepository {
+public class WordExampleGatewayRepository implements WordExampleRepository {
 
     private final JPAQueryFactory queryFactory;
     private final WordExampleCrudRepository wordExampleCrudRepository;

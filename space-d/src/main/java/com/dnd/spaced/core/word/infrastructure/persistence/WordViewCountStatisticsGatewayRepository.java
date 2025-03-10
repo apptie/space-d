@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.infrastructure;
+package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordViewCountStatisticsRedisRepository implements WordViewCountStatisticsRepository {
+public class WordViewCountStatisticsGatewayRepository implements WordViewCountStatisticsRepository {
 
     private static final String KEY_PREFIX = "viewCount:";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

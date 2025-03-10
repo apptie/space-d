@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.word.domain;
 
+import com.dnd.spaced.core.word.domain.exception.InvalidCategoryNameException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordNameException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
@@ -26,6 +27,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Word extends BaseTimeEntity {
+
+    private static final String EXCEPTION_FORMAT = "잘못된 카테고리 이름 '%s'를 입력했습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +58,8 @@ public class Word extends BaseTimeEntity {
 
         this.name = name;
         this.wordMeaning = new WordMeaning(meaning);
-        this.category = Category.findBy(categoryName);
+        this.category = Category.findBy(categoryName)
+                                .orElseThrow(() -> new InvalidCategoryNameException(String.format(EXCEPTION_FORMAT, name)));;
     }
 
     public void addPronunciation(Pronunciation pronunciation) {
