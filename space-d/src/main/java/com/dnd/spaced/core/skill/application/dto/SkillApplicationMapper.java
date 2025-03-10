@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.skill.application;
+package com.dnd.spaced.core.skill.application.dto;
 
 import com.dnd.spaced.core.skill.application.dto.response.SkillResponse;
 import com.dnd.spaced.core.skill.domain.Skill;

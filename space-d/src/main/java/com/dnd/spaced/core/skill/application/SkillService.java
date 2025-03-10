@@ -2,6 +2,7 @@ package com.dnd.spaced.core.skill.application;
 
 import com.dnd.spaced.core.quiz.domain.QuizMetadata;
 import com.dnd.spaced.core.quiz.domain.repository.QuizMetadataRepository;
+import com.dnd.spaced.core.skill.application.dto.SkillApplicationMapper;
 import com.dnd.spaced.core.skill.application.dto.response.SkillResponse;
 import com.dnd.spaced.core.skill.application.exception.QuizMetadataNotFoundException;
 import com.dnd.spaced.core.skill.domain.Skill;
