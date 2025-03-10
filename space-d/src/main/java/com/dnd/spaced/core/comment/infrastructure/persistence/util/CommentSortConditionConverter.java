@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.comment.infrastructure.util;
+package com.dnd.spaced.core.comment.infrastructure.persistence.util;
 
 import static com.dnd.spaced.core.comment.domain.QComment.comment;
 

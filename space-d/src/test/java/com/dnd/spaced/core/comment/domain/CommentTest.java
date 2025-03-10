@@ -28,7 +28,7 @@ class CommentTest {
         );
 
         assertAll(
-                () -> assertThat(actual.getAccountId()).isEqualTo(1L),
+                () -> assertThat(actual.getWriterId()).isEqualTo(1L),
                 () -> assertThat(actual.getWordId()).isEqualTo(1L),
                 () -> assertThat(actual.getContent()).isEqualTo("이 용어 언제 쓰는건가요?")
         );

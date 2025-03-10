@@ -19,6 +19,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 
+@SuppressWarnings("NonAsciiCharacters")
 class ReportControllerTest extends CommonControllerSliceTest {
 
     @Test

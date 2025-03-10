@@ -34,15 +34,19 @@ public class ReportService {
     private void processReport(Comment comment, Long reporterId, ReportRequest request) {
         validateReportedComment(comment, reporterId);
 
-        ReportReason reportReason = ReportReason.findBy(request.cause())
-                                                .orElseThrow(
-                                                        () -> new ReportReasonNotFoundException(
-                                                                "지정한 원인의 신고 사유를 찾지 못했습니다."
-                                                        )
-                                                );
+        ReportReason reportReason = findReportReason(request);
         Report report = new Report(reportReason, request.commentId(), reporterId);
 
         reportRepository.save(report);
+    }
+
+    private ReportReason findReportReason(ReportRequest request) {
+        return ReportReason.findBy(request.cause())
+                           .orElseThrow(
+                                   () -> new ReportReasonNotFoundException(
+                                           "지정한 원인의 신고 사유를 찾지 못했습니다."
+                                   )
+                           );
     }
 
     private void validateReportedComment(Comment comment, Long reporterId) {
