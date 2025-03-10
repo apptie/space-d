@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class LikeQuerydslRepository implements LikeRepository {
+public class LikeGatewayRepository implements LikeRepository {
 
     private final JPAQueryFactory queryFactory;
     private final LikeCrudRepository likeCrudRepository;
