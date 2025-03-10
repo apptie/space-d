@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.comment.infrastructure;
+package com.dnd.spaced.core.comment.infrastructure.persistence;
 
 import com.dnd.spaced.core.comment.domain.Comment;
 import org.springframework.data.repository.CrudRepository;

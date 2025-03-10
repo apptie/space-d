@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.quiz.infrastructure.repository;
+package com.dnd.spaced.core.quiz.infrastructure.persistence;
 
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.report.infrastructure.repository;
+package com.dnd.spaced.core.report.infrastructure.persistence;
 
 import com.dnd.spaced.core.report.domain.Report;
 import org.springframework.data.jpa.repository.JpaRepository;

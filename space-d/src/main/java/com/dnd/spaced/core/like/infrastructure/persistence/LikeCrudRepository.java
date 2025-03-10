@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.like.infrastructure;
+package com.dnd.spaced.core.like.infrastructure.persistence;
 
 import com.dnd.spaced.core.like.domain.Like;
 import org.springframework.data.repository.CrudRepository;

@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.like.infrastructure;
+package com.dnd.spaced.core.like.infrastructure.persistence;
 
 import static com.dnd.spaced.core.like.domain.QLike.like;
 

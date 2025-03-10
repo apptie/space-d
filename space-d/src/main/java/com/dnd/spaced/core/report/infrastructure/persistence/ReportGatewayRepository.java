@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.report.infrastructure.repository;
+package com.dnd.spaced.core.report.infrastructure.persistence;
 
 import static com.dnd.spaced.core.report.domain.QReport.report;
 

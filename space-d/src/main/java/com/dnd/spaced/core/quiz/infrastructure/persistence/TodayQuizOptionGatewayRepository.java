@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.quiz.infrastructure.repository;
+package com.dnd.spaced.core.quiz.infrastructure.persistence;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizOptionRepository;

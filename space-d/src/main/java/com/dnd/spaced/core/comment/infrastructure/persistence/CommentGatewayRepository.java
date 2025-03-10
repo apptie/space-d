@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.comment.infrastructure;
+package com.dnd.spaced.core.comment.infrastructure.persistence;
 
 import static com.dnd.spaced.core.account.domain.QAccount.account;
 import static com.dnd.spaced.core.comment.domain.QComment.comment;
@@ -7,7 +7,7 @@ import static com.dnd.spaced.core.like.domain.QLike.like;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
-import com.dnd.spaced.core.comment.infrastructure.util.CommentSortConditionConverter;
+import com.dnd.spaced.core.comment.infrastructure.persistence.util.CommentSortConditionConverter;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
