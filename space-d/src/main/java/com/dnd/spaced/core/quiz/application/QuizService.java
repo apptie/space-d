@@ -5,7 +5,6 @@ import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
@@ -90,25 +89,19 @@ public class QuizService {
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
     ) {
-        List<GradedAnswerResponse> responses = gradedAnswerRepository.findAllBy(
-                                                                             accountId,
-                                                                             request.lastQuizGradedAnswerId(),
-                                                                             pageable
-                                                                     )
-                                                                     .stream()
-                                                                     .map(QuizApplicationMapper::toDto)
-                                                                     .toList();
+        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(
+                accountId,
+                request.lastQuizGradedAnswerId(),
+                pageable
+        );
 
-        return new GradedAnswerCollectionResponse(responses);
+        return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
     public GradedAnswerCollectionResponse findGradedAnswersAllBy(Long quizId) {
-        List<GradedAnswerResponse> responses = gradedAnswerRepository.findAllBy(quizId)
-                                                                     .stream()
-                                                                     .map(QuizApplicationMapper::toDto)
-                                                                     .toList();
+        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(quizId);
 
-        return new GradedAnswerCollectionResponse(responses);
+        return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
     public QuizResponse findQuizBy(Long id) {
