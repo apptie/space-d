@@ -25,7 +25,7 @@ public class AdminReportController {
     private final AdminReportService adminReportService;
 
     @GetMapping
-    public ResponseEntity<ReportCollectionResponse> findAllBy(
+    public ResponseEntity<ReportCollectionResponse> readReports(
             ReadAllReportSearchRequest request,
             @ReportPageable Pageable pageable
     ) {
