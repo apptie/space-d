@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.bookmark.application;
 
-import com.dnd.spaced.core.bookmark.application.dto.BookmarkApplicationMapper;
+import com.dnd.spaced.core.bookmark.application.dto.mapper.BookmarkApplicationMapper;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
