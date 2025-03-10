@@ -57,7 +57,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/words/1")
         );
 
-        verify(commentService).create(anyLong(), anyLong(), any(CreateCommentRequest.class));
+        verify(commentService).createComment(anyLong(), anyLong(), any(CreateCommentRequest.class));
 
         댓글_작성_요청_문서화(resultActions);
     }
@@ -88,7 +88,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(commentService).delete(anyLong(), anyLong());
+        verify(commentService).deleteComment(anyLong(), anyLong());
 
         댓글_삭제_요청_문서화(resultActions);
     }
@@ -121,7 +121,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(commentService).update(anyLong(), anyLong(), any(UpdateCommentRequest.class));
+        verify(commentService).updateComment(anyLong(), anyLong(), any(UpdateCommentRequest.class));
 
         댓글_수정_요청_문서화(resultActions);
     }
@@ -150,7 +150,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
         CommentResponse commentResponse = new CommentResponse(commentContentResponse, commentWriterResponse, false);
         CommentCollectionResponse response = new CommentCollectionResponse(List.of(commentResponse), 1L);
 
-        given(commentService.readAllBy(eq(null), anyLong(), eq(null), any())).willReturn(response);
+        given(commentService.readComments(eq(null), anyLong(), eq(null), any())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -171,7 +171,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastCommentId", is(1L), Long.class)
         );
 
-        verify(commentService).readAllBy(any(), anyLong(), any(), any(Pageable.class));
+        verify(commentService).readComments(any(), anyLong(), any(), any(Pageable.class));
 
         댓글_전체_조회_문서화(resultActions);
     }

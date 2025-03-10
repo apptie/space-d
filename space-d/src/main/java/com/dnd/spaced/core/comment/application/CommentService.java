@@ -31,7 +31,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void create(Long accountId, Long wordId, CreateCommentRequest request) {
+    public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
         Account writer = findAccount(accountId);
         Word word = findWord(wordId);
         Comment comment = new Comment(writer.getId(), word.getId(), request.content());
@@ -40,7 +40,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void delete(Long accountId, Long commentId) {
+    public void deleteComment(Long accountId, Long commentId) {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
@@ -50,7 +50,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(Long accountId, Long commentId, UpdateCommentRequest request) {
+    public void updateComment(Long accountId, Long commentId, UpdateCommentRequest request) {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
@@ -58,7 +58,7 @@ public class CommentService {
         comment.changeContent(request.content());
     }
 
-    public CommentCollectionResponse readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
+    public CommentCollectionResponse readComments(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         List<LikedCommentDto> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
 
         return CommentApplicationMapper.toDto(comments);

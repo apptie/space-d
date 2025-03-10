@@ -53,7 +53,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.create(-999L, word.getId(), request))
+        assertThatThrownBy(() -> commentService.createComment(-999L, word.getId(), request))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
                 .hasMessage("유효하지 않은 회원입니다.");
     }
@@ -64,7 +64,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.create(writer.getId(), -1L, request))
+        assertThatThrownBy(() -> commentService.createComment(writer.getId(), -1L, request))
                 .isInstanceOf(AssociationWordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
@@ -76,7 +76,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
         CreateCommentRequest request = new CreateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.create(writer.getId(), word.getId(), request))
+        assertThatThrownBy(() -> commentService.createComment(writer.getId(), word.getId(), request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -87,7 +87,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when
-        commentService.create(writer.getId(), word.getId(), request);
+        commentService.createComment(writer.getId(), word.getId(), request);
 
         // then
         Optional<Comment> actual = commentRepository.findBy(1L);
@@ -102,7 +102,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     @Test
     void 없거나_탈퇴한_회원_식별자로는_댓글을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.delete(-1L, 1L))
+        assertThatThrownBy(() -> commentService.deleteComment(-1L, 1L))
                 .isInstanceOf(AssociationAccountNotFoundException.class)
                 .hasMessage("유효하지 않은 회원입니다.");
     }
@@ -110,7 +110,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     @Test
     void 없는_댓글_식별자를_통해_댓글을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.delete(writer.getId(), -1L))
+        assertThatThrownBy(() -> commentService.deleteComment(writer.getId(), -1L))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
@@ -119,10 +119,10 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 댓글_작성자가_아니라면_댓글을_삭제할_수_없다() {
         // given
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest);
 
         // when & then
-        assertThatThrownBy(() -> commentService.delete(reader.getId(), 1L))
+        assertThatThrownBy(() -> commentService.deleteComment(reader.getId(), 1L))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 삭제할 권한이 없습니다.");
     }
@@ -131,10 +131,10 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 댓글을_삭제한다() {
         // given
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), request);
+        commentService.createComment(writer.getId(), word.getId(), request);
 
         // when & then
-        assertDoesNotThrow(() -> commentService.delete(writer.getId(), 1L));
+        assertDoesNotThrow(() -> commentService.deleteComment(writer.getId(), 1L));
     }
 
     @Test
@@ -144,7 +144,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
 
         // when & then
         assertThatThrownBy(() ->
-                commentService.update(
+                commentService.updateComment(
                         -999L,
                         1L,
                         request
@@ -159,7 +159,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(writer.getId(), -999L, request))
+        assertThatThrownBy(() -> commentService.updateComment(writer.getId(), -999L, request))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
@@ -168,11 +168,11 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 댓글_작성자가_아니라면_댓글을_수정할_수_없다() {
         // given
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest);
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(reader.getId(), 1L, request))
+        assertThatThrownBy(() -> commentService.updateComment(reader.getId(), 1L, request))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 수정할 권한이 없습니다.");
     }
@@ -182,11 +182,11 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 비어_있는_내용으로_댓글을_수정할_수_없다(String invalidContent) {
         // given
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest);
         UpdateCommentRequest request = new UpdateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.update(writer.getId(), word.getId(), request))
+        assertThatThrownBy(() -> commentService.updateComment(writer.getId(), word.getId(), request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -195,25 +195,25 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 댓글을_수정한다() {
         // given
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest);
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertDoesNotThrow(() -> commentService.update(writer.getId(), 1L, request));
+        assertDoesNotThrow(() -> commentService.updateComment(writer.getId(), 1L, request));
     }
 
     @Test
     void 로그인_하지_않고_특정_용어의_댓글_목록을_조회한다() {
         // given
         CreateCommentRequest createCommentRequest1 = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest1);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest1);
         CreateCommentRequest createCommentRequest2 = new CreateCommentRequest("쓰는걸 본 적이 없는 것 같네요");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest2);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest2);
         Like like = new Like(writer.getId(), 1L);
         likeRepository.save(like);
 
         // when
-        CommentCollectionResponse actual = commentService.readAllBy(
+        CommentCollectionResponse actual = commentService.readComments(
                 null,
                 word.getId(),
                 null,
@@ -234,14 +234,14 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     void 로그인하고_특정_용어의_댓글_목록을_조회한다() {
         // given
         CreateCommentRequest createCommentRequest1 = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest1);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest1);
         CreateCommentRequest createCommentRequest2 = new CreateCommentRequest("쓰는걸 본 적이 없는 것 같네요");
-        commentService.create(writer.getId(), word.getId(), createCommentRequest2);
+        commentService.createComment(writer.getId(), word.getId(), createCommentRequest2);
         Like like = new Like(writer.getId(), 1L);
         likeRepository.save(like);
 
         // when
-        CommentCollectionResponse actual = commentService.readAllBy(
+        CommentCollectionResponse actual = commentService.readComments(
                 writer.getId(),
                 word.getId(),
                 null,
