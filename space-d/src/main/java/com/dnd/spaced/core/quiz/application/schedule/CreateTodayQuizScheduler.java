@@ -47,6 +47,14 @@ public class CreateTodayQuizScheduler {
         validateQuizCreation(quizCategory);
 
         List<Word> randomWords = findRandomWords(quizCategory);
+        TodayQuiz todayQuiz = createTodayQuiz(randomWords, quizCategory);
+
+        todayQuizRepository.save(todayQuiz);
+
+        initTodayQuizOption(randomWords, todayQuiz);
+    }
+
+    private TodayQuiz createTodayQuiz(List<Word> randomWords, QuizCategory quizCategory) {
         Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
                 answerWord.getId(),
@@ -58,10 +66,11 @@ public class CreateTodayQuizScheduler {
                 answerWord.getWordMeaning().getMeaning(),
                 todayQuizAnswerOption
         );
-        TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
 
-        todayQuizRepository.save(todayQuiz);
+        return new TodayQuiz(todayQuizQuestion);
+    }
 
+    private void initTodayQuizOption(List<Word> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
         for (int i = 0; i < randomWords.size(); i++) {
             Word word = randomWords.get(i);
@@ -77,7 +86,7 @@ public class CreateTodayQuizScheduler {
                                                                   "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
                                                           );
 
-        if (!QuizWordCountValidator.isValidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        if (QuizWordCountValidator.isInvalidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidTodayQuizWordCountException("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }

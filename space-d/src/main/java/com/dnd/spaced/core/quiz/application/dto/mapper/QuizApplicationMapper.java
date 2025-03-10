@@ -1,6 +1,7 @@
 package com.dnd.spaced.core.quiz.application.dto.mapper;
 
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse.QuizQuestionResponse.QuizOptionResponse;
 import com.dnd.spaced.core.quiz.domain.GradedAnswer;
@@ -27,7 +28,19 @@ public final class QuizApplicationMapper {
         );
     }
 
-    public static GradedAnswerResponse toDto(GradedAnswer gradedAnswer) {
+    public static GradedAnswerCollectionResponse toDto(List<GradedAnswer> gradedAnswers) {
+        if (gradedAnswers.isEmpty()) {
+            return new GradedAnswerCollectionResponse(List.of(), null);
+        }
+
+        List<GradedAnswerResponse> responses = gradedAnswers.stream()
+                                                            .map(QuizApplicationMapper::toDto)
+                                                            .toList();
+
+        return new GradedAnswerCollectionResponse(responses, responses.get(responses.size() - 1).id());
+    }
+
+    private static GradedAnswerResponse toDto(GradedAnswer gradedAnswer) {
         QuizQuestion question = gradedAnswer.getQuizQuestion();
 
         return new GradedAnswerResponse(

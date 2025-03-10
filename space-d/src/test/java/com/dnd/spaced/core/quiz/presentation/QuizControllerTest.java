@@ -1,12 +1,22 @@
 package com.dnd.spaced.core.quiz.presentation;
 
+import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,15 +26,17 @@ import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerResponse.QuizQuestionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse.QuizQuestionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class QuizControllerTest extends CommonControllerSliceTest {
@@ -38,13 +50,27 @@ class QuizControllerTest extends CommonControllerSliceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/quizzes").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
                 status().isCreated(),
                 header().string("Location", "/quizzes/1")
+        );
+
+        verify(quizService).save(anyLong(), any(CreateQuizRequest.class));
+
+        퀴즈_생성_요청_문서화(resultActions);
+    }
+
+    private void 퀴즈_생성_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        )
+                )
         );
     }
 
@@ -57,13 +83,34 @@ class QuizControllerTest extends CommonControllerSliceTest {
         GradeQuizRequest request = new GradeQuizRequest(new int[]{0, 1, 2, 3, 2});
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 post("/quizzes/{quizId}/graded-answers", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                                             .contentType(MediaType.APPLICATION_JSON)
                                                             .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(
                 status().isCreated(),
                 header().string("Location", "/quizzes/1/graded-answer")
+        );
+
+        verify(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
+
+        퀴즈_채점_요청_문서화(resultActions);
+    }
+
+    private void 퀴즈_채점_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("quizId").description("퀴즈 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("answers").type(JsonFieldType.ARRAY).description("퀴즈 문제 답")
+                                                        .attributes(field("constraints", "인덱스 기반"))
+                        )
+                )
         );
     }
 
@@ -152,29 +199,72 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 true
         );
         GradedAnswerCollectionResponse response = new GradedAnswerCollectionResponse(
-                List.of(gradedAnswerResponse1, gradedAnswerResponse2, gradedAnswerResponse3, gradedAnswerResponse4, gradedAnswerResponse5)
+                List.of(
+                        gradedAnswerResponse1,
+                        gradedAnswerResponse2,
+                        gradedAnswerResponse3,
+                        gradedAnswerResponse4,
+                        gradedAnswerResponse5
+                ),
+                gradedAnswerResponse5.id()
         );
         given(quizService.findGradedAnswersAllBy(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/quizzes/graded-answers").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                               .accept(MediaType.APPLICATION_JSON)
-
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("answers").exists(),
                 jsonPath("answers.size()").value(5),
                 jsonPath("answers[*].accountId").exists(),
                 jsonPath("answers[*].quizId").exists(),
-                jsonPath("answers[*].readQuizQuestion").exists(),
-                jsonPath("answers[*].readQuizQuestion.id").exists(),
-                jsonPath("answers[*].readQuizQuestion.quizCategory").exists(),
-                jsonPath("answers[*].readQuizQuestion.question").exists(),
-                jsonPath("answers[*].readQuizQuestion.questionContent").exists(),
+                jsonPath("answers[*].quizQuestion").exists(),
+                jsonPath("answers[*].quizQuestion.id").exists(),
+                jsonPath("answers[*].quizQuestion.quizCategory").exists(),
+                jsonPath("answers[*].quizQuestion.question").exists(),
+                jsonPath("answers[*].quizQuestion.questionContent").exists(),
                 jsonPath("answers[*].selectedQuizOptionContent").exists(),
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
                 jsonPath("answers[*].isCorrect").exists()
+        );
+
+        verify(quizService).findGradedAnswersAllBy(
+                anyLong(),
+                any(ReadQuizGradedAnswerSearchRequest.class),
+                any(Pageable.class)
+        );
+
+        회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_문서화(resultActions);
+    }
+
+    private void 회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        queryParameters(
+                                parameterWithName("lastQuizGradedAnswerId").description("마지막으로 조회한 회원 제출 답 ID")
+                                                                                   .optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("answers").type(JsonFieldType.ARRAY).description("회원이 제출한 답 목록"),
+                                fieldWithPath("answers[*].id").type(JsonFieldType.NUMBER).description("회원이 제출한 답 목록"),
+                                fieldWithPath("answers[*].accountId").type(JsonFieldType.NUMBER).description("퀴즈 생성 회원 ID"),
+                                fieldWithPath("answers[*].quizId").type(JsonFieldType.NUMBER).description("퀴즈 ID"),
+                                fieldWithPath("answers[*].quizQuestion").type(JsonFieldType.OBJECT).description("퀴즈 문제"),
+                                fieldWithPath("answers[*].quizQuestion.id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
+                                fieldWithPath("answers[*].quizQuestion.quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
+                                fieldWithPath("answers[*].quizQuestion.question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
+                                fieldWithPath("answers[*].quizQuestion.questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("answers[*].selectedQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 회원 제출 답 내용"),
+                                fieldWithPath("answers[*].answerQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 정답 내용"),
+                                fieldWithPath("answers[*].isCorrect").type(JsonFieldType.BOOLEAN).description("정답 여부"),
+                                fieldWithPath("lastGradedAnswerId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 퀴즈 제출 답 ID")
+                        )
+                )
         );
     }
 
@@ -263,31 +353,68 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 true
         );
         GradedAnswerCollectionResponse response = new GradedAnswerCollectionResponse(
-                List.of(gradedAnswerResponse1, gradedAnswerResponse2, gradedAnswerResponse3, gradedAnswerResponse4,
-                        gradedAnswerResponse5)
+                List.of(
+                        gradedAnswerResponse1,
+                        gradedAnswerResponse2,
+                        gradedAnswerResponse3,
+                        gradedAnswerResponse4,
+                        gradedAnswerResponse5
+                ),
+                gradedAnswerResponse5.id()
         );
 
         given(quizService.findGradedAnswersAllBy(anyLong())).willReturn(response);
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/quizzes/{quizId}/graded-answers", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
-                                                           .accept(MediaType.APPLICATION_JSON)
-
+                                                .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("answers").exists(),
                 jsonPath("answers.size()").value(5),
                 jsonPath("answers[*].accountId").exists(),
                 jsonPath("answers[*].quizId").exists(),
-                jsonPath("answers[*].readQuizQuestion").exists(),
-                jsonPath("answers[*].readQuizQuestion.id").exists(),
-                jsonPath("answers[*].readQuizQuestion.quizCategory").exists(),
-                jsonPath("answers[*].readQuizQuestion.question").exists(),
-                jsonPath("answers[*].readQuizQuestion.questionContent").exists(),
+                jsonPath("answers[*].quizQuestion").exists(),
+                jsonPath("answers[*].quizQuestion.id").exists(),
+                jsonPath("answers[*].quizQuestion.quizCategory").exists(),
+                jsonPath("answers[*].quizQuestion.question").exists(),
+                jsonPath("answers[*].quizQuestion.questionContent").exists(),
                 jsonPath("answers[*].selectedQuizOptionContent").exists(),
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
                 jsonPath("answers[*].isCorrect").exists()
+        );
+
+        verify(quizService).findGradedAnswersAllBy(anyLong());
+
+        특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(resultActions);
+    }
+
+    private void 특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("quizId").description("퀴즈 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("answers").type(JsonFieldType.ARRAY).description("회원이 제출한 답 목록"),
+                                fieldWithPath("answers[*].id").type(JsonFieldType.NUMBER).description("회원이 제출한 답 목록"),
+                                fieldWithPath("answers[*].accountId").type(JsonFieldType.NUMBER).description("퀴즈 생성 회원 ID"),
+                                fieldWithPath("answers[*].quizId").type(JsonFieldType.NUMBER).description("퀴즈 ID"),
+                                fieldWithPath("answers[*].quizQuestion").type(JsonFieldType.OBJECT).description("퀴즈 문제"),
+                                fieldWithPath("answers[*].quizQuestion.id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
+                                fieldWithPath("answers[*].quizQuestion.quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
+                                fieldWithPath("answers[*].quizQuestion.question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
+                                fieldWithPath("answers[*].quizQuestion.questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("answers[*].selectedQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 회원 제출 답 내용"),
+                                fieldWithPath("answers[*].answerQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 정답 내용"),
+                                fieldWithPath("answers[*].isCorrect").type(JsonFieldType.BOOLEAN).description("정답 여부"),
+                                fieldWithPath("lastGradedAnswerId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 퀴즈 제출 답 ID")
+                        )
+                )
         );
     }
 
@@ -297,7 +424,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
         given(quizService.findQuizBy(anyLong())).willReturn(createQuizResponse());
 
         // when & then
-        mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/quizzes/{quizId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(
                 status().isOk(),
@@ -307,7 +434,8 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizCategory", is("개발")),
                 jsonPath("quizQuestions[0].question", is("다음 예문을 보고 예문에 맞는 용어를 선택해주세요.")),
-                jsonPath("quizQuestions[0].questionContent", is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
+                jsonPath("quizQuestions[0].questionContent",
+                        is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
                 jsonPath("quizQuestions[0].quizOptions").exists(),
                 jsonPath("quizQuestions[0].quizOptions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizOptions[0].content", is("Authorization")),
@@ -318,6 +446,36 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].quizOptions[3].id", is(4L), Long.class),
                 jsonPath("quizQuestions[0].quizOptions[3].content", is("locale")),
                 jsonPath("quizQuestions[0].answerOptionWordId", is(1L), Long.class)
+        );
+
+        verify(quizService).findQuizBy(anyLong());
+
+        퀴즈_조회_요청_문서화(resultActions);
+    }
+
+    private void 퀴즈_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("quizId").description("퀴즈 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("퀴즈 ID"),
+                                fieldWithPath("accountId").type(JsonFieldType.NUMBER).description("퀴즈 생성 퀴즈 생성 회원 ID"),
+                                fieldWithPath("quizQuestions").type(JsonFieldType.ARRAY).description("퀴즈 문제 목록"),
+                                fieldWithPath("quizQuestions[*].id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
+                                fieldWithPath("quizQuestions[*].quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
+                                fieldWithPath("quizQuestions[*].question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
+                                fieldWithPath("quizQuestions[*].questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("quizQuestions[*].quizOptions").type(JsonFieldType.ARRAY).description("퀴즈 문제 보기"),
+                                fieldWithPath("quizQuestions[*].quizOptions[*].id").type(JsonFieldType.NUMBER).description("퀴즈 문제 보기 ID"),
+                                fieldWithPath("quizQuestions[*].quizOptions[*].content").type(JsonFieldType.STRING).description("퀴즈 문제 보기 내용"),
+                                fieldWithPath("quizQuestions[*].answerOptionWordId").type(JsonFieldType.NUMBER).description("퀴즈 문제 정답 용어 ID")
+                        )
+                )
         );
     }
 

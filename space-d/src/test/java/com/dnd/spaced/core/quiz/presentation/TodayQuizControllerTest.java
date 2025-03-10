@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -73,6 +74,8 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion.todayQuizOptions[*].content").exists()
         );
 
+        verify(todayQuizService).findLatest();
+
         최신_오늘의_퀴즈_요청_문서화(resultActions);
     }
 
@@ -136,6 +139,8 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion.todayQuizOptions[*].content").exists()
         );
 
+        verify(todayQuizService).findBy(anyLong());
+
         오늘의_퀴즈_조회_요청_문서화(resultActions);
     }
 
@@ -183,6 +188,8 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 status().isCreated(),
                 header().string("Location", "/today-quizzes/1/graded-answers")
         );
+
+        verify(todayQuizService).grade(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
 
         오늘의_퀴즈_채점_요청_문서화(resultActions);
     }
@@ -255,6 +262,12 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[0].todayQuizQuestion.questionContent").value("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 jsonPath("answers[0].selectedQuizOptionContent").value("Authorization"),
                 jsonPath("answers[0].answerQuizOptionContent").value("Authorization")
+        );
+
+        verify(todayQuizService).findTodayQuizGradedAnswerAllBy(
+                anyLong(),
+                any(ReadTodayQuizGradedAnswerSearchRequest.class),
+                any(Pageable.class)
         );
 
         회원이_제출한_오늘의_퀴즈에_대한_채점_결과_목록_조회_요청_문서화(resultActions);
@@ -330,6 +343,8 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("selectedQuizOptionContent").value("Authorization"),
                 jsonPath("answerQuizOptionContent").value("Authorization")
         );
+
+        verify(todayQuizService).findTodayQuizGradedAnswerBy(anyLong(), anyLong());
 
         특정_오늘의_퀴즈에_대한_채점_결과_조회_요청_문서화(resultActions);
     }
