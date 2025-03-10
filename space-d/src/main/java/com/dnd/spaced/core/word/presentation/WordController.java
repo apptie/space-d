@@ -23,14 +23,14 @@ public class WordController {
     private final WordService wordService;
 
     @GetMapping("/{wordId}")
-    public ResponseEntity<WordResponse> read(@PathVariable Long wordId) {
+    public ResponseEntity<WordResponse> readWord(@PathVariable Long wordId) {
         WordResponse response = wordService.readWord(wordId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<WordCollectionResponse> readAllBy(
+    public ResponseEntity<WordCollectionResponse> readWords(
             ReadAllWordRequest request,
             @WordPageable Pageable pageable
     ) {
@@ -40,7 +40,7 @@ public class WordController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<WordCollectionResponse> search(
+    public ResponseEntity<WordCollectionResponse> searchWord(
             SearchWordRequest request,
             @WordPageable Pageable pageable
     ) {
@@ -50,7 +50,7 @@ public class WordController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<PopularWordCollectionResponse> readPopularWordsAll() {
+    public ResponseEntity<PopularWordCollectionResponse> readPopularWords() {
         PopularWordCollectionResponse response = wordService.readPopularWords();
 
         return ResponseEntity.ok(response);
