@@ -19,12 +19,7 @@ public class SkillService {
     private final QuizMetadataRepository quizMetadataRepository;
 
     public SkillResponse findBy(Long accountId) {
-        QuizMetadata quizMetadata = quizMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
-                                                          .orElseThrow(
-                                                                  () -> new QuizMetadataNotFoundException(
-                                                                          "퀴즈 메타데이터가 정상적으로 설정되지 않았습니다."
-                                                                  )
-                                                          );
+        QuizMetadata quizMetadata = findQuizMetadata();
 
         return skillRepository.findBy(accountId)
                               .map(skill -> handleFoundSkill(skill, quizMetadata))
@@ -44,5 +39,14 @@ public class SkillService {
                 totalQuizQuestionCorrectPercent,
                 totalTodayQuizQuestionCorrectPercent
         );
+    }
+
+    private QuizMetadata findQuizMetadata() {
+        return quizMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
+                                     .orElseThrow(
+                                             () -> new QuizMetadataNotFoundException(
+                                                     "퀴즈 메타데이터가 정상적으로 설정되지 않았습니다."
+                                             )
+                                     );
     }
 }
