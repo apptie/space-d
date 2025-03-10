@@ -19,7 +19,7 @@ public class SkillService {
     private final SkillRepository skillRepository;
     private final QuizMetadataRepository quizMetadataRepository;
 
-    public SkillResponse findBy(Long accountId) {
+    public SkillResponse readSkill(Long accountId) {
         QuizMetadata quizMetadata = findQuizMetadata();
 
         return skillRepository.findBy(accountId)
