@@ -45,7 +45,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 퀴즈_생성_요청_성공_테스트() throws Exception {
         // given
-        given(quizService.save(anyLong(), any(CreateQuizRequest.class))).willReturn(1L);
+        given(quizService.createQuiz(anyLong(), any(CreateQuizRequest.class))).willReturn(1L);
 
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
@@ -59,7 +59,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/quizzes/1")
         );
 
-        verify(quizService).save(anyLong(), any(CreateQuizRequest.class));
+        verify(quizService).createQuiz(anyLong(), any(CreateQuizRequest.class));
 
         퀴즈_생성_요청_문서화(resultActions);
     }
@@ -208,7 +208,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 ),
                 gradedAnswerResponse5.id()
         );
-        given(quizService.findGradedAnswersAllBy(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
+        given(quizService.readGradedAnswers(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -230,7 +230,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].isCorrect").exists()
         );
 
-        verify(quizService).findGradedAnswersAllBy(
+        verify(quizService).readGradedAnswers(
                 anyLong(),
                 any(ReadQuizGradedAnswerSearchRequest.class),
                 any(Pageable.class)
@@ -363,7 +363,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 gradedAnswerResponse5.id()
         );
 
-        given(quizService.findGradedAnswersAllBy(anyLong())).willReturn(response);
+        given(quizService.readGradedAnswers(anyLong())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -385,7 +385,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].isCorrect").exists()
         );
 
-        verify(quizService).findGradedAnswersAllBy(anyLong());
+        verify(quizService).readGradedAnswers(anyLong());
 
         특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(resultActions);
     }

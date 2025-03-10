@@ -30,11 +30,11 @@ public class QuizController {
     private final QuizService quizService;
 
     @PostMapping
-    public ResponseEntity<Void> create(
+    public ResponseEntity<Void> createQuiz(
             @AuthAccount AuthAccountInfo accountInfo,
             @RequestBody @Valid CreateQuizRequest request
     ) {
-        Long savedQuizId = quizService.save(accountInfo.id(), request);
+        Long savedQuizId = quizService.createQuiz(accountInfo.id(), request);
         URI location = UriComponentsBuilder.fromPath("/quizzes/{quizId}")
                                            .buildAndExpand(savedQuizId)
                                            .toUri();
@@ -59,26 +59,30 @@ public class QuizController {
     }
 
     @GetMapping("/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> findGradedAnswersAllBy(
+    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
             @AuthAccount AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
-        return ResponseEntity.ok(
-                quizService.findGradedAnswersAllBy(accountInfo.id(), request, pageable)
-        );
+        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.id(), request, pageable);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{quizId}/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> findGradedAnswersAllBy(
+    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
             @AuthAccount AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
-        return ResponseEntity.ok(quizService.findGradedAnswersAllBy(quizId));
+        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(quizId);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<QuizResponse> findQuizBy(@PathVariable Long quizId) {
-        return ResponseEntity.ok(quizService.findQuizBy(quizId));
+    public ResponseEntity<QuizResponse> readQuiz(@PathVariable Long quizId) {
+        QuizResponse response = quizService.findQuizBy(quizId);
+
+        return ResponseEntity.ok(response);
     }
 }
