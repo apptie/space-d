@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.admin.application.dto.AdminApplicationMapper;
+import com.dnd.spaced.core.admin.application.dto.mapper.AdminApplicationMapper;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;

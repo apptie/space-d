@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.admin.application.dto;
+package com.dnd.spaced.core.admin.application.dto.mapper;
 
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse.ReportResponse;
