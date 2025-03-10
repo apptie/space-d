@@ -38,6 +38,7 @@ import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.GuestAccountInfoArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
 import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
@@ -78,7 +79,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthInterceptor.class),
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthAccountInfoArgumentResolver.class)
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthAccountInfoArgumentResolver.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GuestAccountInfoArgumentResolver.class)
         }
 )
 @Import(RestDocsConfiguration.class)
@@ -198,6 +200,7 @@ public class CommonControllerSliceTest {
         AuthStore store = new AuthStore();
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
+        GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver = new GuestAccountInfoArgumentResolver(store);
         WordPageableArgumentResolver wordPageableArgumentResolver = new WordPageableArgumentResolver();
         CommentPageableArgumentResolver commentPageableArgumentResolver = new CommentPageableArgumentResolver();
         GradedAnswerPageableArgumentResolver gradedAnswerPageableArgumentResolver = new GradedAnswerPageableArgumentResolver();
@@ -237,6 +240,7 @@ public class CommonControllerSliceTest {
                                       .addInterceptors(authInterceptor)
                                       .setCustomArgumentResolvers(
                                               authAccountInfoArgumentResolver,
+                                              guestAccountInfoArgumentResolver,
                                               wordPageableArgumentResolver,
                                               commentPageableArgumentResolver,
                                               gradedAnswerPageableArgumentResolver,

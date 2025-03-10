@@ -5,8 +5,9 @@ import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
+import com.dnd.spaced.global.auth.resolver.GuestAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.comment.CommentPageable;
 import jakarta.validation.Valid;
@@ -65,7 +66,7 @@ public class CommentController {
 
     @GetMapping("/words/{wordId}/comments")
     public ResponseEntity<CommentCollectionResponse> readAllBy(
-            @CurrentAccountInfo(required = false) AuthAccountInfo accountInfo,
+            @CurrentAccountInfo GuestAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable

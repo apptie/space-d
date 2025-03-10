@@ -18,6 +18,20 @@ public class AccountGatewayRepository implements AccountRepository {
     private final JPAQueryFactory queryFactory;
     private final AccountCrudRepository accountCrudRepository;
 
+    /**
+     * public boolean existsByName(String name) {
+     *     Integer result = queryFactory
+     *         .selectOne() // 1. 1값 프로젝션
+     *         .from(member)
+     *         .where(member.name.eq(name))
+     *         .fetchFirst(); // 2. LIMIT 1 적용
+     *
+     *     return result != null;
+     * }
+     * @param account
+     * @return
+     */
+
     @Override
     public Account save(Account account) {
         return accountCrudRepository.save(account);

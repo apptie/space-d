@@ -4,8 +4,8 @@ import com.dnd.spaced.core.bookmark.application.BookmarkService;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageable;
 import jakarta.validation.Valid;
@@ -41,7 +41,7 @@ public class BookmarkController {
     @PostMapping
     public ResponseEntity<Void> createBookmark(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
-            @RequestBody @Valid CreateBookmarkRequest request
+            @Valid @RequestBody CreateBookmarkRequest request
     ) {
         bookmarkService.createBookmark(accountInfo.accountId(), request);
 

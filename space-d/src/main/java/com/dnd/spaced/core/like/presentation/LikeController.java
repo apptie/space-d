@@ -19,7 +19,10 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<Void> processLike(@CurrentAccountInfo AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+    public ResponseEntity<Void> processLike(
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @PathVariable Long commentId
+    ) {
         likeService.processLike(accountInfo.accountId(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;

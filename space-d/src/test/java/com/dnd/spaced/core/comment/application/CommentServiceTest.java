@@ -203,7 +203,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
 
         // when
         CommentCollectionResponse actual = commentService.readComments(
-                null,
+                -1L,
                 word.getId(),
                 null,
                 PageRequest.of(0, 10)

@@ -24,11 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentContentResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
-import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -150,7 +150,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
         CommentResponse commentResponse = new CommentResponse(commentContentResponse, commentWriterResponse, false);
         CommentCollectionResponse response = new CommentCollectionResponse(List.of(commentResponse), 1L);
 
-        given(commentService.readComments(eq(null), anyLong(), eq(null), any())).willReturn(response);
+        given(commentService.readComments(anyLong(), anyLong(), eq(null), any())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(

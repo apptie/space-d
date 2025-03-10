@@ -24,6 +24,7 @@ import org.springframework.stereotype.Repository;
 public class CommentGatewayRepository implements CommentRepository {
 
     private static final String COMMENT_ID = "id";
+    private static final Long GUEST_ACCOUNT_ID = -1L;
     private static final int TUPLE_COMMENT_INDEX = 0;
     private static final int TUPLE_WRITER_NICKNAME_INDEX = 1;
     private static final int TUPLE_WRITER_PROFILE_IMAGE_INDEX = 2;
@@ -44,7 +45,7 @@ public class CommentGatewayRepository implements CommentRepository {
 
     @Override
     public List<LikedCommentDto> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        if (accountId == null) {
+        if (GUEST_ACCOUNT_ID.equals(accountId)) {
             return findAllWithoutIsLikedBy(wordId, lastCommentId, pageable);
         }
 
