@@ -26,7 +26,7 @@ public class AdminReportService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public void process(Long reportId, ProcessReportRequest request) {
+    public void processReport(Long reportId, ProcessReportRequest request) {
         Report report = findReport(reportId);
         ReportStatus reportStatus = findReportStatus(request);
 
@@ -34,7 +34,7 @@ public class AdminReportService {
         publishProcessedReportEvent(reportStatus, report);
     }
 
-    public ReportCollectionResponse findAllBy(ReadAllReportSearchRequest request, Pageable pageable) {
+    public ReportCollectionResponse readReports(ReadAllReportSearchRequest request, Pageable pageable) {
         ReportStatus reportStatus = findReportStatus(request);
         List<Report> reports = findAllReportsBy(request, reportStatus, pageable);
 
