@@ -59,9 +59,8 @@ public class WordService {
                              .toList();
     }
 
-    public ReadWordDto read(Long id) {
-        Word word = wordRepository.findBy(id)
-                                  .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
+    public ReadWordDto read(Long wordId) {
+        Word word = findWord(wordId);
 
         eventPublisher.publishEvent(new WordViewCountIncrementEvent(word.getId(), LocalDateTime.now(clock)));
         eventPublisher.publishEvent(new WordViewCountStatisticsEvent(word.getId(), LocalDateTime.now(clock)));
@@ -82,5 +81,10 @@ public class WordService {
         }
 
         return Category.findBy(categoryName);
+    }
+
+    private Word findWord(Long wordId) {
+        return wordRepository.findBy(wordId)
+                             .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
     }
 }
