@@ -27,7 +27,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long accountId;
+    private Long writerId;
 
     private Long wordId;
 
@@ -37,12 +37,12 @@ public class Comment extends BaseTimeEntity {
 
     private boolean isDeleted = false;
 
-    public Comment(Long accountId, Long wordId, String content) {
+    public Comment(Long writerId, Long wordId, String content) {
         if (isInvalidContent(content)) {
             throw new InvalidCommentContentException("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
         }
 
-        this.accountId = accountId;
+        this.writerId = writerId;
         this.wordId = wordId;
         this.content = content;
     }
@@ -61,11 +61,11 @@ public class Comment extends BaseTimeEntity {
     }
 
     public boolean isWriter(Long accountId) {
-        return this.accountId.equals(accountId);
+        return this.writerId.equals(accountId);
     }
 
     public boolean isWriter(Account account) {
-        return account.isEqualTo(this.accountId);
+        return account.isEqualTo(this.writerId);
     }
 
     public boolean isNotWriter(Account account) {

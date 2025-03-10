@@ -90,7 +90,7 @@ class ReportServiceTest extends WithCommentTestHelper {
         ReportRequest request = new ReportRequest(comment.getId(), "기타");
 
         // when & then
-        assertThatThrownBy(() -> reportService.report(comment.getAccountId(), request))
+        assertThatThrownBy(() -> reportService.report(comment.getWriterId(), request))
                 .isInstanceOf(CannotReportOwnCommentException.class)
                 .hasMessage("자신이 작성한 댓글은 신고할 수 없습니다.");
     }

@@ -89,7 +89,7 @@ public class CommentGatewayRepository implements CommentRepository {
                                    )
                            )
                            .from(comment)
-                           .join(account).on(comment.accountId.eq(account.id))
+                           .join(account).on(comment.writerId.eq(account.id))
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
                            .where(
                                    comment.wordId.eq(wordId),
@@ -112,7 +112,7 @@ public class CommentGatewayRepository implements CommentRepository {
                                                    account.id
                                            )
                                            .from(comment)
-                                           .join(account).on(comment.accountId.eq(account.id))
+                                           .join(account).on(comment.writerId.eq(account.id))
                                            .where(
                                                    comment.wordId.eq(wordId),
                                                    calculateLastIdExpression(lastCommentId, pageable),
