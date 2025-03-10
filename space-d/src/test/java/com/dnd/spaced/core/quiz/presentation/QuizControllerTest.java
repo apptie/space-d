@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -46,6 +47,8 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 status().isCreated(),
                 header().string("Location", "/quizzes/1")
         );
+
+        verify(quizService).save(anyLong(), any(CreateQuizRequest.class));
     }
 
     @Test
@@ -65,6 +68,8 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 status().isCreated(),
                 header().string("Location", "/quizzes/1/graded-answer")
         );
+
+        verify(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
     }
 
     @Test
@@ -160,7 +165,6 @@ class QuizControllerTest extends CommonControllerSliceTest {
         mockMvc.perform(
                 get("/quizzes/graded-answers").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                               .accept(MediaType.APPLICATION_JSON)
-
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("answers").exists(),
@@ -175,6 +179,12 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].selectedQuizOptionContent").exists(),
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
                 jsonPath("answers[*].isCorrect").exists()
+        );
+
+        verify(quizService).findGradedAnswersAllBy(
+                anyLong(),
+                any(ReadQuizGradedAnswerSearchRequest.class),
+                any(Pageable.class)
         );
     }
 
@@ -289,6 +299,8 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
                 jsonPath("answers[*].isCorrect").exists()
         );
+
+        verify(quizService).findGradedAnswersAllBy(anyLong());
     }
 
     @Test
@@ -319,6 +331,8 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].quizOptions[3].content", is("locale")),
                 jsonPath("quizQuestions[0].answerOptionWordId", is(1L), Long.class)
         );
+
+        verify(quizService).findQuizBy(anyLong());
     }
 
     private QuizResponse createQuizResponse() {
