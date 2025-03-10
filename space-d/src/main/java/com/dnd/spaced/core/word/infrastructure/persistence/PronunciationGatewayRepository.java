@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PronunciationQuerydslRepository implements PronunciationRepository {
+public class PronunciationGatewayRepository implements PronunciationRepository {
 
     private final JPAQueryFactory queryFactory;
     private final PronunciationCrudRepository pronunciationCrudRepository;

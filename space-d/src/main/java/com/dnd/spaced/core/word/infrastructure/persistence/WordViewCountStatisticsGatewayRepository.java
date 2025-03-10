@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordViewCountStatisticsRedisRepository implements WordViewCountStatisticsRepository {
+public class WordViewCountStatisticsGatewayRepository implements WordViewCountStatisticsRepository {
 
     private static final String KEY_PREFIX = "viewCount:";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

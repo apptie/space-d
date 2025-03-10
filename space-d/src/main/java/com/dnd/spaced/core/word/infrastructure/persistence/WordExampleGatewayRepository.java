@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordExampleQuerydslRepository implements WordExampleRepository {
+public class WordExampleGatewayRepository implements WordExampleRepository {
 
     private final JPAQueryFactory queryFactory;
     private final WordExampleCrudRepository wordExampleCrudRepository;

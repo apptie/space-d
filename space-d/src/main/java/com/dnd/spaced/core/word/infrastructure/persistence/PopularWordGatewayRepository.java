@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PopularWordRedisRepository implements PopularWordRepository {
+public class PopularWordGatewayRepository implements PopularWordRepository {
 
     private static final String KEY_PREFIX = "popular:info:";
     private static final String CACHE_KEY_PREFIX = "popular:id:";
