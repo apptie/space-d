@@ -46,7 +46,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
 
-        given(wordService.read(anyLong())).willReturn(wordResponse);
+        given(wordService.readWord(anyLong())).willReturn(wordResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -102,7 +102,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
-        given(wordService.search(any(SearchWordRequest.class), any(Pageable.class))).willReturn(wordCollectionResponse);
+        given(wordService.searchWord(any(SearchWordRequest.class), any(Pageable.class))).willReturn(wordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -170,7 +170,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
-        given(wordService.readAllBy(any(), any())).willReturn(wordCollectionResponse);
+        given(wordService.readWords(any(), any())).willReturn(wordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -225,7 +225,7 @@ class WordControllerTest extends CommonControllerSliceTest {
         // given
         PopularWordResponse popularWordResponse = new PopularWordResponse(1, 3L, "Authorization");
         PopularWordCollectionResponse popularWordCollectionResponse = new PopularWordCollectionResponse(List.of(popularWordResponse));
-        given(wordService.readPopularWordsAll()).willReturn(popularWordCollectionResponse);
+        given(wordService.readPopularWords()).willReturn(popularWordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
