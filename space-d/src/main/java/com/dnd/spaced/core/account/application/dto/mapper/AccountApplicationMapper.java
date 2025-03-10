@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.account.application;
+package com.dnd.spaced.core.account.application.dto.mapper;
 
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.domain.Account;
