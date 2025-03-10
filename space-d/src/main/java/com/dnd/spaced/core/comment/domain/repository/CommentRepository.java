@@ -10,7 +10,7 @@ public interface CommentRepository {
 
     Comment save(Comment comment);
 
-    Optional<Comment> findBy(Long id);
+    Optional<Comment> findBy(Long commentId);
 
     List<LikedCommentDto> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable);
 

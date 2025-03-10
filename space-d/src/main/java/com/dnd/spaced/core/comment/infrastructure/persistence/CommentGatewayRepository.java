@@ -38,8 +38,8 @@ public class CommentGatewayRepository implements CommentRepository {
     }
 
     @Override
-    public Optional<Comment> findBy(Long id) {
-        return commentCrudRepository.findById(id);
+    public Optional<Comment> findBy(Long commentId) {
+        return commentCrudRepository.findById(commentId);
     }
 
     @Override
