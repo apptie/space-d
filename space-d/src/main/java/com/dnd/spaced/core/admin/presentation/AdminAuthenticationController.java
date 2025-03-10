@@ -22,6 +22,6 @@ public class AdminAuthenticationController {
     public ResponseEntity<Void> registerBlacklistToken(@Valid @RequestBody UpdateBlacklistTokenRequest request) {
         blacklistTokenService.register(request.accountId());
 
-        return ResponseEntityConst.CREATED_DEFAULT_CONTEXT_PATH;
+        return ResponseEntityConst.NO_CONTENT;
     }
 }
