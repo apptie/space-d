@@ -57,26 +57,22 @@ class TodayQuizServiceTest {
     @Autowired
     TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
-    @Nested
-    class WithoutMetadataTest {
+    @Test
+    void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
+        // when & then
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1);
 
-        @Test
-        void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
-            // when & then
-            GradeTodayQuizRequest request = new GradeTodayQuizRequest(1);
+        assertThatThrownBy(() -> todayQuizService.grade(1L, -999L, request))
+                .isInstanceOf(TodayQuizNotFoundException.class)
+                .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
+    }
 
-            assertThatThrownBy(() -> todayQuizService.grade(1L, -999L, request))
-                    .isInstanceOf(TodayQuizNotFoundException.class)
-                    .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
-        }
-
-        @Test
-        void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
-            // when & then
-            assertThatThrownBy(() -> todayQuizService.findLatest())
-                    .isInstanceOf(TodayQuizNotFoundException.class)
-                    .hasMessage("오늘의 퀴즈가 생성되지 않았습니다.");
-        }
+    @Test
+    void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> todayQuizService.findLatest())
+                .isInstanceOf(TodayQuizNotFoundException.class)
+                .hasMessage("오늘의 퀴즈가 생성되지 않았습니다.");
     }
 
     @Nested

@@ -3,6 +3,7 @@ package com.dnd.spaced.core.skill.presentation;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -50,6 +51,8 @@ class SkillControllerTest extends CommonControllerSliceTest {
                                                      jsonPath("todayQuizQuestionCorrectCount", is(0L), Long.class),
                                                      jsonPath("totalTodayQuizQuestionCorrectPercent", is(0.0d), double.class)
                                              );
+
+        verify(skillService).findBy(anyLong());
 
         스킬_조회_요청_문서화(resultActions);
     }
