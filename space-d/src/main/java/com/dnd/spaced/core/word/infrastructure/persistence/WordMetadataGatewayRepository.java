@@ -18,7 +18,7 @@ public class WordMetadataGatewayRepository implements WordMetadataRepository {
     }
 
     @Override
-    public Optional<WordMetadata> findBy(Long id) {
-        return wordMetadataCrudRepository.findById(id);
+    public Optional<WordMetadata> findBy(Long wordMetadataId) {
+        return wordMetadataCrudRepository.findById(wordMetadataId);
     }
 }

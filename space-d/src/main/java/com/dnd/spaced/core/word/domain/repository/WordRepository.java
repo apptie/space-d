@@ -13,23 +13,23 @@ public interface WordRepository {
 
     Word save(Word word);
 
-    boolean existsBy(Long id);
+    boolean existsBy(Long wordId);
 
-    void updateViewCount(Long id);
+    void updateViewCount(Long wordId);
 
     void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos);
 
-    void addBookmarkCount(Long id);
+    void addBookmarkCount(Long wordId);
 
-    void updateSubtractBookmarkCount(Long id);
+    void updateSubtractBookmarkCount(Long wordId);
 
-    Optional<Word> findBy(Long id);
+    Optional<Word> findBy(Long wordId);
 
-    List<String> findNameAllBy(Long[] ids);
+    List<String> findNameAllBy(Long[] wordIds);
 
     List<Word> findAllBy(Category category, String lastWordName, Pageable pageable);
 
-    List<Word> findAllBy(List<Long> ids);
+    List<Word> findAllBy(List<Long> wordIds);
 
     List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest);
 }

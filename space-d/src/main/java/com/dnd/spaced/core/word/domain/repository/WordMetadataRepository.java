@@ -7,5 +7,5 @@ public interface WordMetadataRepository {
 
     void save(WordMetadata wordMetadata);
 
-    Optional<WordMetadata> findBy(Long id);
+    Optional<WordMetadata> findBy(Long wordMetadataId);
 }
