@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface AccountRepository {
 
+    boolean existsBy(Long accountId);
+
     Account save(Account account);
 
     Optional<Account> findBy(Long accountId);
