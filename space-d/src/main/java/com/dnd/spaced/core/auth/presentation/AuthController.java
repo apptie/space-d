@@ -1,13 +1,13 @@
 package com.dnd.spaced.core.auth.presentation;
 
-import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
-import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
+import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
+import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
 import com.dnd.spaced.core.auth.presentation.exception.RefreshTokenNotFoundException;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.servlet.http.Cookie;
@@ -39,10 +39,10 @@ public class AuthController {
 
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountCareerInfo(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             @Valid @RequestBody InitAccountCareerInfoRequest request
     ) {
-        initAccountCareerInfoService.initCareerInfo(accountInfo.id(), request);
+        initAccountCareerInfoService.initCareerInfo(accountInfo.accountId(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

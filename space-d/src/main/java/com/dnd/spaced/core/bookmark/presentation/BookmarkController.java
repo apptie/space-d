@@ -5,7 +5,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageable;
 import jakarta.validation.Valid;
@@ -29,31 +29,31 @@ public class BookmarkController {
 
     @GetMapping
     public ResponseEntity<BookmarkCollectionResponse> readBookmarks(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
-        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.id(), request, pageable);
+        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.accountId(), request, pageable);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<Void> createBookmark(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             @RequestBody @Valid CreateBookmarkRequest request
     ) {
-        bookmarkService.createBookmark(accountInfo.id(), request);
+        bookmarkService.createBookmark(accountInfo.accountId(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("{bookmarkId}")
     public ResponseEntity<Void> deleteBookmark(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             @PathVariable Long bookmarkId
     ) {
-        bookmarkService.deleteBookmark(accountInfo.id(), bookmarkId);
+        bookmarkService.deleteBookmark(accountInfo.accountId(), bookmarkId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -7,7 +7,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCo
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
 import com.dnd.spaced.global.auth.AuthAccount;
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -43,11 +43,11 @@ public class TodayQuizController {
 
     @PostMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<Void> grade(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId,
             @Valid @RequestBody GradeTodayQuizRequest request
     ) {
-        todayQuizService.grade(accountInfo.id(), todayQuizId, request);
+        todayQuizService.grade(accountInfo.accountId(), todayQuizId, request);
         URI location = UriComponentsBuilder.fromPath("/today-quizzes/{id}/graded-answers")
                                            .buildAndExpand(todayQuizId)
                                            .toUri();
@@ -58,20 +58,20 @@ public class TodayQuizController {
 
     @GetMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerResponse> findTodayQuizGradedAnswerBy(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId
     ) {
-        return ResponseEntity.ok(todayQuizService.findTodayQuizGradedAnswerBy(accountInfo.id(), todayQuizId));
+        return ResponseEntity.ok(todayQuizService.findTodayQuizGradedAnswerBy(accountInfo.accountId(), todayQuizId));
     }
 
     @GetMapping("/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> findTodayQuizGradedAnswerAllBy(
-            @AuthAccount AccountInfo accountInfo,
+            @AuthAccount AuthAccountInfo accountInfo,
             ReadTodayQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
-                todayQuizService.findTodayQuizGradedAnswerAllBy(accountInfo.id(), request, pageable)
+                todayQuizService.findTodayQuizGradedAnswerAllBy(accountInfo.accountId(), request, pageable)
         );
     }
 }
