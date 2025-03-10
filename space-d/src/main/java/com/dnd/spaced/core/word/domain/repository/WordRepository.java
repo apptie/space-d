@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.word.domain.repository;
 
+import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
@@ -27,7 +27,7 @@ public interface WordRepository {
 
     List<String> findNameAllBy(Long[] ids);
 
-    List<Word> findAllBy(WordCondition wordCondition, WordPageRequest pageRequest);
+    List<Word> findAllBy(Category category, WordPageRequest pageRequest);
 
     List<Word> findAllBy(List<Long> ids);
 

@@ -14,7 +14,6 @@ import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
@@ -47,9 +46,10 @@ public class WordService {
     }
 
     public WordCollectionResponse readAllBy(ReadAllWordRequest request, Pageable pageable) {
-        WordCondition wordCondition = new WordCondition(findCategory(request.category()));
+        Category category = Category.findBy(request.categoryName())
+                                    .orElse(null);
         WordPageRequest wordPageRequest = new WordPageRequest(pageable, request.lastWordName());
-        List<Word> words = wordRepository.findAllBy(wordCondition, wordPageRequest);
+        List<Word> words = wordRepository.findAllBy(category, wordPageRequest);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -57,7 +57,8 @@ public class WordService {
     public WordCollectionResponse search(SearchWordRequest request, Pageable pageable) {
         WordSearchCondition wordSearchCondition = new WordSearchCondition(
                 request.name(),
-                findCategory(request.categoryName()),
+                Category.findBy(request.categoryName())
+                        .orElse(null),
                 request.pronunciation()
         );
         WordSearchPageRequest wordSearchPageRequest = new WordSearchPageRequest(pageable, request.lastWordName());
@@ -71,14 +72,6 @@ public class WordService {
         List<PopularWord> popularWords = popularWordRepository.findAllBy(LocalDateTime.now(clock));
 
         return WordApplicationMapper.toPopularWordCollectionDto(popularWords);
-    }
-
-    private Category findCategory(String categoryName) {
-        if (categoryName == null) {
-            return null;
-        }
-
-        return Category.findBy(categoryName);
     }
 
     private Word findWord(Long wordId) {

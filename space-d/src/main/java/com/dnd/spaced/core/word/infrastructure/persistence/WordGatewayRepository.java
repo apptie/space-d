@@ -8,7 +8,6 @@ import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
@@ -94,11 +93,11 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(WordCondition wordCondition, WordPageRequest pageRequest) {
+    public List<Word> findAllBy(Category category, WordPageRequest pageRequest) {
         return queryFactory.selectFrom(word)
                            .where(
-                                   lastWordNameGt(pageRequest.lastWordName()),
-                                   categoryEq(wordCondition.category())
+                                   gtLastWordName(pageRequest.lastWordName()),
+                                   eqCategory(category)
                            )
                            .orderBy(
                                    WordSortConditionConverter.convert(pageRequest.pageable())
@@ -117,9 +116,9 @@ public class WordGatewayRepository implements WordRepository {
                                            .toArray(BooleanExpression[]::new)
                            )
                            .where(
-                                   lastWordNameGt(pageRequest.lastWordName()),
+                                   gtLastWordName(pageRequest.lastWordName()),
                                    nameStartsWith(condition.name()),
-                                   categoryEq(condition.category())
+                                   eqCategory(condition.category())
                            )
                            .orderBy(
                                    WordSortConditionConverter.convert(pageRequest.pageable())
@@ -141,7 +140,7 @@ public class WordGatewayRepository implements WordRepository {
         return words;
     }
 
-    private BooleanExpression lastWordNameGt(String lastWordName) {
+    private BooleanExpression gtLastWordName(String lastWordName) {
         if (lastWordName == null) {
             return null;
         }
@@ -157,7 +156,7 @@ public class WordGatewayRepository implements WordRepository {
         return word.name.startsWith(name);
     }
 
-    private BooleanExpression categoryEq(Category category) {
+    private BooleanExpression eqCategory(Category category) {
         if (category == null) {
             return null;
         }
