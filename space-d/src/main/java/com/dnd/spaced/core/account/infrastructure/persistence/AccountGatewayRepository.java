@@ -60,11 +60,6 @@ public class AccountGatewayRepository implements AccountRepository {
         return Optional.ofNullable(result);
     }
 
-    @Override
-    public void delete(Account account) {
-        accountCrudRepository.delete(account);
-    }
-
     private BooleanExpression eqAccountId(Long accountId) {
         if (accountId == null) {
             return null;

@@ -13,6 +13,4 @@ public interface AccountRepository {
     Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier);
 
     Optional<Account> findSignedUpAccountBy(Long accountId);
-
-    void delete(Account account);
 }
