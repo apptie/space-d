@@ -6,7 +6,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswe
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
-import com.dnd.spaced.global.auth.AuthAccount;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
@@ -43,7 +43,7 @@ public class TodayQuizController {
 
     @PostMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<Void> grade(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId,
             @Valid @RequestBody GradeTodayQuizRequest request
     ) {
@@ -58,7 +58,7 @@ public class TodayQuizController {
 
     @GetMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerResponse> findTodayQuizGradedAnswerBy(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId
     ) {
         return ResponseEntity.ok(todayQuizService.findTodayQuizGradedAnswerBy(accountInfo.accountId(), todayQuizId));
@@ -66,7 +66,7 @@ public class TodayQuizController {
 
     @GetMapping("/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> findTodayQuizGradedAnswerAllBy(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadTodayQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {

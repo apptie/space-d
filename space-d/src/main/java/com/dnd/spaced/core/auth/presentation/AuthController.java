@@ -6,7 +6,7 @@ import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoReq
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
 import com.dnd.spaced.core.auth.presentation.exception.RefreshTokenNotFoundException;
-import com.dnd.spaced.global.auth.AuthAccount;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
@@ -39,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountCareerInfo(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody InitAccountCareerInfoRequest request
     ) {
         initAccountCareerInfoService.initCareerInfo(accountInfo.accountId(), request);

@@ -2,7 +2,7 @@ package com.dnd.spaced.core.report.presentation;
 
 import com.dnd.spaced.core.report.application.ReportService;
 import com.dnd.spaced.core.report.application.dto.request.ReportRequest;
-import com.dnd.spaced.global.auth.AuthAccount;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<Void> report(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody ReportRequest request
     ) {
         reportService.report(accountInfo.accountId(), request);

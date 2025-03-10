@@ -6,7 +6,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
-import com.dnd.spaced.global.auth.AuthAccount;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class QuizController {
 
     @PostMapping
     public ResponseEntity<Void> createQuiz(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody CreateQuizRequest request
     ) {
         Long savedQuizId = quizService.createQuiz(accountInfo.accountId(), request);
@@ -45,7 +45,7 @@ public class QuizController {
 
     @PostMapping("/{quizId}/graded-answers")
     public ResponseEntity<Void> grade(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId,
             @Valid @RequestBody GradeQuizRequest request
     ) {
@@ -60,7 +60,7 @@ public class QuizController {
 
     @GetMapping("/graded-answers")
     public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
@@ -75,7 +75,7 @@ public class QuizController {
 
     @GetMapping("/{quizId}/graded-answers")
     public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
         GradedAnswerCollectionResponse response = quizService.readGradedAnswers(quizId);

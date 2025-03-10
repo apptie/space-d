@@ -5,7 +5,7 @@ import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
-import com.dnd.spaced.global.auth.AuthAccount;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import com.dnd.spaced.global.resolver.comment.CommentPageable;
@@ -31,7 +31,7 @@ public class CommentController {
 
     @PostMapping("/words/{wordId}/comments")
     public ResponseEntity<Void> save(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
@@ -46,7 +46,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+    public ResponseEntity<Void> delete(@CurrentAccountInfo AuthAccountInfo accountInfo, @PathVariable Long commentId) {
         commentService.deleteComment(accountInfo.accountId(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
@@ -54,7 +54,7 @@ public class CommentController {
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Void> update(
-            @AuthAccount AuthAccountInfo accountInfo,
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody UpdateCommentRequest request,
             @PathVariable Long commentId
     ) {
@@ -65,7 +65,7 @@ public class CommentController {
 
     @GetMapping("/words/{wordId}/comments")
     public ResponseEntity<CommentCollectionResponse> readAllBy(
-            @AuthAccount(required = false) AuthAccountInfo accountInfo,
+            @CurrentAccountInfo(required = false) AuthAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable

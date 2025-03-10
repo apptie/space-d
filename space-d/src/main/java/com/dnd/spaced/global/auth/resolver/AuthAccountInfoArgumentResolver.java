@@ -1,7 +1,6 @@
 package com.dnd.spaced.global.auth.resolver;
 
 import com.dnd.spaced.global.auth.AccountInfo;
-import com.dnd.spaced.global.auth.AuthAccount;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,8 @@ public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentRes
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthAccount.class) && parameter.getParameterType()
-                                                                               .equals(AuthAccountInfo.class);
+        return parameter.hasParameterAnnotation(CurrentAccountInfo.class) && parameter.getParameterType()
+                                                                                      .equals(AuthAccountInfo.class);
     }
 
     @Override
@@ -45,11 +44,11 @@ public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentRes
     }
 
     private boolean isRequired(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(AuthAccount.class)
+        return parameter.getParameterAnnotation(CurrentAccountInfo.class)
                         .required();
     }
 
-    private boolean isInvalidAccountPrincipal(AccountInfo accountInfo) {
+    private boolean isInvalidAccountPrincipal(com.dnd.spaced.global.auth.AccountInfo accountInfo) {
         return accountInfo == null || accountInfo.id() == null;
     }
 }
