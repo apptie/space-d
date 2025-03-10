@@ -14,7 +14,6 @@ import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
 import java.time.Clock;
@@ -48,17 +47,17 @@ public class WordService {
     public WordCollectionResponse readAllBy(ReadAllWordRequest request, Pageable pageable) {
         Category category = Category.findBy(request.categoryName())
                                     .orElse(null);
-        WordPageRequest wordPageRequest = new WordPageRequest(pageable, request.lastWordName());
-        List<Word> words = wordRepository.findAllBy(category, wordPageRequest);
+        List<Word> words = wordRepository.findAllBy(category, request.lastWordName(), pageable);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
 
     public WordCollectionResponse search(SearchWordRequest request, Pageable pageable) {
+        Category category = Category.findBy(request.categoryName())
+                                    .orElse(null);
         WordSearchCondition wordSearchCondition = new WordSearchCondition(
                 request.name(),
-                Category.findBy(request.categoryName())
-                        .orElse(null),
+                category,
                 request.pronunciation()
         );
         WordSearchPageRequest wordSearchPageRequest = new WordSearchPageRequest(pageable, request.lastWordName());

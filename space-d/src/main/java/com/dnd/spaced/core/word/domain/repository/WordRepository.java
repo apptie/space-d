@@ -2,12 +2,12 @@ package com.dnd.spaced.core.word.domain.repository;
 
 import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 public interface WordRepository {
 
@@ -27,7 +27,7 @@ public interface WordRepository {
 
     List<String> findNameAllBy(Long[] ids);
 
-    List<Word> findAllBy(Category category, WordPageRequest pageRequest);
+    List<Word> findAllBy(Category category, String lastWordName, Pageable pageable);
 
     List<Word> findAllBy(List<Long> ids);
 

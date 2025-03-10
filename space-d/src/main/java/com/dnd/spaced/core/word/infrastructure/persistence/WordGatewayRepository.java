@@ -8,7 +8,6 @@ import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordPageRequest;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
 import com.dnd.spaced.core.word.infrastructure.persistence.util.WordSortConditionConverter;
@@ -20,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -93,17 +93,14 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(Category category, WordPageRequest pageRequest) {
+    public List<Word> findAllBy(Category category, String lastWordName, Pageable pageable) {
         return queryFactory.selectFrom(word)
-                           .where(
-                                   gtLastWordName(pageRequest.lastWordName()),
-                                   eqCategory(category)
-                           )
+                           .where(gtLastWordName(lastWordName), eqCategory(category))
                            .orderBy(
-                                   WordSortConditionConverter.convert(pageRequest.pageable())
+                                   WordSortConditionConverter.convert(pageable)
                                                              .toArray(OrderSpecifier[]::new)
                            )
-                           .limit(pageRequest.pageable().getPageSize())
+                           .limit(pageable.getPageSize())
                            .fetch();
     }
 
