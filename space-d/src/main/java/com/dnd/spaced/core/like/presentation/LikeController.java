@@ -8,15 +8,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/comments/{commentId}/likes")
 @RequiredArgsConstructor
 public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/comments/{commentId}/likes")
+    @PostMapping
     public ResponseEntity<Void> processLike(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
         likeService.processLike(accountInfo.id(), commentId);
 

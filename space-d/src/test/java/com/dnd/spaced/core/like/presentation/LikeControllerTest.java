@@ -1,5 +1,7 @@
 package com.dnd.spaced.core.like.presentation;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -25,6 +27,8 @@ class LikeControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(likeService).processLike(anyLong(), anyLong());
 
         좋아요_처리_요청_문서화(resultActions);
     }

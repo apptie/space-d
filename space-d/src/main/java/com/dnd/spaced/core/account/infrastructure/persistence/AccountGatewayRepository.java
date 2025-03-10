@@ -5,6 +5,7 @@ import static com.dnd.spaced.core.account.domain.QAccount.account;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,9 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findBy(Long id) {
+    public Optional<Account> findBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
-                                       .where(account.id.eq(id), account.deleted.isFalse())
+                                       .where(eqAccountId(accountId), account.deleted.isFalse())
                                        .fetchOne();
 
         return Optional.ofNullable(result);
@@ -45,10 +46,10 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findSignedUpAccountBy(Long id) {
+    public Optional<Account> findSignedUpAccountBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
-                                             account.id.eq(id),
+                                             account.id.eq(accountId),
                                              account.careerInfo.company.isNull(),
                                              account.careerInfo.experience.isNull(),
                                              account.careerInfo.jobGroup.isNull(),
@@ -62,5 +63,13 @@ public class AccountGatewayRepository implements AccountRepository {
     @Override
     public void delete(Account account) {
         accountCrudRepository.delete(account);
+    }
+
+    private BooleanExpression eqAccountId(Long accountId) {
+        if (accountId == null) {
+            return null;
+        }
+
+        return account.id.eq(accountId);
     }
 }
