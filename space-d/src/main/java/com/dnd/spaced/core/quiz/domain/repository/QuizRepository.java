@@ -10,5 +10,5 @@ public interface QuizRepository {
 
     List<Quiz> findAllBy(Long accountId);
 
-    Optional<Quiz> findBy(Long id);
+    Optional<Quiz> findBy(Long quizId);
 }

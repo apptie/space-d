@@ -31,9 +31,9 @@ public class QuizGatewayRepository implements QuizRepository {
     }
 
     @Override
-    public Optional<Quiz> findBy(Long id) {
+    public Optional<Quiz> findBy(Long quizId) {
         Quiz result = queryFactory.selectFrom(quiz)
-                                  .where(quiz.id.eq(id))
+                                  .where(quiz.id.eq(quizId))
                                   .leftJoin(quiz.quizQuestions).fetchJoin()
                                   .fetchOne();
 
