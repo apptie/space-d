@@ -22,7 +22,7 @@ class AdminTodayQuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser(value = "1", roles = "ADMIN")
     void 오늘의_퀴즈_수동_생성_요청_성공_테스트() throws Exception {
         // given
-        given(adminTodayQuizService.create()).willReturn(1L);
+        given(adminTodayQuizService.createTodayQuiz()).willReturn(1L);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -32,7 +32,7 @@ class AdminTodayQuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/today-quizzes/1")
         );
 
-        verify(adminTodayQuizService).create();
+        verify(adminTodayQuizService).createTodayQuiz();
 
         오늘의_퀴즈_수동_생성_요청_문서화(resultActions);
     }
