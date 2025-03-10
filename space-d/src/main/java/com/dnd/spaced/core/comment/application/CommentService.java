@@ -2,20 +2,20 @@ package com.dnd.spaced.core.comment.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto;
+import com.dnd.spaced.core.comment.application.dto.CommentApplicationMapper;
+import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.like.domain.repository.LikeCountRepository;
-import com.dnd.spaced.core.comment.domain.repository.dto.request.CommentPageRequest;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,13 +29,12 @@ public class CommentService {
     private final WordRepository wordRepository;
     private final AccountRepository accountRepository;
     private final CommentRepository commentRepository;
-    private final LikeCountRepository likeCountRepository;
 
     @Transactional
-    public void save(Long accountId, Long wordId, String content) {
+    public void create(Long accountId, Long wordId, CreateCommentRequest request) {
         Account writer = findAccount(accountId);
         Word word = findWord(wordId);
-        Comment comment = new Comment(writer.getId(), word.getId(), content);
+        Comment comment = new Comment(writer.getId(), word.getId(), request.content());
 
         commentRepository.save(comment);
     }
@@ -45,36 +44,24 @@ public class CommentService {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (comment.isNotWriter(writer)) {
-            throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
-        }
+        validateDeleteAuthority(comment, writer);
 
         commentRepository.delete(comment);
     }
 
     @Transactional
-    public void update(Long accountId, Long commentId, String content) {
+    public void update(Long accountId, Long commentId, UpdateCommentRequest request) {
         Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        if (comment.isNotWriter(writer)) {
-            throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
-        }
-
-        comment.changeContent(content);
+        validateUpdateAuthority(comment, writer);
+        comment.changeContent(request.content());
     }
 
-    public List<ReadAllCommentDto> readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        CommentPageRequest commentPageRequest = new CommentPageRequest(pageable, lastCommentId);
-        List<LikedCommentDto> result = commentRepository.findAllBy(accountId, wordId, commentPageRequest);
-        List<Object> commentIds = result.stream()
-                                        .map(dto -> (Object) dto.comment().getId())
-                                        .toList();
-        Map<Long, Integer> cacheLikeCount = likeCountRepository.findLikeCountAllBy(wordId, commentIds);
+    public CommentCollectionResponse readAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
+        List<LikedCommentDto> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
 
-        return result.stream()
-                     .map(dto -> ReadAllCommentDto.of(dto, cacheLikeCount))
-                     .toList();
+        return CommentApplicationMapper.toDto(comments);
     }
 
     private Account findAccount(Long accountId) {
@@ -90,5 +77,17 @@ public class CommentService {
     private Comment findComment(Long commentId) {
         return commentRepository.findBy(commentId)
                                 .orElseThrow(() -> new CommentNotFoundException("지정한 ID에 해당하는 댓글이 없습니다."));
+    }
+
+    private void validateDeleteAuthority(Comment comment, Account writer) {
+        if (comment.isNotWriter(writer)) {
+            throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
+        }
+    }
+
+    private void validateUpdateAuthority(Comment comment, Account writer) {
+        if (comment.isNotWriter(writer)) {
+            throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
+        }
     }
 }

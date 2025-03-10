@@ -84,7 +84,7 @@ class CommentTest {
     }
 
     @Test
-    void 회원_식별자로_댓글의_작성자인지_확인한다() {
+    void 회원_ID로_댓글의_작성자인지_확인한다() {
         // given
         Account writer = Account.builder()
                                 .registrationId(RegistrationId.KAKAO)

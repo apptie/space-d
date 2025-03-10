@@ -1,9 +1,11 @@
 package com.dnd.spaced.core.comment.presentation;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -21,15 +23,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto.CommentInfoDto;
-import com.dnd.spaced.core.comment.application.dto.response.ReadAllCommentDto.WriterInfoDto;
-import com.dnd.spaced.core.comment.presentation.dto.request.SaveCommentRequest;
-import com.dnd.spaced.core.comment.presentation.dto.request.UpdateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentContentResponse;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentResponse;
+import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -40,7 +45,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 댓글_작성_요청_성공_테스트() throws Exception {
         // given
-        SaveCommentRequest request = new SaveCommentRequest("이 용어 언제 쓰는건가요?");
+        CreateCommentRequest request = new CreateCommentRequest("이 용어 언제 쓰는건가요?");
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -51,6 +56,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isCreated(),
                 header().string("Location", "/words/1")
         );
+
+        verify(commentService).create(anyLong(), anyLong(), any(CreateCommentRequest.class));
 
         댓글_작성_요청_문서화(resultActions);
     }
@@ -80,6 +87,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isNoContent()
         );
+
+        verify(commentService).delete(anyLong(), anyLong());
 
         댓글_삭제_요청_문서화(resultActions);
     }
@@ -112,6 +121,8 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
+        verify(commentService).update(anyLong(), anyLong(), any(UpdateCommentRequest.class));
+
         댓글_수정_요청_문서화(resultActions);
     }
 
@@ -134,11 +145,12 @@ class CommentControllerTest extends CommonControllerSliceTest {
     @Test
     void 댓글_전체_조회_성공_테스트() throws Exception {
         // given
-        CommentInfoDto commentInfoDto = new CommentInfoDto(1L, 1L, "이 용어 언제 쓰는건가요?", 0);
-        WriterInfoDto writerInfoDto = new WriterInfoDto(1L, "재빠른지구001", "earth.png");
-        ReadAllCommentDto readAllCommentDto = new ReadAllCommentDto(commentInfoDto, writerInfoDto, false);
+        CommentContentResponse commentContentResponse = new CommentContentResponse(1L, 1L, "이 용어 언제 쓰는건가요?", 0);
+        CommentWriterResponse commentWriterResponse = new CommentWriterResponse(1L, "재빠른지구001", "earth.png");
+        CommentResponse commentResponse = new CommentResponse(commentContentResponse, commentWriterResponse, false);
+        CommentCollectionResponse response = new CommentCollectionResponse(List.of(commentResponse), 1L);
 
-        given(commentService.readAllBy(eq(null), anyLong(), eq(null), any())).willReturn(List.of(readAllCommentDto));
+        given(commentService.readAllBy(eq(null), anyLong(), eq(null), any())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -146,15 +158,20 @@ class CommentControllerTest extends CommonControllerSliceTest {
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("comments").exists(),
-                jsonPath("comments[*].commentInfo").exists(),
-                jsonPath("comments[*].commentInfo.id").exists(),
-                jsonPath("comments[*].commentInfo.content").value("이 용어 언제 쓰는건가요?"),
-                jsonPath("comments[*].commentInfo.likeCount").value(0),
-                jsonPath("comments[*].writerInfo").exists(),
-                jsonPath("comments[*].writerInfo.id").exists(),
-                jsonPath("comments[*].writerInfo.writerNickname").value("재빠른지구001"),
-                jsonPath("comments[*].writerInfo.writerProfileImage").value("earth.png")
+                jsonPath("comments[0].commentContent").exists(),
+                jsonPath("comments[0].commentContent.commentId", is(1L), Long.class),
+                jsonPath("comments[0].commentContent.wordId", is(1L), Long.class),
+                jsonPath("comments[0].commentContent.content").value("이 용어 언제 쓰는건가요?"),
+                jsonPath("comments[0].commentContent.likeCount", is(0L), Long.class),
+                jsonPath("comments[0].writer").exists(),
+                jsonPath("comments[0].writer.writerId", is(1L), Long.class),
+                jsonPath("comments[0].writer.writerNickname").value("재빠른지구001"),
+                jsonPath("comments[0].writer.writerProfileImage").value("earth.png"),
+                jsonPath("comments[0].liked").value(false),
+                jsonPath("lastCommentId", is(1L), Long.class)
         );
+
+        verify(commentService).readAllBy(any(), anyLong(), any(), any(Pageable.class));
 
         댓글_전체_조회_문서화(resultActions);
     }
@@ -172,16 +189,18 @@ class CommentControllerTest extends CommonControllerSliceTest {
                                 parameterWithName("lastCommentId").description("마지막으로 조회한 댓글 ID").optional()
                         ),
                         responseFields(
-                                fieldWithPath("comments").description("댓글 목록 조회 결과"),
-                                fieldWithPath("comments[*].commentInfo").description("댓글 정보"),
-                                fieldWithPath("comments[*].commentInfo.id").description("댓글 ID"),
-                                fieldWithPath("comments[*].commentInfo.wordId").description("댓글이 추가된 용어 ID"),
-                                fieldWithPath("comments[*].commentInfo.content").description("댓글 내용"),
-                                fieldWithPath("comments[*].commentInfo.likeCount").description("댓글 좋아요 수"),
-                                fieldWithPath("comments[*].writerInfo").description("작성자 정보"),
-                                fieldWithPath("comments[*].writerInfo.id").description("작성자 ID"),
-                                fieldWithPath("comments[*].writerInfo.writerNickname").description("작성자 닉네임"),
-                                fieldWithPath("comments[*].writerInfo.writerProfileImage").description("작성자 프로필 이미지")
+                                fieldWithPath("comments").type(JsonFieldType.ARRAY).description("댓글 목록 조회 결과"),
+                                fieldWithPath("comments[*].commentContent").type(JsonFieldType.OBJECT).description("댓글 정보"),
+                                fieldWithPath("comments[*].commentContent.commentId").type(JsonFieldType.NUMBER).description("댓글 ID"),
+                                fieldWithPath("comments[*].commentContent.wordId").type(JsonFieldType.NUMBER).description("댓글이 추가된 용어 ID"),
+                                fieldWithPath("comments[*].commentContent.content").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("comments[*].commentContent.likeCount").type(JsonFieldType.NUMBER).description("댓글 좋아요 수"),
+                                fieldWithPath("comments[*].writer").type(JsonFieldType.OBJECT).description("작성자 정보"),
+                                fieldWithPath("comments[*].writer.writerId").type(JsonFieldType.NUMBER).description("작성자 ID"),
+                                fieldWithPath("comments[*].writer.writerNickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("comments[*].writer.writerProfileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지"),
+                                fieldWithPath("comments[*].liked").type(JsonFieldType.BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("lastCommentId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 댓글 ID")
                         )
                 )
         );

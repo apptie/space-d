@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class WithCommentAndReportTest extends WithCommentAndReportTestHelper {
+class AdminReportServiceTest extends WithCommentAndReportTestHelper {
 
     @Autowired
     AdminReportService adminReportService;
