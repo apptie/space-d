@@ -35,15 +35,15 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public boolean existsBy(Long id) {
-        return wordCrudRepository.existsById(id);
+    public boolean existsBy(Long wordId) {
+        return wordCrudRepository.existsById(wordId);
     }
 
     @Override
-    public void updateViewCount(Long id) {
+    public void updateViewCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.viewCount, word.viewCount.add(1))
-                    .where(word.id.eq(id))
+                    .where(word.id.eq(wordId))
                     .execute();
     }
 
@@ -58,37 +58,37 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public void addBookmarkCount(Long id) {
+    public void addBookmarkCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.bookmarkCount, word.bookmarkCount.add(1))
-                    .where(word.id.eq(id))
+                    .where(word.id.eq(wordId))
                     .execute();
     }
 
     @Override
-    public void updateSubtractBookmarkCount(Long id) {
+    public void updateSubtractBookmarkCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.bookmarkCount, word.bookmarkCount.subtract(1))
-                    .where(word.id.eq(id))
+                    .where(word.id.eq(wordId))
                     .execute();
     }
 
     @Override
-    public Optional<Word> findBy(Long id) {
+    public Optional<Word> findBy(Long wordId) {
         Word result = queryFactory.selectFrom(word)
                                   .leftJoin(word.wordExamples)
                                   .leftJoin(word.pronunciations).fetchJoin()
-                                  .where(word.id.eq(id))
+                                  .where(word.id.eq(wordId))
                                   .fetchOne();
 
         return Optional.ofNullable(result);
     }
 
     @Override
-    public List<String> findNameAllBy(Long[] ids) {
+    public List<String> findNameAllBy(Long[] wordIds) {
         return queryFactory.select(word.name)
                            .from(word)
-                           .where(word.id.in(ids))
+                           .where(word.id.in(wordIds))
                            .fetch();
     }
 
@@ -126,10 +126,10 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(List<Long> ids) {
+    public List<Word> findAllBy(List<Long> wordIds) {
         List<Word> words = queryFactory.selectFrom(word)
                                        .leftJoin(word.wordExamples, wordExample)
-                                       .where(word.id.in(ids.toArray(Long[]::new)))
+                                       .where(word.id.in(wordIds.toArray(Long[]::new)))
                                        .fetch();
 
         Collections.shuffle(words);

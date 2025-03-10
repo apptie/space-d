@@ -53,22 +53,22 @@ public class AdminWordService {
     }
 
     @Transactional
-    public void updateWordExample(Long id, String example) {
-        long updateCount = wordExampleRepository.update(id, example);
+    public void updateWordExample(Long wordExampleId, String example) {
+        long updateCount = wordExampleRepository.update(wordExampleId, example);
 
         validateUpdateCount(updateCount);
     }
 
     @Transactional
-    public void deleteWordExample(Long wordId, Long exampleId) {
-        validateExampleCount(wordId);
+    public void deleteWordExample(Long wordExampleId) {
+        validateExampleCount(wordExampleId);
 
-        wordExampleRepository.deleteBy(exampleId);
+        wordExampleRepository.deleteBy(wordExampleId);
     }
 
     @Transactional
-    public void deletePronunciation(Long wordId, Long pronunciationId) {
-        validatePronunciationCount(wordId);
+    public void deletePronunciation(Long pronunciationId) {
+        validatePronunciationCount(pronunciationId);
 
         pronunciationRepository.deleteBy(pronunciationId);
     }
@@ -118,14 +118,14 @@ public class AdminWordService {
         }
     }
 
-    private void validateExampleCount(Long wordId) {
-        if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
+    private void validateExampleCount(Long wordExampleId) {
+        if (wordExampleRepository.countBy(wordExampleId) <= WORD_EXAMPLE_MIN_COUNT) {
             throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
         }
     }
 
-    private void validatePronunciationCount(Long wordId) {
-        if (pronunciationRepository.countBy(wordId) <= PRONUNCIATION_MIN_COUNT) {
+    private void validatePronunciationCount(Long pronunciationId) {
+        if (pronunciationRepository.countBy(pronunciationId) <= PRONUNCIATION_MIN_COUNT) {
             throw new PronunciationDeletionNotAllowedException("해당 용어의 발음 정보 개수가 최소치입니다.");
         }
     }

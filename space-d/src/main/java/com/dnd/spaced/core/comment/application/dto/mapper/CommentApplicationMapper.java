@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.comment.application.dto;
+package com.dnd.spaced.core.comment.application.dto.mapper;
 
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentContentResponse;

@@ -45,7 +45,7 @@ class BookmarkServiceTest extends WithWordTestHelper {
 
         // when
 
-        bookmarkService.create(1L, request);
+        bookmarkService.createBookmark(1L, request);
 
         // then
         assertThat(events.stream(WordBookmarkCountIncrementedEvent.class).count()).isOne();
@@ -57,7 +57,7 @@ class BookmarkServiceTest extends WithWordTestHelper {
         CreateBookmarkRequest request = new CreateBookmarkRequest(-999L);
 
         // when & then
-        assertThatThrownBy(() -> bookmarkService.create(1L, request))
+        assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 식별자의 용어를 찾지 못했습니다.");
 
@@ -65,10 +65,10 @@ class BookmarkServiceTest extends WithWordTestHelper {
 
     @Test
     void 북마크를_삭제한다() {
-        bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
+        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
 
         // when
-        bookmarkService.delete(1L, 1L);
+        bookmarkService.deleteBookmark(1L, 1L);
 
         // then
         assertThat(events.stream(WordBookmarkCountDecrementedEvent.class).count()).isOne();
@@ -77,16 +77,16 @@ class BookmarkServiceTest extends WithWordTestHelper {
     @Test
     void 지정한_식별자로_삭제할_북마크를_찾지_못하면_북마크를_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> bookmarkService.delete(1L, 1L));
+        assertThatThrownBy(() -> bookmarkService.deleteBookmark(1L, 1L));
     }
 
     @Test
     void 지정한_식별자의_북마크를_작성한_회원이_아니라면_북마크를_삭제할_수_없다() {
         // given
-        bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
+        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
 
         // when & then
-        assertThatThrownBy(() -> bookmarkService.delete(2L, 1L))
+        assertThatThrownBy(() -> bookmarkService.deleteBookmark(2L, 1L))
                 .isInstanceOf(ForbiddenDeleteBookmarkException.class)
                 .hasMessage("북마크 삭제는 생성자만이 가능합니다.");
     }
@@ -94,12 +94,12 @@ class BookmarkServiceTest extends WithWordTestHelper {
     @Test
     void 회원이_생성한_북마크를_모두_조회한다() {
         // given
-        bookmarkService.create(1L, new CreateBookmarkRequest(word.getId()));
+        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
 
         // when
         ReadAllBookmarkRequest request = new ReadAllBookmarkRequest(null);
 
-        BookmarkCollectionResponse actual = bookmarkService.findAllBy(1L, request, PageRequest.of(0, 10));
+        BookmarkCollectionResponse actual = bookmarkService.readBookmarks(1L, request, PageRequest.of(0, 10));
 
         assertAll(
                 () -> assertThat(actual.bookmarks()).hasSize(1),

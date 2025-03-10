@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -33,7 +32,7 @@ class AdminAuthenticationControllerTest extends CommonControllerSliceTest {
                 post("/admin/blacklist-token").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
                                               .contentType(MediaType.APPLICATION_JSON)
                                               .content(objectMapper.writeValueAsString(request))
-        ).andExpectAll(status().isCreated());
+        ).andExpectAll(status().isNoContent());
 
         verify(blacklistTokenService).register(anyLong());
 
@@ -49,9 +48,6 @@ class AdminAuthenticationControllerTest extends CommonControllerSliceTest {
                         requestFields(
                                 fieldWithPath("accountId").attributes(field("constraints", "가입한 회원 ID만 가능"))
                                                           .description("블랙리스트 토큰으로 등록할 회원 ID")
-                        ),
-                        responseHeaders(
-                                headerWithName("Location").description("생성한 오늘의 퀴즈를 확인할 수 있는 API")
                         )
                 )
         );

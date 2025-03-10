@@ -66,7 +66,7 @@ class WordServiceTest {
         wordRepository.save(word);
 
         // when
-        WordResponse actual = wordService.read(word.getId());
+        WordResponse actual = wordService.readWord(word.getId());
 
         // then
         assertAll(
@@ -81,7 +81,7 @@ class WordServiceTest {
     @Test
     void 용어_식별자로_용어를_찾지_못하면_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> wordService.read(-1L))
+        assertThatThrownBy(() -> wordService.readWord(-1L))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 용어를 찾을 수 없습니다.");
     }
@@ -103,7 +103,7 @@ class WordServiceTest {
         ReadAllWordRequest request = new ReadAllWordRequest(null, null);
 
         // when
-        WordCollectionResponse actual = wordService.readAllBy(request, Pageable.ofSize(10));
+        WordCollectionResponse actual = wordService.readWords(request, Pageable.ofSize(10));
 
         // then
         assertAll(
@@ -131,7 +131,7 @@ class WordServiceTest {
         SearchWordRequest request = new SearchWordRequest("Authorization", null, null, null);
 
         // when
-        WordCollectionResponse actual = wordService.search(request, Pageable.ofSize(10));
+        WordCollectionResponse actual = wordService.searchWord(request, Pageable.ofSize(10));
 
         // then
         assertAll(
@@ -147,7 +147,7 @@ class WordServiceTest {
         popularWordRepository.saveAll(List.of(popularWord), LocalDateTime.now());
 
         // when
-        PopularWordCollectionResponse actual = wordService.readPopularWordsAll();
+        PopularWordCollectionResponse actual = wordService.readPopularWords();
 
         // then
         assertAll(

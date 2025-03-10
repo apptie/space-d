@@ -36,7 +36,7 @@ class SkillControllerTest extends CommonControllerSliceTest {
                 20.0d,
                 0.0d
         );
-        given(skillService.findBy(anyLong())).willReturn(response);
+        given(skillService.readSkill(anyLong())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -52,7 +52,7 @@ class SkillControllerTest extends CommonControllerSliceTest {
                                                      jsonPath("totalTodayQuizQuestionCorrectPercent", is(0.0d), double.class)
                                              );
 
-        verify(skillService).findBy(anyLong());
+        verify(skillService).readSkill(anyLong());
 
         스킬_조회_요청_문서화(resultActions);
     }

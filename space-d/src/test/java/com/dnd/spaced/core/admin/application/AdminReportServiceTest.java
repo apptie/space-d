@@ -44,7 +44,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
         // when
         ProcessReportRequest request = new ProcessReportRequest("신고 처리");
 
-        adminReportService.process(report.getId(), request);
+        adminReportService.processReport(report.getId(), request);
 
         // then
         assertAll(
@@ -60,7 +60,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
 
         // when & then
 
-        assertThatThrownBy(() -> adminReportService.process(-999L, request))
+        assertThatThrownBy(() -> adminReportService.processReport(-999L, request))
                 .isInstanceOf(ReportNotFoundException.class)
                 .hasMessage("지정한 신고 식별자로 신고 내역을 찾을 수 없습니다.");
     }
@@ -73,7 +73,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
 
         // when & then
 
-        assertThatThrownBy(() -> adminReportService.process(report.getId(), request))
+        assertThatThrownBy(() -> adminReportService.processReport(report.getId(), request))
                 .isInstanceOf(ReportStatusNotFoundException.class)
                 .hasMessage("지정한 신고 상태를 찾을 수 없습니다.");
     }
@@ -85,7 +85,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        ReportCollectionResponse actual = adminReportService.findAllBy(request, pageable);
+        ReportCollectionResponse actual = adminReportService.readReports(request, pageable);
 
         // then
         assertAll(

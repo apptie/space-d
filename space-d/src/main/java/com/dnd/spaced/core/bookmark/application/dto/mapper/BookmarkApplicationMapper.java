@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.bookmark.application.dto;
+package com.dnd.spaced.core.bookmark.application.dto.mapper;
 
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse.BookmarkResponse;

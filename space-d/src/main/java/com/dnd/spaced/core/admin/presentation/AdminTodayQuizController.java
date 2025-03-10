@@ -18,7 +18,7 @@ public class AdminTodayQuizController {
 
     @PostMapping
     public ResponseEntity<Void> createTodayQuiz() {
-        Long todayQuizId = adminTodayQuizService.create();
+        Long todayQuizId = adminTodayQuizService.createTodayQuiz();
         URI location = UriComponentsBuilder.fromPath("/today-quizzes/{todayQuizId}")
                                            .buildAndExpand(todayQuizId)
                                            .toUri();

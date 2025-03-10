@@ -2,9 +2,9 @@ package com.dnd.spaced.core.word.domain.repository;
 
 public interface WordExampleRepository {
 
-    long countBy(Long wordId);
+    long countBy(Long wordExampleId);
 
-    long update(Long id, String example);
+    long update(Long wordExampleId, String example);
 
-    void deleteBy(Long id);
+    void deleteBy(Long wordExampleId);
 }

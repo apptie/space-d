@@ -14,7 +14,7 @@ import com.dnd.spaced.core.admin.presentation.AdminReportController;
 import com.dnd.spaced.core.admin.presentation.AdminTodayQuizController;
 import com.dnd.spaced.core.admin.presentation.AdminWordController;
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
-import com.dnd.spaced.core.auth.application.InitAccountInfoService;
+import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
 import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.presentation.AuthController;
 import com.dnd.spaced.core.bookmark.application.BookmarkService;
@@ -150,7 +150,7 @@ public class CommonControllerSliceTest {
     protected BlacklistTokenService blacklistTokenService;
 
     @MockBean
-    protected InitAccountInfoService initAccountInfoService;
+    protected InitAccountCareerInfoService initAccountCareerInfoService;
 
     @MockBean
     protected AdminWordService adminWordService;

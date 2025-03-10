@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.account.application;
 
+import com.dnd.spaced.core.account.application.dto.mapper.AccountApplicationMapper;
 import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
 import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
@@ -44,7 +45,7 @@ public class AccountService {
         authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName.getImageName());
     }
 
-    public AccountResponse findAccountInfo(Long accountId) {
+    public AccountResponse readAccount(Long accountId) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
         return AccountApplicationMapper.toDto(authorizedAccount);

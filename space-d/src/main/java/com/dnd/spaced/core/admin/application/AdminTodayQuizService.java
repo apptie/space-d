@@ -42,7 +42,7 @@ public class AdminTodayQuizService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long create() {
+    public Long createTodayQuiz() {
         QuizCategory quizCategory = QuizCategory.findRandom();
 
         validateQuizCreation(quizCategory);

@@ -44,7 +44,7 @@ public class LikeService {
 
     private Account findAccount(Long accountId) {
         return accountRepository.findBy(accountId)
-                                .orElseThrow(() -> new ForbiddenLikeException("좋아요를 제어할 권한이 없습니다."));
+                                .orElseThrow(() -> new ForbiddenLikeException("지정한 ID에 대한 회원을 찾지 못했습니다."));
     }
 
     private void processDeleteLike(Like like, Comment comment) {

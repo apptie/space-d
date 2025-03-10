@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class InitAccountInfoService {
+public class InitAccountCareerInfoService {
 
     private final AccountRepository accountRepository;
 
     @Transactional
     public void initCareerInfo(Long accountId, InitAccountCareerInfoRequest request) {
-        Account account = findSignedUpAccount(accountId);
+        Account account = findPreInitializationAccount(accountId);
 
         account.changeCareerInfo(request.jobGroupName(), request.companyName(), request.experienceName());
     }
 
-    private Account findSignedUpAccount(Long accountId) {
-        return accountRepository.findSignedUpAccountBy(accountId)
+    private Account findPreInitializationAccount(Long accountId) {
+        return accountRepository.findPreInitializationAccountBy(accountId)
                                 .orElseThrow(
                                         () -> new ForbiddenInitCareerInfoException(
                                                 "최초로 가입한 회원이 아닙니다."

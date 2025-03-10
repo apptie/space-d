@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.bookmark.application;
 
-import com.dnd.spaced.core.bookmark.application.dto.BookmarkApplicationMapper;
+import com.dnd.spaced.core.bookmark.application.dto.mapper.BookmarkApplicationMapper;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
@@ -29,7 +29,7 @@ public class BookmarkService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public void create(Long accountId, CreateBookmarkRequest request) {
+    public void createBookmark(Long accountId, CreateBookmarkRequest request) {
         validateWordId(request);
 
         Bookmark bookmark = new Bookmark(accountId, request.wordId());
@@ -39,23 +39,23 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void delete(Long accountId, Long bookmarkId) {
+    public void deleteBookmark(Long accountId, Long bookmarkId) {
         Bookmark bookmark = findBookmark(bookmarkId);
 
         validateBookmarkCreator(accountId, bookmark);
 
         bookmarkRepository.delete(bookmark);
-        eventPublisher.publishEvent(new WordBookmarkCountDecrementedEvent(bookmark.getId()));
+        publishDeletedBookmarkEvent(bookmark);
     }
 
-    public BookmarkCollectionResponse findAllBy(Long accountId, ReadAllBookmarkRequest request, Pageable pageable) {
+    public BookmarkCollectionResponse readBookmarks(
+            Long accountId,
+            ReadAllBookmarkRequest request,
+            Pageable pageable
+    ) {
         List<Bookmark> bookmarks = bookmarkRepository.findAllBy(accountId, request.lastBookmarkId(), pageable);
 
         return BookmarkApplicationMapper.toDto(bookmarks);
-    }
-
-    private void publishAddedBookmarkEvent(Bookmark bookmark) {
-        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getId()));
     }
 
     private void validateBookmarkCreator(Long accountId, Bookmark bookmark) {
@@ -77,5 +77,13 @@ public class BookmarkService {
                                                  "지정한 식별자의 북마크를 찾지 못했습니다."
                                          )
                                  );
+    }
+
+    private void publishAddedBookmarkEvent(Bookmark bookmark) {
+        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getId()));
+    }
+
+    private void publishDeletedBookmarkEvent(Bookmark bookmark) {
+        eventPublisher.publishEvent(new WordBookmarkCountDecrementedEvent(bookmark.getId()));
     }
 }

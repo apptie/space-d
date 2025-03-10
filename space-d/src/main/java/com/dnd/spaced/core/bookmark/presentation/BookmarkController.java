@@ -28,29 +28,32 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @GetMapping
-    public ResponseEntity<BookmarkCollectionResponse> findAllBy(
+    public ResponseEntity<BookmarkCollectionResponse> readBookmarks(
             @AuthAccount AuthAccountInfo accountInfo,
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
-        BookmarkCollectionResponse response = bookmarkService.findAllBy(accountInfo.id(), request, pageable);
+        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountInfo.id(), request, pageable);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(
+    public ResponseEntity<Void> createBookmark(
             @AuthAccount AuthAccountInfo accountInfo,
             @RequestBody @Valid CreateBookmarkRequest request
     ) {
-        bookmarkService.create(accountInfo.id(), request);
+        bookmarkService.createBookmark(accountInfo.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("{bookmarkId}")
-    public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long bookmarkId) {
-        bookmarkService.delete(accountInfo.id(), bookmarkId);
+    public ResponseEntity<Void> deleteBookmark(
+            @AuthAccount AuthAccountInfo accountInfo,
+            @PathVariable Long bookmarkId
+    ) {
+        bookmarkService.deleteBookmark(accountInfo.id(), bookmarkId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

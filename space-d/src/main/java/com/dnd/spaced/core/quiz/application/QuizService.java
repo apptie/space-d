@@ -59,7 +59,7 @@ public class QuizService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long save(Long accountId, CreateQuizRequest request) {
+    public Long createQuiz(Long accountId, CreateQuizRequest request) {
         QuizCategory quizCategory = QuizCategory.findBy(request.quizCategoryName());
 
         validateQuizCreation(quizCategory);
@@ -67,24 +67,23 @@ public class QuizService {
         Quiz quiz = createQuiz(accountId, quizCategory);
         Quiz savedQuiz = quizRepository.save(quiz);
 
-        eventPublisher.publishEvent(new AddedQuizQuestionEvent());
+        publishAddedQuizQuestionEvent();
         return savedQuiz.getId();
     }
 
     @Transactional
     public void grade(Long accountId, Long quizId, GradeQuizRequest request) {
-        Quiz quiz = quizRepository.findBy(quizId)
-                                  .orElseThrow(() -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다."));
+        Quiz quiz = findQuiz(quizId);
         List<GradedAnswer> gradedAnswers = quiz.grade(accountId, request.answers());
 
         gradedAnswerRepository.saveAll(gradedAnswers);
         long correctCount = gradedAnswers.stream()
-                                  .filter(GradedAnswer::isCorrect)
-                                  .count();
+                                         .filter(GradedAnswer::isCorrect)
+                                         .count();
         eventPublisher.publishEvent(new GradedQuizEvent(accountId, correctCount));
     }
 
-    public GradedAnswerCollectionResponse findGradedAnswersAllBy(
+    public GradedAnswerCollectionResponse readGradedAnswers(
             Long accountId,
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
@@ -98,17 +97,25 @@ public class QuizService {
         return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
-    public GradedAnswerCollectionResponse findGradedAnswersAllBy(Long quizId) {
+    public GradedAnswerCollectionResponse readGradedAnswers(Long quizId) {
         List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(quizId);
 
         return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
     public QuizResponse findQuizBy(Long id) {
-        Quiz quiz = quizRepository.findBy(id)
-                                  .orElseThrow(() -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다."));
+        Quiz quiz = findQuiz(id);
 
         return QuizApplicationMapper.toDto(quiz);
+    }
+
+    private Quiz findQuiz(Long id) {
+        return quizRepository.findBy(id)
+                             .orElseThrow(() -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다."));
+    }
+
+    private void publishAddedQuizQuestionEvent() {
+        eventPublisher.publishEvent(new AddedQuizQuestionEvent());
     }
 
     private void validateQuizCreation(QuizCategory quizCategory) {

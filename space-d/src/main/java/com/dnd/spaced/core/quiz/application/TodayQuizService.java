@@ -31,24 +31,17 @@ public class TodayQuizService {
     private final TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
     public TodayQuizResponse findLatest() {
-        TodayQuiz todayQuiz = todayQuizRepository.findLatest()
-                                                 .orElseThrow(
-                                                         () -> new TodayQuizNotFoundException("오늘의 퀴즈가 생성되지 않았습니다."));
+        TodayQuiz todayQuiz = findLatestQuiz();
 
         return TodayQuizApplicationMapper.toDto(todayQuiz);
     }
 
     public void grade(Long accountId, Long todayQuizId, GradeTodayQuizRequest request) {
-        TodayQuiz todayQuiz = todayQuizRepository.findBy(todayQuizId)
-                                                 .orElseThrow(
-                                                         () -> new TodayQuizNotFoundException(
-                                                                 "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
-                                                         )
-                                                 );
+        TodayQuiz todayQuiz = findTodayQuiz(todayQuizId);
         TodayQuizGradedAnswer gradedAnswer = todayQuiz.grade(accountId, request.answer());
 
         todayQuizGradedAnswerRepository.save(gradedAnswer);
-        eventPublisher.publishEvent(new GradedTodayQuizEvent(accountId, calculateCorrectCount(gradedAnswer)));
+        publishGradedTodayQuizEvent(accountId, gradedAnswer);
     }
 
     public TodayQuizGradedAnswerCollectionResponse findTodayQuizGradedAnswerAllBy(
@@ -61,29 +54,49 @@ public class TodayQuizService {
                 request.lastTodayQuizGradedAnswerId(),
                 pageable
         );
-        List<TodayQuizGradedAnswerResponse> responses = todayQuizGradedAnswers.stream()
-                                                                              .map(TodayQuizApplicationMapper::toDto)
-                                                                              .toList();
 
-        return new TodayQuizGradedAnswerCollectionResponse(responses);
+        return TodayQuizApplicationMapper.toDto(todayQuizGradedAnswers);
     }
 
     public TodayQuizGradedAnswerResponse findTodayQuizGradedAnswerBy(Long accountId, Long todayQuizId) {
-        TodayQuizGradedAnswer todayQuizGradedAnswer = todayQuizGradedAnswerRepository.findBy(accountId, todayQuizId)
-                                                                                     .orElseThrow(
-                                                                                             () -> new TodayQuizNotFoundException(
-                                                                                                     "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
-                                                                                             )
-                                                                                     );
+        TodayQuizGradedAnswer todayQuizGradedAnswer = findTodayQuizGradedAnswer(accountId, todayQuizId);
 
         return TodayQuizApplicationMapper.toDto(todayQuizGradedAnswer);
     }
 
     public TodayQuizResponse findBy(Long todayQuizId) {
-        TodayQuiz todayQuiz = todayQuizRepository.findBy(todayQuizId)
-                                                 .orElseThrow(() -> new TodayQuizNotFoundException("지정한 id의 오늘의 퀴즈를 찾지 못했습니다."));
+        TodayQuiz todayQuiz = findTodayQuiz(todayQuizId);
 
         return TodayQuizApplicationMapper.toDto(todayQuiz);
+    }
+
+    private TodayQuiz findLatestQuiz() {
+        return todayQuizRepository.findLatest()
+                                  .orElseThrow(
+                                          () -> new TodayQuizNotFoundException("오늘의 퀴즈가 생성되지 않았습니다.")
+                                  );
+    }
+
+    private TodayQuiz findTodayQuiz(Long todayQuizId) {
+        return todayQuizRepository.findBy(todayQuizId)
+                                  .orElseThrow(
+                                          () -> new TodayQuizNotFoundException(
+                                                  "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
+                                          )
+                                  );
+    }
+
+    private void publishGradedTodayQuizEvent(Long accountId, TodayQuizGradedAnswer gradedAnswer) {
+        eventPublisher.publishEvent(new GradedTodayQuizEvent(accountId, calculateCorrectCount(gradedAnswer)));
+    }
+
+    private TodayQuizGradedAnswer findTodayQuizGradedAnswer(Long accountId, Long todayQuizId) {
+        return todayQuizGradedAnswerRepository.findBy(accountId, todayQuizId)
+                                              .orElseThrow(
+                                                      () -> new TodayQuizNotFoundException(
+                                                              "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
+                                                      )
+                                              );
     }
 
     private long calculateCorrectCount(TodayQuizGradedAnswer answer) {

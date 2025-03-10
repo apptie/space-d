@@ -44,7 +44,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
         // given
         ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "기타");
         ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
-        given(adminReportService.findAllBy(any(ReadAllReportSearchRequest.class), any(Pageable.class)))
+        given(adminReportService.readReports(any(ReadAllReportSearchRequest.class), any(Pageable.class)))
                 .willReturn(reportCollectionResponse);
 
         // when & then
@@ -62,7 +62,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastReportId", is(1L), Long.class)
         );
 
-        verify(adminReportService).findAllBy(any(ReadAllReportSearchRequest.class), any(Pageable.class));
+        verify(adminReportService).readReports(any(ReadAllReportSearchRequest.class), any(Pageable.class));
 
         신고_목록_조회_요청_문서화(resultActions);
     }
@@ -104,7 +104,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                                                      .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
 
-        verify(adminReportService).process(anyLong(), any(ProcessReportRequest.class));
+        verify(adminReportService).processReport(anyLong(), any(ProcessReportRequest.class));
 
         신고_처리_요청_문서화(resultActions);
     }

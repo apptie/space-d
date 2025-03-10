@@ -14,23 +14,23 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final JPAQueryFactory queryFactory;
     private final WordExampleCrudRepository wordExampleCrudRepository;
 
-    public long countBy(Long wordId) {
+    public long countBy(Long wordExampleId) {
         return queryFactory.select(wordExample.id.count())
                            .from(wordExample)
-                           .where(wordExample.word.id.eq(wordId))
+                           .where(wordExample.word.id.eq(wordExampleId))
                            .fetchFirst();
     }
 
     @Override
-    public long update(Long id, String example) {
+    public long update(Long wordExampleId, String example) {
         return queryFactory.update(wordExample)
                            .set(wordExample.example, example)
-                           .where(wordExample.id.eq(id))
+                           .where(wordExample.id.eq(wordExampleId))
                            .execute();
     }
 
     @Override
-    public void deleteBy(Long id) {
-        wordExampleCrudRepository.deleteById(id);
+    public void deleteBy(Long wordExampleId) {
+        wordExampleCrudRepository.deleteById(wordExampleId);
     }
 }

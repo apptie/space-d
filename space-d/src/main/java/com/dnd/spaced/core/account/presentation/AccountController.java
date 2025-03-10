@@ -52,8 +52,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<AccountResponse> findAccountInfo(@AuthAccount AuthAccountInfo accountInfo) {
-        AccountResponse response = accountService.findAccountInfo(accountInfo.id());
+    public ResponseEntity<AccountResponse> readAccount(@AuthAccount AuthAccountInfo accountInfo) {
+        AccountResponse response = accountService.readAccount(accountInfo.id());
 
         return ResponseEntity.ok(response);
     }

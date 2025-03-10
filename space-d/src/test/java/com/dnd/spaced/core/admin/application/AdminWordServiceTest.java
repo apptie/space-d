@@ -150,7 +150,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertDoesNotThrow(
-                    () -> adminWordService.deleteWordExample(word.getId(), word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
             );
         }
 
@@ -175,7 +175,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertThatThrownBy(
-                    () -> adminWordService.deleteWordExample(word.getId(), word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
             ).isInstanceOf(WordExampleDeletionNotAllowedException.class)
              .hasMessage("해당 용어의 예문 개수가 최소치입니다.");
         }
@@ -202,7 +202,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertDoesNotThrow(
-                    () -> adminWordService.deletePronunciation(wordId, word.getPronunciations().get(0).getId())
+                    () -> adminWordService.deletePronunciation(word.getPronunciations().get(0).getId())
             );
         }
 
@@ -227,7 +227,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertThatThrownBy(
-                    () -> adminWordService.deletePronunciation(wordId, word.getPronunciations().get(0).getId())
+                    () -> adminWordService.deletePronunciation(word.getPronunciations().get(0).getId())
             ).isInstanceOf(PronunciationDeletionNotAllowedException.class)
              .hasMessage("해당 용어의 발음 정보 개수가 최소치입니다.");
         }

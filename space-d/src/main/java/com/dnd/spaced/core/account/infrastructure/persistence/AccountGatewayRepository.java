@@ -46,7 +46,7 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findSignedUpAccountBy(Long accountId) {
+    public Optional<Account> findPreInitializationAccountBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
                                              account.id.eq(accountId),
@@ -58,11 +58,6 @@ public class AccountGatewayRepository implements AccountRepository {
                                      .fetchOne();
 
         return Optional.ofNullable(result);
-    }
-
-    @Override
-    public void delete(Account account) {
-        accountCrudRepository.delete(account);
     }
 
     private BooleanExpression eqAccountId(Long accountId) {

@@ -25,11 +25,11 @@ public class AdminReportController {
     private final AdminReportService adminReportService;
 
     @GetMapping
-    public ResponseEntity<ReportCollectionResponse> findAllBy(
+    public ResponseEntity<ReportCollectionResponse> readReports(
             ReadAllReportSearchRequest request,
             @ReportPageable Pageable pageable
     ) {
-        ReportCollectionResponse response = adminReportService.findAllBy(request, pageable);
+        ReportCollectionResponse response = adminReportService.readReports(request, pageable);
 
         return ResponseEntity.ok(response);
     }
@@ -39,7 +39,7 @@ public class AdminReportController {
             @PathVariable Long reportId,
             @Valid @RequestBody ProcessReportRequest request
     ) {
-        adminReportService.process(reportId, request);
+        adminReportService.processReport(reportId, request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

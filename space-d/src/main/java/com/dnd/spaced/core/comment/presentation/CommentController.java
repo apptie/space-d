@@ -35,7 +35,7 @@ public class CommentController {
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
-        commentService.create(accountInfo.id(), wordId, request);
+        commentService.createComment(accountInfo.id(), wordId, request);
 
         URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
                                            .buildAndExpand(wordId)
@@ -47,7 +47,7 @@ public class CommentController {
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> delete(@AuthAccount AuthAccountInfo accountInfo, @PathVariable Long commentId) {
-        commentService.delete(accountInfo.id(), commentId);
+        commentService.deleteComment(accountInfo.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -58,7 +58,7 @@ public class CommentController {
             @Valid @RequestBody UpdateCommentRequest request,
             @PathVariable Long commentId
     ) {
-        commentService.update(accountInfo.id(), commentId, request);
+        commentService.updateComment(accountInfo.id(), commentId, request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -70,7 +70,7 @@ public class CommentController {
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable
     ) {
-        CommentCollectionResponse response = commentService.readAllBy(
+        CommentCollectionResponse response = commentService.readComments(
                 accountInfo.id(),
                 wordId,
                 request.lastCommentId(),

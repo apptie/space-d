@@ -34,7 +34,7 @@ class SkillServiceTest {
     @Test
     void 퀴즈_메타데이터가_정상적으로_초기화되지_않았다면_스킬을_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> skillService.findBy(1L))
+        assertThatThrownBy(() -> skillService.readSkill(1L))
                 .isInstanceOf(QuizMetadataNotFoundException.class)
                 .hasMessage("퀴즈 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -50,7 +50,7 @@ class SkillServiceTest {
             skillRepository.save(skill);
 
             // when
-            SkillResponse actual = skillService.findBy(1L);
+            SkillResponse actual = skillService.readSkill(1L);
 
             // then
             assertAll(
@@ -67,7 +67,7 @@ class SkillServiceTest {
         @Test
         void 스킬_정보가_없을_때_스킬을_조회하면_통계_정보를_초기_값으로_반환한다() {
             // when
-            SkillResponse actual = skillService.findBy(1L);
+            SkillResponse actual = skillService.readSkill(1L);
 
             // then
             assertAll(

@@ -18,8 +18,8 @@ public class SkillController {
     private final SkillService skillService;
 
     @GetMapping
-    public ResponseEntity<SkillResponse> findBy(@AuthAccount AuthAccountInfo accountInfo) {
-        SkillResponse response = skillService.findBy(accountInfo.id());
+    public ResponseEntity<SkillResponse> readSkill(@AuthAccount AuthAccountInfo accountInfo) {
+        SkillResponse response = skillService.readSkill(accountInfo.id());
 
         return ResponseEntity.ok(response);
     }
