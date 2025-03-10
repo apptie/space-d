@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
+import com.dnd.spaced.config.stub.StudAccountRepository;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
 import com.dnd.spaced.core.admin.application.AdminReportService;
@@ -199,7 +200,7 @@ public class CommonControllerSliceTest {
     void beforeEach() {
         AuthStore store = new AuthStore();
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
-        AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store);
+        AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store, new StudAccountRepository());
         GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver = new GuestAccountInfoArgumentResolver(store);
         WordPageableArgumentResolver wordPageableArgumentResolver = new WordPageableArgumentResolver();
         CommentPageableArgumentResolver commentPageableArgumentResolver = new CommentPageableArgumentResolver();
