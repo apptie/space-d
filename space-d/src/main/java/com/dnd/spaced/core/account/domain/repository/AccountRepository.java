@@ -12,5 +12,5 @@ public interface AccountRepository {
 
     Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier);
 
-    Optional<Account> findSignedUpAccountBy(Long accountId);
+    Optional<Account> findPreInitializationAccountBy(Long accountId);
 }

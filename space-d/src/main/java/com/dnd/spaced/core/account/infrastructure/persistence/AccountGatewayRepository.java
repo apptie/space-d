@@ -46,7 +46,7 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findSignedUpAccountBy(Long accountId) {
+    public Optional<Account> findPreInitializationAccountBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
                                              account.id.eq(accountId),
