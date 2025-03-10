@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class InitAccountInfoService {
+public class InitAccountCareerInfoService {
 
     private final AccountRepository accountRepository;
 

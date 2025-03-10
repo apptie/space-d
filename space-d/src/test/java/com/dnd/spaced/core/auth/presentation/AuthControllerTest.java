@@ -40,7 +40,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원_프로필_초기화_요청_성공_테스트() throws Exception {
         // given
-        willDoNothing().given(initAccountInfoService)
+        willDoNothing().given(initAccountCareerInfoService)
                        .initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",
@@ -57,7 +57,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(initAccountInfoService).initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
+        verify(initAccountCareerInfoService).initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
 
         회원_프로필_초기화_요청_문서화(resultActions);
     }

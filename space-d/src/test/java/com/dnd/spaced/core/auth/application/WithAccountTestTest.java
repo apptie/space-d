@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 class WithAccountTestTest extends WithAccountTestHelper {
 
     @Autowired
-    InitAccountInfoService initAccountInfoService;
+    InitAccountCareerInfoService initAccountCareerInfoService;
 
     @Test
     void 경력_정보를_초기화한다() {
@@ -40,7 +40,7 @@ class WithAccountTestTest extends WithAccountTestHelper {
         );
 
         // when & then
-        assertDoesNotThrow(() -> initAccountInfoService.initCareerInfo(account.getId(), request));
+        assertDoesNotThrow(() -> initAccountCareerInfoService.initCareerInfo(account.getId(), request));
     }
 
     @ParameterizedTest(name = "회사명이 {0}일 때 경력 정보를 초기화할 수 없다")
@@ -54,7 +54,7 @@ class WithAccountTestTest extends WithAccountTestHelper {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountInfoService.initCareerInfo(account.getId(), request))
+        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(account.getId(), request))
                 .isInstanceOf(InvalidCompanyException.class)
                 .hasMessageContaining("잘못된 회사 이름");
     }
@@ -70,7 +70,7 @@ class WithAccountTestTest extends WithAccountTestHelper {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountInfoService.initCareerInfo(account.getId(), request))
+        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(account.getId(), request))
                 .isInstanceOf(InvalidJobGroupException.class)
                 .hasMessageContaining("잘못된 직군 이름");
     }
@@ -86,7 +86,7 @@ class WithAccountTestTest extends WithAccountTestHelper {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountInfoService.initCareerInfo(account.getId(), request))
+        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(account.getId(), request))
                 .isInstanceOf(InvalidExperienceException.class)
                 .hasMessageContaining("잘못된 경력");
     }
@@ -101,7 +101,7 @@ class WithAccountTestTest extends WithAccountTestHelper {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountInfoService.initCareerInfo(-999L, request))
+        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(-999L, request))
                 .isInstanceOf(ForbiddenInitCareerInfoException.class)
                 .hasMessage("최초로 가입한 회원이 아닙니다.");
     }
