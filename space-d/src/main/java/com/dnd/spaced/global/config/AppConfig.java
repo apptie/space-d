@@ -3,6 +3,7 @@ package com.dnd.spaced.global.config;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
 import com.dnd.spaced.global.auth.resolver.GuestAccountInfoArgumentResolver;
+import com.dnd.spaced.global.log.QueryTraceInterceptor;
 import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
@@ -36,6 +37,7 @@ public class AppConfig implements WebMvcConfigurer {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     private final AuthInterceptor authInterceptor;
+    private final QueryTraceInterceptor queryTraceInterceptor;
     private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
     private final GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver;
     private final ReportPageableArgumentResolver reportPageableArgumentResolver;
@@ -121,6 +123,8 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login/**", "/words/**");
+        registry.addInterceptor(queryTraceInterceptor)
+                .addPathPatterns("/**");
     }
 
     @Override
