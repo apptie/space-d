@@ -6,11 +6,10 @@ import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Slf4j
 @Component
@@ -21,13 +20,13 @@ public class WordViewCounterEventListener {
 
     private final WordRepository wordRepository;
     private final PopularWordRepository popularWordRepository;
+    private final TransactionTemplate transactionTemplate;
 
     @Async("asyncWordViewCounterExecutor")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener
+    @EventListener
     public void listen(WordViewCountIncrementEvent event) {
         if (!popularWordRepository.existsBy(event.wordId(), event.localDateTime())) {
-            wordRepository.updateViewCount(event.wordId());
+            transactionTemplate.executeWithoutResult(status -> wordRepository.updateViewCount(event.wordId()));
             String requestId = MDC.get(REQUEST_ID);
             log.info("[{}] wordId : {}, localDateTime : {}", requestId, event.wordId(), event.localDateTime());
         }

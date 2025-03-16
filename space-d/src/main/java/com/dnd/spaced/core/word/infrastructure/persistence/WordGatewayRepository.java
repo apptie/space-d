@@ -7,6 +7,7 @@ import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class WordGatewayRepository implements WordRepository {
 
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final WordCrudRepository wordCrudRepository;
 
