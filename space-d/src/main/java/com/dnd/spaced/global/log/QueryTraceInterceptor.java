@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class QueryTraceInterceptor implements HandlerInterceptor {
 
-    private final QueryTraceInspector queryTraceInspector;
+    private final QueryTracer queryTracer;
 
     @Override
     public boolean preHandle(
@@ -22,9 +22,7 @@ public class QueryTraceInterceptor implements HandlerInterceptor {
             HttpServletResponse ignoredResponse,
             Object ignoredHandler
     ) throws Exception {
-        QueryTracer queryTracer = new QueryTracer();
-
-        queryTraceInspector.set(queryTracer);
+        queryTracer.init();
         return true;
     }
 
@@ -35,11 +33,16 @@ public class QueryTraceInterceptor implements HandlerInterceptor {
             Object handler,
             Exception ex
     ) {
-        QueryTracer queryTracer = queryTraceInspector.getQueryTracer();
         String requestId = MDC.get(LogConst.REQUEST_ID);
         long queryExecutionTime = queryTracer.calculateExecutionTime(System.currentTimeMillis());
-        int sqlCallCount = queryTracer.getSqlCallCount();
 
-        log.info("[{}] execution time : {}ms, sql call count : {}", requestId, queryExecutionTime, sqlCallCount);
+        log.info(
+                "[{}] execution time : {}ms, total sql count : {}, crud sql count : {}",
+                requestId,
+                queryExecutionTime,
+                queryTracer.getTotalQueryCount(),
+                queryTracer.getCrudQueryCount()
+        );
+        queryTracer.clear();
     }
 }
