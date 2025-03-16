@@ -13,7 +13,7 @@ import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentExcepti
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
-import com.dnd.spaced.core.word.domain.dto.WordInfo;
+import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +32,8 @@ public class CommentService {
 
     @Transactional
     public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
-        WordInfo word = findWord(wordId);
-        Comment comment = new Comment(accountId, word.id(), request.content());
+        Word word = findWord(wordId);
+        Comment comment = new Comment(accountId, word.getId(), request.content());
 
         commentRepository.save(comment);
     }
@@ -68,7 +68,7 @@ public class CommentService {
                                 .orElseThrow(() -> new AssociationAccountNotFoundException("유효하지 않은 회원입니다."));
     }
 
-    private WordInfo findWord(Long wordId) {
+    private Word findWord(Long wordId) {
         return wordRepository.findBy(wordId)
                              .orElseThrow(() -> new AssociationWordNotFoundException("댓글과 관련된 용어를 찾을 수 없습니다."));
     }

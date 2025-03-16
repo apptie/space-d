@@ -12,7 +12,7 @@ import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.dto.WordInfo;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
+import com.dnd.spaced.core.word.domain.repository.WordInfoRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WordService {
 
     private final Clock clock;
-    private final WordRepository wordRepository;
+    private final WordInfoRepository wordInfoRepository;
     private final PopularWordRepository popularWordRepository;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -47,7 +47,7 @@ public class WordService {
                                     .orElse(null);
         Category lastCategory = Category.findBy(request.lastCategoryName())
                                         .orElse(null);
-        List<WordInfo> words = wordRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
+        List<WordInfo> words = wordInfoRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -66,7 +66,7 @@ public class WordService {
                 pageable,
                 request.lastWordName(),
                 lastCategory);
-        List<WordInfo> words = wordRepository.search(wordSearchCondition, wordSearchPageRequest);
+        List<WordInfo> words = wordInfoRepository.search(wordSearchCondition, wordSearchPageRequest);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -78,8 +78,8 @@ public class WordService {
     }
 
     private WordInfo findWord(Long wordId) {
-        return wordRepository.findBy(wordId)
-                             .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
+        return wordInfoRepository.findBy(wordId)
+                                 .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
     }
 
     private void publishWordViewCountIncrementedEvent(WordInfo word) {
