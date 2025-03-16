@@ -14,7 +14,7 @@ public class StatisticsWordViewCountEventListener {
 
     private final WordViewCountStatisticsRepository wordViewCountStatisticsRepository;
 
-    @Async("asyncWordViewCountExecutor")
+    @Async("asyncStatisticsWordViewCountExecutor")
     @Transactional
     @EventListener
     public void listen(WordViewCountStatisticsEvent event) {
