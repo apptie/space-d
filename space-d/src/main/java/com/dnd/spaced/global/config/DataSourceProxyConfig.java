@@ -1,6 +1,7 @@
 package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.consts.LogConst;
+import com.dnd.spaced.global.log.QueryTracer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.BeansException;
@@ -20,9 +22,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class DataSourceProxyConfig {
 
     private static final String TRANSACTION_METHOD_NAME = "setAutoCommit|commit|rollback|setReadOnly|setTransactionIsolation|setHoldability|setCatalog|setSchema";
+
+    private final QueryTracer queryTracer;
 
     @Bean
     public BeanPostProcessor dataSourcePostProcessor() {
@@ -57,11 +62,14 @@ public class DataSourceProxyConfig {
             }
 
             private InvocationHandler getStatementInvocationHandler(Connection connection) {
+                String requestId = MDC.get(LogConst.REQUEST_ID);
+
                 return (connProxy, connMethod, connArgs) -> {
                     if (isTransactionControlMethod(connMethod.getName())) {
+                        queryTracer.increaseTotalCount();
                         log.info(
                                 "[{}] {} {}",
-                                LogConst.REQUEST_ID,
+                                requestId,
                                 connMethod.getName(),
                                 (connArgs != null && connArgs.length > 0 ? connArgs[0] : "")
                         );
@@ -103,6 +111,7 @@ public class DataSourceProxyConfig {
                 getInterfaces(stmt),
                 (proxy, method, args) -> {
                     if (method.getName().startsWith("execute")) {
+                        queryTracer.increaseCrudCount();
                         String executeSql = sql;
                         if (args != null && args.length > 0 && args[0] instanceof String argSql) {
                             executeSql = argSql;
@@ -120,12 +129,7 @@ public class DataSourceProxyConfig {
         return (PreparedStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
                 getInterfaces(stmt),
-                (proxy, method, args) -> {
-                    if (method.getName().startsWith("execute")) {
-                        log.info("[{}] {}", requestId, sql);
-                    }
-                    return method.invoke(stmt, args);
-                }
+                getExecuteStatementInvocationHandler(stmt, sql, requestId)
         );
     }
 
@@ -135,13 +139,18 @@ public class DataSourceProxyConfig {
         return (CallableStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
                 getInterfaces(stmt),
-                (proxy, method, args) -> {
-                    if (method.getName().startsWith("execute")) {
-                        log.info("[{}] {}", requestId, sql);
-                    }
-                    return method.invoke(stmt, args);
-                }
+                getExecuteStatementInvocationHandler(stmt, sql, requestId)
         );
+    }
+
+    private InvocationHandler getExecuteStatementInvocationHandler(Statement stmt, String sql, String requestId) {
+        return (proxy, method, args) -> {
+            if (method.getName().startsWith("execute")) {
+                queryTracer.increaseCrudCount();
+                log.info("[{}] {}", requestId, sql);
+            }
+            return method.invoke(stmt, args);
+        };
     }
 
     private Class<?>[] getInterfaces(Object obj) {

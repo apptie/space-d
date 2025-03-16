@@ -1,9 +1,9 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.embed;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.dnd.spaced.core.word.domain.exception.InvalidWordMeaningException;
+import com.dnd.spaced.core.word.domain.embed.exception.InvalidWordMeaningException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

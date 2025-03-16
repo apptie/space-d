@@ -1,31 +1,24 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
-import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
 import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
-import com.dnd.spaced.core.word.domain.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
-import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
-import com.dnd.spaced.core.word.infrastructure.persistence.util.WordSortConditionConverter;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class WordGatewayRepository implements WordRepository {
 
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final WordCrudRepository wordCrudRepository;
 
@@ -74,17 +67,6 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public Optional<Word> findBy(Long wordId) {
-        Word result = queryFactory.selectFrom(word)
-                                  .leftJoin(word.wordExamples)
-                                  .leftJoin(word.pronunciations).fetchJoin()
-                                  .where(word.id.eq(wordId))
-                                  .fetchOne();
-
-        return Optional.ofNullable(result);
-    }
-
-    @Override
     public List<String> findNameAllBy(Long[] wordIds) {
         return queryFactory.select(word.name)
                            .from(word)
@@ -93,40 +75,7 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public List<Word> findAllBy(Category category, String lastWordName, Pageable pageable) {
-        return queryFactory.selectFrom(word)
-                           .where(gtLastWordName(lastWordName), eqCategory(category))
-                           .orderBy(
-                                   WordSortConditionConverter.convert(pageable)
-                                                             .toArray(OrderSpecifier[]::new)
-                           )
-                           .limit(pageable.getPageSize())
-                           .fetch();
-    }
-
-    @Override
-    public List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
-        return queryFactory.selectFrom(word)
-                           .join(word.pronunciations, pronunciation)
-                           .on(
-                                   calculatePronunciationBooleanExpression(condition.pronunciation())
-                                           .toArray(BooleanExpression[]::new)
-                           )
-                           .where(
-                                   gtLastWordName(pageRequest.lastWordName()),
-                                   nameStartsWith(condition.name()),
-                                   eqCategory(condition.category())
-                           )
-                           .orderBy(
-                                   WordSortConditionConverter.convert(pageRequest.pageable())
-                                                             .toArray(OrderSpecifier[]::new)
-                           )
-                           .limit(pageRequest.pageable().getPageSize())
-                           .fetch();
-    }
-
-    @Override
-    public List<Word> findAllBy(List<Long> wordIds) {
+    public List<Word> findRandomAllBy(List<Long> wordIds) {
         List<Word> words = queryFactory.selectFrom(word)
                                        .leftJoin(word.wordExamples, wordExample)
                                        .where(word.id.in(wordIds.toArray(Long[]::new)))
@@ -137,39 +86,8 @@ public class WordGatewayRepository implements WordRepository {
         return words;
     }
 
-    private BooleanExpression gtLastWordName(String lastWordName) {
-        if (lastWordName == null) {
-            return null;
-        }
-
-        return word.name.gt(lastWordName);
-    }
-
-    private BooleanExpression nameStartsWith(String name) {
-        if (name == null) {
-            return null;
-        }
-
-        return word.name.startsWith(name);
-    }
-
-    private BooleanExpression eqCategory(Category category) {
-        if (category == null) {
-            return null;
-        }
-
-        return word.category.eq(category);
-    }
-
-    private List<BooleanExpression> calculatePronunciationBooleanExpression(String content) {
-        List<BooleanExpression> pronunciationPredicate = new ArrayList<>();
-
-        pronunciationPredicate.add(pronunciation.word.id.eq(word.id));
-
-        if (content != null) {
-            pronunciationPredicate.add(pronunciation.content.startsWith(content));
-        }
-
-        return pronunciationPredicate;
+    @Override
+    public Optional<Word> findBy(Long wordId) {
+        return wordCrudRepository.findById(wordId);
     }
 }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationContentException;
-import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationTypeNameException;
+import com.dnd.spaced.core.word.domain.enums.exception.InvalidPronunciationTypeNameException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

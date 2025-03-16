@@ -5,7 +5,7 @@ import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.response.ViewCountStatisticsRankDto;
+import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRankDto;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

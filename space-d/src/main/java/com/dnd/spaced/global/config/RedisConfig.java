@@ -2,8 +2,10 @@ package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -15,6 +17,17 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final RedisConnectionFactory redisConnectionFactory;
+
+    @Bean
+    public ApplicationRunner redisConfigurer(RedisConnectionFactory redisConnectionFactory) {
+        return args -> {
+            try (RedisConnection connection = redisConnectionFactory.getConnection()) {
+                connection.serverCommands().setConfig("save", "");
+                connection.serverCommands().setConfig("appendonly", "no");
+                connection.serverCommands().setConfig("stop-writes-on-bgsave-error", "no");
+            }
+        };
+    }
 
     @Bean
     public RedisTemplate<String, PopularWord> popularWordInfoRedisTemplate() {

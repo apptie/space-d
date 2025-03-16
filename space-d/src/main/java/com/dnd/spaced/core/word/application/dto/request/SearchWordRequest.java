@@ -13,6 +13,9 @@ public record SearchWordRequest(
         String pronunciation,
 
         @Nullable
-        String lastWordName
+        String lastWordName,
+
+        @Nullable
+        String lastCategoryName
 ) {
 }

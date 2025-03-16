@@ -62,7 +62,9 @@ class WordServiceTest {
                         .categoryName(categoryName)
                         .meaning(meaning)
                         .build();
+        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
 
+        word.addPronunciation(pronunciation);
         wordRepository.save(word);
 
         // when
@@ -97,10 +99,16 @@ class WordServiceTest {
                         .categoryName(categoryName)
                         .meaning(meaning)
                         .build();
+        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
 
+        word.addPronunciation(pronunciation);
         wordRepository.save(word);
 
-        ReadAllWordRequest request = new ReadAllWordRequest(null, null);
+        ReadAllWordRequest request = new ReadAllWordRequest(
+                null,
+                null,
+                null
+        );
 
         // when
         WordCollectionResponse actual = wordService.readWords(request, Pageable.ofSize(10));
@@ -128,7 +136,13 @@ class WordServiceTest {
         word.addPronunciation(pronunciation);
         wordRepository.save(word);
 
-        SearchWordRequest request = new SearchWordRequest("Authorization", null, null, null);
+        SearchWordRequest request = new SearchWordRequest(
+                "Authorization",
+                null,
+                null,
+                null,
+                null
+        );
 
         // when
         WordCollectionResponse actual = wordService.searchWord(request, Pageable.ofSize(10));

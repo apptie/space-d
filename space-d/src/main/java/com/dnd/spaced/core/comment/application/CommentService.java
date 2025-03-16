@@ -4,6 +4,7 @@ import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.application.dto.mapper.CommentApplicationMapper;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
+import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
@@ -12,7 +13,6 @@ import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentExcepti
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
-import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;

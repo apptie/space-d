@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Thu, 13 Mar 2025 12:40:32 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Wed, 19 Mar 2025 05:36:38 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -2475,7 +2475,8 @@ Content-Type: application/json;charset=UTF-8
     "pronunciation" : "어써라이제이션",
     "type" : "한글 발음"
   } ],
-  "viewCount" : 1
+  "viewCount" : 1,
+  "bookmarkCount" : 1
 }</code></pre>
 </div>
 </div>
@@ -2540,6 +2541,11 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>viewCount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookmarkCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 수</p></td>
 </tr>
 </tbody>
 </table>
@@ -2634,7 +2640,8 @@ Content-Type: application/json;charset=UTF-8
       "pronunciation" : "어써라이제이션",
       "type" : "한글 발음"
     } ],
-    "viewCount" : 1
+    "viewCount" : 1,
+    "bookmarkCount" : 1
   } ],
   "lastWordName" : "Authorization"
 }</code></pre>
@@ -2706,6 +2713,11 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].viewCount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].bookmarkCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastWordName</code></p></td>
@@ -2790,7 +2802,8 @@ Content-Type: application/json;charset=UTF-8
       "pronunciation" : "어써라이제이션",
       "type" : "한글 발음"
     } ],
-    "viewCount" : 1
+    "viewCount" : 1,
+    "bookmarkCount" : 1
   } ],
   "lastWordName" : "Authorization"
 }</code></pre>
@@ -2862,6 +2875,11 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].viewCount</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>words[*].bookmarkCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 수</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastWordName</code></p></td>
@@ -3590,7 +3608,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN_LIKE</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요를 제어할 권한이 없습니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 ID에 대한 회원을 찾지 못했습니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ASSOCIATION_COMMENT_NOT_FOUND</code></p></td>
@@ -5671,7 +5689,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-10T21:40:33.123332"
+    "createdAt" : "2025-03-16T14:36:38.915157"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>

@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.word.domain.repository;
 
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import java.util.List;
 

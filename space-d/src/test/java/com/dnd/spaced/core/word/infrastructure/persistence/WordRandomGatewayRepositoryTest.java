@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

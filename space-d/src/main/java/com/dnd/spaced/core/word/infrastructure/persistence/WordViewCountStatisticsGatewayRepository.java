@@ -2,7 +2,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.repository.dto.response.ViewCountStatisticsRankDto;
+import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRankDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

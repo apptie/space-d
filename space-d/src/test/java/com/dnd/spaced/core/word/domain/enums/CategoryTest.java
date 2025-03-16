@@ -1,10 +1,8 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.core.word.domain.exception.InvalidCategoryNameException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;

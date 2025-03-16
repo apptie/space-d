@@ -1,8 +1,11 @@
 package com.dnd.spaced.core.word.domain;
 
+import com.dnd.spaced.core.word.domain.enums.PronunciationType;
 import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationContentException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +34,8 @@ public class Pronunciation extends BaseTimeEntity {
     private Word word;
 
     private String content;
+
+    @Enumerated(EnumType.STRING)
     private PronunciationType type;
 
     public Pronunciation(String content, String typeName) {

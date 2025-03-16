@@ -148,7 +148,7 @@ public class QuizService {
                                                  .map(WordRandom::getWordId)
                                                  .toList();
 
-        return wordRepository.findAllBy(wordIds);
+        return wordRepository.findRandomAllBy(wordIds);
     }
 
     private List<List<Word>> splitByQuestionWordCount(List<Word> words) {

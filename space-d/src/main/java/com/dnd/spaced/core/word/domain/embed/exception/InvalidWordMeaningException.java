@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.domain.exception;
+package com.dnd.spaced.core.word.domain.embed.exception;
 
 import com.dnd.spaced.global.exception.base.WordClientException;
 import com.dnd.spaced.global.exception.code.WordErrorCode;

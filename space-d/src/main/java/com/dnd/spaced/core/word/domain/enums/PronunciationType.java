@@ -1,6 +1,6 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.enums;
 
-import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationTypeNameException;
+import com.dnd.spaced.core.word.domain.enums.exception.InvalidPronunciationTypeNameException;
 import java.util.Arrays;
 import lombok.Getter;
 
