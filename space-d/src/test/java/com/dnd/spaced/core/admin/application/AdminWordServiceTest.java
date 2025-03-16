@@ -13,7 +13,7 @@ import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExamp
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.admin.application.helper.WithWordMetadataTestHelper;
-import com.dnd.spaced.core.word.domain.Word;
+import com.dnd.spaced.core.word.domain.dto.WordInfo;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -106,12 +106,12 @@ class AdminWordServiceTest {
             );
 
             Long wordId = adminWordService.createWord(request);
-            Word word = wordRepository.findBy(wordId)
-                                      .get();
+            WordInfo word = wordRepository.findBy(wordId)
+                                          .get();
 
             // when & then
             assertDoesNotThrow(() -> adminWordService.updateWordExample(
-                    word.getWordExamples().get(0).getId(),
+                    word.wordExamples().get(0).id(),
                     "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다.")
             );
         }
@@ -145,12 +145,12 @@ class AdminWordServiceTest {
             );
 
             Long wordId = adminWordService.createWord(request);
-            Word word = wordRepository.findBy(wordId)
-                                      .get();
+            WordInfo word = wordRepository.findBy(wordId)
+                                          .get();
 
             // when & then
             assertDoesNotThrow(
-                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(word.wordExamples().get(0).id())
             );
         }
 
@@ -170,12 +170,12 @@ class AdminWordServiceTest {
             );
 
             Long wordId = adminWordService.createWord(request);
-            Word word = wordRepository.findBy(wordId)
+            WordInfo word = wordRepository.findBy(wordId)
                                       .get();
 
             // when & then
             assertThatThrownBy(
-                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(word.wordExamples().get(0).id())
             ).isInstanceOf(WordExampleDeletionNotAllowedException.class)
              .hasMessage("해당 용어의 예문 개수가 최소치입니다.");
         }
@@ -197,12 +197,12 @@ class AdminWordServiceTest {
             );
 
             Long wordId = adminWordService.createWord(request);
-            Word word = wordRepository.findBy(wordId)
-                                      .get();
+            WordInfo word = wordRepository.findBy(wordId)
+                                          .get();
 
             // when & then
             assertDoesNotThrow(
-                    () -> adminWordService.deletePronunciation(word.getPronunciations().get(0).getId())
+                    () -> adminWordService.deletePronunciation(word.pronunciations().get(0).id())
             );
         }
 
@@ -222,12 +222,12 @@ class AdminWordServiceTest {
             );
 
             Long wordId = adminWordService.createWord(request);
-            Word word = wordRepository.findBy(wordId)
+            WordInfo word = wordRepository.findBy(wordId)
                                       .get();
 
             // when & then
             assertThatThrownBy(
-                    () -> adminWordService.deletePronunciation(word.getPronunciations().get(0).getId())
+                    () -> adminWordService.deletePronunciation(word.pronunciations().get(0).id())
             ).isInstanceOf(PronunciationDeletionNotAllowedException.class)
              .hasMessage("해당 용어의 발음 정보 개수가 최소치입니다.");
         }

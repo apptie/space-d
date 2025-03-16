@@ -43,6 +43,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 List.of("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다."),
                 List.of(new PronunciationResponse("어써라이제이션", "한글 발음")),
+                1L,
                 1L
         );
 
@@ -62,7 +63,8 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("pronunciations").exists(),
                 jsonPath("pronunciations[0].pronunciation").value(wordResponse.pronunciations().get(0).pronunciation()),
                 jsonPath("pronunciations[0].type").value(wordResponse.pronunciations().get(0).type()),
-                jsonPath("viewCount").value(wordResponse.viewCount())
+                jsonPath("viewCount").value(wordResponse.viewCount()),
+                jsonPath("bookmarkCount").value(wordResponse.bookmarkCount())
         );
 
         용어_조회_요청_문서화(resultActions);
@@ -83,7 +85,8 @@ class WordControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("pronunciations").type(JsonFieldType.ARRAY).description("용어 발음"),
                                 fieldWithPath("pronunciations[*].pronunciation").type(JsonFieldType.STRING).description("발음 내용"),
                                 fieldWithPath("pronunciations[*].type").type(JsonFieldType.STRING).description("발음 타입"),
-                                fieldWithPath("viewCount").type(JsonFieldType.NUMBER).description("조회수")
+                                fieldWithPath("viewCount").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("bookmarkCount").type(JsonFieldType.NUMBER).description("북마크 수")
                         )
                 )
         );
@@ -99,6 +102,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 List.of("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다."),
                 List.of(new PronunciationResponse("어써라이제이션", "한글 발음")),
+                1L,
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
@@ -123,7 +127,8 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("words[0].pronunciations").exists(),
                 jsonPath("words[0].pronunciations[0].pronunciation").value(wordResponse.pronunciations().get(0).pronunciation()),
                 jsonPath("words[0].pronunciations[0].type").value(wordResponse.pronunciations().get(0).type()),
-                jsonPath("words[0].viewCount").value(wordResponse.viewCount())
+                jsonPath("words[0].viewCount").value(wordResponse.viewCount()),
+                jsonPath("words[0].bookmarkCount").value(wordResponse.bookmarkCount())
         );
 
         용어_검색_요청_문서화(resultActions);
@@ -151,6 +156,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("words[*].pronunciations[*].pronunciation").type(JsonFieldType.STRING).description("발음 내용"),
                                 fieldWithPath("words[*].pronunciations[*].type").type(JsonFieldType.STRING).description("발음 타입"),
                                 fieldWithPath("words[*].viewCount").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("words[*].bookmarkCount").type(JsonFieldType.NUMBER).description("북마크 수"),
                                 fieldWithPath("lastWordName").type(JsonFieldType.STRING).description("마지막으로 조회한 용어 이름")
                         )
                 )
@@ -167,6 +173,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 List.of("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다."),
                 List.of(new PronunciationResponse("어써라이제이션", "한글 발음")),
+                1L,
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
@@ -189,7 +196,8 @@ class WordControllerTest extends CommonControllerSliceTest {
                 jsonPath("words[0].pronunciations").exists(),
                 jsonPath("words[0].pronunciations[0].pronunciation").value(wordResponse.pronunciations().get(0).pronunciation()),
                 jsonPath("words[0].pronunciations[0].type").value(wordResponse.pronunciations().get(0).type()),
-                jsonPath("words[0].viewCount").value(wordResponse.viewCount())
+                jsonPath("words[0].viewCount").value(wordResponse.viewCount()),
+                jsonPath("words[0].bookmarkCount").value(wordResponse.bookmarkCount())
         );
 
         용어_목록_조회_요청_문서화(resultActions);
@@ -214,6 +222,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("words[*].pronunciations[*].pronunciation").type(JsonFieldType.STRING).description("발음 내용"),
                                 fieldWithPath("words[*].pronunciations[*].type").type(JsonFieldType.STRING).description("발음 타입"),
                                 fieldWithPath("words[*].viewCount").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("words[*].bookmarkCount").type(JsonFieldType.NUMBER).description("북마크 수"),
                                 fieldWithPath("lastWordName").type(JsonFieldType.STRING).description("마지막으로 조회한 용어 이름")
                         )
                 )

@@ -9,8 +9,8 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
+import com.dnd.spaced.core.word.domain.dto.WordInfo;
 import com.dnd.spaced.core.word.domain.enums.Category;
-import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
@@ -36,18 +36,18 @@ public class WordService {
     private final ApplicationEventPublisher eventPublisher;
 
     public WordResponse readWord(Long wordId) {
-        Word word = findWord(wordId);
+        WordInfo word = findWord(wordId);
 
-        eventPublisher.publishEvent(new WordViewCountIncrementEvent(word.getId(), LocalDateTime.now(clock)));
-        eventPublisher.publishEvent(new WordViewCountStatisticsEvent(word.getId(), LocalDateTime.now(clock)));
-
-        return WordApplicationMapper.toDto(word);
+        publishWordViewCountIncrementedEvent(word);
+        return WordApplicationMapper.toPronunciationInfoDto(word);
     }
 
     public WordCollectionResponse readWords(ReadAllWordRequest request, Pageable pageable) {
         Category category = Category.findBy(request.categoryName())
                                     .orElse(null);
-        List<Word> words = wordRepository.findAllBy(category, request.lastWordName(), pageable);
+        Category lastCategory = Category.findBy(request.lastCategoryName())
+                                        .orElse(null);
+        List<WordInfo> words = wordRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -55,14 +55,18 @@ public class WordService {
     public WordCollectionResponse searchWord(SearchWordRequest request, Pageable pageable) {
         Category category = Category.findBy(request.categoryName())
                                     .orElse(null);
+        Category lastCategory = Category.findBy(request.lastCategoryName())
+                                        .orElse(null);
         WordSearchCondition wordSearchCondition = new WordSearchCondition(
                 request.name(),
                 category,
                 request.pronunciation()
         );
-        WordSearchPageRequest wordSearchPageRequest = new WordSearchPageRequest(pageable, request.lastWordName());
-
-        List<Word> words = wordRepository.search(wordSearchCondition, wordSearchPageRequest);
+        WordSearchPageRequest wordSearchPageRequest = new WordSearchPageRequest(
+                pageable,
+                request.lastWordName(),
+                lastCategory);
+        List<WordInfo> words = wordRepository.search(wordSearchCondition, wordSearchPageRequest);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -73,8 +77,13 @@ public class WordService {
         return WordApplicationMapper.toPopularWordCollectionDto(popularWords);
     }
 
-    private Word findWord(Long wordId) {
+    private WordInfo findWord(Long wordId) {
         return wordRepository.findBy(wordId)
                              .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
+    }
+
+    private void publishWordViewCountIncrementedEvent(WordInfo word) {
+        eventPublisher.publishEvent(new WordViewCountIncrementEvent(word.id(), LocalDateTime.now(clock)));
+        eventPublisher.publishEvent(new WordViewCountStatisticsEvent(word.id(), LocalDateTime.now(clock)));
     }
 }

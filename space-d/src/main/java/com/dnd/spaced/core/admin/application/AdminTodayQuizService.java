@@ -88,7 +88,7 @@ public class AdminTodayQuizService {
                                                  .map(WordRandom::getWordId)
                                                  .toList();
 
-        return wordRepository.findAllBy(wordIds);
+        return wordRepository.findRandomAllBy(wordIds);
     }
 
     private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<Word> randomWords) {

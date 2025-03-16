@@ -9,7 +9,8 @@ public record WordResponse(
         String meaning,
         List<String> examples,
         List<PronunciationResponse> pronunciations,
-        long viewCount
+        long viewCount,
+        long bookmarkCount
 ) {
 
     public record PronunciationResponse(String pronunciation, String type) {

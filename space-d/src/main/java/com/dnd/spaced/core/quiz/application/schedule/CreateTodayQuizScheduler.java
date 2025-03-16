@@ -97,6 +97,6 @@ public class CreateTodayQuizScheduler {
                                                  .map(WordRandom::getWordId)
                                                  .toList();
 
-        return wordRepository.findAllBy(wordIds);
+        return wordRepository.findRandomAllBy(wordIds);
     }
 }

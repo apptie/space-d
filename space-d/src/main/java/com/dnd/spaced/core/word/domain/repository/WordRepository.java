@@ -1,10 +1,11 @@
 package com.dnd.spaced.core.word.domain.repository;
 
-import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.Word;
+import com.dnd.spaced.core.word.domain.dto.WordInfo;
+import com.dnd.spaced.core.word.domain.enums.Category;
+import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
-import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +24,13 @@ public interface WordRepository {
 
     void updateSubtractBookmarkCount(Long wordId);
 
-    Optional<Word> findBy(Long wordId);
+    Optional<WordInfo> findBy(Long wordId);
 
     List<String> findNameAllBy(Long[] wordIds);
 
-    List<Word> findAllBy(Category category, String lastWordName, Pageable pageable);
+    List<WordInfo> findAllBy(Category category, String lastWordName, Category lastCategory, Pageable pageable);
 
-    List<Word> findAllBy(List<Long> wordIds);
+    List<Word> findRandomAllBy(List<Long> wordIds);
 
-    List<Word> search(WordSearchCondition condition, WordSearchPageRequest pageRequest);
+    List<WordInfo> search(WordSearchCondition condition, WordSearchPageRequest pageRequest);
 }
