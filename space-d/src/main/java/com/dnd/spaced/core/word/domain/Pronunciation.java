@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.word.domain;
 
+import com.dnd.spaced.core.word.domain.enums.PronunciationType;
 import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationContentException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;

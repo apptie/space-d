@@ -1,6 +1,6 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.embed;
 
-import com.dnd.spaced.core.word.domain.exception.InvalidWordMeaningException;
+import com.dnd.spaced.core.word.domain.embed.exception.InvalidWordMeaningException;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;

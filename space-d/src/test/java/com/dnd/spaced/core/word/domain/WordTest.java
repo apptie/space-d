@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.word.domain.exception.InvalidCategoryNameException;
-import com.dnd.spaced.core.word.domain.exception.InvalidWordMeaningException;
+import com.dnd.spaced.core.word.domain.embed.exception.InvalidWordMeaningException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordNameException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

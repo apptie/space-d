@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.word.domain.repository;
 
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;

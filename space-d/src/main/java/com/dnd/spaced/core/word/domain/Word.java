@@ -1,5 +1,7 @@
 package com.dnd.spaced.core.word.domain;
 
+import com.dnd.spaced.core.word.domain.embed.WordMeaning;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.exception.InvalidCategoryNameException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordNameException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;

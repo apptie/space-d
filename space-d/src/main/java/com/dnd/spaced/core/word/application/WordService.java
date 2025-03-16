@@ -9,7 +9,7 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;

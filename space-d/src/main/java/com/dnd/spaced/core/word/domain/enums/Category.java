@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.enums;
 
 import java.util.Arrays;
 import java.util.Optional;

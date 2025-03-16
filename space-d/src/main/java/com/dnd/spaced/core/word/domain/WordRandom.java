@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.word.domain;
 
+import com.dnd.spaced.core.word.domain.enums.Category;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

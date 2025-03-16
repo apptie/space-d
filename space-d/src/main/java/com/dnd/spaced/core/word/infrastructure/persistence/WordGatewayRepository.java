@@ -4,7 +4,7 @@ import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
 import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;

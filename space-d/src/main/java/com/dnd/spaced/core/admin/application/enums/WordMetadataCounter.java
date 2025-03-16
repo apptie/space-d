@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.admin.application.enums;
 
 import com.dnd.spaced.core.admin.application.enums.exception.WordMetadataCounterNotFoundException;
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import java.util.Arrays;
 import java.util.function.Consumer;

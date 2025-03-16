@@ -3,7 +3,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 import static com.dnd.spaced.core.word.domain.QWordRandom.wordRandom;
 
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import com.dnd.spaced.core.word.domain.Category;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;

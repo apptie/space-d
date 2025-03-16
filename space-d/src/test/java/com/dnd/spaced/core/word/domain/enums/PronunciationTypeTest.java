@@ -1,9 +1,9 @@
-package com.dnd.spaced.core.word.domain;
+package com.dnd.spaced.core.word.domain.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.dnd.spaced.core.word.domain.exception.InvalidPronunciationTypeNameException;
+import com.dnd.spaced.core.word.domain.enums.exception.InvalidPronunciationTypeNameException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayNameGeneration;
