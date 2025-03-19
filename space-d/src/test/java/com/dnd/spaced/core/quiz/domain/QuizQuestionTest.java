@@ -100,10 +100,6 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         boolean actual = quizQuestion.isCorrect(0);
@@ -125,10 +121,6 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         List<QuizOption> actual = quizQuestion.getQuizOptions();
@@ -150,10 +142,6 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         boolean actual = quizQuestion.isValidOptionIndex(0);
@@ -175,10 +163,6 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         boolean actual = quizQuestion.isInvalidOptionIndex(5);
@@ -200,7 +184,7 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption quizOption = QuizOption.of(1L, "Authorization", 0, quizQuestion);
+        QuizOption quizOption = QuizOption.of(1L, "Authorization", 0, quizQuestion.getId());
 
         // when
         quizQuestion.initQuizOption(quizOption);

@@ -173,7 +173,7 @@ public class QuizService {
 
         for (int i = 0; i < REQUIRED_QUESTION_WORD_COUNT; i++) {
             Word word = splitWords.get(i);
-            QuizOption quizOption = QuizOption.of(word.getId(), word.getName(), i, quizQuestion);
+            QuizOption quizOption = QuizOption.of(word.getId(), word.getName(), i, quizQuestion.getId());
 
             quizOptionRepository.save(quizOption);
         }

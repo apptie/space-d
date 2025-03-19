@@ -29,10 +29,6 @@ class GradedAnswerTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when & then
         GradedAnswer actual = assertDoesNotThrow(
@@ -59,10 +55,6 @@ class GradedAnswerTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when & then
         assertThatThrownBy(
@@ -84,10 +76,6 @@ class GradedAnswerTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
         GradedAnswer gradedAnswer = GradedAnswer.of(1L, 1L, quizQuestion, 3);
 
         // when
