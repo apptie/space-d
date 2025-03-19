@@ -40,14 +40,6 @@ class QuizTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption answer = QuizOption.of(1L, "Authorization", 0, quizQuestion.getId());
-        quizQuestion.initQuizOption(answer);
-        QuizOption quizOption1 = QuizOption.of(2L, "Domain", 1, quizQuestion.getId());
-        quizQuestion.initQuizOption(quizOption1);
-        QuizOption quizOption2 = QuizOption.of(3L, "Controller", 2, quizQuestion.getId());
-        quizQuestion.initQuizOption(quizOption2);
-        QuizOption quizOption3 = QuizOption.of(4L, "HashMap", 3, quizQuestion.getId());
-        quizQuestion.initQuizOption(quizOption3);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
@@ -91,14 +83,6 @@ class QuizTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption answer = QuizOption.of(1L, "Authorization", 0, quizQuestion.getId());
-        QuizOption quizOption1 = QuizOption.of(2L, "Domain", 1, quizQuestion.getId());
-        QuizOption quizOption2 = QuizOption.of(3L, "Controller", 2, quizQuestion.getId());
-        QuizOption quizOption3 = QuizOption.of(4L, "HashMap", 3, quizQuestion.getId());
-        quizQuestion.initQuizOption(answer);
-        quizQuestion.initQuizOption(quizOption1);
-        quizQuestion.initQuizOption(quizOption2);
-        quizQuestion.initQuizOption(quizOption3);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
@@ -124,14 +108,6 @@ class QuizTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption answer = QuizOption.of(1L, "Authorization", 0, quizQuestion.getId());
-        QuizOption quizOption1 = QuizOption.of(2L, "Domain", 1, quizQuestion.getId());
-        QuizOption quizOption2 = QuizOption.of(3L, "Controller", 2, quizQuestion.getId());
-        QuizOption quizOption3 = QuizOption.of(4L, "HashMap", 3, quizQuestion.getId());
-        quizQuestion.initQuizOption(answer);
-        quizQuestion.initQuizOption(quizOption1);
-        quizQuestion.initQuizOption(quizOption2);
-        quizQuestion.initQuizOption(quizOption3);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
@@ -156,14 +132,6 @@ class QuizTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption answer = QuizOption.of(1L, "Authorization", 0, quizQuestion.getId());
-        QuizOption quizOption1 = QuizOption.of(2L, "Domain", 1, quizQuestion.getId());
-        QuizOption quizOption2 = QuizOption.of(3L, "Controller", 2, quizQuestion.getId());
-        QuizOption quizOption3 = QuizOption.of(4L, "HashMap", 3, quizQuestion.getId());
-        quizQuestion.initQuizOption(answer);
-        quizQuestion.initQuizOption(quizOption1);
-        quizQuestion.initQuizOption(quizOption2);
-        quizQuestion.initQuizOption(quizOption3);
 
         // when
         quiz.initQuestion(quizQuestion);

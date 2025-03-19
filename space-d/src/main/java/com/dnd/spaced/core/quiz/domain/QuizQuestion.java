@@ -14,16 +14,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 
+@Table(name = "quiz_questions")
 @Entity
 @Getter
 @EqualsAndHashCode(of = "id")
@@ -49,11 +46,6 @@ public class QuizQuestion {
     private String questionContent;
 
     private String questionExample;
-
-    @BatchSize(size = OPTION_SIZE)
-    @OneToMany(mappedBy = "quizQuestion")
-    @Getter(AccessLevel.NONE)
-    private List<QuizOption> quizOptions = new ArrayList<>();
 
     public static QuizQuestion of(
             QuizCategory quizCategory,
@@ -93,25 +85,15 @@ public class QuizQuestion {
         quiz.initQuestion(this);
     }
 
-    void initQuizOption(QuizOption quizOption) {
-        this.quizOptions.add(quizOption);
-    }
-
     public boolean isValidOptionIndex(int submitOptionIndex) {
-        return submitOptionIndex >= 0 && quizOptions.size() > submitOptionIndex;
+        return submitOptionIndex >= 0 && submitOptionIndex < OPTION_SIZE;
     }
 
     public boolean isInvalidOptionIndex(int optionIndex) {
         return !isValidOptionIndex(optionIndex);
     }
 
-    public boolean isCorrect(int submitOptionIndex) {
-        QuizOption selectedOption = quizOptions.get(submitOptionIndex);
-
-        return quizAnswerOption.matchesWordId(selectedOption.getWordId());
-    }
-
-    public List<QuizOption> getQuizOptions() {
-        return Collections.unmodifiableList(quizOptions);
+    public boolean isCorrect(Long submitWordId) {
+        return quizAnswerOption.matchesWordId(submitWordId);
     }
 }

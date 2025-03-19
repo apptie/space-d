@@ -54,6 +54,7 @@ public class GradedAnswer extends CreateTimeEntity {
     }
 
     public boolean isCorrect() {
-        return quizQuestion.isCorrect(selectedOptionIndex);
+        // TODO : 인덱스 기반에서 정답이 되는 용어 ID를 관리하도록 변경 필요
+        return quizQuestion.isCorrect(-1L);
     }
 }

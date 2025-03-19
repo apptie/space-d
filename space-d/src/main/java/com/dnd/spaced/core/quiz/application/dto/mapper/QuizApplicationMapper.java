@@ -8,6 +8,7 @@ import com.dnd.spaced.core.quiz.domain.GradedAnswer;
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -64,7 +65,8 @@ public final class QuizApplicationMapper {
     }
 
     private static String getAnswerOptionContent(QuizQuestion question, GradedAnswer gradedAnswer) {
-        List<QuizOption> options = question.getQuizOptions();
+        // TODO : QuizOption 목록 조회 필요
+        List<QuizOption> options = Collections.emptyList();
         int submittedOptionIndex = gradedAnswer.getSelectedOptionIndex();
 
         return options.get(submittedOptionIndex)
@@ -72,7 +74,8 @@ public final class QuizApplicationMapper {
     }
 
     private static String getSubmittedOptionContent(QuizQuestion quizQuestion, GradedAnswer gradedAnswer) {
-        List<QuizOption> quizOptions = quizQuestion.getQuizOptions();
+        // TODO : QuizOption 목록 조회 필요
+        List<QuizOption> quizOptions = Collections.emptyList();
         int submittedIndex = gradedAnswer.getSelectedOptionIndex();
 
         return quizOptions.get(submittedIndex)
@@ -81,10 +84,7 @@ public final class QuizApplicationMapper {
 
 
     private static QuizResponse.QuizQuestionResponse toQuizDto(QuizQuestion quizQuestion) {
-        List<QuizOptionResponse> quizOptionResponses = quizQuestion.getQuizOptions()
-                                                                   .stream()
-                                                                   .map(QuizApplicationMapper::toQuestionDto)
-                                                                   .toList();
+        List<QuizOptionResponse> quizOptionResponses = Collections.emptyList();
 
         return new QuizResponse.QuizQuestionResponse(
                 quizQuestion.getId(),
@@ -94,9 +94,5 @@ public final class QuizApplicationMapper {
                 quizOptionResponses,
                 quizQuestion.getQuizAnswerOption().getWordId()
         );
-    }
-
-    private static QuizOptionResponse toQuestionDto(QuizOption quizOption) {
-        return new QuizOptionResponse(quizOption.getId(), quizOption.getContent());
     }
 }
