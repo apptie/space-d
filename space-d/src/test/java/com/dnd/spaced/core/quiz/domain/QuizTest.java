@@ -24,7 +24,10 @@ class QuizTest {
         // when & then
         Quiz actual = assertDoesNotThrow(() -> new Quiz(1L));
 
-        assertThat(actual.getAccountId()).isEqualTo(1L);
+        assertAll(
+                () -> assertThat(actual.getAccountId()).isEqualTo(1L),
+                () -> assertThat(actual.isSolved()).isFalse()
+        );
     }
 
     @Test
@@ -151,5 +154,17 @@ class QuizTest {
 
         // then
         assertThat(quiz.getQuizQuestions()).contains(quizQuestion);
+    }
+
+    @Test
+    void 퀴즈를_푼_상태로_변경한다() {
+        // given
+        Quiz quiz = new Quiz(1L);
+
+        // when
+        quiz.solve();
+
+        // then
+        assertThat(quiz.isSolved()).isEqualTo(true);
     }
 }

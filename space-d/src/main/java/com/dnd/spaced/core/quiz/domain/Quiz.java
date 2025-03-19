@@ -43,6 +43,10 @@ public class Quiz extends CreateTimeEntity {
         this.quizQuestions.add(quizQuestion);
     }
 
+    public void solve() {
+        this.solved = true;
+    }
+
     public List<GradedAnswer> grade(Long accountId, List<SubmitAnswer> submitAnswers) {
         validateAnswers(submitAnswers);
 

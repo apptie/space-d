@@ -84,13 +84,14 @@ public class QuizService {
                                                          )
                                                  )
                                                  .toList();
+
         List<GradedAnswer> gradedAnswers = quiz.grade(accountId, submitAnswers);
 
         gradedAnswerRepository.saveAll(gradedAnswers);
-
         long correctCount = gradedAnswers.stream()
                                          .filter(GradedAnswer::isCorrect)
                                          .count();
+        quiz.solve();
         eventPublisher.publishEvent(new GradedQuizEvent(accountId, correctCount));
     }
 
