@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Wed, 19 Mar 2025 05:36:38 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sat, 22 Mar 2025 23:21:42 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -3983,7 +3983,22 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "answers" : [ 0, 1, 2, 3, 2 ]
+  "submitAnswers" : [ {
+    "wordId" : 1,
+    "content" : "Authorization"
+  }, {
+    "wordId" : 2,
+    "content" : "Domain"
+  }, {
+    "wordId" : 3,
+    "content" : "Controller"
+  }, {
+    "wordId" : 2,
+    "content" : "Web"
+  }, {
+    "wordId" : 1,
+    "content" : "HTTP"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -5689,7 +5704,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-16T14:36:38.915157"
+    "createdAt" : "2025-03-20T08:21:43.018697"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>

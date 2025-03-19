@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse;
@@ -80,7 +80,14 @@ class QuizControllerTest extends CommonControllerSliceTest {
         // given
         willDoNothing().given(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
 
-        GradeQuizRequest request = new GradeQuizRequest(new int[]{0, 1, 2, 3, 2});
+        SubmitAnswerRequest[] submitAnswers = {
+                new SubmitAnswerRequest(1L, "Authorization"),
+                new SubmitAnswerRequest(2L, "Domain"),
+                new SubmitAnswerRequest(3L, "Controller"),
+                new SubmitAnswerRequest(2L, "Web"),
+                new SubmitAnswerRequest(1L, "HTTP")
+        };
+        GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -107,8 +114,9 @@ class QuizControllerTest extends CommonControllerSliceTest {
                                 parameterWithName("quizId").description("퀴즈 ID")
                         ),
                         requestFields(
-                                fieldWithPath("answers").type(JsonFieldType.ARRAY).description("퀴즈 문제 답")
-                                                        .attributes(field("constraints", "인덱스 기반"))
+                                fieldWithPath("submitAnswers").type(JsonFieldType.ARRAY).description("퀴즈 문제 정답"),
+                                fieldWithPath("submitAnswers[*].wordId").type(JsonFieldType.NUMBER).description("정답 용어 ID"),
+                                fieldWithPath("submitAnswers[*].content").type(JsonFieldType.STRING).description("정답 용어 이름")
                         )
                 )
         );

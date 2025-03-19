@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.dnd.spaced.core.quiz.domain.Quiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.exception.InvalidSubmittedAnswersCountException;
@@ -45,28 +46,40 @@ class QuizTest {
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
         quiz.initQuestion(quizQuestion);
+        List<SubmitAnswer> submitAnswers = List.of(
+                new SubmitAnswer(1L, "Authorization"),
+                new SubmitAnswer(2L, "Domain"),
+                new SubmitAnswer(3L, "Controller"),
+                new SubmitAnswer(3L, "deprecated"),
+                new SubmitAnswer(3L, "execute")
+        );
 
         // when
-        List<GradedAnswer> actual = quiz.grade(1L, new int[]{0, 1, 2, 3, 2});
+        List<GradedAnswer> actual = quiz.grade(1L, submitAnswers);
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(5),
                 () -> assertThat(actual.get(0).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(0).getQuizId()).isEqualTo(6L),
-                () -> assertThat(actual.get(0).getSelectedOptionIndex()).isEqualTo(0),
+                () -> assertThat(actual.get(0).getSelectedWordId()).isEqualTo(1L),
+                () -> assertThat(actual.get(0).getSelectedContent()).isEqualTo("Authorization"),
                 () -> assertThat(actual.get(1).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(1).getQuizId()).isEqualTo(6L),
-                () -> assertThat(actual.get(1).getSelectedOptionIndex()).isEqualTo(1),
+                () -> assertThat(actual.get(1).getSelectedWordId()).isEqualTo(2L),
+                () -> assertThat(actual.get(1).getSelectedContent()).isEqualTo("Domain"),
                 () -> assertThat(actual.get(2).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(2).getQuizId()).isEqualTo(6L),
-                () -> assertThat(actual.get(2).getSelectedOptionIndex()).isEqualTo(2),
+                () -> assertThat(actual.get(2).getSelectedWordId()).isEqualTo(3L),
+                () -> assertThat(actual.get(2).getSelectedContent()).isEqualTo("Controller"),
                 () -> assertThat(actual.get(3).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(3).getQuizId()).isEqualTo(6L),
-                () -> assertThat(actual.get(3).getSelectedOptionIndex()).isEqualTo(3),
+                () -> assertThat(actual.get(3).getSelectedWordId()).isEqualTo(3L),
+                () -> assertThat(actual.get(3).getSelectedContent()).isEqualTo("deprecated"),
                 () -> assertThat(actual.get(4).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(4).getQuizId()).isEqualTo(6L),
-                () -> assertThat(actual.get(4).getSelectedOptionIndex()).isEqualTo(2)
+                () -> assertThat(actual.get(4).getSelectedWordId()).isEqualTo(3L),
+                () -> assertThat(actual.get(4).getSelectedContent()).isEqualTo("execute")
         );
     }
 
@@ -90,7 +103,7 @@ class QuizTest {
         quiz.initQuestion(quizQuestion);
 
         // when & then
-        assertThatThrownBy(() -> quiz.grade( 1L, new int[]{}))
+        assertThatThrownBy(() -> quiz.grade( 1L, List.of()))
                 .isInstanceOf(InvalidSubmittedAnswersCountException.class)
                 .hasMessage("문제 개수와 제출한 정답 개수가 다릅니다.");
     }

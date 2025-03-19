@@ -33,6 +33,8 @@ public class Quiz extends CreateTimeEntity {
     @Getter(AccessLevel.NONE)
     private List<QuizQuestion> quizQuestions = new ArrayList<>();
 
+    private boolean solved = false;
+
     public Quiz(Long accountId) {
         this.accountId = accountId;
     }
@@ -41,23 +43,30 @@ public class Quiz extends CreateTimeEntity {
         this.quizQuestions.add(quizQuestion);
     }
 
-    public List<GradedAnswer> grade(Long accountId, int[] answers) {
-        validateAnswers(answers);
+    public List<GradedAnswer> grade(Long accountId, List<SubmitAnswer> submitAnswers) {
+        validateAnswers(submitAnswers);
 
-        return gradeQuestions(accountId, answers);
+        return gradeQuestions(accountId, submitAnswers);
     }
 
-    private void validateAnswers(int[] submitAnswers) {
-        if (submitAnswers.length != DEFAULT_QUESTION_SIZE) {
+    private void validateAnswers(List<SubmitAnswer> submitAnswers) {
+        if (submitAnswers.size() != DEFAULT_QUESTION_SIZE) {
             throw new InvalidSubmittedAnswersCountException("문제 개수와 제출한 정답 개수가 다릅니다.");
         }
     }
 
-    private List<GradedAnswer> gradeQuestions(Long accountId, int[] answers) {
+    private List<GradedAnswer> gradeQuestions(Long accountId, List<SubmitAnswer> submitAnswers) {
         List<GradedAnswer> gradedAnswers = new ArrayList<>();
 
-        for (int i = 0; i < answers.length; i++) {
-            GradedAnswer gradedAnswer = GradedAnswer.of(accountId, this.id, quizQuestions.get(i), answers[i]);
+        for (int i = 0; i < submitAnswers.size(); i++) {
+            SubmitAnswer submitAnswer = submitAnswers.get(i);
+            GradedAnswer gradedAnswer = GradedAnswer.of(
+                    accountId,
+                    this.id,
+                    quizQuestions.get(i),
+                    submitAnswer.wordId,
+                    submitAnswer.content
+            );
 
             gradedAnswers.add(gradedAnswer);
         }
@@ -67,5 +76,8 @@ public class Quiz extends CreateTimeEntity {
 
     public List<QuizQuestion> getQuizQuestions() {
         return Collections.unmodifiableList(quizQuestions);
+    }
+
+    public record SubmitAnswer(Long wordId, String content) {
     }
 }

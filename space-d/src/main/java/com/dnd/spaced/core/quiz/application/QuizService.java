@@ -13,6 +13,7 @@ import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
 import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.domain.GradedAnswer;
 import com.dnd.spaced.core.quiz.domain.Quiz;
+import com.dnd.spaced.core.quiz.domain.Quiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
@@ -30,6 +31,7 @@ import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -74,9 +76,18 @@ public class QuizService {
     @Transactional
     public void grade(Long accountId, Long quizId, GradeQuizRequest request) {
         Quiz quiz = findQuiz(quizId);
-        List<GradedAnswer> gradedAnswers = quiz.grade(accountId, request.answers());
+        List<SubmitAnswer> submitAnswers = Arrays.stream(request.submitAnswers())
+                                                 .map(
+                                                         submitAnswer -> new SubmitAnswer(
+                                                                 submitAnswer.wordId(),
+                                                                 submitAnswer.content()
+                                                         )
+                                                 )
+                                                 .toList();
+        List<GradedAnswer> gradedAnswers = quiz.grade(accountId, submitAnswers);
 
         gradedAnswerRepository.saveAll(gradedAnswers);
+
         long correctCount = gradedAnswers.stream()
                                          .filter(GradedAnswer::isCorrect)
                                          .count();

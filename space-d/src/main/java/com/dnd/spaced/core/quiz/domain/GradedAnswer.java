@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.quiz.domain;
 
-import com.dnd.spaced.core.quiz.domain.exception.InvalidSubmittedQuizOptionIndexException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,29 +31,34 @@ public class GradedAnswer extends CreateTimeEntity {
     @JoinColumn(name = "quiz_question_id")
     private QuizQuestion quizQuestion;
 
-    private int selectedOptionIndex;
+    private Long selectedWordId;
+    private String selectedContent;
 
-    public static GradedAnswer of(Long accountId, Long quizId, QuizQuestion quizQuestion, int selectedOptionIndex) {
-        validateSelectedIndex(quizQuestion, selectedOptionIndex);
-
-        return new GradedAnswer(accountId, quizId, quizQuestion, selectedOptionIndex);
+    public static GradedAnswer of(
+            Long accountId,
+            Long quizId,
+            QuizQuestion quizQuestion,
+            Long selectedWordId,
+            String selectedContent
+    ) {
+        return new GradedAnswer(accountId, quizId, quizQuestion, selectedWordId, selectedContent);
     }
 
-    private static void validateSelectedIndex(QuizQuestion quizQuestion, int selectedOptionIndex) {
-        if (quizQuestion.isInvalidOptionIndex(selectedOptionIndex)) {
-            throw new InvalidSubmittedQuizOptionIndexException("없는 보기를 선택했습니다.");
-        }
-    }
-
-    private GradedAnswer(Long accountId, Long quizId, QuizQuestion quizQuestion, int selectedOptionIndex) {
+    private GradedAnswer(
+            Long accountId,
+            Long quizId,
+            QuizQuestion quizQuestion,
+            Long selectedWordId,
+            String selectedContent
+    ) {
         this.accountId = accountId;
         this.quizId = quizId;
         this.quizQuestion = quizQuestion;
-        this.selectedOptionIndex = selectedOptionIndex;
+        this.selectedWordId = selectedWordId;
+        this.selectedContent = selectedContent;
     }
 
     public boolean isCorrect() {
-        // TODO : 인덱스 기반에서 정답이 되는 용어 ID를 관리하도록 변경 필요
-        return quizQuestion.isCorrect(-1L);
+        return quizQuestion.isCorrect(selectedWordId);
     }
 }

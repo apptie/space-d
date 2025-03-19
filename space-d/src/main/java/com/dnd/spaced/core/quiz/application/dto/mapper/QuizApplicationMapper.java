@@ -6,7 +6,6 @@ import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse.QuizQuestionResponse.QuizOptionResponse;
 import com.dnd.spaced.core.quiz.domain.GradedAnswer;
 import com.dnd.spaced.core.quiz.domain.Quiz;
-import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +48,8 @@ public final class QuizApplicationMapper {
                 gradedAnswer.getAccountId(),
                 gradedAnswer.getQuizId(),
                 toGradedAnswerDto(question),
-                getAnswerOptionContent(question, gradedAnswer),
-                getSubmittedOptionContent(question, gradedAnswer),
+                question.getQuizAnswerOption().getContent(),
+                gradedAnswer.getSelectedContent(),
                 gradedAnswer.isCorrect()
         );
     }
@@ -63,25 +62,6 @@ public final class QuizApplicationMapper {
                 quizQuestion.getQuestionExample()
         );
     }
-
-    private static String getAnswerOptionContent(QuizQuestion question, GradedAnswer gradedAnswer) {
-        // TODO : QuizOption 목록 조회 필요
-        List<QuizOption> options = Collections.emptyList();
-        int submittedOptionIndex = gradedAnswer.getSelectedOptionIndex();
-
-        return options.get(submittedOptionIndex)
-                      .getContent();
-    }
-
-    private static String getSubmittedOptionContent(QuizQuestion quizQuestion, GradedAnswer gradedAnswer) {
-        // TODO : QuizOption 목록 조회 필요
-        List<QuizOption> quizOptions = Collections.emptyList();
-        int submittedIndex = gradedAnswer.getSelectedOptionIndex();
-
-        return quizOptions.get(submittedIndex)
-                          .getContent();
-    }
-
 
     private static QuizResponse.QuizQuestionResponse toQuizDto(QuizQuestion quizQuestion) {
         List<QuizOptionResponse> quizOptionResponses = Collections.emptyList();
