@@ -9,6 +9,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.Today
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizStatus;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import java.util.List;
@@ -66,17 +67,17 @@ public final class TodayQuizApplicationMapper {
         return new TodayQuizResponse(todayQuizInfo.id(), todayQuizQuestion, TodayQuizStatus.NOT_SOLVED);
     }
 
-    public static SimpleTodayQuizResponse toDto(TodayQuiz todayQuiz) {
-        TodayQuizQuestion quizQuestion = todayQuiz.getTodayQuizQuestion();
+    public static SimpleTodayQuizResponse toDto(SimpleTodayQuizInfo simpleTodayQuizInfo) {
+        SimpleTodayQuizResponse.TodayQuizQuestionResponse todayQuizQuestionResponse = new SimpleTodayQuizResponse.TodayQuizQuestionResponse(
+                simpleTodayQuizInfo.quizCategory().getName(),
+                simpleTodayQuizInfo.question(),
+                simpleTodayQuizInfo.questionContent()
+        );
 
-        return new SimpleTodayQuizResponse(todayQuiz.getId(), toQuizDto(quizQuestion));
-    }
-
-    private static SimpleTodayQuizResponse.TodayQuizQuestionResponse toQuizDto(TodayQuizQuestion quizQuestion) {
-        return new SimpleTodayQuizResponse.TodayQuizQuestionResponse(
-                quizQuestion.getQuizCategory().getName(),
-                quizQuestion.getQuestion(),
-                quizQuestion.getQuestionContent()
+        return new SimpleTodayQuizResponse(
+                simpleTodayQuizInfo.id(),
+                todayQuizQuestionResponse,
+                simpleTodayQuizInfo.createdAt()
         );
     }
 

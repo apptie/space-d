@@ -11,6 +11,7 @@ import com.dnd.spaced.core.quiz.application.exception.TodayQuizNotFoundException
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
@@ -32,9 +33,9 @@ public class TodayQuizService {
     private final TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
     public SimpleTodayQuizResponse readLatestTodayQuiz() {
-        TodayQuiz todayQuiz = findLatestQuiz();
+        SimpleTodayQuizInfo simpleTodayQuizInfo = findLatestQuiz();
 
-        return TodayQuizApplicationMapper.toDto(todayQuiz);
+        return TodayQuizApplicationMapper.toDto(simpleTodayQuizInfo);
     }
 
     public TodayQuizResponse readTodayQuiz(Long accountId, Long todayQuizId) {
@@ -74,7 +75,7 @@ public class TodayQuizService {
         return TodayQuizApplicationMapper.toDto(todayQuizGradedAnswer);
     }
 
-    private TodayQuiz findLatestQuiz() {
+    private SimpleTodayQuizInfo findLatestQuiz() {
         return todayQuizRepository.findLatest()
                                   .orElseThrow(
                                           () -> new TodayQuizNotFoundException("오늘의 퀴즈가 생성되지 않았습니다.")

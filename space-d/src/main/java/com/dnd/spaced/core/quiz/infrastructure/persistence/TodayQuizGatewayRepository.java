@@ -5,22 +5,41 @@ import static com.dnd.spaced.core.quiz.domain.QTodayQuizOption.todayQuizOption;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class TodayQuizGatewayRepository implements TodayQuizRepository {
 
+    private static final RowMapper<SimpleTodayQuizInfo> simpleTodayQuizInfoRowMapper =
+            (rs, ignoreRowNum) -> TodayQuizInfoMapper.toDto(
+                    rs.getLong(1),
+                    rs.getTimestamp(2).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                    rs.getString(3),
+                    rs.getString(4),
+                    QuizCategory.valueOf(rs.getString(5)),
+                    rs.getString(6),
+                    rs.getLong(7)
+            );
+
+
+    private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory queryFactory;
     private final TodayQuizCrudRepository todayQuizCrudRepository;
 
@@ -30,13 +49,30 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
     }
 
     @Override
-    public Optional<TodayQuiz> findLatest() {
-        TodayQuiz result = queryFactory.selectFrom(todayQuiz)
-                                       .orderBy(todayQuiz.id.desc())
-                                       .limit(1L)
-                                       .fetchOne();
+    public Optional<SimpleTodayQuizInfo> findLatest() {
+        String sql = """
+                SELECT
+                    tq.id,
+                    tq.created_at,
+                    tq.question,
+                    tq.question_content,
+                    tq.quiz_category,
+                    tq.content,
+                    tq.word_id
+                FROM (
+                    SELECT id
+                    FROM today_quizzes
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) t left join today_quizzes tq ON t.id = tq.id;
+                """;
+        try {
+            SimpleTodayQuizInfo simpleTodayQuizInfo = jdbcTemplate.queryForObject(sql, simpleTodayQuizInfoRowMapper);
 
-        return Optional.ofNullable(result);
+            return Optional.of(simpleTodayQuizInfo);
+        } catch (IncorrectResultSizeDataAccessException ignored) {
+            return Optional.empty();
+        }
     }
 
     @Override

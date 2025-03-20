@@ -33,6 +33,7 @@ public class TodayQuizGradedAnswerGatewayRepository implements TodayQuizGradedAn
                            )
                            .leftJoin(todayQuizGradedAnswer.todayQuiz).fetchJoin()
                            .limit(pageable.getPageSize())
+                           .orderBy(todayQuizGradedAnswer.id.desc())
                            .fetch();
     }
 
@@ -52,12 +53,12 @@ public class TodayQuizGradedAnswerGatewayRepository implements TodayQuizGradedAn
     @Override
     public boolean existsBy(Long accountId, Long todayQuizId) {
         Long result = queryFactory.select(todayQuizGradedAnswer.id)
-                             .from(todayQuizGradedAnswer)
-                             .where(
-                                     todayQuizGradedAnswer.accountId.eq(accountId),
-                                     todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId)
-                             )
-                             .fetchOne();
+                                  .from(todayQuizGradedAnswer)
+                                  .where(
+                                          todayQuizGradedAnswer.accountId.eq(accountId),
+                                          todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId)
+                                  )
+                                  .fetchOne();
 
         return result != null;
     }
