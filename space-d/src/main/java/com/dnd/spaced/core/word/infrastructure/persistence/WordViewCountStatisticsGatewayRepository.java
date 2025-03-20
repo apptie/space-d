@@ -2,7 +2,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRankDto;
+import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -43,15 +43,15 @@ public class WordViewCountStatisticsGatewayRepository implements WordViewCountSt
     }
 
     @Override
-    public List<ViewCountStatisticsRankDto> findAllBy(LocalDateTime localDateTime) {
+    public List<ViewCountStatisticsRank> findAllBy(LocalDateTime localDateTime) {
         Set<TypedTuple<String>> popularWords = redisTemplate.opsForZSet()
                                                             .reverseRangeWithScores(calculateKey(localDateTime), 0, 9);
 
-        List<ViewCountStatisticsRankDto> result = new ArrayList<>();
+        List<ViewCountStatisticsRank> result = new ArrayList<>();
         int rank = 1;
 
         for (TypedTuple<String> popularWord : popularWords) {
-            result.add(new ViewCountStatisticsRankDto(
+            result.add(new ViewCountStatisticsRank(
                     rank++,
                     Long.valueOf(popularWord.getValue()),
                     popularWord.getScore().longValue())

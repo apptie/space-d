@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.word.domain.repository;
 
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import java.time.LocalDateTime;
 import java.util.List;
 
