@@ -24,7 +24,6 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
     @Override
     public Optional<TodayQuiz> findLatest() {
         TodayQuiz result = queryFactory.selectFrom(todayQuiz)
-                                       .leftJoin(todayQuiz.todayQuizQuestion.todayQuizOptions).fetchJoin()
                                        .orderBy(todayQuiz.createdAt.desc())
                                        .limit(1L)
                                        .fetchOne();
@@ -36,7 +35,6 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
     public Optional<TodayQuiz> findBy(Long todayQuizId) {
         TodayQuiz result = queryFactory.selectFrom(todayQuiz)
                                        .where(todayQuiz.id.eq(todayQuizId))
-                                       .leftJoin(todayQuiz.todayQuizQuestion.todayQuizOptions).fetchJoin()
                                        .fetchOne();
 
         return Optional.ofNullable(result);

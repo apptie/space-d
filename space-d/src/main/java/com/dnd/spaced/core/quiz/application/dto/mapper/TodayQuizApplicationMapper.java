@@ -9,6 +9,7 @@ import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -27,15 +28,14 @@ public final class TodayQuizApplicationMapper {
     public static TodayQuizGradedAnswerResponse toDto(TodayQuizGradedAnswer todayQuizGradedAnswer) {
         TodayQuiz quiz = todayQuizGradedAnswer.getTodayQuiz();
         TodayQuizQuestion quizQuestion = quiz.getTodayQuizQuestion();
-        List<TodayQuizOption> quizOptions = quizQuestion.getTodayQuizOptions();
 
         return new TodayQuizGradedAnswerResponse(
                 todayQuizGradedAnswer.getId(),
                 quiz.getId(),
                 todayQuizGradedAnswer.getAccountId(),
                 toGradedAnswerDto(quizQuestion),
-                getSubmittedOptionContent(quizOptions, todayQuizGradedAnswer.getSelectedOptionIndex()),
-                getAnswerOptionContent(quizQuestion, todayQuizGradedAnswer),
+                todayQuizGradedAnswer.getSelectedContent(),
+                quizQuestion.getTodayQuizAnswerOption().getContent(),
                 todayQuizGradedAnswer.isCorrect()
         );
     }
@@ -54,24 +54,9 @@ public final class TodayQuizApplicationMapper {
         );
     }
 
-    private static String getAnswerOptionContent(TodayQuizQuestion question, TodayQuizGradedAnswer gradedAnswer) {
-        List<TodayQuizOption> options = question.getTodayQuizOptions();
-        int submittedOptionIndex = gradedAnswer.getSelectedOptionIndex();
-
-        return options.get(submittedOptionIndex)
-                          .getContent();
-    }
-
-    private static String getSubmittedOptionContent(List<TodayQuizOption> quizOptions, int submittedOptionIndex) {
-        return quizOptions.get(submittedOptionIndex)
-                          .getContent();
-    }
-
     private static TodayQuizResponse.TodayQuizQuestionResponse toQuizDto(TodayQuizQuestion quizQuestion) {
-        List<TodayQuizOptionResponse> quizOptionDtos = quizQuestion.getTodayQuizOptions()
-                                                                   .stream()
-                                                                   .map(TodayQuizApplicationMapper::toTodayQuizQuestionDto)
-                                                                   .toList();
+        // TODO : TodayQuizOption 목록 조회 필요
+        List<TodayQuizOptionResponse> quizOptionDtos = Collections.emptyList();
 
         return new TodayQuizResponse.TodayQuizQuestionResponse(
                 quizQuestion.getQuizCategory().getName(),

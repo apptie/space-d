@@ -60,7 +60,7 @@ class TodayQuizServiceTest {
     @Test
     void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
         // when & then
-        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1);
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
 
         assertThatThrownBy(() -> todayQuizService.grade(1L, -999L, request))
                 .isInstanceOf(TodayQuizNotFoundException.class)
@@ -86,15 +86,14 @@ class TodayQuizServiceTest {
             // then
             assertAll(
                     () -> assertThat(actual.id()).isPositive(),
-                    () -> assertThat(actual.todayQuizQuestion()).isNotNull(),
-                    () -> assertThat(actual.todayQuizQuestion().todayQuizOptions()).hasSize(4)
+                    () -> assertThat(actual.todayQuizQuestion()).isNotNull()
             );
         }
 
         @Test
         void 오늘의_퀴즈_정답을_제출한다() {
             // when
-            GradeTodayQuizRequest request = new GradeTodayQuizRequest(1);
+            GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
 
             todayQuizService.grade(1L, todayQuiz.getId(), request);
 
@@ -105,7 +104,6 @@ class TodayQuizServiceTest {
             assertAll(
                     () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(todayQuiz.getId()),
                     () -> assertThat(actual.getAccountId()).isEqualTo(1L),
-                    () -> assertThat(actual.getSelectedOptionIndex()).isEqualTo(1),
                     () -> assertThat(events.stream(GradedTodayQuizEvent.class).count()).isOne()
             );
         }
@@ -113,7 +111,10 @@ class TodayQuizServiceTest {
         @Test
         void 사용자가_제출한_모든_오늘의_퀴즈_채점_결과를_반환한다() {
             // given
-            GradeTodayQuizRequest gradeTodayQuizRequest = new GradeTodayQuizRequest(1);
+            GradeTodayQuizRequest gradeTodayQuizRequest = new GradeTodayQuizRequest(
+                    1L,
+                    "Authorization"
+            );
             todayQuizService.grade(1L, todayQuiz.getId(), gradeTodayQuizRequest);
 
             // when
@@ -134,7 +135,10 @@ class TodayQuizServiceTest {
         @Test
         void 사용자가_제출한_오늘의_퀴즈_채점_결과를_조회한다() {
             // given
-            GradeTodayQuizRequest request = new GradeTodayQuizRequest(1);
+            GradeTodayQuizRequest request = new GradeTodayQuizRequest(
+                    1L,
+                    "Authorization"
+            );
             todayQuizService.grade(1L, todayQuiz.getId(), request);
 
             // when
@@ -169,8 +173,7 @@ class TodayQuizServiceTest {
             // then
             assertAll(
                     () -> assertThat(actual.id()).isPositive(),
-                    () -> assertThat(actual.todayQuizQuestion()).isNotNull(),
-                    () -> assertThat(actual.todayQuizQuestion().todayQuizOptions()).hasSize(4)
+                    () -> assertThat(actual.todayQuizQuestion()).isNotNull()
             );
         }
 

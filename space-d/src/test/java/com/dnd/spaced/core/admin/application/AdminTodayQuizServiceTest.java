@@ -74,7 +74,6 @@ class AdminTodayQuizServiceTest {
                 assertAll(
                         () -> assertThat(actual).isPresent(),
                         () -> assertThat(actual.get().getId()).isEqualTo(1L),
-                        () -> assertThat(actual.get().getTodayQuizOptions()).hasSize(4),
                         () -> assertThat(events.stream(AddedTodayQuizQuestionEvent.class).count()).isOne()
                 );
             }

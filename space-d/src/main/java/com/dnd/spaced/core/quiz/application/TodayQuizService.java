@@ -8,6 +8,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerRe
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.exception.TodayQuizNotFoundException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
+import com.dnd.spaced.core.quiz.domain.TodayQuiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
@@ -38,7 +39,8 @@ public class TodayQuizService {
 
     public void grade(Long accountId, Long todayQuizId, GradeTodayQuizRequest request) {
         TodayQuiz todayQuiz = findTodayQuiz(todayQuizId);
-        TodayQuizGradedAnswer gradedAnswer = todayQuiz.grade(accountId, request.answer());
+        SubmitAnswer submitAnswer = new SubmitAnswer(request.selectedWordId(), request.selectedContent());
+        TodayQuizGradedAnswer gradedAnswer = todayQuiz.grade(accountId, submitAnswer);
 
         todayQuizGradedAnswerRepository.save(gradedAnswer);
         publishGradedTodayQuizEvent(accountId, gradedAnswer);

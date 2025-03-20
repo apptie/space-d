@@ -6,8 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -29,16 +27,14 @@ public class TodayQuizOption extends CreateTimeEntity {
 
     private String content;
 
-    private int index;
+    private int optionOrder;
 
-    @ManyToOne
-    @JoinColumn(name = "today_quiz_id")
-    private TodayQuiz todayQuiz;
+    private Long todayQuizId;
 
     public static TodayQuizOption of(Long wordId, String content, int index, TodayQuiz todayQuiz) {
         validateContent(content);
 
-        return new TodayQuizOption(wordId, content, index, todayQuiz);
+        return new TodayQuizOption(wordId, content, index, todayQuiz.getId());
     }
 
     private static void validateContent(String content) {
@@ -47,12 +43,10 @@ public class TodayQuizOption extends CreateTimeEntity {
         }
     }
 
-    private TodayQuizOption(Long wordId, String content, int index, TodayQuiz todayQuiz) {
+    private TodayQuizOption(Long wordId, String content, int optionOrder, Long todayQuizId) {
         this.wordId = wordId;
         this.content = content;
-        this.index = index;
-        this.todayQuiz = todayQuiz;
-
-        todayQuiz.initTodayQuizOption(this);
+        this.optionOrder = optionOrder;
+        this.todayQuizId = todayQuizId;
     }
 }

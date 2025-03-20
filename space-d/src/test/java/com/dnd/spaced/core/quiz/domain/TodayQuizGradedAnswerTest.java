@@ -26,20 +26,20 @@ class TodayQuizGradedAnswerTest {
                 todayQuizAnswerOption
         );
         TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
-        TodayQuizOption.of(1L, "Authorization", 0, todayQuiz);
-        TodayQuizOption.of(2L, "Domain", 1, todayQuiz);
-        TodayQuizOption.of(3L, "Controller", 2, todayQuiz);
-        TodayQuizOption.of(4L, "ViewResolver", 3, todayQuiz);
 
         // when & then
         TodayQuizGradedAnswer actual = assertDoesNotThrow(
-                () -> new TodayQuizGradedAnswer(1L, todayQuiz, 0)
+                () -> new TodayQuizGradedAnswer(
+                        todayQuiz,
+                        1L,
+                        1L,
+                        "Authorization"
+                )
         );
 
         assertAll(
                 () -> assertThat(actual.getAccountId()).isEqualTo(1L),
-                () -> assertThat(actual.getTodayQuiz()).isEqualTo(todayQuiz),
-                () -> assertThat(actual.getSelectedOptionIndex()).isZero()
+                () -> assertThat(actual.getTodayQuiz()).isEqualTo(todayQuiz)
         );
     }
 
@@ -54,11 +54,12 @@ class TodayQuizGradedAnswerTest {
                 todayQuizAnswerOption
         );
         TodayQuiz todayQuiz = new TodayQuiz(todayQuizQuestion);
-        TodayQuizOption.of(1L, "Authorization", 0, todayQuiz);
-        TodayQuizOption.of(2L, "Domain", 1, todayQuiz);
-        TodayQuizOption.of(3L, "Controller", 2, todayQuiz);
-        TodayQuizOption.of(4L, "ViewResolver", 3, todayQuiz);
-        TodayQuizGradedAnswer todayQuizGradedAnswer = new TodayQuizGradedAnswer(1L, todayQuiz, 0);
+        TodayQuizGradedAnswer todayQuizGradedAnswer = new TodayQuizGradedAnswer(
+                todayQuiz,
+                1L,
+                1L,
+                "Authorization"
+        );
 
         // when
         boolean actual = todayQuizGradedAnswer.isCorrect();

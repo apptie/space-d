@@ -29,11 +29,6 @@ public enum QuizExceptionTranslator implements ExceptionTranslator {
             HttpStatus.INTERNAL_SERVER_ERROR,
             "퀴즈 생성에 실패했습니다."
     ),
-    INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION(
-            QuizErrorCode.INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION,
-            HttpStatus.BAD_REQUEST,
-            "없는 보기를 선택했습니다."
-    ),
     INVALID_TODAY_QUIZ_OPTION_CONTENT_EXCEPTION(
             QuizErrorCode.INVALID_TODAY_QUIZ_OPTION_CONTENT_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,

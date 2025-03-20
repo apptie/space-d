@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -178,7 +177,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
         willDoNothing().given(todayQuizService).grade(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
 
         // when & then
-        GradeTodayQuizRequest request = new GradeTodayQuizRequest(0);
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
 
         ResultActions resultActions = mockMvc.perform(
                 post("/today-quizzes/{todayQuizId}/graded-answers", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
@@ -201,8 +200,8 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
                         requestFields(
-                                fieldWithPath("answer").attributes(field("constraints", "인덱스 기반"))
-                                                       .description("오늘의 퀴즈에 대한 답")
+                                fieldWithPath("selectedWordId").type(JsonFieldType.NUMBER).description("정답으로 제출한 용어 ID"),
+                                fieldWithPath("selectedContent").type(JsonFieldType.STRING).description("정답으로 제출한 용어 이름")
                         ),
                         responseHeaders(
                                 headerWithName("Location").description("오늘의 퀴즈 채점 결과를 확인할 수 있는 API")
