@@ -78,14 +78,17 @@ public class QuizController {
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
-        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(quizId);
+        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.accountId(), quizId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<QuizResponse> readQuiz(@PathVariable Long quizId) {
-        QuizResponse response = quizService.findQuizBy(quizId);
+    public ResponseEntity<QuizResponse> readQuiz(
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @PathVariable Long quizId
+    ) {
+        QuizResponse response = quizService.readQuiz(accountInfo.accountId(), quizId);
 
         return ResponseEntity.ok(response);
     }

@@ -1,8 +1,10 @@
 package com.dnd.spaced.core.quiz.domain.repository;
 
 import com.dnd.spaced.core.quiz.domain.Quiz;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 public interface QuizRepository {
 
@@ -11,4 +13,8 @@ public interface QuizRepository {
     List<Quiz> findAllBy(Long accountId);
 
     Optional<Quiz> findBy(Long quizId);
+
+    Optional<QuizInfo> findBy(Long quizId, Long accountId);
+
+    List<QuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable);
 }

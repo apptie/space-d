@@ -88,6 +88,11 @@ public enum QuizExceptionTranslator implements ExceptionTranslator {
             QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "용어 메타데이터가 정상적으로 초기화되지 않았습니다."
+    ),
+    ALREADY_GRADE_QUIZ_EXCEPTION(
+            QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "이미 푼 퀴즈입니다."
     );
 
     private final ErrorCode errorCode;

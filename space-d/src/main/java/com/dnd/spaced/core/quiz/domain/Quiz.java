@@ -1,12 +1,13 @@
 package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidSubmittedAnswersCountException;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
+import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,11 +16,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "quizzes")
 @Getter
 @Entity
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quiz extends CreateTimeEntity {
+public class Quiz extends BaseTimeEntity {
 
     private static final int DEFAULT_QUESTION_SIZE = 5;
 

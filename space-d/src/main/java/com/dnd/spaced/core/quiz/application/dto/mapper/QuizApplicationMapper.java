@@ -5,9 +5,10 @@ import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionR
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse.QuizQuestionResponse.QuizOptionResponse;
 import com.dnd.spaced.core.quiz.domain.GradedAnswer;
-import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
-import java.util.Collections;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo.QuizQuestionInfo;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo.QuizQuestionInfo.QuizOptionInfo;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,15 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class QuizApplicationMapper {
 
-    public static QuizResponse toDto(Quiz quiz) {
-        List<QuizResponse.QuizQuestionResponse> quizQuestionResponses = quiz.getQuizQuestions()
+    public static QuizResponse toDto(QuizInfo quiz) {
+        List<QuizResponse.QuizQuestionResponse> quizQuestionResponses = quiz.quizQuestions()
                                                                             .stream()
                                                                             .map(QuizApplicationMapper::toQuizDto)
                                                                             .toList();
 
         return new QuizResponse(
-                quiz.getId(),
-                quiz.getAccountId(),
+                quiz.id(),
+                quiz.accountId(),
                 quizQuestionResponses
         );
     }
@@ -63,16 +64,23 @@ public final class QuizApplicationMapper {
         );
     }
 
-    private static QuizResponse.QuizQuestionResponse toQuizDto(QuizQuestion quizQuestion) {
-        List<QuizOptionResponse> quizOptionResponses = Collections.emptyList();
+    private static QuizResponse.QuizQuestionResponse toQuizDto(QuizQuestionInfo quizQuestion) {
+        List<QuizOptionResponse> quizOptionResponses = quizQuestion.quizOptions()
+                                                                   .stream()
+                                                                   .map(QuizApplicationMapper::toQuizOptionDto)
+                                                                   .toList();
 
         return new QuizResponse.QuizQuestionResponse(
-                quizQuestion.getId(),
-                quizQuestion.getQuizCategory().getName(),
-                quizQuestion.getQuestionContent(),
-                quizQuestion.getQuestionContent(),
+                quizQuestion.id(),
+                quizQuestion.quizCategory().getName(),
+                quizQuestion.questionContent(),
+                quizQuestion.questionExample(),
                 quizOptionResponses,
-                quizQuestion.getQuizAnswerOption().getWordId()
+                quizQuestion.quizAnswerOption().getWordId()
         );
+    }
+
+    private static QuizOptionResponse toQuizOptionDto(QuizOptionInfo quizOption) {
+        return new QuizOptionResponse(quizOption.id(), quizOption.content());
     }
 }

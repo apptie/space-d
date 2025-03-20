@@ -55,25 +55,27 @@ public class GradedAnswerGatewayRepository implements GradedAnswerRepository {
     @Override
     public List<GradedAnswer> findAllBy(Long accountId, Long lastGradedAnswerId, Pageable pageable) {
         return queryFactory.selectFrom(gradedAnswer)
-                           .where(gradedAnswer.accountId.eq(accountId), ltLastGradedAnswerId(lastGradedAnswerId))
+                           .where(gradedAnswer.accountId.eq(accountId), gtLastGradedAnswerId(lastGradedAnswerId))
                            .leftJoin(gradedAnswer.quizQuestion).fetchJoin()
+                           .orderBy(gradedAnswer.id.asc())
                            .limit(pageable.getPageSize())
                            .fetch();
     }
 
     @Override
-    public List<GradedAnswer> findAllBy(Long quizId) {
+    public List<GradedAnswer> findAllBy(Long accountId, Long quizId) {
         return queryFactory.selectFrom(gradedAnswer)
-                           .where(gradedAnswer.quizId.eq(quizId))
+                           .where(gradedAnswer.quizId.eq(quizId), gradedAnswer.accountId.eq(accountId))
                            .leftJoin(gradedAnswer.quizQuestion).fetchJoin()
+                           .orderBy(gradedAnswer.id.asc())
                            .fetch();
     }
 
-    private BooleanExpression ltLastGradedAnswerId(Long lastGradedAnswerId) {
+    private BooleanExpression gtLastGradedAnswerId(Long lastGradedAnswerId) {
         if (lastGradedAnswerId == null) {
             return null;
         }
 
-        return gradedAnswer.id.lt(lastGradedAnswerId);
+        return gradedAnswer.id.gt(lastGradedAnswerId);
     }
 }

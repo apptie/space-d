@@ -8,6 +8,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionR
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
+import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeQuizException;
 import com.dnd.spaced.core.quiz.application.exception.InvalidQuizWordCountException;
 import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
 import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
@@ -16,6 +17,7 @@ import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.Quiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.GradedAnswerRepository;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -76,23 +79,21 @@ public class QuizService {
     @Transactional
     public void grade(Long accountId, Long quizId, GradeQuizRequest request) {
         Quiz quiz = findQuiz(quizId);
-        List<SubmitAnswer> submitAnswers = Arrays.stream(request.submitAnswers())
-                                                 .map(
-                                                         submitAnswer -> new SubmitAnswer(
-                                                                 submitAnswer.wordId(),
-                                                                 submitAnswer.content()
-                                                         )
-                                                 )
-                                                 .toList();
 
+        validateQuiz(quiz);
+
+        List<SubmitAnswer> submitAnswers = convertSubmitAnswers(request);
         List<GradedAnswer> gradedAnswers = quiz.grade(accountId, submitAnswers);
 
         gradedAnswerRepository.saveAll(gradedAnswers);
-        long correctCount = gradedAnswers.stream()
-                                         .filter(GradedAnswer::isCorrect)
-                                         .count();
         quiz.solve();
-        eventPublisher.publishEvent(new GradedQuizEvent(accountId, correctCount));
+        publishGradedQuizEvent(accountId, gradedAnswers);
+    }
+
+    private void validateQuiz(Quiz quiz) {
+        if (quiz.isSolved()) {
+            throw new AlreadyGradeQuizException("이미 풀었던 퀴즈입니다.");
+        }
     }
 
     public GradedAnswerCollectionResponse readGradedAnswers(
@@ -109,20 +110,25 @@ public class QuizService {
         return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
-    public GradedAnswerCollectionResponse readGradedAnswers(Long quizId) {
-        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(quizId);
+    public GradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
+        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(accountId, quizId);
 
         return QuizApplicationMapper.toDto(gradedAnswers);
     }
 
-    public QuizResponse findQuizBy(Long id) {
-        Quiz quiz = findQuiz(id);
+    public QuizResponse readQuiz(Long accountId, Long quizId) {
+        QuizInfo quizInfo = findQuizInfo(quizId, accountId);
 
-        return QuizApplicationMapper.toDto(quiz);
+        return QuizApplicationMapper.toDto(quizInfo);
     }
 
-    private Quiz findQuiz(Long id) {
-        return quizRepository.findBy(id)
+    private Quiz findQuiz(Long quizId) {
+        return quizRepository.findBy(quizId)
+                             .orElseThrow(() -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다."));
+    }
+
+    private QuizInfo findQuizInfo(Long quizId, Long accountId) {
+        return quizRepository.findBy(quizId, accountId)
                              .orElseThrow(() -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다."));
     }
 
@@ -144,13 +150,11 @@ public class QuizService {
     private Quiz createQuiz(Long accountId, QuizCategory quizCategory) {
         Quiz quiz = new Quiz(accountId);
         Quiz savedQuiz = quizRepository.save(quiz);
+        List<Word> randomWords = findRandomWords(quizCategory);
+        List<List<Word>> splitWords = splitByQuestionWordCount(randomWords);
+        List<Long> quizQuestionIds = persistQuizQuestion(quizCategory, splitWords, savedQuiz);
 
-        List<Word> words = findRandomWords(quizCategory);
-
-        for (List<Word> splitWords : splitByQuestionWordCount(words)) {
-            initQuizQuestion(splitWords, savedQuiz, quizCategory);
-        }
-
+        persistQuizOptions(splitWords, quizQuestionIds);
         return quiz;
     }
 
@@ -175,31 +179,66 @@ public class QuizService {
         return result;
     }
 
-    private void initQuizQuestion(List<Word> splitWords, Quiz quiz, QuizCategory quizCategory) {
-        Word answerWord = splitWords.get(ANSWER_OPTION_INDEX);
-        QuizQuestion quizQuestion = createQuizQuestion(quiz, quizCategory, answerWord);
+    private List<Long> persistQuizQuestion(QuizCategory quizCategory, List<List<Word>> splitWords, Quiz savedQuiz) {
+        List<QuizQuestion> quizQuestions = splitWords.stream()
+                                                     .map(words -> {
+                                                         Word answerWord = words.get(ANSWER_OPTION_INDEX);
 
-        quizQuestionRepository.save(quizQuestion);
+                                                         return QuizQuestion.of(
+                                                                 quizCategory,
+                                                                 quizQuestionProperties.getQuestion(),
+                                                                 answerWord.getWordMeaning().getMeaning(),
+                                                                 new QuizAnswerOption(
+                                                                         answerWord.getId(),
+                                                                         answerWord.getName()
+                                                                 ),
+                                                                 savedQuiz
+                                                         );
+                                                     })
+                                                     .toList();
 
-        Collections.shuffle(splitWords);
-
-        for (int i = 0; i < REQUIRED_QUESTION_WORD_COUNT; i++) {
-            Word word = splitWords.get(i);
-            QuizOption quizOption = QuizOption.of(word.getId(), word.getName(), i, quizQuestion.getId());
-
-            quizOptionRepository.save(quizOption);
-        }
+        return quizQuestionRepository.saveAll(quizQuestions);
     }
 
-    private QuizQuestion createQuizQuestion(Quiz quiz, QuizCategory quizCategory, Word answerWord) {
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(answerWord.getId(), answerWord.getName());
+    private void persistQuizOptions(List<List<Word>> splitWords, List<Long> quizQuestionIds) {
+        List<QuizOption> quizOptions = IntStream.range(0, splitWords.size())
+                                                .mapToObj(index ->
+                                                        convertQuizOptions(
+                                                                splitWords.get(index),
+                                                                quizQuestionIds.get(index)
+                                                        )
+                                                )
+                                                .flatMap(List::stream)
+                                                .toList();
 
-        return QuizQuestion.of(
-                quizCategory,
-                quizQuestionProperties.getQuestion(),
-                answerWord.getWordMeaning().getMeaning(),
-                quizAnswerOption,
-                quiz
-        );
+        quizOptionRepository.saveAll(quizOptions);
+    }
+
+    private List<QuizOption> convertQuizOptions(List<Word> targetWords, Long targetQuizQuestionId) {
+        Collections.shuffle(targetWords);
+
+        return IntStream.range(0, targetWords.size())
+                        .mapToObj(
+                                index -> convertQuizOption(
+                                        targetQuizQuestionId,
+                                        index,
+                                        targetWords.get(index)
+                                )
+                        )
+                        .toList();
+    }
+
+    private QuizOption convertQuizOption(Long targetQuizQuestionId, int index, Word word) {
+        return QuizOption.of(word.getId(), word.getName(), index, targetQuizQuestionId);
+    }
+
+    private void publishGradedQuizEvent(Long accountId, List<GradedAnswer> gradedAnswers) {
+        eventPublisher.publishEvent(GradedQuizEvent.of(accountId, gradedAnswers));
+    }
+
+    private List<SubmitAnswer> convertSubmitAnswers(GradeQuizRequest request) {
+        return Arrays.stream(request.submitAnswers())
+                     .map(submitAnswer -> new SubmitAnswer(submitAnswer.wordId(), submitAnswer.content()))
+                     .toList();
     }
 }

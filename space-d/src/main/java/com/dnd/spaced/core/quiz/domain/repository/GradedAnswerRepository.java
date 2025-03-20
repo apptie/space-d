@@ -10,5 +10,5 @@ public interface GradedAnswerRepository {
 
     List<GradedAnswer> findAllBy(Long accountId, Long lastGradedAnswerId, Pageable pageable);
 
-    List<GradedAnswer> findAllBy(Long quizId);
+    List<GradedAnswer> findAllBy(Long accountId, Long quizId);
 }

@@ -371,12 +371,12 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 gradedAnswerResponse5.id()
         );
 
-        given(quizService.readGradedAnswers(anyLong())).willReturn(response);
+        given(quizService.readGradedAnswers(anyLong(), anyLong())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 get("/quizzes/{quizId}/graded-answers", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
-                                                .accept(MediaType.APPLICATION_JSON)
+                                                           .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("answers").exists(),
@@ -393,7 +393,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].isCorrect").exists()
         );
 
-        verify(quizService).readGradedAnswers(anyLong());
+        verify(quizService).readGradedAnswers(anyLong(), anyLong());
 
         특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(resultActions);
     }
@@ -427,9 +427,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
+    @WithMockUser("1")
     void 퀴즈_조회_요청_성공_테스트() throws Exception {
         // given
-        given(quizService.findQuizBy(anyLong())).willReturn(createQuizResponse());
+        given(quizService.readQuiz(anyLong(), anyLong())).willReturn(createQuizResponse());
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -442,8 +443,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizCategory", is("개발")),
                 jsonPath("quizQuestions[0].question", is("다음 예문을 보고 예문에 맞는 용어를 선택해주세요.")),
-                jsonPath("quizQuestions[0].questionContent",
-                        is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
+                jsonPath("quizQuestions[0].questionContent", is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
                 jsonPath("quizQuestions[0].quizOptions").exists(),
                 jsonPath("quizQuestions[0].quizOptions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizOptions[0].content", is("Authorization")),
@@ -456,7 +456,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].answerOptionWordId", is(1L), Long.class)
         );
 
-        verify(quizService).findQuizBy(anyLong());
+        verify(quizService).readQuiz(anyLong(), anyLong());
 
         퀴즈_조회_요청_문서화(resultActions);
     }
