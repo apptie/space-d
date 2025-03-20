@@ -8,6 +8,7 @@ import com.dnd.spaced.core.account.domain.enums.Company;
 import com.dnd.spaced.core.account.domain.enums.Experience;
 import com.dnd.spaced.core.account.domain.enums.JobGroup;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
+import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizStatus;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.report.domain.enums.ReportReason;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
@@ -62,25 +63,19 @@ public class DocsController {
                                                              Collectors.toMap(Enum::name, ProfileImageName::getKorean)
                                                      );
         Map<String, String> category = Arrays.stream(Category.values())
-                                             .collect(
-                                                     Collectors.toMap(Enum::name, Category::getName)
-                                             );
+                                             .collect(Collectors.toMap(Enum::name, Category::getName));
         Map<String, String> pronunciationType = Arrays.stream(PronunciationType.values())
                                                       .collect(
                                                               Collectors.toMap(Enum::name, PronunciationType::getName)
                                                       );
         Map<String, String> quizCategory = Arrays.stream(QuizCategory.values())
-                                                 .collect(
-                                                         Collectors.toMap(Enum::name, QuizCategory::getName)
-                                                 );
+                                                 .collect(Collectors.toMap(Enum::name, QuizCategory::getName));
         Map<String, String> reportReason = Arrays.stream(ReportReason.values())
-                                                 .collect(
-                                                         Collectors.toMap(Enum::name, ReportReason::getCause)
-                                                 );
+                                                 .collect(Collectors.toMap(Enum::name, ReportReason::getCause));
         Map<String, String> reportStatus = Arrays.stream(ReportStatus.values())
-                                                 .collect(
-                                                         Collectors.toMap(Enum::name, ReportStatus::getName)
-                                                 );
+                                                 .collect(Collectors.toMap(Enum::name, ReportStatus::getName));
+        Map<String, String> todayQuizStatus = Arrays.stream(TodayQuizStatus.values())
+                                                    .collect(Collectors.toMap(Enum::name, TodayQuizStatus::getName));
 
         EnumDocs enumDocs = EnumDocs.builder()
                                     .jobGroup(jobGroup)
@@ -92,6 +87,7 @@ public class DocsController {
                                     .quizCategory(quizCategory)
                                     .reportReason(reportReason)
                                     .reportStatus(reportStatus)
+                                    .todayQuizStatus(todayQuizStatus)
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -102,7 +98,8 @@ public class DocsController {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .authProfileException(calculateAuthProfileException())
                                                    .refreshTokenException(calculateRefreshTokenException())
-                                                   .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
+                                                   .registerBlacklistTokenException(
+                                                           calculateRegisterBlacklistTokenException())
                                                    .withdrawalException(calculateWithdrawalException())
                                                    .changeCareerInfoException(calculateChangeCareerInfoException())
                                                    .changeProfileInfoException(calculateChangeProfileInfoException())
@@ -110,7 +107,8 @@ public class DocsController {
                                                    .saveWordException(calculateSaveWordException())
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
-                                                   .deletePronunciationException(calculateDeletePronunciationException())
+                                                   .deletePronunciationException(
+                                                           calculateDeletePronunciationException())
                                                    .readWordException(calculateReadWordException())
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
@@ -118,14 +116,19 @@ public class DocsController {
                                                    .processLikeException(calculateProcessLikeException())
                                                    .createQuizException(calculateCreateQuizException())
                                                    .gradeQuizException(calculateGradeQuizException())
-                                                   .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
-                                                   .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
+                                                   .findGradedAnswersAllByException(
+                                                           calculateFindGradedAnswersAllByException())
+                                                   .findGradedAnswersAllByQuizException(
+                                                           calculateFindGradedAnswersAllByQuizException())
                                                    .findQuizByException(calculateFindQuizByException())
-                                                   .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
+                                                   .findLatestTodayQuizException(
+                                                           calculateFindLatestTodayQuizException())
                                                    .findTodayQuizByException(calculateFindTodayQuizByException())
                                                    .gradeTodayQuizException(calculateGradeTodayQuizException())
-                                                   .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
-                                                   .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
+                                                   .findTodayQuizGradedAnswerByException(
+                                                           calculateFindTodayQuizGradedAnswerByException())
+                                                   .findTodayQuizGradedAnswersAllByException(
+                                                           calculateFindTodayQuizGradedAnswersAllByException())
                                                    .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
                                                    .reportException(calculateReportException())

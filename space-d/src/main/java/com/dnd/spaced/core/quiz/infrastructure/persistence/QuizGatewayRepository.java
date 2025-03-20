@@ -7,7 +7,7 @@ import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.QuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.QuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZoneId;

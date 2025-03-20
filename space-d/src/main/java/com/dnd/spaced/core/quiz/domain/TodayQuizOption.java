@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidTodayQuizOptionContentException;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TodayQuizOption extends CreateTimeEntity {
+public class TodayQuizOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

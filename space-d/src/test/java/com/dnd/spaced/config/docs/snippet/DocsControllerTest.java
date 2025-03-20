@@ -92,6 +92,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.reportStatus").withSubsectionId("reportStatus"),
                                       attributes(key("title").value("ReportStatus 허용 값")),
                                       enumConvertFieldDescriptor(data.getReportStatus())
+                              ),
+                              customResponseFields(
+                                      "enum-response",
+                                      beneathPath("data.todayQuizStatus").withSubsectionId("todayQuizStatus"),
+                                      attributes(key("title").value("TodayQuizStatus 허용 값")),
+                                      enumConvertFieldDescriptor(data.getTodayQuizStatus())
                               )
                       ));
     }

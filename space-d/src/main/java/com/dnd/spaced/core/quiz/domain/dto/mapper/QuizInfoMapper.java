@@ -1,8 +1,9 @@
-package com.dnd.spaced.core.quiz.domain.dto;
+package com.dnd.spaced.core.quiz.domain.dto.mapper;
 
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
+import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo.QuizQuestionInfo;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo.QuizQuestionInfo.QuizOptionInfo;
 import java.util.Collections;

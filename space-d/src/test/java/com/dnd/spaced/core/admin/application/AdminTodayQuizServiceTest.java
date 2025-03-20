@@ -69,7 +69,7 @@ class AdminTodayQuizServiceTest {
                 adminTodayQuizService.createTodayQuiz();
 
                 // then
-                Optional<TodayQuiz> actual = todayQuizRepository.findBy(1L);
+                Optional<TodayQuiz> actual = todayQuizRepository.findTodayQuizBy(1L);
 
                 assertAll(
                         () -> assertThat(actual).isPresent(),

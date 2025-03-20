@@ -4,6 +4,7 @@ import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizExampleCo
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizQuestionException;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
@@ -22,6 +23,7 @@ public class TodayQuizQuestion {
 
     private String questionContent;
 
+    @Embedded
     private TodayQuizAnswerOption todayQuizAnswerOption;
 
     public static TodayQuizQuestion of(

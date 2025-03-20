@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CalculateSkillListener {
 
+    private static final long TODAY_QUIZ_CORRECT_COUNT = 1L;
+
     private final SkillRepository skillRepository;
 
     @EventListener
@@ -33,13 +35,17 @@ public class CalculateSkillListener {
     @EventListener
     @Transactional
     public void listen(GradedTodayQuizEvent event) {
+        if (event.corrected()) {
+            return;
+        }
+
         skillRepository.findBy(event.accountId())
                                      .ifPresentOrElse(
-                                             skill -> skill.addCorrectQuizQuestion(event.correctCount()),
+                                             skill -> skill.addCorrectQuizQuestion(TODAY_QUIZ_CORRECT_COUNT),
                                              () -> {
                                                  Skill skill = new Skill(event.accountId());
 
-                                                 skill.addCorrectTodayQuizQuestion(event.correctCount());
+                                                 skill.addCorrectTodayQuizQuestion(TODAY_QUIZ_CORRECT_COUNT);
                                                  skillRepository.save(skill);
                                              }
                                      );

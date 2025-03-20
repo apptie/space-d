@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 23 Mar 2025 06:52:27 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Sun, 23 Mar 2025 12:49:20 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -4725,21 +4725,7 @@ Content-Type: application/json;charset=UTF-8
   "todayQuizQuestion" : {
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-    "todayQuizOptions" : [ {
-      "id" : 1,
-      "content" : "Authorization"
-    }, {
-      "id" : 2,
-      "content" : "Controller"
-    }, {
-      "id" : 3,
-      "content" : "Domain"
-    }, {
-      "id" : 4,
-      "content" : "Repository"
-    } ],
-    "answerWordId" : 1
+    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   }
 }</code></pre>
 </div>
@@ -4785,26 +4771,6 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerWordId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
 </tr>
 </tbody>
 </table>
@@ -4874,7 +4840,8 @@ Content-Type: application/json;charset=UTF-8
       "content" : "Repository"
     } ],
     "answerWordId" : 1
-  }
+  },
+  "todayQuizStatus" : "NOT_SOLVED"
 }</code></pre>
 </div>
 </div>
@@ -4940,6 +4907,11 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="common/today-quiz-status.html" class="popup">오늘의 퀴즈 상태</a></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -4983,7 +4955,8 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "answer" : 0
+  "selectedWordId" : 1,
+  "selectedContent" : "Authorization"
 }</code></pre>
 </div>
 </div>
@@ -5829,7 +5802,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-20T15:52:27.309695"
+    "createdAt" : "2025-03-20T21:49:20.24446"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>

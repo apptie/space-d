@@ -8,6 +8,7 @@ import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
+import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
@@ -70,7 +71,7 @@ class TodayQuizServiceTest {
     @Test
     void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> todayQuizService.findLatest())
+        assertThatThrownBy(() -> todayQuizService.readLatestTodayQuiz())
                 .isInstanceOf(TodayQuizNotFoundException.class)
                 .hasMessage("오늘의 퀴즈가 생성되지 않았습니다.");
     }
@@ -81,7 +82,7 @@ class TodayQuizServiceTest {
         @Test
         void 최근에_생성한_오늘의_퀴즈를_조회한다() {
             // when
-            TodayQuizResponse actual = todayQuizService.findLatest();
+            SimpleTodayQuizResponse actual = todayQuizService.readLatestTodayQuiz();
 
             // then
             assertAll(
@@ -121,7 +122,7 @@ class TodayQuizServiceTest {
             ReadTodayQuizGradedAnswerSearchRequest request = new ReadTodayQuizGradedAnswerSearchRequest(
                     null
             );
-            TodayQuizGradedAnswerCollectionResponse actual = todayQuizService.findTodayQuizGradedAnswerAllBy(
+            TodayQuizGradedAnswerCollectionResponse actual = todayQuizService.readTodayQuizGradedAnswers(
                     1L, request, PageRequest.of(0, 10)
             );
 
@@ -142,7 +143,7 @@ class TodayQuizServiceTest {
             todayQuizService.grade(1L, todayQuiz.getId(), request);
 
             // when
-            TodayQuizGradedAnswerResponse actual = todayQuizService.findTodayQuizGradedAnswerBy(
+            TodayQuizGradedAnswerResponse actual = todayQuizService.readTargetTodayQuizGradedAnswers(
                     1L,
                     todayQuiz.getId()
             );
@@ -157,7 +158,7 @@ class TodayQuizServiceTest {
         @Test
         void 지정한_오늘의_퀴즈_id가_없다면_사용자가_제출한_오늘의_퀴즈_채점_결과를_조회할_수_없다() {
             // when & then
-            assertThatThrownBy(() -> todayQuizService.findTodayQuizGradedAnswerBy(1L, 1L))
+            assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(1L, 1L))
                     .isInstanceOf(TodayQuizNotFoundException.class)
                     .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
         }
@@ -168,7 +169,7 @@ class TodayQuizServiceTest {
             TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
 
             // when
-            TodayQuizResponse actual = todayQuizService.findBy(savedTodayQuiz.getId());
+            TodayQuizResponse actual = todayQuizService.readTodayQuiz(1L, savedTodayQuiz.getId());
 
             // then
             assertAll(
@@ -180,7 +181,7 @@ class TodayQuizServiceTest {
         @Test
         void 없는_id의_오늘의_퀴즈를_조회할_수_없다() {
             // when & then
-            assertThatThrownBy(() -> todayQuizService.findBy(-999L))
+            assertThatThrownBy(() -> todayQuizService.readTodayQuiz(1L, -999L))
                     .isInstanceOf(TodayQuizNotFoundException.class)
                     .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
         }

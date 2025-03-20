@@ -1,5 +1,7 @@
 package com.dnd.spaced.core.quiz.presentation;
 
+import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
+import static com.dnd.spaced.config.docs.link.DocumentLinkGenerator.generateLinkCode;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -21,13 +23,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
+import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
+import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizQuestionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizQuestionResponse.TodayQuizOptionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizStatus;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -43,20 +48,14 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
     @Test
     void 최신_오늘의_퀴즈_요청_성공_테스트() throws Exception {
         // given
-        TodayQuizOptionResponse authorizationOption = new TodayQuizOptionResponse(1L, "Authorization");
-        TodayQuizOptionResponse controllerOption = new TodayQuizOptionResponse(2L, "Controller");
-        TodayQuizOptionResponse domainOption = new TodayQuizOptionResponse(3L, "Domain");
-        TodayQuizOptionResponse repositoryOption = new TodayQuizOptionResponse(4L, "Repository");
-        TodayQuizQuestionResponse todayQuizQuestionResponse = new TodayQuizQuestionResponse(
+        SimpleTodayQuizResponse.TodayQuizQuestionResponse todayQuizQuestionResponse = new SimpleTodayQuizResponse.TodayQuizQuestionResponse(
                 "개발",
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                List.of(authorizationOption, controllerOption, domainOption, repositoryOption),
-                1L
+                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
         );
-        TodayQuizResponse todayQuizResponse = new TodayQuizResponse(1L, todayQuizQuestionResponse);
+        SimpleTodayQuizResponse todayQuizResponse = new SimpleTodayQuizResponse(1L, todayQuizQuestionResponse);
 
-        given(todayQuizService.findLatest()).willReturn(todayQuizResponse);
+        given(todayQuizService.readLatestTodayQuiz()).willReturn(todayQuizResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -67,13 +66,10 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion").exists(),
                 jsonPath("todayQuizQuestion.quizCategory").value("개발"),
                 jsonPath("todayQuizQuestion.question").value("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                jsonPath("todayQuizQuestion.questionContent").value("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
-                jsonPath("todayQuizQuestion.todayQuizOptions").exists(),
-                jsonPath("todayQuizQuestion.todayQuizOptions[*].id").exists(),
-                jsonPath("todayQuizQuestion.todayQuizOptions[*].content").exists()
+                jsonPath("todayQuizQuestion.questionContent").value("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
         );
 
-        verify(todayQuizService).findLatest();
+        verify(todayQuizService).readLatestTodayQuiz();
 
         최신_오늘의_퀴즈_요청_문서화(resultActions);
     }
@@ -91,15 +87,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("todayQuizQuestion.question").description("오늘의 퀴즈 문제")
                                                                            .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.questionContent").description("오늘의 퀴즈 문제 지문")
-                                                                                  .type(JsonFieldType.STRING),
-                                fieldWithPath("todayQuizQuestion.todayQuizOptions").description("오늘의 퀴즈 문제 보기")
-                                                                                   .type(JsonFieldType.ARRAY),
-                                fieldWithPath("todayQuizQuestion.todayQuizOptions[*].id").description("오늘의 퀴즈 문제 보기 id")
-                                                                                         .type(JsonFieldType.NUMBER),
-                                fieldWithPath("todayQuizQuestion.todayQuizOptions[*].content").description("오늘의 퀴즈 문제 보기 내용")
-                                                                                              .type(JsonFieldType.STRING),
-                                fieldWithPath("todayQuizQuestion.answerWordId").description("오늘의 퀴즈 문제 용어 답 id")
-                                                                               .type(JsonFieldType.NUMBER)
+                                                                                  .type(JsonFieldType.STRING)
                         )
                 )
         );
@@ -119,9 +107,13 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 List.of(authorizationOption, controllerOption, domainOption, repositoryOption),
                 1L
         );
-        TodayQuizResponse todayQuizResponse = new TodayQuizResponse(1L, todayQuizQuestionResponse);
+        TodayQuizResponse todayQuizResponse = new TodayQuizResponse(
+                1L,
+                todayQuizQuestionResponse,
+                TodayQuizStatus.NOT_SOLVED
+        );
 
-        given(todayQuizService.findBy(anyLong())).willReturn(todayQuizResponse);
+        given(todayQuizService.readTodayQuiz(anyLong(), anyLong())).willReturn(todayQuizResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -138,7 +130,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion.todayQuizOptions[*].content").exists()
         );
 
-        verify(todayQuizService).findBy(anyLong());
+        verify(todayQuizService).readTodayQuiz(anyLong(), anyLong());
 
         오늘의_퀴즈_조회_요청_문서화(resultActions);
     }
@@ -164,7 +156,10 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("todayQuizQuestion.todayQuizOptions[*].content").description("오늘의 퀴즈 문제 보기 내용")
                                                                                               .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.answerWordId").description("오늘의 퀴즈 문제 용어 답 id")
-                                                                               .type(JsonFieldType.NUMBER)
+                                                                               .type(JsonFieldType.NUMBER),
+                                fieldWithPath("todayQuizStatus").type(JsonFieldType.STRING)
+                                                                .attributes(field("description", generateLinkCode(DocsUrl.TODAY_QUIZ_STATUS)))
+
                         )
                 )
         );
@@ -233,7 +228,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
         );
 
         given(
-                todayQuizService.findTodayQuizGradedAnswerAllBy(
+                todayQuizService.readTodayQuizGradedAnswers(
                         anyLong(),
                         any(ReadTodayQuizGradedAnswerSearchRequest.class),
                         any(Pageable.class)
@@ -263,7 +258,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[0].answerQuizOptionContent").value("Authorization")
         );
 
-        verify(todayQuizService).findTodayQuizGradedAnswerAllBy(
+        verify(todayQuizService).readTodayQuizGradedAnswers(
                 anyLong(),
                 any(ReadTodayQuizGradedAnswerSearchRequest.class),
                 any(Pageable.class)
@@ -325,7 +320,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 true
         );
 
-        given(todayQuizService.findTodayQuizGradedAnswerBy(anyLong(), anyLong())).willReturn(todayQuizGradedAnswerResponse);
+        given(todayQuizService.readTargetTodayQuizGradedAnswers(anyLong(), anyLong())).willReturn(todayQuizGradedAnswerResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -343,7 +338,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answerQuizOptionContent").value("Authorization")
         );
 
-        verify(todayQuizService).findTodayQuizGradedAnswerBy(anyLong(), anyLong());
+        verify(todayQuizService).readTargetTodayQuizGradedAnswers(anyLong(), anyLong());
 
         특정_오늘의_퀴즈에_대한_채점_결과_조회_요청_문서화(resultActions);
     }
