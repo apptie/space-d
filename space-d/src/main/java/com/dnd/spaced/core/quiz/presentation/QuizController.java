@@ -3,12 +3,15 @@ package com.dnd.spaced.core.quiz.presentation;
 import com.dnd.spaced.core.quiz.application.QuizService;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
+import com.dnd.spaced.global.resolver.quiz.QuizPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -89,6 +92,17 @@ public class QuizController {
             @PathVariable Long quizId
     ) {
         QuizResponse response = quizService.readQuiz(accountInfo.accountId(), quizId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<QuizCollectionResponse> readQuizzes(
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            ReadAllQuizRequest request,
+            @QuizPageable Pageable pageable
+    ) {
+        QuizCollectionResponse response = quizService.readQuizzes(accountInfo.accountId(), request, pageable);
 
         return ResponseEntity.ok(response);
     }

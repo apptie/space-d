@@ -311,6 +311,12 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
                                       attributes(key("title").value("`GET /skills` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindSkillException())
+                              ),
+                              customResponseFields(
+                                      "exception-response",
+                                      beneathPath("data.readQuizzesException").withSubsectionId("readQuizzesException"),
+                                      attributes(key("title").value("`GET /quizzes` 예외 상황")),
+                                      exceptionConvertFieldDescriptor(data.getReadQuizzesException())
                               )
                       )
               );

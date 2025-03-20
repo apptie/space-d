@@ -46,4 +46,5 @@ public class ExceptionDocs {
     private Map<String, ExceptionContent> deleteBookmarkException;
     private Map<String, ExceptionContent> findAllBookmarkException;
     private Map<String, ExceptionContent> findSkillException;
+    private Map<String, ExceptionContent> readQuizzesException;
 }

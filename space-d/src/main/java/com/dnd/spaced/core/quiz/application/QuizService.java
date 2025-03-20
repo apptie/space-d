@@ -3,8 +3,10 @@ package com.dnd.spaced.core.quiz.application;
 import com.dnd.spaced.core.quiz.application.dto.mapper.QuizApplicationMapper;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
@@ -30,12 +32,12 @@ import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -56,7 +58,6 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final QuizQuestionRepository quizQuestionRepository;
     private final QuizOptionRepository quizOptionRepository;
-    private final WordRepository wordRepository;
     private final WordRandomRepository wordRandomRepository;
     private final WordMetadataRepository wordMetadataRepository;
     private final GradedAnswerRepository gradedAnswerRepository;
@@ -90,12 +91,6 @@ public class QuizService {
         publishGradedQuizEvent(accountId, gradedAnswers);
     }
 
-    private void validateQuiz(Quiz quiz) {
-        if (quiz.isSolved()) {
-            throw new AlreadyGradeQuizException("이미 풀었던 퀴즈입니다.");
-        }
-    }
-
     public GradedAnswerCollectionResponse readGradedAnswers(
             Long accountId,
             ReadQuizGradedAnswerSearchRequest request,
@@ -120,6 +115,18 @@ public class QuizService {
         QuizInfo quizInfo = findQuizInfo(quizId, accountId);
 
         return QuizApplicationMapper.toDto(quizInfo);
+    }
+
+    public QuizCollectionResponse readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {
+        List<QuizInfo> quizzes = quizRepository.findAllBy(accountId, request.lastQuizId(), pageable);
+
+        return QuizApplicationMapper.toReadAllQuizDto(quizzes);
+    }
+
+    private void validateQuiz(Quiz quiz) {
+        if (quiz.isSolved()) {
+            throw new AlreadyGradeQuizException("이미 풀었던 퀴즈입니다.");
+        }
     }
 
     private Quiz findQuiz(Long quizId) {
@@ -162,7 +169,7 @@ public class QuizService {
         return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
                                    .stream()
                                    .map(WordRandom::getWord)
-                                   .toList();
+                                   .collect(Collectors.toList());
     }
 
     private List<List<Word>> splitByQuestionWordCount(List<Word> words) {

@@ -134,10 +134,20 @@ public class DocsController {
                                                    .deleteBookmarkException(calculateDeleteBookmarkException())
                                                    .findAllBookmarkException(calculateFindAllBookmarkException())
                                                    .findSkillException(calculateFindSkillException())
+                                                   .readQuizzesException(calculateReadQuizzesException())
                                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
     }
+
+    private Map<String, ExceptionContent> calculateReadQuizzesException() {
+        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(exceptionContent);
+
+        return exceptionContent;
+    }
+
 
     private Map<String, ExceptionContent> calculateFindSkillException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();

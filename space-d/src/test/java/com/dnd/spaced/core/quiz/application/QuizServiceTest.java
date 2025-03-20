@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeQuizException;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
@@ -83,7 +86,7 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/word.sql"})
+    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/word.sql"})
     void 퀴즈를_생성한다() {
         // given
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
@@ -188,7 +191,6 @@ class QuizServiceTest {
     })
     void 모든_퀴즈의_제출했던_답을_조회한다() {
         // given
-        Long quizId = quizService.createQuiz(1L, new CreateQuizRequest("전체 실무"));
         SubmitAnswerRequest[] submitAnswers = {
                 new SubmitAnswerRequest(1L, "Authorization"),
                 new SubmitAnswerRequest(2L, "Domain"),
@@ -198,7 +200,7 @@ class QuizServiceTest {
         };
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
-        quizService.grade(1L, quizId, request);
+        quizService.grade(1L, 1L, request);
 
         // when
         GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
@@ -244,6 +246,27 @@ class QuizServiceTest {
                 () -> assertThat(actual.answers().get(2).selectedQuizOptionContent()).isNotBlank(),
                 () -> assertThat(actual.answers().get(3).selectedQuizOptionContent()).isNotBlank(),
                 () -> assertThat(actual.answers().get(4).selectedQuizOptionContent()).isNotBlank()
+        );
+    }
+
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/quiz.sql"
+    })
+    void 회원이_생성한_퀴즈_목록을_조회한다() {
+        // given
+        ReadAllQuizRequest request = new ReadAllQuizRequest(null);
+
+        // when
+        QuizCollectionResponse actual = quizService.readQuizzes(1L, request, Pageable.ofSize(10));
+
+        // then
+        assertAll(
+                () -> assertThat(actual.quizzes()).hasSize(1),
+                () -> assertThat(actual.lastQuizId()).isEqualTo(1L)
         );
     }
 }
