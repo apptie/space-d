@@ -159,12 +159,10 @@ public class QuizService {
     }
 
     private List<Word> findRandomWords(QuizCategory quizCategory) {
-        List<Long> wordIds = wordRandomRepository.findAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                                 .stream()
-                                                 .map(WordRandom::getWordId)
-                                                 .toList();
-
-        return wordRepository.findRandomAllBy(wordIds);
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
+                                   .stream()
+                                   .map(WordRandom::getWord)
+                                   .toList();
     }
 
     private List<List<Word>> splitByQuestionWordCount(List<Word> words) {

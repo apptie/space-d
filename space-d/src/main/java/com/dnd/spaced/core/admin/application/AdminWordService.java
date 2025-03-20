@@ -109,7 +109,7 @@ public class AdminWordService {
     }
 
     private void createRandomWord(Word savedWord) {
-        wordRandomRepository.saveWith(savedWord.getId(), savedWord.getCategory());
+        wordRandomRepository.saveWith(savedWord, savedWord.getCategory());
     }
 
     private void validateUpdateCount(long updateCount) {

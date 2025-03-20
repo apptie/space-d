@@ -3,8 +3,9 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 import static com.dnd.spaced.core.word.domain.QWordRandom.wordRandom;
 
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import com.dnd.spaced.core.word.domain.enums.Category;
+import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordRandom;
+import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,20 +24,21 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void saveWith(Long wordId, Category category) {
+    public void saveWith(Word word, Category category) {
         int random = ThreadLocalRandom.current().nextInt(RANDOM_BOUND);
-        WordRandom wordRandom = new WordRandom(wordId, category, random);
+        WordRandom wordRandom = new WordRandom(word, category, random);
 
         wordRandomCrudRepository.save(wordRandom);
     }
 
     @Override
-    public List<WordRandom> findAllBy(QuizCategory quizCategory, long limit) {
+    public List<WordRandom> findRandomAllBy(QuizCategory quizCategory, long limit) {
         int random = ThreadLocalRandom.current().nextInt(RANDOM_BOUND);
         String quizCategoryName = quizCategory.getName();
 
         List<WordRandom> result = queryFactory.selectFrom(wordRandom)
                                               .where(wordRandom.random.goe(random), eqCategory(quizCategoryName))
+                                              .leftJoin(wordRandom.word).fetchJoin()
                                               .limit(limit)
                                               .fetch();
 
@@ -49,7 +51,7 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
             );
         }
 
-        return result.subList(0, (int)(limit));
+        return result.subList(0, (int) (limit));
     }
 
     private BooleanExpression eqCategory(String categoryName) {

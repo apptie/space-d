@@ -1,14 +1,11 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QWord.word;
-import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +15,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class WordGatewayRepository implements WordRepository {
 
-    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final WordCrudRepository wordCrudRepository;
 
@@ -72,18 +68,6 @@ public class WordGatewayRepository implements WordRepository {
                            .from(word)
                            .where(word.id.in(wordIds))
                            .fetch();
-    }
-
-    @Override
-    public List<Word> findRandomAllBy(List<Long> wordIds) {
-        List<Word> words = queryFactory.selectFrom(word)
-                                       .leftJoin(word.wordExamples, wordExample)
-                                       .where(word.id.in(wordIds.toArray(Long[]::new)))
-                                       .fetch();
-
-        Collections.shuffle(words);
-
-        return words;
     }
 
     @Override

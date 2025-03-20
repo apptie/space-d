@@ -15,7 +15,6 @@ import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,6 @@ public class CreateTodayQuizScheduler {
     private static final int REQUIRED_QUIZ_WORD_COUNT = 4;
     private static final int ANSWER_OPTION_INDEX = 0;
 
-    private final WordRepository wordRepository;
     private final TodayQuizRepository todayQuizRepository;
     private final WordRandomRepository wordRandomRepository;
     private final WordMetadataRepository wordMetadataRepository;
@@ -92,11 +90,9 @@ public class CreateTodayQuizScheduler {
     }
 
     private List<Word> findRandomWords(QuizCategory quizCategory) {
-        List<Long> wordIds = wordRandomRepository.findAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                                 .stream()
-                                                 .map(WordRandom::getWordId)
-                                                 .toList();
-
-        return wordRepository.findRandomAllBy(wordIds);
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
+                                   .stream()
+                                   .map(WordRandom::getWord)
+                                   .toList();
     }
 }

@@ -20,6 +20,7 @@ import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -83,12 +84,18 @@ public class AdminTodayQuizService {
     }
 
     private List<Word> findRandomWords(QuizCategory quizCategory) {
-        List<Long> wordIds = wordRandomRepository.findAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                                 .stream()
-                                                 .map(WordRandom::getWordId)
-                                                 .toList();
-
-        return wordRepository.findRandomAllBy(wordIds);
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
+                                   .stream()
+                                   .map(WordRandom::getWord)
+                                   .collect(
+                                           Collectors.collectingAndThen(
+                                                   Collectors.toList(),
+                                                   list -> {
+                                                       Collections.shuffle(list);
+                                                       return list;
+                                                   }
+                                           )
+                                   );
     }
 
     private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<Word> randomWords) {
