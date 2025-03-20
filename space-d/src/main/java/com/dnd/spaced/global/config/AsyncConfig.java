@@ -47,6 +47,23 @@ public class AsyncConfig {
     }
 
     @Bean
+    public Executor asyncQuizMetadataCounterExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("quiz-metadata-counter");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setKeepAliveSeconds(60);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setAwaitTerminationSeconds(60);
+        executor.setTaskDecorator(new MDCTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
     public Executor asyncCommentLikeCountExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
