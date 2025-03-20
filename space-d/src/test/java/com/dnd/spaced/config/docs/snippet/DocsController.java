@@ -315,7 +315,8 @@ public class DocsController {
         processQuizException(
                 exceptionContent,
                 QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION
+                QuizErrorCode.INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION,
+                QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION
         );
 
         return exceptionContent;
