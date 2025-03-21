@@ -7,6 +7,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
+import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeTodayQuizException;
 import com.dnd.spaced.core.quiz.application.exception.TodayQuizNotFoundException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz.SubmitAnswer;
@@ -48,6 +49,9 @@ public class TodayQuizService {
     @Transactional
     public void grade(Long accountId, Long todayQuizId, GradeTodayQuizRequest request) {
         TodayQuiz todayQuiz = findTodayQuiz(todayQuizId);
+
+        validateTodayQuizGradedAnswer(accountId, todayQuizId);
+
         SubmitAnswer submitAnswer = new SubmitAnswer(request.selectedWordId(), request.selectedContent());
         TodayQuizGradedAnswer gradedAnswer = todayQuiz.grade(accountId, submitAnswer);
 
@@ -111,5 +115,11 @@ public class TodayQuizService {
                                                               "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
                                                       )
                                               );
+    }
+
+    private void validateTodayQuizGradedAnswer(Long accountId, Long todayQuizId) {
+        if (todayQuizGradedAnswerRepository.existsBy(accountId, todayQuizId)) {
+            throw new AlreadyGradeTodayQuizException("이미 오늘의 퀴즈를 풀었습니다.");
+        }
     }
 }

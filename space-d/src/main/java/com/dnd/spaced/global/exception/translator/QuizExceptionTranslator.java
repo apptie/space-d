@@ -88,7 +88,12 @@ public enum QuizExceptionTranslator implements ExceptionTranslator {
             QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION,
             HttpStatus.BAD_REQUEST,
             "이미 푼 퀴즈입니다."
-    );
+    ),
+    ALREADY_GRADE_TODAY_QUIZ_EXCEPTION(
+            QuizErrorCode.ALREADY_GRADE_TODAY_QUIZ_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "이미 오늘의 퀴즈를 풀었습니다."
+    );;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;

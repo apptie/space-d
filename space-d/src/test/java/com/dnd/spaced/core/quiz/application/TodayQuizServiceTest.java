@@ -4,37 +4,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
-import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
+import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeTodayQuizException;
 import com.dnd.spaced.core.quiz.application.exception.TodayQuizNotFoundException;
-import com.dnd.spaced.core.quiz.application.helper.WithTodayQuizTestHelper;
-import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
-import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.dnd.spaced.core.skill.application.event.dto.GradedTodayQuizEvent;
-import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
-@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@CleanUpDatabase
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -47,18 +42,46 @@ class TodayQuizServiceTest {
     TodayQuizService todayQuizService;
 
     @Autowired
-    AdminWordService adminWordService;
-
-    @Autowired
-    TodayQuizRepository todayQuizRepository;
-
-    @Autowired
-    WordMetadataRepository wordMetadataRepository;
-
-    @Autowired
     TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    void setUp() {
+        cacheManager.getCacheNames()
+                    .forEach(name -> cacheManager.getCache(name).clear());
+    }
+
     @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql"
+    })
+    void 최근에_생성한_오늘의_퀴즈를_조회한다() {
+        // when
+        SimpleTodayQuizResponse actual = todayQuizService.readLatestTodayQuiz();
+
+        // then
+        assertAll(
+                () -> assertThat(actual.id()).isPositive(),
+                () -> assertThat(actual.todayQuizQuestion()).isNotNull()
+        );
+    }
+
+    @Test
+    @Sql("classpath:sql/cleanup.sql")
+    void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> todayQuizService.readLatestTodayQuiz())
+                .isInstanceOf(TodayQuizNotFoundException.class)
+                .hasMessage("오늘의 퀴즈가 생성되지 않았습니다.");
+    }
+
+    @Test
+    @Sql("classpath:sql/cleanup.sql")
     void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
         // when & then
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
@@ -69,121 +92,127 @@ class TodayQuizServiceTest {
     }
 
     @Test
-    void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> todayQuizService.readLatestTodayQuiz())
-                .isInstanceOf(TodayQuizNotFoundException.class)
-                .hasMessage("오늘의 퀴즈가 생성되지 않았습니다.");
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql"
+    })
+    void 오늘의_퀴즈_정답을_제출한다() {
+        // when
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
+
+        todayQuizService.grade(1L, 1L, request);
+
+        // then
+        TodayQuizGradedAnswer actual = todayQuizGradedAnswerRepository.findBy(1L, 1L)
+                                                                      .get();
+
+        assertAll(
+                () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(1L),
+                () -> assertThat(actual.getAccountId()).isEqualTo(1L),
+                () -> assertThat(events.stream(GradedTodayQuizEvent.class).count()).isOne()
+        );
     }
 
-    @Nested
-    class WithTodayQuizTest extends WithTodayQuizTestHelper {
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql",
+            "classpath:sql/quiz/today_quiz_graded_answer.sql"
+    })
+    void 사용자가_제출한_모든_오늘의_퀴즈_채점_결과를_반환한다() {
+        // given
+        ReadTodayQuizGradedAnswerSearchRequest request = new ReadTodayQuizGradedAnswerSearchRequest(
+                null
+        );
 
-        @Test
-        void 최근에_생성한_오늘의_퀴즈를_조회한다() {
-            // when
-            SimpleTodayQuizResponse actual = todayQuizService.readLatestTodayQuiz();
+        // when
+        TodayQuizGradedAnswerCollectionResponse actual = todayQuizService.readTodayQuizGradedAnswers(
+                1L, request, PageRequest.of(0, 10)
+        );
 
-            // then
-            assertAll(
-                    () -> assertThat(actual.id()).isPositive(),
-                    () -> assertThat(actual.todayQuizQuestion()).isNotNull()
-            );
-        }
+        // then
+        assertAll(
+                () -> assertThat(actual.answers()).hasSize(1),
+                () -> assertThat(actual.answers().get(0).todayQuizId()).isEqualTo(1L)
+        );
+    }
 
-        @Test
-        void 오늘의_퀴즈_정답을_제출한다() {
-            // when
-            GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql",
+            "classpath:sql/quiz/today_quiz_graded_answer.sql"
+    })
+    void 이미_푼_오늘의_퀴즈인_경우_정답을_제출할_수_없다() {
+        // given
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
 
-            todayQuizService.grade(1L, todayQuiz.getId(), request);
+        // when & then
+        assertThatThrownBy(() -> todayQuizService.grade(1L, 1L, request))
+                .isInstanceOf(AlreadyGradeTodayQuizException.class)
+                .hasMessage("이미 오늘의 퀴즈를 풀었습니다.");
+    }
 
-            // then
-            TodayQuizGradedAnswer actual = todayQuizGradedAnswerRepository.findBy(1L, todayQuiz.getId())
-                                                                          .get();
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql",
+            "classpath:sql/quiz/today_quiz_graded_answer.sql"
+    })
+    @Sql(value = "classpath:sql/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+    void 사용자가_제출한_오늘의_퀴즈_채점_결과를_조회한다() {
+        // when
+        TodayQuizGradedAnswerResponse actual = todayQuizService.readTargetTodayQuizGradedAnswers(
+                1L,
+                1L
+        );
 
-            assertAll(
-                    () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(todayQuiz.getId()),
-                    () -> assertThat(actual.getAccountId()).isEqualTo(1L),
-                    () -> assertThat(events.stream(GradedTodayQuizEvent.class).count()).isOne()
-            );
-        }
+        // then
+        assertAll(
+                () -> assertThat(actual.todayQuizId()).isEqualTo(1L),
+                () -> assertThat(actual.accountId()).isEqualTo(1L)
+        );
+    }
 
-        @Test
-        void 사용자가_제출한_모든_오늘의_퀴즈_채점_결과를_반환한다() {
-            // given
-            GradeTodayQuizRequest gradeTodayQuizRequest = new GradeTodayQuizRequest(
-                    1L,
-                    "Authorization"
-            );
-            todayQuizService.grade(1L, todayQuiz.getId(), gradeTodayQuizRequest);
+    @Test
+    void 지정한_오늘의_퀴즈_id가_없다면_사용자가_제출한_오늘의_퀴즈_채점_결과를_조회할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(1L, 1L))
+                .isInstanceOf(TodayQuizNotFoundException.class)
+                .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
+    }
 
-            // when
-            ReadTodayQuizGradedAnswerSearchRequest request = new ReadTodayQuizGradedAnswerSearchRequest(
-                    null
-            );
-            TodayQuizGradedAnswerCollectionResponse actual = todayQuizService.readTodayQuizGradedAnswers(
-                    1L, request, PageRequest.of(0, 10)
-            );
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/today_quiz.sql"
+    })
+    void 지정한_id의_오늘의_퀴즈를_조회한다() {
+        // when
+        TodayQuizResponse actual = todayQuizService.readTodayQuiz(1L, 1L);
 
-            // then
-            assertAll(
-                    () -> assertThat(actual.answers()).hasSize(1),
-                    () -> assertThat(actual.answers().get(0).todayQuizId()).isEqualTo(todayQuiz.getId())
-            );
-        }
+        // then
+        assertAll(
+                () -> assertThat(actual.id()).isEqualTo(1L),
+                () -> assertThat(actual.todayQuizQuestion()).isNotNull()
+        );
+    }
 
-        @Test
-        void 사용자가_제출한_오늘의_퀴즈_채점_결과를_조회한다() {
-            // given
-            GradeTodayQuizRequest request = new GradeTodayQuizRequest(
-                    1L,
-                    "Authorization"
-            );
-            todayQuizService.grade(1L, todayQuiz.getId(), request);
-
-            // when
-            TodayQuizGradedAnswerResponse actual = todayQuizService.readTargetTodayQuizGradedAnswers(
-                    1L,
-                    todayQuiz.getId()
-            );
-
-            // then
-            assertAll(
-                    () -> assertThat(actual.todayQuizId()).isEqualTo(todayQuiz.getId()),
-                    () -> assertThat(actual.accountId()).isEqualTo(1L)
-            );
-        }
-
-        @Test
-        void 지정한_오늘의_퀴즈_id가_없다면_사용자가_제출한_오늘의_퀴즈_채점_결과를_조회할_수_없다() {
-            // when & then
-            assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(1L, 1L))
-                    .isInstanceOf(TodayQuizNotFoundException.class)
-                    .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
-        }
-
-        @Test
-        void 지정한_id의_오늘의_퀴즈를_조회한다() {
-            // given
-            TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
-
-            // when
-            TodayQuizResponse actual = todayQuizService.readTodayQuiz(1L, savedTodayQuiz.getId());
-
-            // then
-            assertAll(
-                    () -> assertThat(actual.id()).isPositive(),
-                    () -> assertThat(actual.todayQuizQuestion()).isNotNull()
-            );
-        }
-
-        @Test
-        void 없는_id의_오늘의_퀴즈를_조회할_수_없다() {
-            // when & then
-            assertThatThrownBy(() -> todayQuizService.readTodayQuiz(1L, -999L))
-                    .isInstanceOf(TodayQuizNotFoundException.class)
-                    .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
-        }
+    @Test
+    void 없는_id의_오늘의_퀴즈를_조회할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> todayQuizService.readTodayQuiz(1L, -999L))
+                .isInstanceOf(TodayQuizNotFoundException.class)
+                .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
     }
 }

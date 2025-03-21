@@ -30,7 +30,7 @@ import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -67,7 +67,12 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/quiz.sql"
+    })
     void 퀴즈를_조회한다() {
         // when
         QuizResponse actual = quizService.readQuiz(1L, 1L);
@@ -111,7 +116,7 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
-    void 회원이_생성한_퀴즈가_없다면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
+    void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
         // when & then
         assertThatThrownBy(() -> quizService.readQuiz(5L, 1L))
                 .isInstanceOf(QuizNotFoundException.class)
@@ -187,26 +192,16 @@ class QuizServiceTest {
             "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
-            "classpath:sql/quiz/quiz.sql"
+            "classpath:sql/quiz/quiz.sql",
+            "classpath:sql/quiz/graded_answer.sql"
     })
     void 모든_퀴즈의_제출했던_답을_조회한다() {
         // given
-        SubmitAnswerRequest[] submitAnswers = {
-                new SubmitAnswerRequest(1L, "Authorization"),
-                new SubmitAnswerRequest(2L, "Domain"),
-                new SubmitAnswerRequest(3L, "Controller"),
-                new SubmitAnswerRequest(2L, "Web"),
-                new SubmitAnswerRequest(1L, "HTTP")
-        };
-        GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
-
-        quizService.grade(1L, 1L, request);
+        ReadQuizGradedAnswerSearchRequest request = new ReadQuizGradedAnswerSearchRequest(null);
 
         // when
         GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
-                1L,
-                new ReadQuizGradedAnswerSearchRequest(null),
-                PageRequest.of(0, 10)
+                1L, request, PageRequest.of(0, 10)
         );
 
         // then
@@ -221,20 +216,14 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql",
+            "classpath:sql/quiz/quiz.sql",
+            "classpath:sql/quiz/graded_answer.sql"
+    })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
-        // given
-        SubmitAnswerRequest[] submitAnswers = {
-                new SubmitAnswerRequest(1L, "Authorization"),
-                new SubmitAnswerRequest(2L, "Domain"),
-                new SubmitAnswerRequest(3L, "Controller"),
-                new SubmitAnswerRequest(2L, "Web"),
-                new SubmitAnswerRequest(1L, "HTTP")
-        };
-        GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
-
-        quizService.grade(1L, 1L, request);
-
         // when
         GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(1L, 1L);
 

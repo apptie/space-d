@@ -1,5 +1,3 @@
-SET REFERENTIAL_INTEGRITY FALSE;
-
 INSERT INTO quizzes(id, created_at, updated_at, account_id, solved) VALUES(1, now(), now(), 1, false);
 
 INSERT INTO quiz_questions(id, question_content, question_example, content, word_id, quiz_category, quiz_id) VALUES(1, '다음 예문을 보고 예문에 맞는 용어를 선택해주세요.', '인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘', 'Authorization', 1, 'DEVELOP', 1);
@@ -32,5 +30,3 @@ INSERT INTO quiz_options(id, content, option_order, word_id, quiz_question_id) V
 INSERT INTO quiz_options(id, content, option_order, word_id, quiz_question_id) VALUES(18, 'execute', 2, 18, 5);
 INSERT INTO quiz_options(id, content, option_order, word_id, quiz_question_id) VALUES(19, 'execute', 3, 19, 5);
 INSERT INTO quiz_options(id, content, option_order, word_id, quiz_question_id) VALUES(20, 'execute', 4, 20, 5);
-
-SET REFERENTIAL_INTEGRITY TRUE;

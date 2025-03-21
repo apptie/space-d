@@ -278,7 +278,8 @@ public class DocsController {
         processQuizException(
                 exceptionContent,
                 QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.INVALID_SUBMITTED_TODAY_QUIZ_OPTION_INDEX_EXCEPTION
+                QuizErrorCode.INVALID_SUBMITTED_TODAY_QUIZ_OPTION_INDEX_EXCEPTION,
+                QuizErrorCode.ALREADY_GRADE_TODAY_QUIZ_EXCEPTION
         );
 
         return exceptionContent;
