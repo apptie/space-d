@@ -16,6 +16,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TodayQuizInfoMapper {
 
+    public static SimpleTodayQuizInfo toDto(TodayQuiz todayQuiz) {
+        TodayQuizQuestion todayQuizQuestion = todayQuiz.getTodayQuizQuestion();
+
+        return new SimpleTodayQuizInfo(
+                todayQuiz.getId(),
+                todayQuizQuestion.getQuizCategory(),
+                todayQuizQuestion.getQuestion(),
+                todayQuizQuestion.getQuestionContent(),
+                todayQuizQuestion.getTodayQuizAnswerOption(),
+                todayQuiz.getCreatedAt()
+        );
+    }
+
     public static SimpleTodayQuizInfo toDto(
             Long id,
             LocalDateTime createdAt,

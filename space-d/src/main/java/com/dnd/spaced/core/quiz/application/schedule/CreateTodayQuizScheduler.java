@@ -5,6 +5,7 @@ import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
@@ -16,9 +17,12 @@ import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
+import com.dnd.spaced.global.consts.CacheConst;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +40,7 @@ public class CreateTodayQuizScheduler {
     private final WordMetadataRepository wordMetadataRepository;
     private final TodayQuizOptionRepository todayQuizOptionRepository;
     private final QuizQuestionProperties quizQuestionProperties;
+    private final CacheManager memoryCacheManager;
 
     @Transactional
     @Scheduled(cron = "0 0 3 * * *")
@@ -46,10 +51,10 @@ public class CreateTodayQuizScheduler {
 
         List<Word> randomWords = findRandomWords(quizCategory);
         TodayQuiz todayQuiz = createTodayQuiz(randomWords, quizCategory);
-
-        todayQuizRepository.save(todayQuiz);
+        TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
 
         initTodayQuizOption(randomWords, todayQuiz);
+        persistMemoryCache(savedTodayQuiz);
     }
 
     private TodayQuiz createTodayQuiz(List<Word> randomWords, QuizCategory quizCategory) {
@@ -94,5 +99,14 @@ public class CreateTodayQuizScheduler {
                                    .stream()
                                    .map(WordRandom::getWord)
                                    .toList();
+    }
+
+    private void persistMemoryCache(TodayQuiz todayQuiz) {
+        Cache cache = memoryCacheManager.getCache(CacheConst.TODAY_QUIZ_CACHE_NAME);
+
+        if (cache != null) {
+            cache.clear();
+            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, TodayQuizInfoMapper.toDto(todayQuiz));
+        }
     }
 }

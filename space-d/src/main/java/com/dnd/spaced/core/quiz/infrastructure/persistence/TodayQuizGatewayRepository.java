@@ -10,6 +10,7 @@ import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
+import com.dnd.spaced.global.consts.CacheConst;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZoneId;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -49,6 +51,11 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
     }
 
     @Override
+    @Cacheable(
+            value = CacheConst.TODAY_QUIZ_CACHE_NAME,
+            key = "'" + CacheConst.TODAY_QUIZ_CACHE_NAME + "'",
+            cacheManager = "memoryCacheManager"
+    )
     public Optional<SimpleTodayQuizInfo> findLatest() {
         String sql = """
                 SELECT

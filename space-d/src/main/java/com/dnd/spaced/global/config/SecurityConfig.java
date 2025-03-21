@@ -17,21 +17,15 @@ import com.dnd.spaced.global.config.properties.NicknameProperties;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -67,7 +61,6 @@ public class SecurityConfig {
     private final TokenDecoder tokenDecoder;
     private final CorsProperties corsProperties;
     private final TokenProperties tokenProperties;
-    private final RedisConnectionFactory redisConnectionFactory;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final LoginService loginService;
     private final GenerateTokenService generateTokenService;
@@ -177,14 +170,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoderFactory<ClientRegistration> jwtDecoderFactory() {
+    public JwtDecoderFactory<ClientRegistration> jwtDecoderFactory(
+            @Qualifier("oidcCacheManager") CacheManager oidcCacheManager
+    ) {
         return client -> {
             String jwkSetUri = client.getProviderDetails()
                                      .getJwkSetUri();
             NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri)
                                                        .cache(
                                                                Objects.requireNonNull(
-                                                                       oidcCacheManager().getCache("oidc::publicKey")
+                                                                       oidcCacheManager.getCache("oidc::publicKey")
                                                                )
                                                        )
                                                        .build();
@@ -199,26 +194,5 @@ public class SecurityConfig {
             );
             return decoder;
         };
-    }
-
-    @Bean
-    public CacheManager oidcCacheManager() {
-        RedisCacheConfiguration redisCacheConfiguration =
-                RedisCacheConfiguration.defaultCacheConfig()
-                                       .serializeKeysWith(
-                                               RedisSerializationContext.SerializationPair.fromSerializer(
-                                                       new StringRedisSerializer()
-                                               )
-                                       )
-                                       .serializeValuesWith(
-                                               RedisSerializationContext.SerializationPair.fromSerializer(
-                                                       new GenericJackson2JsonRedisSerializer()
-                                               )
-                                       )
-                                       .entryTtl(Duration.ofDays(7L));
-
-        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
-                                                         .cacheDefaults(redisCacheConfiguration)
-                                                         .build();
     }
 }

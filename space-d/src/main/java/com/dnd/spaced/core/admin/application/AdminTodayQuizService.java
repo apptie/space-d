@@ -6,6 +6,7 @@ import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEven
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
@@ -16,12 +17,14 @@ import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
+import com.dnd.spaced.global.consts.CacheConst;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +37,12 @@ public class AdminTodayQuizService {
     private static final int REQUIRED_QUIZ_WORD_COUNT = 4;
     private static final int ANSWER_OPTION_INDEX = 0;
 
-    private final WordRepository wordRepository;
     private final TodayQuizRepository todayQuizRepository;
     private final WordRandomRepository wordRandomRepository;
     private final WordMetadataRepository wordMetadataRepository;
     private final TodayQuizOptionRepository todayQuizOptionRepository;
     private final QuizQuestionProperties quizQuestionProperties;
+    private final CacheManager memoryCacheManager;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -48,7 +51,11 @@ public class AdminTodayQuizService {
 
         validateQuizCreation(quizCategory);
 
-        return createTodayQuiz(quizCategory).getId();
+        TodayQuiz todayQuiz = createTodayQuiz(quizCategory);
+
+        persistMemoryCache(todayQuiz);
+
+        return todayQuiz.getId();
     }
 
     private void validateQuizCreation(QuizCategory quizCategory) {
@@ -127,5 +134,14 @@ public class AdminTodayQuizService {
 
     private void publishAddedTodayQuizQuestionEvent() {
         eventPublisher.publishEvent(new AddedTodayQuizQuestionEvent());
+    }
+
+    private void persistMemoryCache(TodayQuiz todayQuiz) {
+        Cache cache = memoryCacheManager.getCache(CacheConst.TODAY_QUIZ_CACHE_NAME);
+
+        if (cache != null) {
+            cache.clear();
+            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, TodayQuizInfoMapper.toDto(todayQuiz));
+        }
     }
 }
