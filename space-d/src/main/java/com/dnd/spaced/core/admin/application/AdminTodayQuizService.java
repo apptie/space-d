@@ -12,16 +12,15 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
-import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordMetadata;
-import com.dnd.spaced.core.word.domain.WordRandom;
+import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
 import com.dnd.spaced.global.consts.CacheConst;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -78,58 +77,47 @@ public class AdminTodayQuizService {
     }
 
     private TodayQuiz createTodayQuiz(QuizCategory quizCategory) {
-        List<Word> randomWords = findRandomWords(quizCategory);
+        List<SimpleWordInfo> randomWords = findRandomWords(quizCategory);
         TodayQuiz todayQuiz = initTodayQuiz(quizCategory, randomWords);
-
-        persistTodayQuizOptions(randomWords, todayQuiz);
-
         TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
 
+        persistTodayQuizOptions(randomWords, todayQuiz);
         publishAddedTodayQuizQuestionEvent();
-
         return savedTodayQuiz;
     }
 
-    private List<Word> findRandomWords(QuizCategory quizCategory) {
-        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                   .stream()
-                                   .map(WordRandom::getWord)
-                                   .collect(
-                                           Collectors.collectingAndThen(
-                                                   Collectors.toList(),
-                                                   list -> {
-                                                       Collections.shuffle(list);
-                                                       return list;
-                                                   }
-                                           )
-                                   );
+    private List<SimpleWordInfo> findRandomWords(QuizCategory quizCategory) {
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT);
     }
 
-    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<Word> randomWords) {
-        Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
+    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<SimpleWordInfo> randomWords) {
+        SimpleWordInfo answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
-                answerWord.getId(),
-                answerWord.getName()
+                answerWord.id(),
+                answerWord.name()
         );
         TodayQuizQuestion todayQuizQuestion = TodayQuizQuestion.of(
                 quizCategory,
                 quizQuestionProperties.getQuestion(),
-                answerWord.getWordMeaning().getMeaning(),
+                answerWord.meaning(),
                 todayQuizAnswerOption
         );
 
         return new TodayQuiz(todayQuizQuestion);
     }
 
-    private void persistTodayQuizOptions(List<Word> randomWords, TodayQuiz todayQuiz) {
+    private void persistTodayQuizOptions(List<SimpleWordInfo> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
 
+        List<TodayQuizOption> todayQuizOptions = new ArrayList<>();
         for (int i = 0; i < randomWords.size(); i++) {
-            Word word = randomWords.get(i);
+            SimpleWordInfo word = randomWords.get(i);
 
-            TodayQuizOption todayQuizOption = TodayQuizOption.of(word.getId(), word.getName(), i, todayQuiz);
-            todayQuizOptionRepository.save(todayQuizOption);
+            TodayQuizOption todayQuizOption = TodayQuizOption.of(word.id(), word.name(), i, todayQuiz);
+            todayQuizOptions.add(todayQuizOption);
         }
+
+        todayQuizOptionRepository.saveAll(todayQuizOptions);
     }
 
     private void publishAddedTodayQuizQuestionEvent() {

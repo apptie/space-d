@@ -27,9 +27,8 @@ import com.dnd.spaced.core.quiz.domain.repository.QuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizQuestionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
 import com.dnd.spaced.core.skill.application.event.dto.GradedQuizEvent;
-import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordMetadata;
-import com.dnd.spaced.core.word.domain.WordRandom;
+import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -156,23 +154,20 @@ public class QuizService {
     private Quiz createQuiz(Long accountId, QuizCategory quizCategory) {
         Quiz quiz = new Quiz(accountId);
         Quiz savedQuiz = quizRepository.save(quiz);
-        List<Word> randomWords = findRandomWords(quizCategory);
-        List<List<Word>> splitWords = splitByQuestionWordCount(randomWords);
+        List<SimpleWordInfo> randomWords = findRandomWords(quizCategory);
+        List<List<SimpleWordInfo>> splitWords = splitByQuestionWordCount(randomWords);
         List<Long> quizQuestionIds = persistQuizQuestion(quizCategory, splitWords, savedQuiz);
 
         persistQuizOptions(splitWords, quizQuestionIds);
         return quiz;
     }
 
-    private List<Word> findRandomWords(QuizCategory quizCategory) {
-        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                   .stream()
-                                   .map(WordRandom::getWord)
-                                   .collect(Collectors.toList());
+    private List<SimpleWordInfo> findRandomWords(QuizCategory quizCategory) {
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT);
     }
 
-    private List<List<Word>> splitByQuestionWordCount(List<Word> words) {
-        List<List<Word>> result = new ArrayList<>();
+    private List<List<SimpleWordInfo>> splitByQuestionWordCount(List<SimpleWordInfo> words) {
+        List<List<SimpleWordInfo>> result = new ArrayList<>();
 
         for (int startIndex = 0; startIndex < REQUIRED_QUIZ_WORD_COUNT; startIndex += REQUIRED_QUESTION_WORD_COUNT) {
             int endIndex = Math.min(startIndex + REQUIRED_QUESTION_WORD_COUNT, REQUIRED_QUIZ_WORD_COUNT);
@@ -183,18 +178,22 @@ public class QuizService {
         return result;
     }
 
-    private List<Long> persistQuizQuestion(QuizCategory quizCategory, List<List<Word>> splitWords, Quiz savedQuiz) {
+    private List<Long> persistQuizQuestion(
+            QuizCategory quizCategory,
+            List<List<SimpleWordInfo>> splitWords,
+            Quiz savedQuiz
+    ) {
         List<QuizQuestion> quizQuestions = splitWords.stream()
                                                      .map(words -> {
-                                                         Word answerWord = words.get(ANSWER_OPTION_INDEX);
+                                                         SimpleWordInfo answerWord = words.get(ANSWER_OPTION_INDEX);
 
                                                          return QuizQuestion.of(
                                                                  quizCategory,
                                                                  quizQuestionProperties.getQuestion(),
-                                                                 answerWord.getWordMeaning().getMeaning(),
+                                                                 answerWord.meaning(),
                                                                  new QuizAnswerOption(
-                                                                         answerWord.getId(),
-                                                                         answerWord.getName()
+                                                                         answerWord.id(),
+                                                                         answerWord.name()
                                                                  ),
                                                                  savedQuiz
                                                          );
@@ -204,7 +203,7 @@ public class QuizService {
         return quizQuestionRepository.saveAll(quizQuestions);
     }
 
-    private void persistQuizOptions(List<List<Word>> splitWords, List<Long> quizQuestionIds) {
+    private void persistQuizOptions(List<List<SimpleWordInfo>> splitWords, List<Long> quizQuestionIds) {
         List<QuizOption> quizOptions = IntStream.range(0, splitWords.size())
                                                 .mapToObj(index ->
                                                         convertQuizOptions(
@@ -218,22 +217,17 @@ public class QuizService {
         quizOptionRepository.saveAll(quizOptions);
     }
 
-    private List<QuizOption> convertQuizOptions(List<Word> targetWords, Long targetQuizQuestionId) {
+    private List<QuizOption> convertQuizOptions(List<SimpleWordInfo> targetWords, Long targetQuizQuestionId) {
         Collections.shuffle(targetWords);
 
         return IntStream.range(0, targetWords.size())
-                        .mapToObj(
-                                index -> convertQuizOption(
-                                        targetQuizQuestionId,
-                                        index,
-                                        targetWords.get(index)
-                                )
+                        .mapToObj(index -> convertQuizOption(targetQuizQuestionId, index, targetWords.get(index))
                         )
                         .toList();
     }
 
-    private QuizOption convertQuizOption(Long targetQuizQuestionId, int index, Word word) {
-        return QuizOption.of(word.getId(), word.getName(), index, targetQuizQuestionId);
+    private QuizOption convertQuizOption(Long targetQuizQuestionId, int index, SimpleWordInfo word) {
+        return QuizOption.of(word.id(), word.name(), index, targetQuizQuestionId);
     }
 
     private void publishGradedQuizEvent(Long accountId, List<GradedAnswer> gradedAnswers) {

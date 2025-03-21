@@ -11,9 +11,8 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
-import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordMetadata;
-import com.dnd.spaced.core.word.domain.WordRandom;
+import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
@@ -49,7 +48,7 @@ public class CreateTodayQuizScheduler {
 
         validateQuizCreation(quizCategory);
 
-        List<Word> randomWords = findRandomWords(quizCategory);
+        List<SimpleWordInfo> randomWords = findRandomWords(quizCategory);
         TodayQuiz todayQuiz = createTodayQuiz(randomWords, quizCategory);
         TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
 
@@ -57,28 +56,29 @@ public class CreateTodayQuizScheduler {
         persistMemoryCache(savedTodayQuiz);
     }
 
-    private TodayQuiz createTodayQuiz(List<Word> randomWords, QuizCategory quizCategory) {
-        Word answerWord = randomWords.get(ANSWER_OPTION_INDEX);
+    private TodayQuiz createTodayQuiz(List<SimpleWordInfo> randomWords, QuizCategory quizCategory) {
+        SimpleWordInfo answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
-                answerWord.getId(),
-                answerWord.getName()
+                answerWord.id(),
+                answerWord.name()
         );
         TodayQuizQuestion todayQuizQuestion = TodayQuizQuestion.of(
                 quizCategory,
                 quizQuestionProperties.getQuestion(),
-                answerWord.getWordMeaning().getMeaning(),
+                answerWord.meaning(),
                 todayQuizAnswerOption
         );
 
         return new TodayQuiz(todayQuizQuestion);
     }
 
-    private void initTodayQuizOption(List<Word> randomWords, TodayQuiz todayQuiz) {
+    private void initTodayQuizOption(List<SimpleWordInfo> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
-        for (int i = 0; i < randomWords.size(); i++) {
-            Word word = randomWords.get(i);
 
-            TodayQuizOption todayQuizOption = TodayQuizOption.of(word.getId(), word.getName(), i, todayQuiz);
+        for (int i = 0; i < randomWords.size(); i++) {
+            SimpleWordInfo word = randomWords.get(i);
+
+            TodayQuizOption todayQuizOption = TodayQuizOption.of(word.id(), word.name(), i, todayQuiz);
             todayQuizOptionRepository.save(todayQuizOption);
         }
     }
@@ -94,11 +94,8 @@ public class CreateTodayQuizScheduler {
         }
     }
 
-    private List<Word> findRandomWords(QuizCategory quizCategory) {
-        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT)
-                                   .stream()
-                                   .map(WordRandom::getWord)
-                                   .toList();
+    private List<SimpleWordInfo> findRandomWords(QuizCategory quizCategory) {
+        return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT);
     }
 
     private void persistMemoryCache(TodayQuiz todayQuiz) {
