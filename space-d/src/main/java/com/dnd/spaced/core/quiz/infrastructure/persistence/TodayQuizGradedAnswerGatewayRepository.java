@@ -41,8 +41,8 @@ public class TodayQuizGradedAnswerGatewayRepository implements TodayQuizGradedAn
     public Optional<TodayQuizGradedAnswer> findBy(Long accountId, Long todayQuizId) {
         TodayQuizGradedAnswer result = queryFactory.selectFrom(todayQuizGradedAnswer)
                                                    .where(
-                                                           todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId),
-                                                           todayQuizGradedAnswer.accountId.eq(accountId)
+                                                           todayQuizGradedAnswer.accountId.eq(accountId),
+                                                           todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId)
                                                    )
                                                    .leftJoin(todayQuizGradedAnswer.todayQuiz).fetchJoin()
                                                    .fetchOne();
