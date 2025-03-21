@@ -21,7 +21,6 @@ public final class QuizInfoMapper {
                 quiz.getAccountId(),
                 quiz.isSolved(),
                 quiz.getCreatedAt(),
-                quiz.getUpdatedAt(),
                 Collections.emptyList()
         );
     }
@@ -37,7 +36,6 @@ public final class QuizInfoMapper {
                 quiz.getAccountId(),
                 quiz.isSolved(),
                 quiz.getCreatedAt(),
-                quiz.getUpdatedAt(),
                 quizQuestions
         );
     }

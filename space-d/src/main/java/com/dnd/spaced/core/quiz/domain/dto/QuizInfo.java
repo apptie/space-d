@@ -10,7 +10,6 @@ public record QuizInfo(
         Long accountId,
         boolean solved,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt,
         List<QuizQuestionInfo> quizQuestions
 ) {
 

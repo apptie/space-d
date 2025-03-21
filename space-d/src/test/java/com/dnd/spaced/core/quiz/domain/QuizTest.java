@@ -35,6 +35,13 @@ class QuizTest {
         // given
         Quiz quiz = new Quiz(1L);
         ReflectionTestUtils.setField(quiz, "id", 6L);
+        List<SubmitAnswer> submitAnswers = List.of(
+                new SubmitAnswer(1L, "Authorization"),
+                new SubmitAnswer(2L, "Domain"),
+                new SubmitAnswer(3L, "Controller"),
+                new SubmitAnswer(3L, "deprecated"),
+                new SubmitAnswer(3L, "execute")
+        );
         QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
         QuizCategory quizCategory = QuizCategory.findBy("개발");
         QuizQuestion quizQuestion = QuizQuestion.of(
@@ -44,18 +51,14 @@ class QuizTest {
                 quizAnswerOption,
                 quiz
         );
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        List<SubmitAnswer> submitAnswers = List.of(
-                new SubmitAnswer(1L, "Authorization"),
-                new SubmitAnswer(2L, "Domain"),
-                new SubmitAnswer(3L, "Controller"),
-                new SubmitAnswer(3L, "deprecated"),
-                new SubmitAnswer(3L, "execute")
+        List<QuizQuestion> quizQuestions = List.of(
+                quizQuestion,
+                quizQuestion,
+                quizQuestion,
+                quizQuestion,
+                quizQuestion
         );
+        ReflectionTestUtils.setField(quiz, "quizQuestions", quizQuestions);
 
         // when
         List<QuizGradedAnswer> actual = quiz.grade(1L, submitAnswers);
@@ -90,20 +93,6 @@ class QuizTest {
     void 문제_개수만큼_정답_개수를_입력하지_않으면_예외가_발생한다() {
         // given
         Quiz quiz = new Quiz(1L);
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
-        QuizCategory quizCategory = QuizCategory.findBy("개발");
-        QuizQuestion quizQuestion = QuizQuestion.of(
-                quizCategory,
-                "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                quizAnswerOption,
-                quiz
-        );
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
 
         // when & then
         assertThatThrownBy(() -> quiz.grade( 1L, List.of()))
@@ -115,45 +104,10 @@ class QuizTest {
     void 퀴즈_문제를_조회하면_외부에서_요소를_변경할_수_없다() {
         // given
         Quiz quiz = new Quiz(1L);
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
-        QuizCategory quizCategory = QuizCategory.findBy("개발");
-        QuizQuestion quizQuestion = QuizQuestion.of(
-                quizCategory,
-                "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                quizAnswerOption,
-                quiz
-        );
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
-        quiz.initQuestion(quizQuestion);
         List<QuizQuestion> quizQuestions = quiz.getQuizQuestions();
 
         // when & then
         assertThatThrownBy(() -> quizQuestions.remove(0)).isInstanceOf(UnsupportedOperationException.class);
-    }
-
-    @Test
-    void 퀴즈의_퀴즈_문제를_동기화한다() {
-        // given
-        Quiz quiz = new Quiz(1L);
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
-        QuizCategory quizCategory = QuizCategory.findBy("개발");
-        QuizQuestion quizQuestion = QuizQuestion.of(
-                quizCategory,
-                "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                quizAnswerOption,
-                quiz
-        );
-
-        // when
-        quiz.initQuestion(quizQuestion);
-
-        // then
-        assertThat(quiz.getQuizQuestions()).contains(quizQuestion);
     }
 
     @Test

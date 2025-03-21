@@ -32,7 +32,6 @@ public class QuizGatewayRepository implements QuizRepository {
             rs.getLong(2),
             rs.getBoolean(3),
             rs.getTimestamp(4).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            rs.getTimestamp(5).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
             Collections.emptyList()
     );
 

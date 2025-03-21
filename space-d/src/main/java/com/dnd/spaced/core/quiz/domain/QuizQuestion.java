@@ -81,8 +81,6 @@ public class QuizQuestion {
         this.questionExample = questionContent;
         this.quizAnswerOption = quizAnswerOption;
         this.quiz = quiz;
-
-        quiz.initQuestion(this);
     }
 
     public boolean isValidOptionIndex(int submitOptionIndex) {

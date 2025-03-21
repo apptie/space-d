@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidSubmittedAnswersCountException;
-import com.dnd.spaced.global.audit.BaseTimeEntity;
+import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quiz extends BaseTimeEntity {
+public class Quiz extends CreateTimeEntity {
 
     private static final int DEFAULT_QUESTION_SIZE = 5;
 
@@ -39,10 +39,6 @@ public class Quiz extends BaseTimeEntity {
 
     public Quiz(Long accountId) {
         this.accountId = accountId;
-    }
-
-    void initQuestion(QuizQuestion quizQuestion) {
-        this.quizQuestions.add(quizQuestion);
     }
 
     public void solve() {
