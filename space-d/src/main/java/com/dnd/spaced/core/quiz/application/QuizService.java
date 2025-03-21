@@ -14,7 +14,7 @@ import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeQuizException;
 import com.dnd.spaced.core.quiz.application.exception.InvalidQuizWordCountException;
 import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
 import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
-import com.dnd.spaced.core.quiz.domain.GradedAnswer;
+import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.Quiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
@@ -22,7 +22,7 @@ import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import com.dnd.spaced.core.quiz.domain.repository.GradedAnswerRepository;
+import com.dnd.spaced.core.quiz.domain.repository.QuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizQuestionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
@@ -57,7 +57,7 @@ public class QuizService {
     private final QuizOptionRepository quizOptionRepository;
     private final WordRandomRepository wordRandomRepository;
     private final WordMetadataRepository wordMetadataRepository;
-    private final GradedAnswerRepository gradedAnswerRepository;
+    private final QuizGradedAnswerRepository quizGradedAnswerRepository;
     private final QuizQuestionProperties quizQuestionProperties;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -81,11 +81,11 @@ public class QuizService {
         validateQuiz(quiz);
 
         List<SubmitAnswer> submitAnswers = convertSubmitAnswers(request);
-        List<GradedAnswer> gradedAnswers = quiz.grade(accountId, submitAnswers);
+        List<QuizGradedAnswer> quizGradedAnswers = quiz.grade(accountId, submitAnswers);
 
-        gradedAnswerRepository.saveAll(gradedAnswers);
+        quizGradedAnswerRepository.saveAll(quizGradedAnswers);
         quiz.solve();
-        publishGradedQuizEvent(accountId, gradedAnswers);
+        publishGradedQuizEvent(accountId, quizGradedAnswers);
     }
 
     public GradedAnswerCollectionResponse readGradedAnswers(
@@ -93,19 +93,19 @@ public class QuizService {
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
     ) {
-        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(
+        List<QuizGradedAnswer> quizGradedAnswers = quizGradedAnswerRepository.findAllBy(
                 accountId,
                 request.lastQuizGradedAnswerId(),
                 pageable
         );
 
-        return QuizApplicationMapper.toDto(gradedAnswers);
+        return QuizApplicationMapper.toDto(quizGradedAnswers);
     }
 
     public GradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
-        List<GradedAnswer> gradedAnswers = gradedAnswerRepository.findAllBy(accountId, quizId);
+        List<QuizGradedAnswer> quizGradedAnswers = quizGradedAnswerRepository.findAllBy(accountId, quizId);
 
-        return QuizApplicationMapper.toDto(gradedAnswers);
+        return QuizApplicationMapper.toDto(quizGradedAnswers);
     }
 
     public QuizResponse readQuiz(Long accountId, Long quizId) {
@@ -230,8 +230,8 @@ public class QuizService {
         return QuizOption.of(word.id(), word.name(), index, targetQuizQuestionId);
     }
 
-    private void publishGradedQuizEvent(Long accountId, List<GradedAnswer> gradedAnswers) {
-        eventPublisher.publishEvent(GradedQuizEvent.of(accountId, gradedAnswers));
+    private void publishGradedQuizEvent(Long accountId, List<QuizGradedAnswer> quizGradedAnswers) {
+        eventPublisher.publishEvent(GradedQuizEvent.of(accountId, quizGradedAnswers));
     }
 
     private List<SubmitAnswer> convertSubmitAnswers(GradeQuizRequest request) {

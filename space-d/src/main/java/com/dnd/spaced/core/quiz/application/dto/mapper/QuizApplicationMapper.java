@@ -5,7 +5,7 @@ import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionR
 import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse.QuizQuestionResponse.QuizOptionResponse;
-import com.dnd.spaced.core.quiz.domain.GradedAnswer;
+import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo.QuizQuestionInfo;
@@ -47,29 +47,29 @@ public final class QuizApplicationMapper {
         );
     }
 
-    public static GradedAnswerCollectionResponse toDto(List<GradedAnswer> gradedAnswers) {
-        if (gradedAnswers.isEmpty()) {
+    public static GradedAnswerCollectionResponse toDto(List<QuizGradedAnswer> quizGradedAnswers) {
+        if (quizGradedAnswers.isEmpty()) {
             return new GradedAnswerCollectionResponse(List.of(), null);
         }
 
-        List<GradedAnswerResponse> responses = gradedAnswers.stream()
-                                                            .map(QuizApplicationMapper::toDto)
-                                                            .toList();
+        List<GradedAnswerResponse> responses = quizGradedAnswers.stream()
+                                                                .map(QuizApplicationMapper::toDto)
+                                                                .toList();
 
         return new GradedAnswerCollectionResponse(responses, responses.get(responses.size() - 1).id());
     }
 
-    private static GradedAnswerResponse toDto(GradedAnswer gradedAnswer) {
-        QuizQuestion question = gradedAnswer.getQuizQuestion();
+    private static GradedAnswerResponse toDto(QuizGradedAnswer quizGradedAnswer) {
+        QuizQuestion question = quizGradedAnswer.getQuizQuestion();
 
         return new GradedAnswerResponse(
-                gradedAnswer.getId(),
-                gradedAnswer.getAccountId(),
-                gradedAnswer.getQuizId(),
+                quizGradedAnswer.getId(),
+                quizGradedAnswer.getAccountId(),
+                quizGradedAnswer.getQuizId(),
                 toGradedAnswerDto(question),
                 question.getQuizAnswerOption().getContent(),
-                gradedAnswer.getSelectedContent(),
-                gradedAnswer.isCorrect()
+                quizGradedAnswer.getSelectedContent(),
+                quizGradedAnswer.isCorrect()
         );
     }
 

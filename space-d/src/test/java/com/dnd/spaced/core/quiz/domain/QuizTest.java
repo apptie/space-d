@@ -58,7 +58,7 @@ class QuizTest {
         );
 
         // when
-        List<GradedAnswer> actual = quiz.grade(1L, submitAnswers);
+        List<QuizGradedAnswer> actual = quiz.grade(1L, submitAnswers);
 
         // then
         assertAll(

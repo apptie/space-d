@@ -49,7 +49,7 @@ public class Quiz extends BaseTimeEntity {
         this.solved = true;
     }
 
-    public List<GradedAnswer> grade(Long accountId, List<SubmitAnswer> submitAnswers) {
+    public List<QuizGradedAnswer> grade(Long accountId, List<SubmitAnswer> submitAnswers) {
         validateAnswers(submitAnswers);
 
         return gradeQuestions(accountId, submitAnswers);
@@ -61,12 +61,12 @@ public class Quiz extends BaseTimeEntity {
         }
     }
 
-    private List<GradedAnswer> gradeQuestions(Long accountId, List<SubmitAnswer> submitAnswers) {
-        List<GradedAnswer> gradedAnswers = new ArrayList<>();
+    private List<QuizGradedAnswer> gradeQuestions(Long accountId, List<SubmitAnswer> submitAnswers) {
+        List<QuizGradedAnswer> quizGradedAnswers = new ArrayList<>();
 
         for (int i = 0; i < submitAnswers.size(); i++) {
             SubmitAnswer submitAnswer = submitAnswers.get(i);
-            GradedAnswer gradedAnswer = GradedAnswer.of(
+            QuizGradedAnswer quizGradedAnswer = QuizGradedAnswer.of(
                     accountId,
                     this.id,
                     quizQuestions.get(i),
@@ -74,10 +74,10 @@ public class Quiz extends BaseTimeEntity {
                     submitAnswer.content
             );
 
-            gradedAnswers.add(gradedAnswer);
+            quizGradedAnswers.add(quizGradedAnswer);
         }
 
-        return gradedAnswers;
+        return quizGradedAnswers;
     }
 
     public List<QuizQuestion> getQuizQuestions() {

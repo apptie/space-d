@@ -3,7 +3,7 @@ SET REFERENTIAL_INTEGRITY FALSE;
 TRUNCATE TABLE accounts;
 TRUNCATE TABLE bookmarks;
 TRUNCATE TABLE comments;
-TRUNCATE TABLE graded_answer;
+TRUNCATE TABLE quiz_graded_answers;
 TRUNCATE TABLE likes;
 TRUNCATE TABLE nickname_metadata;
 TRUNCATE TABLE pronunciations;

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GradedAnswerTest {
+class QuizGradedAnswerTest {
 
     @Test
     void 퀴즈_채점_결과를_초기화한다() {
@@ -29,8 +29,8 @@ class GradedAnswerTest {
         );
 
         // when & then
-        GradedAnswer actual = assertDoesNotThrow(
-                () -> GradedAnswer.of(1L, 1L, quizQuestion, 1L, "Authorization")
+        QuizGradedAnswer actual = assertDoesNotThrow(
+                () -> QuizGradedAnswer.of(1L, 1L, quizQuestion, 1L, "Authorization")
         );
 
         assertAll(
@@ -55,10 +55,10 @@ class GradedAnswerTest {
                 quizAnswerOption,
                 quiz
         );
-        GradedAnswer gradedAnswer = GradedAnswer.of(1L, 1L, quizQuestion, 1L, "Authorization");
+        QuizGradedAnswer quizGradedAnswer = QuizGradedAnswer.of(1L, 1L, quizQuestion, 1L, "Authorization");
 
         // when
-        boolean actual = gradedAnswer.isCorrect();
+        boolean actual = quizGradedAnswer.isCorrect();
 
         // then
         assertThat(actual).isTrue();

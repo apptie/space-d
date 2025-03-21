@@ -193,7 +193,7 @@ class QuizServiceTest {
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql",
-            "classpath:sql/quiz/graded_answer.sql"
+            "classpath:sql/quiz/quiz_graded_answer.sql"
     })
     void 모든_퀴즈의_제출했던_답을_조회한다() {
         // given
@@ -221,7 +221,7 @@ class QuizServiceTest {
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql",
-            "classpath:sql/quiz/graded_answer.sql"
+            "classpath:sql/quiz/quiz_graded_answer.sql"
     })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
         // when

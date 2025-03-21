@@ -8,16 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "quiz_graded_answers")
 @Getter
 @Entity
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GradedAnswer extends CreateTimeEntity {
+public class QuizGradedAnswer extends CreateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,17 +36,17 @@ public class GradedAnswer extends CreateTimeEntity {
     private Long selectedWordId;
     private String selectedContent;
 
-    public static GradedAnswer of(
+    public static QuizGradedAnswer of(
             Long accountId,
             Long quizId,
             QuizQuestion quizQuestion,
             Long selectedWordId,
             String selectedContent
     ) {
-        return new GradedAnswer(accountId, quizId, quizQuestion, selectedWordId, selectedContent);
+        return new QuizGradedAnswer(accountId, quizId, quizQuestion, selectedWordId, selectedContent);
     }
 
-    private GradedAnswer(
+    private QuizGradedAnswer(
             Long accountId,
             Long quizId,
             QuizQuestion quizQuestion,

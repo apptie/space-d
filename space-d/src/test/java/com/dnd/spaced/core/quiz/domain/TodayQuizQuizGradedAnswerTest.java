@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class TodayQuizGradedAnswerTest {
+class TodayQuizQuizGradedAnswerTest {
 
     @Test
     void 오늘의_퀴즈_채점_결과를_초기화한다() {
