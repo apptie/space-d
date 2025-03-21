@@ -111,7 +111,7 @@ public class TodayQuizService {
         return todayQuizGradedAnswerRepository.findBy(accountId, todayQuizId)
                                               .orElseThrow(
                                                       () -> new TodayQuizNotFoundException(
-                                                              "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."
+                                                              "지정한 오늘의 퀴즈 답안지를 찾지 못했습니다."
                                                       )
                                               );
     }

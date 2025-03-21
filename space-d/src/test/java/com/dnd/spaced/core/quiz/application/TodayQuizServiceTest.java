@@ -187,7 +187,7 @@ class TodayQuizServiceTest {
         // when & then
         assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(1L, 1L))
                 .isInstanceOf(TodayQuizNotFoundException.class)
-                .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
+                .hasMessage("지정한 오늘의 퀴즈 답안지를 찾지 못했습니다.");
     }
 
     @Test
