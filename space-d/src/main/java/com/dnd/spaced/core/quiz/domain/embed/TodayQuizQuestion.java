@@ -1,5 +1,6 @@
 package com.dnd.spaced.core.quiz.domain.embed;
 
+import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizExampleContentException;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizQuestionException;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
@@ -7,6 +8,9 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +29,9 @@ public class TodayQuizQuestion {
 
     @Embedded
     private TodayQuizAnswerOption todayQuizAnswerOption;
+
+    @OneToMany(mappedBy = "todayQuiz")
+    private List<TodayQuizOption> todayQuizOptions = new ArrayList<>();
 
     public static TodayQuizQuestion of(
             QuizCategory quizCategory,

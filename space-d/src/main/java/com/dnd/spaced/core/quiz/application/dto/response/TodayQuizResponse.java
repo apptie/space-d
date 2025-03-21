@@ -10,10 +10,11 @@ public record TodayQuizResponse(Long id, TodayQuizQuestionResponse todayQuizQues
             String question,
             String questionContent,
             List<TodayQuizOptionResponse> todayQuizOptions,
-            Long answerWordId
+            Long answerWordId,
+            String answerContent
     ) {
 
-        public record TodayQuizOptionResponse(Long id, String content) {
+        public record TodayQuizOptionResponse(Long id, Long wordId, String content, int optionOrder) {
         }
     }
 

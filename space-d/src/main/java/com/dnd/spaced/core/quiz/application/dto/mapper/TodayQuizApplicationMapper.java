@@ -10,7 +10,6 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.Today
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import java.util.List;
 import lombok.AccessLevel;
@@ -42,29 +41,18 @@ public final class TodayQuizApplicationMapper {
         );
     }
 
-    public static TodayQuizResponse toDto(TodayQuizInfo todayQuizInfo, Long accountId, boolean solved) {
-        List<TodayQuizOptionResponse> todayQuizOptions = todayQuizInfo.todayQuizOptions()
-                                                          .stream()
-                                                          .map(todayQuizOptionInfo -> new TodayQuizOptionResponse(
-                                                                  todayQuizOptionInfo.id(),
-                                                                  todayQuizOptionInfo.content()
-                                                          ))
-                                                          .toList();
-        TodayQuizResponse.TodayQuizQuestionResponse todayQuizQuestion = new TodayQuizResponse.TodayQuizQuestionResponse(
-                todayQuizInfo.quizCategory().getName(),
-                todayQuizInfo.question(),
-                todayQuizInfo.questionContent(),
-                todayQuizOptions,
-                todayQuizInfo.todayQuizAnswerOption().getWordId()
+    public static TodayQuizResponse toDto(TodayQuiz todayQuiz, Long accountId, boolean solved) {
+        TodayQuizResponse.TodayQuizQuestionResponse todayQuizQuestion = toTodayQuizQuestionDto(
+                todayQuiz.getTodayQuizQuestion()
         );
 
         if (accountId == -1L) {
-            return new TodayQuizResponse(todayQuizInfo.id(), todayQuizQuestion, TodayQuizStatus.NOT_LOGGED_IN);
+            return new TodayQuizResponse(todayQuiz.getId(), todayQuizQuestion, TodayQuizStatus.NOT_LOGGED_IN);
         }
         if (solved) {
-            return new TodayQuizResponse(todayQuizInfo.id(), todayQuizQuestion, TodayQuizStatus.SOLVED);
+            return new TodayQuizResponse(todayQuiz.getId(), todayQuizQuestion, TodayQuizStatus.SOLVED);
         }
-        return new TodayQuizResponse(todayQuizInfo.id(), todayQuizQuestion, TodayQuizStatus.NOT_SOLVED);
+        return new TodayQuizResponse(todayQuiz.getId(), todayQuizQuestion, TodayQuizStatus.NOT_SOLVED);
     }
 
     public static SimpleTodayQuizResponse toDto(SimpleTodayQuizInfo simpleTodayQuizInfo) {
@@ -87,5 +75,34 @@ public final class TodayQuizApplicationMapper {
                 quizQuestion.getQuestion(),
                 quizQuestion.getQuestionContent()
         );
+    }
+
+    private static TodayQuizResponse.TodayQuizQuestionResponse toTodayQuizQuestionDto(
+            TodayQuizQuestion todayQuizQuestion
+    ) {
+        List<TodayQuizOptionResponse> todayQuizOptionResponses = toTodayQuizOptionDto(todayQuizQuestion);
+
+        return new TodayQuizResponse.TodayQuizQuestionResponse(
+                todayQuizQuestion.getQuizCategory().getName(),
+                todayQuizQuestion.getQuestion(),
+                todayQuizQuestion.getQuestionContent(),
+                todayQuizOptionResponses,
+                todayQuizQuestion.getTodayQuizAnswerOption().getWordId(),
+                todayQuizQuestion.getTodayQuizAnswerOption().getContent()
+        );
+    }
+
+    private static List<TodayQuizOptionResponse> toTodayQuizOptionDto(TodayQuizQuestion todayQuizQuestion) {
+        return todayQuizQuestion.getTodayQuizOptions()
+                                .stream()
+                                .map(todayQuizOption ->
+                                        new TodayQuizOptionResponse(
+                                                todayQuizOption.getId(),
+                                                todayQuizOption.getWordId(),
+                                                todayQuizOption.getContent(),
+                                                todayQuizOption.getOptionOrder()
+                                        )
+                                )
+                                .toList();
     }
 }

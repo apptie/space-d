@@ -104,16 +104,17 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
     @Test
     void 오늘의_퀴즈_조회_요청_성공_테스트() throws Exception {
         // given
-        TodayQuizOptionResponse authorizationOption = new TodayQuizOptionResponse(1L, "Authorization");
-        TodayQuizOptionResponse controllerOption = new TodayQuizOptionResponse(2L, "Controller");
-        TodayQuizOptionResponse domainOption = new TodayQuizOptionResponse(3L, "Domain");
-        TodayQuizOptionResponse repositoryOption = new TodayQuizOptionResponse(4L, "Repository");
+        TodayQuizOptionResponse authorizationOption = new TodayQuizOptionResponse(1L, 1L, "Authorization", 1);
+        TodayQuizOptionResponse controllerOption = new TodayQuizOptionResponse(2L, 2L, "Controller", 2);
+        TodayQuizOptionResponse domainOption = new TodayQuizOptionResponse(3L, 3L, "Domain", 3);
+        TodayQuizOptionResponse repositoryOption = new TodayQuizOptionResponse(4L, 4L, "Repository", 4);
         TodayQuizQuestionResponse todayQuizQuestionResponse = new TodayQuizQuestionResponse(
                 "개발",
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 List.of(authorizationOption, controllerOption, domainOption, repositoryOption),
-                1L
+                1L,
+                "Authorization"
         );
         TodayQuizResponse todayQuizResponse = new TodayQuizResponse(
                 1L,
@@ -165,8 +166,16 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("todayQuizQuestion.todayQuizOptions[*].content").description(
                                                                                                       "오늘의 퀴즈 문제 보기 내용")
                                                                                               .type(JsonFieldType.STRING),
+                                fieldWithPath("todayQuizQuestion.todayQuizOptions[*].wordId").description(
+                                                                                                      "오늘의 퀴즈 문제 정답 용어 ID")
+                                                                                              .type(JsonFieldType.NUMBER),
+                                fieldWithPath("todayQuizQuestion.todayQuizOptions[*].optionOrder").description(
+                                                                                                     "오늘의 퀴즈 문제 순서")
+                                                                                             .type(JsonFieldType.NUMBER),
                                 fieldWithPath("todayQuizQuestion.answerWordId").description("오늘의 퀴즈 문제 용어 답 id")
                                                                                .type(JsonFieldType.NUMBER),
+                                fieldWithPath("todayQuizQuestion.answerContent").description("오늘의 퀴즈 문제 용어 답 내용")
+                                                                               .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizStatus").type(JsonFieldType.STRING)
                                                                 .attributes(field("description",
                                                                         generateLinkCode(DocsUrl.TODAY_QUIZ_STATUS)))

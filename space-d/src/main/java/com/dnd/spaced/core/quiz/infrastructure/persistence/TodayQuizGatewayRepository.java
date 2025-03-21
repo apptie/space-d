@@ -1,22 +1,15 @@
 package com.dnd.spaced.core.quiz.infrastructure.persistence;
 
 import static com.dnd.spaced.core.quiz.domain.QTodayQuiz.todayQuiz;
-import static com.dnd.spaced.core.quiz.domain.QTodayQuizOption.todayQuizOption;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
-import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.dnd.spaced.global.consts.CacheConst;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,7 +32,6 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
                     rs.getString(6),
                     rs.getLong(7)
             );
-
 
     private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory queryFactory;
@@ -92,27 +84,12 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
     }
 
     @Override
-    public Optional<TodayQuizInfo> findTodayQuizInfoBy(Long todayQuizId) {
-        List<Tuple> results = queryFactory.select(todayQuiz, todayQuizOption)
-                                          .from(todayQuiz)
-                                          .leftJoin(todayQuizOption)
-                                          .on(todayQuiz.id.eq(todayQuizOption.todayQuizId))
-                                          .where(todayQuiz.id.eq(todayQuizId))
-                                          .fetch();
+    public Optional<TodayQuiz> findWithTodayQuizOptionBy(Long todayQuizId) {
+        TodayQuiz result = queryFactory.selectFrom(todayQuiz)
+                                       .where(todayQuiz.id.eq(todayQuizId))
+                                       .leftJoin(todayQuiz.todayQuizQuestion.todayQuizOptions).fetchJoin()
+                                       .fetchOne();
 
-        if (results.isEmpty()) {
-            return Optional.empty();
-        }
-
-        TodayQuiz quiz = results.get(0)
-                                .get(todayQuiz);
-        List<TodayQuizOption> quizOptions = results.stream()
-                                                   .map(tuple -> tuple.get(todayQuizOption))
-                                                   .filter(Objects::nonNull)
-                                                   .sorted(Comparator.comparingInt(TodayQuizOption::getOptionOrder))
-                                                   .toList();
-        TodayQuizInfo todayQuizInfo = TodayQuizInfoMapper.toDto(quiz, quizOptions);
-
-        return Optional.of(todayQuizInfo);
+        return Optional.ofNullable(result);
     }
 }

@@ -13,7 +13,6 @@ import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz.SubmitAnswer;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizGradedAnswerRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.dnd.spaced.core.skill.application.event.dto.GradedTodayQuizEvent;
@@ -40,7 +39,7 @@ public class TodayQuizService {
     }
 
     public TodayQuizResponse readTodayQuiz(Long accountId, Long todayQuizId) {
-        TodayQuizInfo todayQuiz = findTodayQuizInfo(todayQuizId);
+        TodayQuiz todayQuiz = findTodayQuizInfo(todayQuizId);
         boolean solved = todayQuizGradedAnswerRepository.existsBy(accountId, todayQuizId);
 
         return TodayQuizApplicationMapper.toDto(todayQuiz, accountId, solved);
@@ -86,8 +85,8 @@ public class TodayQuizService {
                                   );
     }
 
-    private TodayQuizInfo findTodayQuizInfo(Long todayQuizId) {
-        return todayQuizRepository.findTodayQuizInfoBy(todayQuizId)
+    private TodayQuiz findTodayQuizInfo(Long todayQuizId) {
+        return todayQuizRepository.findWithTodayQuizOptionBy(todayQuizId)
                                   .orElseThrow(
                                           () -> new TodayQuizNotFoundException(
                                                   "지정한 id의 오늘의 퀴즈를 찾지 못했습니다."

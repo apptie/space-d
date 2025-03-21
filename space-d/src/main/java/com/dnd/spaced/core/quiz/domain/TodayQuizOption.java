@@ -2,9 +2,12 @@ package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidTodayQuizOptionContentException;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -28,12 +31,14 @@ public class TodayQuizOption {
 
     private int optionOrder;
 
-    private Long todayQuizId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "today_quiz_id")
+    private TodayQuiz todayQuiz;
 
     public static TodayQuizOption of(Long wordId, String content, int index, TodayQuiz todayQuiz) {
         validateContent(content);
 
-        return new TodayQuizOption(wordId, content, index, todayQuiz.getId());
+        return new TodayQuizOption(wordId, content, index, todayQuiz);
     }
 
     private static void validateContent(String content) {
@@ -42,10 +47,10 @@ public class TodayQuizOption {
         }
     }
 
-    private TodayQuizOption(Long wordId, String content, int optionOrder, Long todayQuizId) {
+    private TodayQuizOption(Long wordId, String content, int optionOrder, TodayQuiz todayQuiz) {
         this.wordId = wordId;
         this.content = content;
         this.optionOrder = optionOrder;
-        this.todayQuizId = todayQuizId;
+        this.todayQuiz = todayQuiz;
     }
 }
