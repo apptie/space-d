@@ -5,7 +5,5 @@ import java.util.List;
 
 public interface QuizOptionRepository {
 
-    QuizOption save(QuizOption quizOption);
-
     void saveAll(List<QuizOption> quizOptions);
 }

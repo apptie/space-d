@@ -5,7 +5,5 @@ import java.util.List;
 
 public interface TodayQuizOptionRepository {
 
-    TodayQuizOption save(TodayQuizOption todayQuizOption);
-
     void saveAll(List<TodayQuizOption> todayQuizOptions);
 }

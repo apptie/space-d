@@ -15,12 +15,6 @@ import org.springframework.stereotype.Repository;
 public class TodayQuizOptionGatewayRepository implements TodayQuizOptionRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final TodayQuizOptionCrudRepository todayQuizOptionCrudRepository;
-
-    @Override
-    public TodayQuizOption save(TodayQuizOption todayQuizOption) {
-        return todayQuizOptionCrudRepository.save(todayQuizOption);
-    }
 
     @Override
     public void saveAll(List<TodayQuizOption> todayQuizOptions) {
