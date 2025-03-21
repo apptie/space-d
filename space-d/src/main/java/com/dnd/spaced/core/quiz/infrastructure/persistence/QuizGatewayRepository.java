@@ -106,7 +106,7 @@ public class QuizGatewayRepository implements QuizRepository {
     @Override
     public List<QuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
         String sql = """
-        SELECT q.id, q.account_id, q.solved, q.created_at, q.updated_at
+        SELECT q.id, q.account_id, q.solved, q.created_at
         FROM (
             SELECT id
             FROM quizzes

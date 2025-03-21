@@ -67,7 +67,7 @@ public final class QuizApplicationMapper {
                 quizGradedAnswer.getAccountId(),
                 quizGradedAnswer.getQuizId(),
                 toGradedAnswerDto(question),
-                question.getQuizAnswerOption().getContent(),
+                question.getQuizAnswerOption().getAnswerContent(),
                 quizGradedAnswer.getSelectedContent(),
                 quizGradedAnswer.isCorrect()
         );
@@ -94,7 +94,7 @@ public final class QuizApplicationMapper {
                 quizQuestion.questionContent(),
                 quizQuestion.questionExample(),
                 quizOptionResponses,
-                quizQuestion.quizAnswerOption().getWordId()
+                quizQuestion.quizAnswerOption().getAnswerWordId()
         );
     }
 
