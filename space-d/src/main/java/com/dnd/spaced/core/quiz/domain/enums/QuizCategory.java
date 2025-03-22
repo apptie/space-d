@@ -33,4 +33,12 @@ public enum QuizCategory {
 
         return quizCategories[ThreadLocalRandom.current().nextInt(quizCategories.length)];
     }
+
+    public boolean isTotal() {
+        return this == QuizCategory.TOTAL;
+    }
+
+    public boolean isNotTotal() {
+        return !isTotal();
+    }
 }

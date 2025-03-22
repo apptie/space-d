@@ -3,9 +3,9 @@ package com.dnd.spaced.core.word.application.schedule;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordViewCountStatisticsRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRankDto;
+import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRank;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ public class PopularWordScheduler {
     }
 
     private void updatePopularWord(LocalDateTime today) {
-        List<ViewCountStatisticsRankDto> ranking = wordViewCountStatisticsRepository.findAllBy(today);
+        List<ViewCountStatisticsRank> ranking = wordViewCountStatisticsRepository.findAllBy(today);
         Long[] ids = ranking.stream()
-                              .map(ViewCountStatisticsRankDto::wordId)
+                              .map(ViewCountStatisticsRank::wordId)
                               .toArray(Long[]::new);
         List<String> names = wordRepository.findNameAllBy(ids);
         List<PopularWord> popularWords = calculatePopularWordInfo(ranking, names);
@@ -57,11 +57,11 @@ public class PopularWordScheduler {
         wordRepository.updateViewCount(dtos);
     }
 
-    private List<PopularWord> calculatePopularWordInfo(List<ViewCountStatisticsRankDto> ranking, List<String> names) {
+    private List<PopularWord> calculatePopularWordInfo(List<ViewCountStatisticsRank> ranking, List<String> names) {
         List<PopularWord> popularWords = new ArrayList<>();
 
         for (int i = 0; i < ranking.size(); i++) {
-            ViewCountStatisticsRankDto targetRankDto = ranking.get(i);
+            ViewCountStatisticsRank targetRankDto = ranking.get(i);
             String targetName = names.get(i);
 
             popularWords.add(new PopularWord(targetRankDto.rank(), targetRankDto.wordId(), targetName));

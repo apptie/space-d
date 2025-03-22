@@ -1,6 +1,6 @@
 package com.dnd.spaced.global.config;
 
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;

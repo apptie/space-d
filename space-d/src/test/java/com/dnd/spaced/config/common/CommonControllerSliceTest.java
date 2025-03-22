@@ -46,6 +46,7 @@ import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolve
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageableArgumentResolver;
+import com.dnd.spaced.global.resolver.quiz.QuizPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.WordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -209,6 +210,7 @@ public class CommonControllerSliceTest {
         GradedAnswerPageableArgumentResolver gradedAnswerPageableArgumentResolver = new GradedAnswerPageableArgumentResolver();
         BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver = new BookmarkPageableArgumentResolver();
         ReportPageableArgumentResolver reportPageableArgumentResolver = new ReportPageableArgumentResolver();
+        QuizPageableArgumentResolver quizPageableArgumentResolver = new QuizPageableArgumentResolver();
         MappingJackson2HttpMessageConverter jacksonMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
         ResourceHttpMessageConverter resourceMessageConverter = new ResourceHttpMessageConverter();
         resourceMessageConverter.setSupportedMediaTypes(
@@ -248,7 +250,8 @@ public class CommonControllerSliceTest {
                                               commentPageableArgumentResolver,
                                               gradedAnswerPageableArgumentResolver,
                                               bookmarkPageableArgumentResolver,
-                                              reportPageableArgumentResolver
+                                              reportPageableArgumentResolver,
+                                              quizPageableArgumentResolver
                                       )
                                       .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                                       .addFilters(new CharacterEncodingFilter("UTF-8", true))

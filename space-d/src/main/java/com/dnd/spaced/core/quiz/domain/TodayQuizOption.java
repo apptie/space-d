@@ -1,23 +1,25 @@
 package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidTodayQuizOptionContentException;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "today_quiz_options")
 @Entity
 @Getter
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TodayQuizOption extends CreateTimeEntity {
+public class TodayQuizOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +29,9 @@ public class TodayQuizOption extends CreateTimeEntity {
 
     private String content;
 
-    private int index;
+    private int optionOrder;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "today_quiz_id")
     private TodayQuiz todayQuiz;
 
@@ -45,12 +47,10 @@ public class TodayQuizOption extends CreateTimeEntity {
         }
     }
 
-    private TodayQuizOption(Long wordId, String content, int index, TodayQuiz todayQuiz) {
+    private TodayQuizOption(Long wordId, String content, int optionOrder, TodayQuiz todayQuiz) {
         this.wordId = wordId;
         this.content = content;
-        this.index = index;
+        this.optionOrder = optionOrder;
         this.todayQuiz = todayQuiz;
-
-        todayQuiz.initTodayQuizOption(this);
     }
 }

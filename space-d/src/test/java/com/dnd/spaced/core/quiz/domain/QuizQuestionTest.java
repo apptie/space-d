@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.exception.InvalidQuizQuestionContentException;
-import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -39,8 +38,8 @@ class QuizQuestionTest {
 
         assertAll(
                 () -> assertThat(actual.getQuizCategory()).isEqualTo(quizCategory),
-                () -> assertThat(actual.getQuestionContent()).isEqualTo("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                () -> assertThat(actual.getQuestionExample()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
+                () -> assertThat(actual.getQuestion()).isEqualTo("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
+                () -> assertThat(actual.getPassage()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 () -> assertThat(actual.getQuizAnswerOption()).isEqualTo(quizAnswerOption),
                 () -> assertThat(actual.getQuiz()).isEqualTo(quiz)
         );
@@ -100,41 +99,12 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
-        boolean actual = quizQuestion.isCorrect(0);
+        boolean actual = quizQuestion.isCorrect(1L);
 
         // then
         assertThat(actual).isTrue();
-    }
-
-    @Test
-    void 퀴즈_문제의_보기를_조회하면_외부에서_요소를_변경할_수_없다() {
-        // given
-        Quiz quiz = new Quiz(1L);
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
-        QuizCategory quizCategory = QuizCategory.findBy("개발");
-        QuizQuestion quizQuestion = QuizQuestion.of(
-                quizCategory,
-                "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                quizAnswerOption,
-                quiz
-        );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
-
-        // when
-        List<QuizOption> actual = quizQuestion.getQuizOptions();
-
-        // then
-        assertThatThrownBy(() -> actual.remove(0)).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -150,10 +120,6 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         boolean actual = quizQuestion.isValidOptionIndex(0);
@@ -175,40 +141,11 @@ class QuizQuestionTest {
                 quizAnswerOption,
                 quiz
         );
-        QuizOption.of(1L, "Authorization", 0, quizQuestion);
-        QuizOption.of(2L, "Domain", 1, quizQuestion);
-        QuizOption.of(3L, "Controller", 2, quizQuestion);
-        QuizOption.of(4L, "HashMap", 3, quizQuestion);
 
         // when
         boolean actual = quizQuestion.isInvalidOptionIndex(5);
 
         // then
         assertThat(actual).isTrue();
-    }
-
-    @Test
-    void 퀴즈_문제에_퀴즈_보기를_동기화한다() {
-        // given
-        Quiz quiz = new Quiz(1L);
-        QuizAnswerOption quizAnswerOption = new QuizAnswerOption(1L, "Authorization");
-        QuizCategory quizCategory = QuizCategory.findBy("개발");
-        QuizQuestion quizQuestion = QuizQuestion.of(
-                quizCategory,
-                "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-                "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                quizAnswerOption,
-                quiz
-        );
-        QuizOption quizOption = QuizOption.of(1L, "Authorization", 0, quizQuestion);
-
-        // when
-        quizQuestion.initQuizOption(quizOption);
-
-        // then
-        assertAll(
-                () -> assertThat(quizQuestion.getQuizOptions()).hasSize(2),
-                () -> assertThat(quizQuestion.getQuizOptions()).containsExactly(quizOption, quizOption)
-        );
     }
 }

@@ -21,7 +21,5 @@ public interface WordRepository {
 
     List<String> findNameAllBy(Long[] wordIds);
 
-    List<Word> findRandomAllBy(List<Long> wordIds);
-
     Optional<Word> findBy(Long wordId);
 }

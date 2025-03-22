@@ -3,11 +3,13 @@ package com.dnd.spaced.core.quiz.presentation;
 import com.dnd.spaced.core.quiz.application.TodayQuizService;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
+import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
+import com.dnd.spaced.global.auth.resolver.GuestAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -30,14 +32,17 @@ public class TodayQuizController {
     private final TodayQuizService todayQuizService;
 
     @GetMapping("/latest")
-    public ResponseEntity<TodayQuizResponse> findLatest() {
-        return ResponseEntity.ok(todayQuizService.findLatest());
+    public ResponseEntity<SimpleTodayQuizResponse> findLatest() {
+        return ResponseEntity.ok(todayQuizService.readLatestTodayQuiz());
     }
 
     @GetMapping("/{todayQuizId}")
-    public ResponseEntity<TodayQuizResponse> findBy(@PathVariable Long todayQuizId) {
+    public ResponseEntity<TodayQuizResponse> findBy(
+            @CurrentAccountInfo GuestAccountInfo accountInfo,
+            @PathVariable Long todayQuizId
+    ) {
         return ResponseEntity.ok(
-                todayQuizService.findBy(todayQuizId)
+                todayQuizService.readTodayQuiz(accountInfo.accountId(), todayQuizId)
         );
     }
 
@@ -61,7 +66,7 @@ public class TodayQuizController {
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId
     ) {
-        return ResponseEntity.ok(todayQuizService.findTodayQuizGradedAnswerBy(accountInfo.accountId(), todayQuizId));
+        return ResponseEntity.ok(todayQuizService.readTargetTodayQuizGradedAnswers(accountInfo.accountId(), todayQuizId));
     }
 
     @GetMapping("/graded-answers")
@@ -71,7 +76,7 @@ public class TodayQuizController {
             @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
-                todayQuizService.findTodayQuizGradedAnswerAllBy(accountInfo.accountId(), request, pageable)
+                todayQuizService.readTodayQuizGradedAnswers(accountInfo.accountId(), request, pageable)
         );
     }
 }

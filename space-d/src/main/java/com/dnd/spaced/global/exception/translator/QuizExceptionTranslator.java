@@ -29,11 +29,6 @@ public enum QuizExceptionTranslator implements ExceptionTranslator {
             HttpStatus.INTERNAL_SERVER_ERROR,
             "퀴즈 생성에 실패했습니다."
     ),
-    INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION(
-            QuizErrorCode.INVALID_SUBMITTED_QUIZ_OPTION_INDEX_EXCEPTION,
-            HttpStatus.BAD_REQUEST,
-            "없는 보기를 선택했습니다."
-    ),
     INVALID_TODAY_QUIZ_OPTION_CONTENT_EXCEPTION(
             QuizErrorCode.INVALID_TODAY_QUIZ_OPTION_CONTENT_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -88,7 +83,17 @@ public enum QuizExceptionTranslator implements ExceptionTranslator {
             QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "용어 메타데이터가 정상적으로 초기화되지 않았습니다."
-    );
+    ),
+    ALREADY_GRADE_QUIZ_EXCEPTION(
+            QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "이미 푼 퀴즈입니다."
+    ),
+    ALREADY_GRADE_TODAY_QUIZ_EXCEPTION(
+            QuizErrorCode.ALREADY_GRADE_TODAY_QUIZ_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "이미 오늘의 퀴즈를 풀었습니다."
+    );;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;

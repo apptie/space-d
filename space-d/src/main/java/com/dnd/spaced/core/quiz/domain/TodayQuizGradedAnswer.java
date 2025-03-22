@@ -28,16 +28,17 @@ public class TodayQuizGradedAnswer extends CreateTimeEntity {
     private TodayQuiz todayQuiz;
 
     private Long accountId;
+    private Long selectedWordId;
+    private String selectedContent;
 
-    private int selectedOptionIndex;
-
-    public TodayQuizGradedAnswer(Long accountId, TodayQuiz todayQuiz, int selectedOptionIndex) {
-        this.accountId = accountId;
+    public TodayQuizGradedAnswer(TodayQuiz todayQuiz, Long accountId, Long selectedWordId, String selectedContent) {
         this.todayQuiz = todayQuiz;
-        this.selectedOptionIndex = selectedOptionIndex;
+        this.accountId = accountId;
+        this.selectedWordId = selectedWordId;
+        this.selectedContent = selectedContent;
     }
 
     public boolean isCorrect() {
-        return todayQuiz.isCorrect(selectedOptionIndex);
+        return todayQuiz.isCorrect(selectedWordId);
     }
 }

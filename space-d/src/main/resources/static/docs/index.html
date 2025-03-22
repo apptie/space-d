@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Wed, 19 Mar 2025 05:36:38 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Tue, 25 Mar 2025 12:21:57 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -3720,6 +3720,168 @@ Location: /quizzes/1</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="Read-Quizzes"><a class="link" href="#Read-Quizzes">퀴즈 목록 조회 API</a></h3>
+<div class="sect3">
+<h4 id="Read-Quizzes_http_request"><a class="link" href="#Read-Quizzes_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes HTTP/1.1
+Authorization: Bearer AccessToken</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Read-Quizzes_request_headers"><a class="link" href="#Read-Quizzes_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 Access Token</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Read-Quizzes_http_response"><a class="link" href="#Read-Quizzes_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "quizzes" : [ {
+    "id" : 1,
+    "accountId" : 1,
+    "solved" : false,
+    "createdAt" : "2025-03-22T21:21:59.728234",
+    "quizQuestions" : [ {
+      "quizCategory" : "개발",
+      "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+    }, {
+      "quizCategory" : "개발",
+      "passage" : "사람이 읽기 쉬운 데이터 형식으로, 주로 설정 파일에 사용"
+    }, {
+      "quizCategory" : "개발",
+      "passage" : "간단하고 가독성이 높은 설정 파일 형식으로, 키-값 쌍을 이용해 데이터를 표현"
+    }, {
+      "quizCategory" : "개발",
+      "passage" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻"
+    }, {
+      "quizCategory" : "개발",
+      "passage" : "주로 프로그램이나 코드, 명령을 실행할 때 사용"
+    } ]
+  } ],
+  "lastQuizId" : 1
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Read-Quizzes_response_fields"><a class="link" href="#Read-Quizzes_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원이 생성한 퀴즈 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].accountId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈를 생성한 회원 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].solved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 풀이 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].quizQuestions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].quizQuestions[*].quizCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 카테고리</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizzes[*].quizQuestions[*].passage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 질문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastQuizId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 조회한 퀴즈 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+<p><code>GET /quizzes</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="Find-Quiz"><a class="link" href="#Find-Quiz">퀴즈 조회 API</a></h3>
 <div class="sect3">
 <h4 id="Find-Quiz_http_request"><a class="link" href="#Find-Quiz_http_request">HTTP request</a></h4>
@@ -3768,18 +3930,22 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+    "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
     "quizOptions" : [ {
       "id" : 1,
+      "wordId" : 1,
       "content" : "Authorization"
     }, {
       "id" : 2,
+      "wordId" : 2,
       "content" : "status"
     }, {
       "id" : 3,
+      "wordId" : 3,
       "content" : "gradient"
     }, {
       "id" : 4,
+      "wordId" : 3,
       "content" : "locale"
     } ],
     "answerOptionWordId" : 1
@@ -3787,18 +3953,22 @@ Content-Type: application/json;charset=UTF-8
     "id" : 2,
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다.",
+    "passage" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다.",
     "quizOptions" : [ {
       "id" : 5,
+      "wordId" : 5,
       "content" : "YAML"
     }, {
       "id" : 6,
+      "wordId" : 6,
       "content" : "jar"
     }, {
       "id" : 7,
+      "wordId" : 7,
       "content" : "redirect"
     }, {
       "id" : 8,
+      "wordId" : 8,
       "content" : "empty"
     } ],
     "answerOptionWordId" : 2
@@ -3806,18 +3976,22 @@ Content-Type: application/json;charset=UTF-8
     "id" : 3,
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다.",
+    "passage" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다.",
     "quizOptions" : [ {
       "id" : 9,
+      "wordId" : 9,
       "content" : "TOML"
     }, {
       "id" : 10,
+      "wordId" : 10,
       "content" : "directory"
     }, {
       "id" : 11,
+      "wordId" : 11,
       "content" : "SaaS"
     }, {
       "id" : 12,
+      "wordId" : 12,
       "content" : "usage"
     } ],
     "answerOptionWordId" : 3
@@ -3825,18 +3999,22 @@ Content-Type: application/json;charset=UTF-8
     "id" : 4,
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다.",
+    "passage" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다.",
     "quizOptions" : [ {
       "id" : 13,
+      "wordId" : 13,
       "content" : "deprecated"
     }, {
       "id" : 14,
+      "wordId" : 14,
       "content" : "GUI"
     }, {
       "id" : 15,
+      "wordId" : 15,
       "content" : "JWT"
     }, {
       "id" : 16,
+      "wordId" : 16,
       "content" : "Dequeue"
     } ],
     "answerOptionWordId" : 4
@@ -3844,18 +4022,22 @@ Content-Type: application/json;charset=UTF-8
     "id" : 5,
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다.",
+    "passage" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다.",
     "quizOptions" : [ {
       "id" : 17,
+      "wordId" : 17,
       "content" : "execute"
     }, {
       "id" : 18,
+      "wordId" : 18,
       "content" : "COALESCE"
     }, {
       "id" : 19,
+      "wordId" : 19,
       "content" : "Queue"
     }, {
       "id" : 20,
+      "wordId" : 20,
       "content" : "carousel"
     } ],
     "answerOptionWordId" : 5
@@ -3911,7 +4093,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestions[*].questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestions[*].passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 지문</p></td>
 </tr>
@@ -3924,6 +4106,11 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestions[*].quizOptions[*].id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 보기 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestions[*].quizOptions[*].wordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 보기 용어 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quizQuestions[*].quizOptions[*].content</code></p></td>
@@ -3983,7 +4170,22 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "answers" : [ 0, 1, 2, 3, 2 ]
+  "submitAnswers" : [ {
+    "wordId" : 1,
+    "content" : "Authorization"
+  }, {
+    "wordId" : 2,
+    "content" : "Domain"
+  }, {
+    "wordId" : 3,
+    "content" : "Controller"
+  }, {
+    "wordId" : 2,
+    "content" : "Web"
+  }, {
+    "wordId" : 1,
+    "content" : "HTTP"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -4128,11 +4330,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 1,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+      "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
     },
     "selectedQuizOptionContent" : "Authorization",
     "answerQuizOptionContent" : "Authorization",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4141,11 +4343,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 2,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
+      "passage" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
     },
     "selectedQuizOptionContent" : "YAML",
     "answerQuizOptionContent" : "YAML",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4154,11 +4356,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 3,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
+      "passage" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
     },
     "selectedQuizOptionContent" : "TOML",
     "answerQuizOptionContent" : "XML",
-    "isCorrect" : false
+    "corrected" : false
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4167,11 +4369,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 4,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
+      "passage" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
     },
     "selectedQuizOptionContent" : "deprecated",
     "answerQuizOptionContent" : "deprecated",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4180,11 +4382,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 5,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
+      "passage" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
     },
     "selectedQuizOptionContent" : "execute",
     "answerQuizOptionContent" : "execute",
-    "isCorrect" : true
+    "corrected" : true
   } ],
   "lastGradedAnswerId" : 1
 }</code></pre>
@@ -4248,7 +4450,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].quizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].quizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 지문</p></td>
 </tr>
@@ -4263,7 +4465,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 정답 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].corrected</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
 </tr>
@@ -4382,11 +4584,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 1,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+      "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
     },
     "selectedQuizOptionContent" : "Authorization",
     "answerQuizOptionContent" : "Authorization",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4395,11 +4597,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 2,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
+      "passage" : "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
     },
     "selectedQuizOptionContent" : "YAML",
     "answerQuizOptionContent" : "YAML",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4408,11 +4610,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 3,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
+      "passage" : "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
     },
     "selectedQuizOptionContent" : "TOML",
     "answerQuizOptionContent" : "XML",
-    "isCorrect" : false
+    "corrected" : false
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4421,11 +4623,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 4,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
+      "passage" : "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
     },
     "selectedQuizOptionContent" : "deprecated",
     "answerQuizOptionContent" : "deprecated",
-    "isCorrect" : true
+    "corrected" : true
   }, {
     "id" : 1,
     "accountId" : 1,
@@ -4434,11 +4636,11 @@ Content-Type: application/json;charset=UTF-8
       "id" : 5,
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
+      "passage" : "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
     },
     "selectedQuizOptionContent" : "execute",
     "answerQuizOptionContent" : "execute",
-    "isCorrect" : true
+    "corrected" : true
   } ],
   "lastGradedAnswerId" : 1
 }</code></pre>
@@ -4502,7 +4704,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].quizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].quizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 지문</p></td>
 </tr>
@@ -4517,7 +4719,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">퀴즈 문제 정답 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].corrected</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
 </tr>
@@ -4585,22 +4787,9 @@ Content-Type: application/json;charset=UTF-8
   "todayQuizQuestion" : {
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-    "todayQuizOptions" : [ {
-      "id" : 1,
-      "content" : "Authorization"
-    }, {
-      "id" : 2,
-      "content" : "Controller"
-    }, {
-      "id" : 3,
-      "content" : "Domain"
-    }, {
-      "id" : 4,
-      "content" : "Repository"
-    } ],
-    "answerWordId" : 1
-  }
+    "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+  },
+  "createdAt" : "2025-03-22T21:21:59.895323"
 }</code></pre>
 </div>
 </div>
@@ -4642,29 +4831,14 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerWordId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 생성 시간</p></td>
 </tr>
 </tbody>
 </table>
@@ -4719,22 +4893,32 @@ Content-Type: application/json;charset=UTF-8
   "todayQuizQuestion" : {
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
+    "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
     "todayQuizOptions" : [ {
       "id" : 1,
-      "content" : "Authorization"
+      "wordId" : 1,
+      "content" : "Authorization",
+      "optionOrder" : 1
     }, {
       "id" : 2,
-      "content" : "Controller"
+      "wordId" : 2,
+      "content" : "Controller",
+      "optionOrder" : 2
     }, {
       "id" : 3,
-      "content" : "Domain"
+      "wordId" : 3,
+      "content" : "Domain",
+      "optionOrder" : 3
     }, {
       "id" : 4,
-      "content" : "Repository"
+      "wordId" : 4,
+      "content" : "Repository",
+      "optionOrder" : 4
     } ],
-    "answerWordId" : 1
-  }
+    "answerWordId" : 1,
+    "answerContent" : "Authorization"
+  },
+  "todayQuizStatus" : "NOT_SOLVED"
 }</code></pre>
 </div>
 </div>
@@ -4776,7 +4960,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
 </tr>
@@ -4796,9 +4980,29 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 보기 내용</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].wordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 정답 용어 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.todayQuizOptions[*].optionOrder</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 순서</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerWordId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.answerContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 용어 답 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="common/today-quiz-status.html" class="popup">오늘의 퀴즈 상태</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -4843,7 +5047,8 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "answer" : 0
+  "selectedWordId" : 1,
+  "selectedContent" : "Authorization"
 }</code></pre>
 </div>
 </div>
@@ -4921,6 +5126,12 @@ Location: /today-quizzes/1/graded-answers</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">없는 보기를 선택했습니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALREADY_GRADE_TODAY_QUIZ_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 오늘의 퀴즈를 풀었습니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -4955,11 +5166,11 @@ Content-Type: application/json;charset=UTF-8
     "todayQuizQuestion" : {
       "quizCategory" : "개발",
       "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-      "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+      "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
     },
     "selectedQuizOptionContent" : "Authorization",
     "answerQuizOptionContent" : "Authorization",
-    "isCorrect" : true
+    "corrected" : true
   } ]
 }</code></pre>
 </div>
@@ -5017,7 +5228,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].todayQuizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
 </tr>
@@ -5032,7 +5243,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈 답</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answers[*].corrected</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
 </tr>
@@ -5092,11 +5303,11 @@ Content-Type: application/json;charset=UTF-8
   "todayQuizQuestion" : {
     "quizCategory" : "개발",
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
-    "questionContent" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
+    "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
   "selectedQuizOptionContent" : "Authorization",
   "answerQuizOptionContent" : "Authorization",
-  "isCorrect" : true
+  "corrected" : true
 }</code></pre>
 </div>
 </div>
@@ -5148,7 +5359,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.questionContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>todayQuizQuestion.passage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈 문제 지문</p></td>
 </tr>
@@ -5163,7 +5374,7 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 오늘의 퀴즈 답</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isCorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>corrected</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정답 여부</p></td>
 </tr>
@@ -5689,7 +5900,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-16T14:36:38.915157"
+    "createdAt" : "2025-03-22T21:21:58.131973"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
@@ -5899,7 +6110,7 @@ Content-Type: application/json;charset=UTF-8
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-03-10 20:27:59 +0900
+Last updated 2025-03-21 19:48:40 +0900
 </div>
 </div>
 </body>

@@ -1,17 +1,15 @@
 package com.dnd.spaced.core.quiz.domain.embed;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
-import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidSubmittedTodayQuizOptionIndexException;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizExampleContentException;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizQuestionException;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,30 +20,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodayQuizQuestion {
 
-    private static final int OPTION_SIZE = 4;
-
     @Enumerated(EnumType.STRING)
     private QuizCategory quizCategory;
 
     private String question;
 
-    private String questionContent;
+    private String passage;
 
+    @Embedded
     private TodayQuizAnswerOption todayQuizAnswerOption;
 
-    @OneToMany(mappedBy = "todayQuiz", cascade = CascadeType.REMOVE)
-    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "todayQuiz")
     private List<TodayQuizOption> todayQuizOptions = new ArrayList<>();
 
     public static TodayQuizQuestion of(
             QuizCategory quizCategory,
             String questionContent,
-            String questionExample,
+            String passage,
             TodayQuizAnswerOption quizAnswerOption
     ) {
-        validateContent(questionContent, questionExample);
+        validateContent(questionContent, passage);
 
-        return new TodayQuizQuestion(quizCategory, questionContent, questionExample, quizAnswerOption);
+        return new TodayQuizQuestion(quizCategory, questionContent, passage, quizAnswerOption);
     }
 
     private static void validateContent(String questionContent, String exampleContent) {
@@ -61,42 +57,16 @@ public class TodayQuizQuestion {
     private TodayQuizQuestion(
             QuizCategory quizCategory,
             String question,
-            String questionContent,
+            String passage,
             TodayQuizAnswerOption todayQuizAnswerOption
     ) {
         this.quizCategory = quizCategory;
         this.question = question;
-        this.questionContent = questionContent;
+        this.passage = passage;
         this.todayQuizAnswerOption = todayQuizAnswerOption;
     }
 
-    public void initTodayQuizOption(TodayQuizOption todayQuizOption) {
-        this.todayQuizOptions.add(todayQuizOption);
-    }
-
-    public boolean isValidOptionIndex(int submitOptionIndex) {
-        return submitOptionIndex >= 0 && todayQuizOptions.size() > submitOptionIndex;
-    }
-
-    public boolean isInvalidOptionIndex(int submitOptionIndex) {
-        return !isValidOptionIndex(submitOptionIndex);
-    }
-
-    public boolean isCorrect(int submittedOptionIndex) {
-        validateIndex(submittedOptionIndex);
-
-        TodayQuizOption todayQuizOption = todayQuizOptions.get(submittedOptionIndex);
-
-        return todayQuizAnswerOption.matchesWordId(todayQuizOption.getWordId());
-    }
-
-    private void validateIndex(int submittedOptionIndex) {
-        if (isInvalidOptionIndex(submittedOptionIndex)) {
-            throw new InvalidSubmittedTodayQuizOptionIndexException("없는 보기를 선택했습니다.");
-        }
-    }
-
-    public List<TodayQuizOption> getTodayQuizOptions() {
-        return Collections.unmodifiableList(todayQuizOptions);
+    public boolean isCorrect(Long wordId) {
+        return todayQuizAnswerOption.matchesWordId(wordId);
     }
 }

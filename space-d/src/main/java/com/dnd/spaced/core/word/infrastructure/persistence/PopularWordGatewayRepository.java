@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

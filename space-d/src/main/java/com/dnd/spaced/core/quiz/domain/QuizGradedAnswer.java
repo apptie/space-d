@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.quiz.domain;
 
-import com.dnd.spaced.core.quiz.domain.exception.InvalidSubmittedQuizOptionIndexException;
 import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,16 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "quiz_graded_answers")
 @Getter
 @Entity
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GradedAnswer extends CreateTimeEntity {
+public class QuizGradedAnswer extends CreateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,28 +33,34 @@ public class GradedAnswer extends CreateTimeEntity {
     @JoinColumn(name = "quiz_question_id")
     private QuizQuestion quizQuestion;
 
-    private int selectedOptionIndex;
+    private Long selectedWordId;
+    private String selectedContent;
 
-    public static GradedAnswer of(Long accountId, Long quizId, QuizQuestion quizQuestion, int selectedOptionIndex) {
-        validateSelectedIndex(quizQuestion, selectedOptionIndex);
-
-        return new GradedAnswer(accountId, quizId, quizQuestion, selectedOptionIndex);
+    public static QuizGradedAnswer of(
+            Long accountId,
+            Long quizId,
+            QuizQuestion quizQuestion,
+            Long selectedWordId,
+            String selectedContent
+    ) {
+        return new QuizGradedAnswer(accountId, quizId, quizQuestion, selectedWordId, selectedContent);
     }
 
-    private static void validateSelectedIndex(QuizQuestion quizQuestion, int selectedOptionIndex) {
-        if (quizQuestion.isInvalidOptionIndex(selectedOptionIndex)) {
-            throw new InvalidSubmittedQuizOptionIndexException("없는 보기를 선택했습니다.");
-        }
-    }
-
-    private GradedAnswer(Long accountId, Long quizId, QuizQuestion quizQuestion, int selectedOptionIndex) {
+    private QuizGradedAnswer(
+            Long accountId,
+            Long quizId,
+            QuizQuestion quizQuestion,
+            Long selectedWordId,
+            String selectedContent
+    ) {
         this.accountId = accountId;
         this.quizId = quizId;
         this.quizQuestion = quizQuestion;
-        this.selectedOptionIndex = selectedOptionIndex;
+        this.selectedWordId = selectedWordId;
+        this.selectedContent = selectedContent;
     }
 
     public boolean isCorrect() {
-        return quizQuestion.isCorrect(selectedOptionIndex);
+        return quizQuestion.isCorrect(selectedWordId);
     }
 }

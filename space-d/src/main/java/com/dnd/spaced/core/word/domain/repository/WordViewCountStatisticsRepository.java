@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.word.domain.repository;
 
 import com.dnd.spaced.core.word.domain.repository.dto.WordViewCountStatisticsDto;
-import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRankDto;
+import com.dnd.spaced.core.word.domain.dto.ViewCountStatisticsRank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface WordViewCountStatisticsRepository {
 
     List<WordViewCountStatisticsDto> findAllBy(List<Long> ids, LocalDateTime localDateTime);
 
-    List<ViewCountStatisticsRankDto> findAllBy(LocalDateTime localDateTime);
+    List<ViewCountStatisticsRank> findAllBy(LocalDateTime localDateTime);
 
     void deleteAll(LocalDateTime localDateTime);
 }

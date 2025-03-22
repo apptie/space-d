@@ -10,7 +10,10 @@ import com.dnd.spaced.global.resolver.comment.CommentPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.word.WordPageableArgumentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -50,7 +53,14 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        objectMapper.setDateFormat(dateFormat);
+        return objectMapper;
     }
 
     @Bean

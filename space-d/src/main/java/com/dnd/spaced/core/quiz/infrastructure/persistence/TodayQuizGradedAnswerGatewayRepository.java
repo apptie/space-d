@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class TodayQuizGradedAnswerQuerydslRepository implements TodayQuizGradedAnswerRepository {
+public class TodayQuizGradedAnswerGatewayRepository implements TodayQuizGradedAnswerRepository {
 
     private final JPAQueryFactory queryFactory;
     private final TodayQuizGradedAnswerCrudRepository todayQuizGradedAnswerCrudRepository;
@@ -33,6 +33,7 @@ public class TodayQuizGradedAnswerQuerydslRepository implements TodayQuizGradedA
                            )
                            .leftJoin(todayQuizGradedAnswer.todayQuiz).fetchJoin()
                            .limit(pageable.getPageSize())
+                           .orderBy(todayQuizGradedAnswer.id.desc())
                            .fetch();
     }
 
@@ -40,13 +41,26 @@ public class TodayQuizGradedAnswerQuerydslRepository implements TodayQuizGradedA
     public Optional<TodayQuizGradedAnswer> findBy(Long accountId, Long todayQuizId) {
         TodayQuizGradedAnswer result = queryFactory.selectFrom(todayQuizGradedAnswer)
                                                    .where(
-                                                           todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId),
-                                                           todayQuizGradedAnswer.accountId.eq(accountId)
+                                                           todayQuizGradedAnswer.accountId.eq(accountId),
+                                                           todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId)
                                                    )
                                                    .leftJoin(todayQuizGradedAnswer.todayQuiz).fetchJoin()
                                                    .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public boolean existsBy(Long accountId, Long todayQuizId) {
+        Long result = queryFactory.select(todayQuizGradedAnswer.id)
+                                  .from(todayQuizGradedAnswer)
+                                  .where(
+                                          todayQuizGradedAnswer.accountId.eq(accountId),
+                                          todayQuizGradedAnswer.todayQuiz.id.eq(todayQuizId)
+                                  )
+                                  .fetchOne();
+
+        return result != null;
     }
 
     private BooleanExpression ltLastTodayQuizGradedAnswerId(Long lastTodayQuizGradedAnswerId) {

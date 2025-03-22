@@ -20,7 +20,8 @@ public final class DocumentLinkGenerator {
         PRONUNCIATION_TYPE("pronunciationType", "용어 발음 타입"),
         QUIZ_CATEGORY("quiz-category", "퀴즈 카테고리"),
         REPORT_REASON("report-reason", "신고 사유"),
-        REPORT_STATUS("report-status", "신고 상태");
+        REPORT_STATUS("report-status", "신고 상태"),
+        TODAY_QUIZ_STATUS("today-quiz-status", "오늘의 퀴즈 상태");
 
         DocsUrl(String pageId, String text) {
             this.pageId = pageId;

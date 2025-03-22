@@ -3,12 +3,15 @@ package com.dnd.spaced.core.quiz.presentation;
 import com.dnd.spaced.core.quiz.application.QuizService;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
+import com.dnd.spaced.global.resolver.quiz.QuizPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -59,12 +62,12 @@ public class QuizController {
     }
 
     @GetMapping("/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
-        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(
+        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(
                 accountInfo.accountId(),
                 request,
                 pageable
@@ -74,18 +77,32 @@ public class QuizController {
     }
 
     @GetMapping("/{quizId}/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
-        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(quizId);
+        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.accountId(), quizId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<QuizResponse> readQuiz(@PathVariable Long quizId) {
-        QuizResponse response = quizService.findQuizBy(quizId);
+    public ResponseEntity<QuizResponse> readQuiz(
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @PathVariable Long quizId
+    ) {
+        QuizResponse response = quizService.readQuiz(accountInfo.accountId(), quizId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<QuizCollectionResponse> readQuizzes(
+            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            ReadAllQuizRequest request,
+            @QuizPageable Pageable pageable
+    ) {
+        QuizCollectionResponse response = quizService.readQuizzes(accountInfo.accountId(), request, pageable);
 
         return ResponseEntity.ok(response);
     }

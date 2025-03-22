@@ -12,4 +12,6 @@ public interface TodayQuizGradedAnswerRepository {
     List<TodayQuizGradedAnswer> findAllBy(Long accountId, Long lastTodayQuizGradedAnswerId, Pageable pageable);
 
     Optional<TodayQuizGradedAnswer> findBy(Long accountId, Long todayQuizId);
+
+    boolean existsBy(Long accountId, Long todayQuizId);
 }

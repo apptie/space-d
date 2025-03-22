@@ -17,7 +17,7 @@ import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;

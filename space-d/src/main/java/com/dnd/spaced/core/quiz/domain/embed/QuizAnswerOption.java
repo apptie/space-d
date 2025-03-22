@@ -8,19 +8,19 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
-@EqualsAndHashCode(callSuper = false, of = {"wordId", "content"})
+@EqualsAndHashCode(callSuper = false, of = {"answerWordId", "answerContent"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuizAnswerOption {
 
-    private Long wordId;
-    private String content;
+    private Long answerWordId;
+    private String answerContent;
 
-    public QuizAnswerOption(Long wordId, String content) {
-        this.wordId = wordId;
-        this.content = content;
+    public QuizAnswerOption(Long answerWordId, String answerContent) {
+        this.answerWordId = answerWordId;
+        this.answerContent = answerContent;
     }
 
     public boolean matchesWordId(Long wordId) {
-        return this.wordId.equals(wordId);
+        return this.answerWordId.equals(wordId);
     }
 }

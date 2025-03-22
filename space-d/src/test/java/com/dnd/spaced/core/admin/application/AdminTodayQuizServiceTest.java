@@ -69,12 +69,11 @@ class AdminTodayQuizServiceTest {
                 adminTodayQuizService.createTodayQuiz();
 
                 // then
-                Optional<TodayQuiz> actual = todayQuizRepository.findBy(1L);
+                Optional<TodayQuiz> actual = todayQuizRepository.findTodayQuizBy(1L);
 
                 assertAll(
                         () -> assertThat(actual).isPresent(),
                         () -> assertThat(actual.get().getId()).isEqualTo(1L),
-                        () -> assertThat(actual.get().getTodayQuizOptions()).hasSize(4),
                         () -> assertThat(events.stream(AddedTodayQuizQuestionEvent.class).count()).isOne()
                 );
             }

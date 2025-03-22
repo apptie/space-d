@@ -1,10 +1,11 @@
-package com.dnd.spaced.core.word.domain.dto;
+package com.dnd.spaced.core.word.domain.dto.mapper;
 
 import static com.dnd.spaced.core.word.domain.dto.WordInfo.PronunciationInfo;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordExample;
+import com.dnd.spaced.core.word.domain.dto.WordInfo;
 import com.dnd.spaced.core.word.domain.dto.WordInfo.WordExampleInfo;
 import java.util.List;
 import lombok.AccessLevel;

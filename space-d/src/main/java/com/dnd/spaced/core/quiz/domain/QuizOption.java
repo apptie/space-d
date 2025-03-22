@@ -1,24 +1,22 @@
 package com.dnd.spaced.core.quiz.domain;
 
 import com.dnd.spaced.core.quiz.domain.exception.InvalidQuizOptionContentException;
-import com.dnd.spaced.global.audit.CreateTimeEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "quiz_options")
 @Entity
 @Getter
 @EqualsAndHashCode(callSuper = false, of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuizOption extends CreateTimeEntity {
+public class QuizOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,16 +26,14 @@ public class QuizOption extends CreateTimeEntity {
 
     private String content;
 
-    private int index;
+    private int optionOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_question_id")
-    private QuizQuestion quizQuestion;
+    private Long quizQuestionId;
 
-    public static QuizOption of(Long wordId, String content, int index, QuizQuestion quizQuestion) {
+    public static QuizOption of(Long wordId, String content, int optionOrder, Long quizQuestionId) {
         validateContent(content);
 
-        return new QuizOption(wordId, content, index, quizQuestion);
+        return new QuizOption(wordId, content, optionOrder, quizQuestionId);
     }
 
     private static void validateContent(String content) {
@@ -46,12 +42,10 @@ public class QuizOption extends CreateTimeEntity {
         }
     }
 
-    private QuizOption(Long wordId, String content, int index, QuizQuestion quizQuestion) {
+    private QuizOption(Long wordId, String content, int optionOrder, Long quizQuestionId) {
         this.wordId = wordId;
         this.content = content;
-        this.index = index;
-        this.quizQuestion = quizQuestion;
-
-        quizQuestion.initQuizOption(this);
+        this.optionOrder = optionOrder;
+        this.quizQuestionId = quizQuestionId;
     }
 }

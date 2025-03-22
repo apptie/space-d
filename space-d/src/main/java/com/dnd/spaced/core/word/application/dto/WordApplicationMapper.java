@@ -8,7 +8,7 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse.Pronunciat
 import com.dnd.spaced.core.word.domain.dto.WordInfo;
 import com.dnd.spaced.core.word.domain.dto.WordInfo.PronunciationInfo;
 import com.dnd.spaced.core.word.domain.dto.WordInfo.WordExampleInfo;
-import com.dnd.spaced.core.word.domain.repository.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

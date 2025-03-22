@@ -15,11 +15,18 @@ class WordRandomTest {
 
     @Test
     void 용어_랜덤값을_초기화한다() {
+        // given
+        Word word = Word.builder()
+                        .name("Authorization")
+                        .meaning("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
+                        .categoryName("개발")
+                        .build();
+
         // when & then
-        WordRandom actual = assertDoesNotThrow(() -> new WordRandom(1L, Category.BUSINESS, 82));
+        WordRandom actual = assertDoesNotThrow(() -> new WordRandom(word, Category.BUSINESS, 82));
 
         assertAll(
-                () -> assertThat(actual.getWordId()).isEqualTo(1L),
+                () -> assertThat(actual.getWord()).isEqualTo(word),
                 () -> assertThat(actual.getCategory()).isEqualTo(Category.BUSINESS),
                 () -> assertThat(actual.getRandom()).isEqualTo(82)
         );

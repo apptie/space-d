@@ -16,14 +16,31 @@ public class AsyncConfig {
     public Executor asyncStatisticsWordViewCountExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(5);
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("statistics-word-view");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
-        executor.setKeepAliveSeconds(60);
+        executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
-        executor.setAwaitTerminationSeconds(60);
+        executor.setAwaitTerminationSeconds(30);
+        executor.setTaskDecorator(new MDCTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+    
+    @Bean
+    public Executor asyncCalculateSkillExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("calculate-skill");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setKeepAliveSeconds(30);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setAwaitTerminationSeconds(30);
         executor.setTaskDecorator(new MDCTaskDecorator());
         executor.initialize();
         return executor;
@@ -33,14 +50,31 @@ public class AsyncConfig {
     public Executor asyncWordViewCounterExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(5);
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("word-view-counter");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
-        executor.setKeepAliveSeconds(60);
+        executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
-        executor.setAwaitTerminationSeconds(60);
+        executor.setAwaitTerminationSeconds(30);
+        executor.setTaskDecorator(new MDCTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
+    public Executor asyncQuizMetadataCounterExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("quiz-metadata-counter");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setKeepAliveSeconds(30);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setAwaitTerminationSeconds(30);
         executor.setTaskDecorator(new MDCTaskDecorator());
         executor.initialize();
         return executor;

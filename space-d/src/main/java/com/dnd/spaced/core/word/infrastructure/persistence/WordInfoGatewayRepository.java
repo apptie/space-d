@@ -6,7 +6,7 @@ import static com.dnd.spaced.core.word.domain.QWord.word;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.dto.WordInfo;
-import com.dnd.spaced.core.word.domain.dto.WordInfoMapper;
+import com.dnd.spaced.core.word.domain.dto.mapper.WordInfoMapper;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.WordInfoRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;

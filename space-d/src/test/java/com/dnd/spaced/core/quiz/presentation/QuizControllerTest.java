@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,11 +23,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
+import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse.QuizQuestionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse.QuizGradedAnswerResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse.QuizGradedAnswerResponse.QuizQuestionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -80,7 +83,14 @@ class QuizControllerTest extends CommonControllerSliceTest {
         // given
         willDoNothing().given(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
 
-        GradeQuizRequest request = new GradeQuizRequest(new int[]{0, 1, 2, 3, 2});
+        SubmitAnswerRequest[] submitAnswers = {
+                new SubmitAnswerRequest(1L, "Authorization"),
+                new SubmitAnswerRequest(2L, "Domain"),
+                new SubmitAnswerRequest(3L, "Controller"),
+                new SubmitAnswerRequest(2L, "Web"),
+                new SubmitAnswerRequest(1L, "HTTP")
+        };
+        GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -107,8 +117,9 @@ class QuizControllerTest extends CommonControllerSliceTest {
                                 parameterWithName("quizId").description("퀴즈 ID")
                         ),
                         requestFields(
-                                fieldWithPath("answers").type(JsonFieldType.ARRAY).description("퀴즈 문제 답")
-                                                        .attributes(field("constraints", "인덱스 기반"))
+                                fieldWithPath("submitAnswers").type(JsonFieldType.ARRAY).description("퀴즈 문제 정답"),
+                                fieldWithPath("submitAnswers[*].wordId").type(JsonFieldType.NUMBER).description("정답 용어 ID"),
+                                fieldWithPath("submitAnswers[*].content").type(JsonFieldType.STRING).description("정답 용어 이름")
                         )
                 )
         );
@@ -125,7 +136,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
 
         );
-        GradedAnswerResponse gradedAnswerResponse1 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse1 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -141,7 +152,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse2 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse2 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -157,7 +168,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse3 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse3 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -173,7 +184,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse4 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse4 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -189,7 +200,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse5 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse5 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -198,15 +209,15 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "execute",
                 true
         );
-        GradedAnswerCollectionResponse response = new GradedAnswerCollectionResponse(
+        QuizGradedAnswerCollectionResponse response = new QuizGradedAnswerCollectionResponse(
                 List.of(
-                        gradedAnswerResponse1,
-                        gradedAnswerResponse2,
-                        gradedAnswerResponse3,
-                        gradedAnswerResponse4,
-                        gradedAnswerResponse5
+                        quizGradedAnswerResponse1,
+                        quizGradedAnswerResponse2,
+                        quizGradedAnswerResponse3,
+                        quizGradedAnswerResponse4,
+                        quizGradedAnswerResponse5
                 ),
-                gradedAnswerResponse5.id()
+                quizGradedAnswerResponse5.id()
         );
         given(quizService.readGradedAnswers(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
 
@@ -224,10 +235,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].quizQuestion.id").exists(),
                 jsonPath("answers[*].quizQuestion.quizCategory").exists(),
                 jsonPath("answers[*].quizQuestion.question").exists(),
-                jsonPath("answers[*].quizQuestion.questionContent").exists(),
+                jsonPath("answers[*].quizQuestion.passage").exists(),
                 jsonPath("answers[*].selectedQuizOptionContent").exists(),
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
-                jsonPath("answers[*].isCorrect").exists()
+                jsonPath("answers[*].corrected").exists()
         );
 
         verify(quizService).readGradedAnswers(
@@ -258,10 +269,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("answers[*].quizQuestion.id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
                                 fieldWithPath("answers[*].quizQuestion.quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
                                 fieldWithPath("answers[*].quizQuestion.question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
-                                fieldWithPath("answers[*].quizQuestion.questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("answers[*].quizQuestion.passage").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
                                 fieldWithPath("answers[*].selectedQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 회원 제출 답 내용"),
                                 fieldWithPath("answers[*].answerQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 정답 내용"),
-                                fieldWithPath("answers[*].isCorrect").type(JsonFieldType.BOOLEAN).description("정답 여부"),
+                                fieldWithPath("answers[*].corrected").type(JsonFieldType.BOOLEAN).description("정답 여부"),
                                 fieldWithPath("lastGradedAnswerId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 퀴즈 제출 답 ID")
                         )
                 )
@@ -279,7 +290,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
 
         );
-        GradedAnswerResponse gradedAnswerResponse1 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse1 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -295,7 +306,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse2 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse2 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -311,7 +322,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse3 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse3 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -327,7 +338,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse4 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse4 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -343,7 +354,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다."
 
         );
-        GradedAnswerResponse gradedAnswerResponse5 = new GradedAnswerResponse(
+        QuizGradedAnswerResponse quizGradedAnswerResponse5 = new QuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,
@@ -352,23 +363,23 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "execute",
                 true
         );
-        GradedAnswerCollectionResponse response = new GradedAnswerCollectionResponse(
+        QuizGradedAnswerCollectionResponse response = new QuizGradedAnswerCollectionResponse(
                 List.of(
-                        gradedAnswerResponse1,
-                        gradedAnswerResponse2,
-                        gradedAnswerResponse3,
-                        gradedAnswerResponse4,
-                        gradedAnswerResponse5
+                        quizGradedAnswerResponse1,
+                        quizGradedAnswerResponse2,
+                        quizGradedAnswerResponse3,
+                        quizGradedAnswerResponse4,
+                        quizGradedAnswerResponse5
                 ),
-                gradedAnswerResponse5.id()
+                quizGradedAnswerResponse5.id()
         );
 
-        given(quizService.readGradedAnswers(anyLong())).willReturn(response);
+        given(quizService.readGradedAnswers(anyLong(), anyLong())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
                 get("/quizzes/{quizId}/graded-answers", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
-                                                .accept(MediaType.APPLICATION_JSON)
+                                                           .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isOk(),
                 jsonPath("answers").exists(),
@@ -379,13 +390,13 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].quizQuestion.id").exists(),
                 jsonPath("answers[*].quizQuestion.quizCategory").exists(),
                 jsonPath("answers[*].quizQuestion.question").exists(),
-                jsonPath("answers[*].quizQuestion.questionContent").exists(),
+                jsonPath("answers[*].quizQuestion.passage").exists(),
                 jsonPath("answers[*].selectedQuizOptionContent").exists(),
                 jsonPath("answers[*].answerQuizOptionContent").exists(),
-                jsonPath("answers[*].isCorrect").exists()
+                jsonPath("answers[*].corrected").exists()
         );
 
-        verify(quizService).readGradedAnswers(anyLong());
+        verify(quizService).readGradedAnswers(anyLong(), anyLong());
 
         특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(resultActions);
     }
@@ -408,10 +419,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("answers[*].quizQuestion.id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
                                 fieldWithPath("answers[*].quizQuestion.quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
                                 fieldWithPath("answers[*].quizQuestion.question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
-                                fieldWithPath("answers[*].quizQuestion.questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("answers[*].quizQuestion.passage").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
                                 fieldWithPath("answers[*].selectedQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 회원 제출 답 내용"),
                                 fieldWithPath("answers[*].answerQuizOptionContent").type(JsonFieldType.STRING).description("퀴즈 문제 정답 내용"),
-                                fieldWithPath("answers[*].isCorrect").type(JsonFieldType.BOOLEAN).description("정답 여부"),
+                                fieldWithPath("answers[*].corrected").type(JsonFieldType.BOOLEAN).description("정답 여부"),
                                 fieldWithPath("lastGradedAnswerId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 퀴즈 제출 답 ID")
                         )
                 )
@@ -419,9 +430,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
     }
 
     @Test
+    @WithMockUser("1")
     void 퀴즈_조회_요청_성공_테스트() throws Exception {
         // given
-        given(quizService.findQuizBy(anyLong())).willReturn(createQuizResponse());
+        given(quizService.readQuiz(anyLong(), anyLong())).willReturn(createQuizResponse());
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -434,8 +446,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizCategory", is("개발")),
                 jsonPath("quizQuestions[0].question", is("다음 예문을 보고 예문에 맞는 용어를 선택해주세요.")),
-                jsonPath("quizQuestions[0].questionContent",
-                        is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
+                jsonPath("quizQuestions[0].passage", is("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")),
                 jsonPath("quizQuestions[0].quizOptions").exists(),
                 jsonPath("quizQuestions[0].quizOptions[0].id", is(1L), Long.class),
                 jsonPath("quizQuestions[0].quizOptions[0].content", is("Authorization")),
@@ -448,7 +459,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].answerOptionWordId", is(1L), Long.class)
         );
 
-        verify(quizService).findQuizBy(anyLong());
+        verify(quizService).readQuiz(anyLong(), anyLong());
 
         퀴즈_조회_요청_문서화(resultActions);
     }
@@ -469,11 +480,70 @@ class QuizControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("quizQuestions[*].id").type(JsonFieldType.NUMBER).description("퀴즈 문제 ID"),
                                 fieldWithPath("quizQuestions[*].quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
                                 fieldWithPath("quizQuestions[*].question").type(JsonFieldType.STRING).description("퀴즈 문제 내용"),
-                                fieldWithPath("quizQuestions[*].questionContent").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
+                                fieldWithPath("quizQuestions[*].passage").type(JsonFieldType.STRING).description("퀴즈 문제 지문"),
                                 fieldWithPath("quizQuestions[*].quizOptions").type(JsonFieldType.ARRAY).description("퀴즈 문제 보기"),
                                 fieldWithPath("quizQuestions[*].quizOptions[*].id").type(JsonFieldType.NUMBER).description("퀴즈 문제 보기 ID"),
+                                fieldWithPath("quizQuestions[*].quizOptions[*].wordId").type(JsonFieldType.NUMBER).description("퀴즈 문제 보기 용어 ID"),
                                 fieldWithPath("quizQuestions[*].quizOptions[*].content").type(JsonFieldType.STRING).description("퀴즈 문제 보기 내용"),
                                 fieldWithPath("quizQuestions[*].answerOptionWordId").type(JsonFieldType.NUMBER).description("퀴즈 문제 정답 용어 ID")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @WithMockUser("1")
+    void 퀴즈_목록_조회_요청_성공_테스트() throws Exception {
+        // given
+        QuizCollectionResponse.QuizResponse.QuizQuestionResponse quizQuestionResponse1 = new QuizCollectionResponse.QuizResponse.QuizQuestionResponse("개발", "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘");
+        QuizCollectionResponse.QuizResponse.QuizQuestionResponse quizQuestionResponse2 = new QuizCollectionResponse.QuizResponse.QuizQuestionResponse("개발", "사람이 읽기 쉬운 데이터 형식으로, 주로 설정 파일에 사용");
+        QuizCollectionResponse.QuizResponse.QuizQuestionResponse quizQuestionResponse3 = new QuizCollectionResponse.QuizResponse.QuizQuestionResponse("개발", "간단하고 가독성이 높은 설정 파일 형식으로, 키-값 쌍을 이용해 데이터를 표현");
+        QuizCollectionResponse.QuizResponse.QuizQuestionResponse quizQuestionResponse4 = new QuizCollectionResponse.QuizResponse.QuizQuestionResponse("개발", "더 이상 사용되지 않거나, 지원되지 않는다는 뜻");
+        QuizCollectionResponse.QuizResponse.QuizQuestionResponse quizQuestionResponse5 = new QuizCollectionResponse.QuizResponse.QuizQuestionResponse("개발", "주로 프로그램이나 코드, 명령을 실행할 때 사용");
+        QuizCollectionResponse.QuizResponse quizResponse = new QuizCollectionResponse.QuizResponse(
+                1L,
+                1L,
+                false,
+                LocalDateTime.now(),
+                List.of(quizQuestionResponse1, quizQuestionResponse2, quizQuestionResponse3, quizQuestionResponse4, quizQuestionResponse5)
+        );
+        QuizCollectionResponse response = new QuizCollectionResponse(List.of(quizResponse), 1L);
+
+        given(quizService.readQuizzes(anyLong(), any(ReadAllQuizRequest.class), any(Pageable.class))).willReturn(response);
+
+        // when & then
+        ResultActions resultActions = mockMvc.perform(
+                get("/quizzes").header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+        ).andExpectAll(
+                status().isOk(),
+                jsonPath("quizzes").exists(),
+                jsonPath("quizzes[0].id", is(1L), Long.class),
+                jsonPath("quizzes[0].accountId", is(1L), Long.class),
+                jsonPath("quizzes[0].solved").value(false),
+                jsonPath("quizzes[0].createdAt").exists(),
+                jsonPath("quizzes[0].quizQuestions").exists(),
+                jsonPath("lastQuizId", is(1L), Long.class)
+        );
+
+        퀴즈_목록_조회_요청_문서화(resultActions);
+    }
+
+    private void 퀴즈_목록_조회_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 Access Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("quizzes").type(JsonFieldType.ARRAY).description("회원이 생성한 퀴즈 목록"),
+                                fieldWithPath("quizzes[*].id").type(JsonFieldType.NUMBER).description("퀴즈 ID"),
+                                fieldWithPath("quizzes[*].accountId").type(JsonFieldType.NUMBER).description("퀴즈를 생성한 회원 ID"),
+                                fieldWithPath("quizzes[*].solved").type(JsonFieldType.BOOLEAN).description("퀴즈 풀이 여부"),
+                                fieldWithPath("quizzes[*].createdAt").type(JsonFieldType.STRING).description("퀴즈 생성 시간"),
+                                fieldWithPath("quizzes[*].quizQuestions").type(JsonFieldType.ARRAY).description("퀴즈 문제"),
+                                fieldWithPath("quizzes[*].quizQuestions[*].quizCategory").type(JsonFieldType.STRING).description("퀴즈 문제 카테고리"),
+                                fieldWithPath("quizzes[*].quizQuestions[*].passage").type(JsonFieldType.STRING).description("퀴즈 문제 질문"),
+                                fieldWithPath("lastQuizId").type(JsonFieldType.NUMBER).description("마지막으로 조회한 퀴즈 ID")
                         )
                 )
         );
@@ -486,10 +556,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
                 List.of(
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(1L, "Authorization"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(2L, "status"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(3L, "gradient"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(4L, "locale")
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(1L, 1L, "Authorization"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(2L, 2L, "status"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(3L, 3L, "gradient"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(4L, 3L, "locale")
                 ),
                 1L
         );
@@ -499,10 +569,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "설정 파일이나 데이터 교환 포맷으로 자주 사용됩니다.",
                 List.of(
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(5L, "YAML"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(6L, "jar"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(7L, "redirect"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(8L, "empty")
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(5L, 5L, "YAML"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(6L, 6L, "jar"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(7L, 7L, "redirect"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(8L, 8L, "empty")
                 ),
                 2L
         );
@@ -512,10 +582,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "구성 파일에 사용하기 쉬운 데이터 직렬화 언어입니다.",
                 List.of(
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(9L, "TOML"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(10L, "directory"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(11L, "SaaS"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(12L, "usage")
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(9L, 9L, "TOML"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(10L, 10L, "directory"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(11L, 11L, "SaaS"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(12L, 12L, "usage")
                 ),
                 3L
         );
@@ -525,10 +595,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "더 이상 사용되지 않거나, 지원되지 않는다는 뜻입니다.",
                 List.of(
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(13L, "deprecated"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(14L, "GUI"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(15L, "JWT"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(16L, "Dequeue")
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(13L, 13L, "deprecated"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(14L, 14L, "GUI"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(15L, 15L, "JWT"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(16L, 16L, "Dequeue")
                 ),
                 4L
         );
@@ -538,10 +608,10 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "개발에서는 주로 프로그램이나 코드, 명령을 실행할 때 사용됩니다.",
                 List.of(
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(17L, "execute"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(18L, "COALESCE"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(19L, "Queue"),
-                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(20L, "carousel")
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(17L, 17L, "execute"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(18L, 18L, "COALESCE"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(19L, 19L, "Queue"),
+                        new QuizResponse.QuizQuestionResponse.QuizOptionResponse(20L, 20L, "carousel")
                 ),
                 5L
         );
