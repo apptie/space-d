@@ -1,6 +1,7 @@
 package com.dnd.spaced.core.quiz.application;
 
 import com.dnd.spaced.core.quiz.application.dto.mapper.QuizApplicationMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.QuizCollectionResponseMapper;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
@@ -14,12 +15,13 @@ import com.dnd.spaced.core.quiz.application.exception.AlreadyGradeQuizException;
 import com.dnd.spaced.core.quiz.application.exception.InvalidQuizWordCountException;
 import com.dnd.spaced.core.quiz.application.exception.QuizNotFoundException;
 import com.dnd.spaced.core.quiz.application.exception.WordMetadataNotFoundException;
-import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.Quiz.SubmitAnswer;
+import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizInfo;
 import com.dnd.spaced.core.quiz.domain.embed.QuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.QuizGradedAnswerRepository;
@@ -115,9 +117,9 @@ public class QuizService {
     }
 
     public QuizCollectionResponse readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {
-        List<QuizInfo> quizzes = quizRepository.findAllBy(accountId, request.lastQuizId(), pageable);
+        List<SimpleQuizInfo> quizzes = quizRepository.findAllBy(accountId, request.lastQuizId(), pageable);
 
-        return QuizApplicationMapper.toReadAllQuizDto(quizzes);
+        return QuizCollectionResponseMapper.toCollectionResponse(quizzes);
     }
 
     private void validateQuiz(Quiz quiz) {

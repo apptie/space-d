@@ -7,11 +7,14 @@ import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizInfo.QuizQuestionInfo;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.QuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,12 +30,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class QuizGatewayRepository implements QuizRepository {
 
-    private static final RowMapper<QuizInfo> quizInfoRowMapper = (rs, ignoreRowNum) -> new QuizInfo(
-            rs.getLong(1),
+    private static final RowMapper<SimpleQuizData> simpleQuizRowMapper = (rs, ignoreRowNum) -> new SimpleQuizData(
+        rs.getLong(1),
             rs.getLong(2),
             rs.getBoolean(3),
             rs.getTimestamp(4).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            Collections.emptyList()
+            QuizCategory.valueOf(rs.getString(5)),
+            rs.getString(6)
     );
 
     private final JPAQueryFactory queryFactory;
@@ -104,9 +108,42 @@ public class QuizGatewayRepository implements QuizRepository {
     }
 
     @Override
-    public List<QuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
+    public List<SimpleQuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
+        String sql = calculateSql(lastQuizId);
+        MapSqlParameterSource sqlParameters = calculateSqlParameters(accountId, lastQuizId, pageable);
+
+        return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleQuizRowMapper)
+                                                                .stream()
+                                                                .collect(Collectors.groupingBy(
+                                                                        simpleQuizData -> new SimpleQuizKey(
+                                                                                simpleQuizData.id,
+                                                                                simpleQuizData.accountId,
+                                                                                simpleQuizData.solved,
+                                                                                simpleQuizData.createdAt
+                                                                        ),
+                                                                        Collectors.mapping(
+                                                                                simpleQuizData -> new QuizQuestionInfo(
+                                                                                        simpleQuizData.quizCategory,
+                                                                                        simpleQuizData.questionContent
+                                                                                ),
+                                                                                Collectors.toList()
+                                                                        )
+                                                                ))
+                                                                .entrySet()
+                                                                .stream()
+                                                                .map(entry -> new SimpleQuizInfo(
+                                                                        entry.getKey().id,
+                                                                        entry.getKey().accountId,
+                                                                        entry.getKey().solved,
+                                                                        entry.getKey().createdAt,
+                                                                        entry.getValue()
+                                                                ))
+                                                                .toList();
+    }
+
+    private String calculateSql(Long lastQuizId) {
         String sql = """
-        SELECT q.id, q.account_id, q.solved, q.created_at
+        SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.question_example
         FROM (
             SELECT id
             FROM quizzes
@@ -117,8 +154,12 @@ public class QuizGatewayRepository implements QuizRepository {
             sql = sql.concat(" AND id < :lastQuizId");
         }
 
-        sql = sql.concat(" ORDER BY id DESC LIMIT :limit) t left join quizzes q on t.id = q.id");
+        sql = sql.concat(" ORDER BY id DESC LIMIT :limit) t LEFT JOIN quizzes q ON t.id = q.id");
+        sql = sql.concat(" LEFT JOIN quiz_questions qq ON qq.quiz_id = q.id");
+        return sql;
+    }
 
+    private MapSqlParameterSource calculateSqlParameters(Long accountId, Long lastQuizId, Pageable pageable) {
         MapSqlParameterSource sqlParameters = new MapSqlParameterSource()
                 .addValue("accountId", accountId)
                 .addValue("limit", pageable.getPageSize());
@@ -126,7 +167,19 @@ public class QuizGatewayRepository implements QuizRepository {
         if (lastQuizId != null) {
             sqlParameters.addValue("lastQuizId", lastQuizId);
         }
+        return sqlParameters;
+    }
 
-        return namedParameterJdbcTemplate.query(sql, sqlParameters, quizInfoRowMapper);
+    private record SimpleQuizKey(Long id, Long accountId, boolean solved, LocalDateTime createdAt) {
+    }
+
+    private record SimpleQuizData(
+            Long id,
+            Long accountId,
+            boolean solved,
+            LocalDateTime createdAt,
+            QuizCategory quizCategory,
+            String questionContent
+    ) {
     }
 }
