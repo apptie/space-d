@@ -233,12 +233,12 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원이_제출한_오늘의_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트() throws Exception {
         // given
-        TodayQuizGradedAnswerResponse.TodayQuizQuestionResponse todayQuizQuestionResponse = new TodayQuizGradedAnswerResponse.TodayQuizQuestionResponse(
+        TodayQuizGradedAnswerCollectionResponse.TodayQuizGradedAnswerResponse.TodayQuizQuestionResponse todayQuizQuestionResponse = new TodayQuizGradedAnswerCollectionResponse.TodayQuizGradedAnswerResponse.TodayQuizQuestionResponse(
                 "개발",
                 "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
                 "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
         );
-        TodayQuizGradedAnswerResponse todayQuizGradedAnswerResponse = new TodayQuizGradedAnswerResponse(
+        TodayQuizGradedAnswerCollectionResponse.TodayQuizGradedAnswerResponse todayQuizGradedAnswerResponse = new TodayQuizGradedAnswerCollectionResponse.TodayQuizGradedAnswerResponse(
                 1L,
                 1L,
                 1L,

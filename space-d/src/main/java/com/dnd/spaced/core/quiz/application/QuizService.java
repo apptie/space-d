@@ -1,6 +1,7 @@
 package com.dnd.spaced.core.quiz.application;
 
-import com.dnd.spaced.core.quiz.application.dto.mapper.QuizApplicationMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.QuizGradedAnswerCollectionResponseMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.QuizResponseMapper;
 import com.dnd.spaced.core.quiz.application.dto.mapper.QuizCollectionResponseMapper;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
@@ -101,19 +102,19 @@ public class QuizService {
                 pageable
         );
 
-        return QuizApplicationMapper.toDto(quizGradedAnswers);
+        return QuizGradedAnswerCollectionResponseMapper.toCollectionDto(quizGradedAnswers);
     }
 
     public QuizGradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
         List<QuizGradedAnswer> quizGradedAnswers = quizGradedAnswerRepository.findAllBy(accountId, quizId);
 
-        return QuizApplicationMapper.toDto(quizGradedAnswers);
+        return QuizGradedAnswerCollectionResponseMapper.toCollectionDto(quizGradedAnswers);
     }
 
     public QuizResponse readQuiz(Long accountId, Long quizId) {
         QuizInfo quizInfo = findQuizInfo(quizId, accountId);
 
-        return QuizApplicationMapper.toDto(quizInfo);
+        return QuizResponseMapper.toDto(quizInfo);
     }
 
     public QuizCollectionResponse readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {

@@ -1,6 +1,9 @@
 package com.dnd.spaced.core.quiz.application;
 
-import com.dnd.spaced.core.quiz.application.dto.mapper.TodayQuizApplicationMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.SimpleTodayQuizResponseMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.TodayQuizGradedAnswerResponseMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.TodayQuizGradedAnswerCollectionResponseMapper;
+import com.dnd.spaced.core.quiz.application.dto.mapper.TodayQuizResponseMapper;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
@@ -34,14 +37,14 @@ public class TodayQuizService {
     public SimpleTodayQuizResponse readLatestTodayQuiz() {
         SimpleTodayQuizInfo simpleTodayQuizInfo = findLatestQuiz();
 
-        return TodayQuizApplicationMapper.toDto(simpleTodayQuizInfo);
+        return SimpleTodayQuizResponseMapper.toDto(simpleTodayQuizInfo);
     }
 
     public TodayQuizResponse readTodayQuiz(Long accountId, Long todayQuizId) {
         TodayQuiz todayQuiz = findTodayQuizInfo(todayQuizId);
         boolean solved = todayQuizGradedAnswerRepository.existsBy(accountId, todayQuizId);
 
-        return TodayQuizApplicationMapper.toDto(todayQuiz, accountId, solved);
+        return TodayQuizResponseMapper.toDto(todayQuiz, accountId, solved);
     }
 
     @Transactional
@@ -68,13 +71,13 @@ public class TodayQuizService {
                 pageable
         );
 
-        return TodayQuizApplicationMapper.toDto(todayQuizGradedAnswers);
+        return TodayQuizGradedAnswerCollectionResponseMapper.toDto(todayQuizGradedAnswers);
     }
 
     public TodayQuizGradedAnswerResponse readTargetTodayQuizGradedAnswers(Long accountId, Long todayQuizId) {
         TodayQuizGradedAnswer todayQuizGradedAnswer = findTodayQuizGradedAnswer(accountId, todayQuizId);
 
-        return TodayQuizApplicationMapper.toDto(todayQuizGradedAnswer);
+        return TodayQuizGradedAnswerResponseMapper.toDto(todayQuizGradedAnswer);
     }
 
     private SimpleTodayQuizInfo findLatestQuiz() {
