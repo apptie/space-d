@@ -36,7 +36,7 @@ public final class TodayQuizApplicationMapper {
                 todayQuizGradedAnswer.getAccountId(),
                 toGradedAnswerDto(quizQuestion),
                 todayQuizGradedAnswer.getSelectedContent(),
-                quizQuestion.getTodayQuizAnswerOption().getContent(),
+                quizQuestion.getTodayQuizAnswerOption().getAnswerContent(),
                 todayQuizGradedAnswer.isCorrect()
         );
     }
@@ -87,8 +87,8 @@ public final class TodayQuizApplicationMapper {
                 todayQuizQuestion.getQuestion(),
                 todayQuizQuestion.getPassage(),
                 todayQuizOptionResponses,
-                todayQuizQuestion.getTodayQuizAnswerOption().getWordId(),
-                todayQuizQuestion.getTodayQuizAnswerOption().getContent()
+                todayQuizQuestion.getTodayQuizAnswerOption().getAnswerWordId(),
+                todayQuizQuestion.getTodayQuizAnswerOption().getAnswerContent()
         );
     }
 

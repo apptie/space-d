@@ -19,8 +19,8 @@ class TodayQuizAnswerOptionTest {
         );
 
         assertAll(
-                () -> assertThat(actual.getWordId()).isEqualTo(1L),
-                () -> assertThat(actual.getContent()).isEqualTo("Authorization")
+                () -> assertThat(actual.getAnswerWordId()).isEqualTo(1L),
+                () -> assertThat(actual.getAnswerContent()).isEqualTo("Authorization")
         );
     }
 
