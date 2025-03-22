@@ -43,9 +43,9 @@ public class QuizQuestion {
     @Embedded
     private QuizAnswerOption quizAnswerOption;
 
-    private String questionContent;
+    private String question;
 
-    private String questionExample;
+    private String passage;
 
     public static QuizQuestion of(
             QuizCategory quizCategory,
@@ -77,8 +77,8 @@ public class QuizQuestion {
             Quiz quiz
     ) {
         this.quizCategory = quizCategory;
-        this.questionContent = question;
-        this.questionExample = questionContent;
+        this.question = question;
+        this.passage = questionContent;
         this.quizAnswerOption = quizAnswerOption;
         this.quiz = quiz;
     }

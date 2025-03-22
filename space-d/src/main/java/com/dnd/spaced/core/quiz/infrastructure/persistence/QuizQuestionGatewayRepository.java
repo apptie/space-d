@@ -29,7 +29,7 @@ public class QuizQuestionGatewayRepository implements QuizQuestionRepository {
         }
 
         String sql = """
-                INSERT INTO quiz_questions(question_content, question_example, answer_content, answer_word_id, quiz_category, quiz_id)
+                INSERT INTO quiz_questions(question, passage, answer_content, answer_word_id, quiz_category, quiz_id)
                 VALUES(?, ?, ?, ?, ?, ?)
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -42,8 +42,8 @@ public class QuizQuestionGatewayRepository implements QuizQuestionRepository {
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         QuizQuestion quizQuestion = quizQuestions.get(i);
 
-                        ps.setString(1, quizQuestion.getQuestionContent());
-                        ps.setString(2, quizQuestion.getQuestionExample());
+                        ps.setString(1, quizQuestion.getQuestion());
+                        ps.setString(2, quizQuestion.getPassage());
                         ps.setString(3, quizQuestion.getQuizAnswerOption().getAnswerContent());
                         ps.setLong(4, quizQuestion.getQuizAnswerOption().getAnswerWordId());
                         ps.setString(5, quizQuestion.getQuizCategory().name());

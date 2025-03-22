@@ -46,8 +46,8 @@ public final class QuizInfoMapper {
                     quizQuestion.getId(),
                     quizQuestion.getQuizCategory(),
                     quizQuestion.getQuizAnswerOption(),
-                    quizQuestion.getQuestionContent(),
-                    quizQuestion.getQuestionExample(),
+                    quizQuestion.getQuestion(),
+                    quizQuestion.getPassage(),
                     Collections.emptyList()
             );
         }
@@ -59,8 +59,8 @@ public final class QuizInfoMapper {
                 quizQuestion.getId(),
                 quizQuestion.getQuizCategory(),
                 quizQuestion.getQuizAnswerOption(),
-                quizQuestion.getQuestionContent(),
-                quizQuestion.getQuestionExample(),
+                quizQuestion.getQuestion(),
+                quizQuestion.getPassage(),
                 quizOptionInfos
         );
     }

@@ -8,12 +8,12 @@ public record QuizResponse(Long id, Long accountId, List<QuizQuestionResponse> q
             Long id,
             String quizCategory,
             String question,
-            String questionContent,
+            String passage,
             List<QuizOptionResponse> quizOptions,
             Long answerOptionWordId
     ) {
 
-        public record QuizOptionResponse(Long id, String content) {
+        public record QuizOptionResponse(Long id, Long wordId, String content) {
         }
     }
 }

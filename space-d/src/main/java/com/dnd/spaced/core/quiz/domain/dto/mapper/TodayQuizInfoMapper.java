@@ -23,7 +23,7 @@ public final class TodayQuizInfoMapper {
                 todayQuiz.getId(),
                 todayQuizQuestion.getQuizCategory(),
                 todayQuizQuestion.getQuestion(),
-                todayQuizQuestion.getQuestionContent(),
+                todayQuizQuestion.getPassage(),
                 todayQuizQuestion.getTodayQuizAnswerOption(),
                 todayQuiz.getCreatedAt()
         );
@@ -58,7 +58,7 @@ public final class TodayQuizInfoMapper {
                 todayQuiz.getId(),
                 todayQuizQuestion.getQuizCategory(),
                 todayQuizQuestion.getQuestion(),
-                todayQuizQuestion.getQuestionContent(),
+                todayQuizQuestion.getPassage(),
                 todayQuizQuestion.getTodayQuizAnswerOption(),
                 todayQuizOptionInfos
         );

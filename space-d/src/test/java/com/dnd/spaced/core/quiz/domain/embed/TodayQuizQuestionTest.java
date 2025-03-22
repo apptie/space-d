@@ -10,7 +10,6 @@ import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizExampleContentException;
 import com.dnd.spaced.core.quiz.domain.embed.exception.InvalidTodayQuizQuestionException;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
-import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ class TodayQuizQuestionTest {
         assertAll(
                 () -> assertThat(actual.getQuizCategory()).isEqualTo(QuizCategory.DEVELOP),
                 () -> assertThat(actual.getQuestion()).isEqualTo("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                () -> assertThat(actual.getQuestionContent()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
+                () -> assertThat(actual.getPassage()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
         );
     }
 

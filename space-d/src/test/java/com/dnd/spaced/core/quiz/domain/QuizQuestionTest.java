@@ -38,8 +38,8 @@ class QuizQuestionTest {
 
         assertAll(
                 () -> assertThat(actual.getQuizCategory()).isEqualTo(quizCategory),
-                () -> assertThat(actual.getQuestionContent()).isEqualTo("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                () -> assertThat(actual.getQuestionExample()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
+                () -> assertThat(actual.getQuestion()).isEqualTo("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
+                () -> assertThat(actual.getPassage()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 () -> assertThat(actual.getQuizAnswerOption()).isEqualTo(quizAnswerOption),
                 () -> assertThat(actual.getQuiz()).isEqualTo(quiz)
         );

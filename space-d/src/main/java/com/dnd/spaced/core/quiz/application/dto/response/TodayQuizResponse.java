@@ -8,7 +8,7 @@ public record TodayQuizResponse(Long id, TodayQuizQuestionResponse todayQuizQues
     public record TodayQuizQuestionResponse(
             String quizCategory,
             String question,
-            String questionContent,
+            String passage,
             List<TodayQuizOptionResponse> todayQuizOptions,
             Long answerWordId,
             String answerContent

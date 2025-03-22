@@ -73,7 +73,7 @@ public final class TodayQuizApplicationMapper {
         return new TodayQuizQuestionResponse(
                 quizQuestion.getQuizCategory().getName(),
                 quizQuestion.getQuestion(),
-                quizQuestion.getQuestionContent()
+                quizQuestion.getPassage()
         );
     }
 
@@ -85,7 +85,7 @@ public final class TodayQuizApplicationMapper {
         return new TodayQuizResponse.TodayQuizQuestionResponse(
                 todayQuizQuestion.getQuizCategory().getName(),
                 todayQuizQuestion.getQuestion(),
-                todayQuizQuestion.getQuestionContent(),
+                todayQuizQuestion.getPassage(),
                 todayQuizOptionResponses,
                 todayQuizQuestion.getTodayQuizAnswerOption().getWordId(),
                 todayQuizQuestion.getTodayQuizAnswerOption().getContent()

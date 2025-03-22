@@ -143,7 +143,7 @@ public class QuizGatewayRepository implements QuizRepository {
 
     private String calculateSql(Long lastQuizId) {
         String sql = """
-        SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.question_example
+        SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.passage
         FROM (
             SELECT id
             FROM quizzes

@@ -7,9 +7,9 @@ public record TodayQuizGradedAnswerResponse(
         TodayQuizQuestionResponse todayQuizQuestion,
         String selectedQuizOptionContent,
         String answerQuizOptionContent,
-        boolean isCorrect
+        boolean corrected
 ) {
 
-    public record TodayQuizQuestionResponse(String quizCategory, String question, String questionContent) {
+    public record TodayQuizQuestionResponse(String quizCategory, String question, String passage) {
     }
 }

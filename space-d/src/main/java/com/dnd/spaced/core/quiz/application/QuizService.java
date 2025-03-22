@@ -6,7 +6,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
@@ -90,7 +90,7 @@ public class QuizService {
         publishGradedQuizEvent(accountId, quizGradedAnswers);
     }
 
-    public GradedAnswerCollectionResponse readGradedAnswers(
+    public QuizGradedAnswerCollectionResponse readGradedAnswers(
             Long accountId,
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
@@ -104,7 +104,7 @@ public class QuizService {
         return QuizApplicationMapper.toDto(quizGradedAnswers);
     }
 
-    public GradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
+    public QuizGradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
         List<QuizGradedAnswer> quizGradedAnswers = quizGradedAnswerRepository.findAllBy(accountId, quizId);
 
         return QuizApplicationMapper.toDto(quizGradedAnswers);

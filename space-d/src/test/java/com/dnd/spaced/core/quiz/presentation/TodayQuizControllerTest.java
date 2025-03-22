@@ -71,7 +71,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion").exists(),
                 jsonPath("todayQuizQuestion.quizCategory").value("개발"),
                 jsonPath("todayQuizQuestion.question").value("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                jsonPath("todayQuizQuestion.questionContent").value(
+                jsonPath("todayQuizQuestion.passage").value(
                         "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
         );
 
@@ -92,7 +92,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                                                                .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.question").description("오늘의 퀴즈 문제")
                                                                            .type(JsonFieldType.STRING),
-                                fieldWithPath("todayQuizQuestion.questionContent").description("오늘의 퀴즈 문제 지문")
+                                fieldWithPath("todayQuizQuestion.passage").description("오늘의 퀴즈 문제 지문")
                                                                                   .type(JsonFieldType.STRING),
                                 fieldWithPath("createdAt").description("오늘의 퀴즈 생성 시간")
                                                           .type(JsonFieldType.STRING)
@@ -133,7 +133,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion").exists(),
                 jsonPath("todayQuizQuestion.quizCategory").value("개발"),
                 jsonPath("todayQuizQuestion.question").value("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                jsonPath("todayQuizQuestion.questionContent").value(
+                jsonPath("todayQuizQuestion.passage").value(
                         "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 jsonPath("todayQuizQuestion.todayQuizOptions").exists(),
                 jsonPath("todayQuizQuestion.todayQuizOptions[*].id").exists(),
@@ -157,7 +157,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                                                                .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.question").description("오늘의 퀴즈 문제")
                                                                            .type(JsonFieldType.STRING),
-                                fieldWithPath("todayQuizQuestion.questionContent").description("오늘의 퀴즈 문제 지문")
+                                fieldWithPath("todayQuizQuestion.passage").description("오늘의 퀴즈 문제 지문")
                                                                                   .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.todayQuizOptions").description("오늘의 퀴즈 문제 보기")
                                                                                    .type(JsonFieldType.ARRAY),
@@ -277,7 +277,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[0].todayQuizQuestion").exists(),
                 jsonPath("answers[0].todayQuizQuestion.quizCategory").value("개발"),
                 jsonPath("answers[0].todayQuizQuestion.question").value("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                jsonPath("answers[0].todayQuizQuestion.questionContent").value(
+                jsonPath("answers[0].todayQuizQuestion.passage").value(
                         "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 jsonPath("answers[0].selectedQuizOptionContent").value("Authorization"),
                 jsonPath("answers[0].answerQuizOptionContent").value("Authorization")
@@ -313,7 +313,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                                                                           .type(JsonFieldType.STRING),
                                 fieldWithPath("answers[*].todayQuizQuestion.question").description("오늘의 퀴즈 문제 내용")
                                                                                       .type(JsonFieldType.STRING),
-                                fieldWithPath("answers[*].todayQuizQuestion.questionContent").description(
+                                fieldWithPath("answers[*].todayQuizQuestion.passage").description(
                                                                                                      "오늘의 퀴즈 문제 지문")
                                                                                              .type(JsonFieldType.STRING),
                                 fieldWithPath("answers[*].selectedQuizOptionContent").description(
@@ -321,7 +321,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                                                                      .type(JsonFieldType.STRING),
                                 fieldWithPath("answers[*].answerQuizOptionContent").description("해당 오늘의 퀴즈 답")
                                                                                    .type(JsonFieldType.STRING),
-                                fieldWithPath("answers[*].isCorrect").description("정답 여부")
+                                fieldWithPath("answers[*].corrected").description("정답 여부")
                                                                      .type(JsonFieldType.BOOLEAN)
                         )
                 )
@@ -362,7 +362,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion").exists(),
                 jsonPath("todayQuizQuestion.quizCategory").value("개발"),
                 jsonPath("todayQuizQuestion.question").value("다음 예문을 보고 예문에 맞는 용어를 선택해주세요."),
-                jsonPath("todayQuizQuestion.questionContent").value(
+                jsonPath("todayQuizQuestion.passage").value(
                         "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 jsonPath("selectedQuizOptionContent").value("Authorization"),
                 jsonPath("answerQuizOptionContent").value("Authorization")
@@ -395,13 +395,13 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                                                                                .type(JsonFieldType.STRING),
                                 fieldWithPath("todayQuizQuestion.question").description("오늘의 퀴즈 문제")
                                                                            .type(JsonFieldType.STRING),
-                                fieldWithPath("todayQuizQuestion.questionContent").description("오늘의 퀴즈 문제 지문")
+                                fieldWithPath("todayQuizQuestion.passage").description("오늘의 퀴즈 문제 지문")
                                                                                   .type(JsonFieldType.STRING),
                                 fieldWithPath("selectedQuizOptionContent").description("해당 오늘의 퀴즈에서 회원이 제출한 답")
                                                                           .type(JsonFieldType.STRING),
                                 fieldWithPath("answerQuizOptionContent").description("해당 오늘의 퀴즈 답")
                                                                         .type(JsonFieldType.STRING),
-                                fieldWithPath("isCorrect").description("정답 여부")
+                                fieldWithPath("corrected").description("정답 여부")
                                                           .type(JsonFieldType.BOOLEAN)
                         )
                 )

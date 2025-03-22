@@ -54,7 +54,7 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
                     tq.id,
                     tq.created_at,
                     tq.question,
-                    tq.question_content,
+                    tq.passage,
                     tq.quiz_category,
                     tq.content,
                     tq.word_id

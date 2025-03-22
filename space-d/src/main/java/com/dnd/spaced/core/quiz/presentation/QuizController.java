@@ -5,7 +5,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
@@ -62,12 +62,12 @@ public class QuizController {
     }
 
     @GetMapping("/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
-        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(
+        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(
                 accountInfo.accountId(),
                 request,
                 pageable
@@ -77,11 +77,11 @@ public class QuizController {
     }
 
     @GetMapping("/{quizId}/graded-answers")
-    public ResponseEntity<GradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {
-        GradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.accountId(), quizId);
+        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.accountId(), quizId);
 
         return ResponseEntity.ok(response);
     }

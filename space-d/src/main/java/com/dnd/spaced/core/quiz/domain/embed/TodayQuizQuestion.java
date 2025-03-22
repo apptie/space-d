@@ -25,7 +25,7 @@ public class TodayQuizQuestion {
 
     private String question;
 
-    private String questionContent;
+    private String passage;
 
     @Embedded
     private TodayQuizAnswerOption todayQuizAnswerOption;
@@ -57,12 +57,12 @@ public class TodayQuizQuestion {
     private TodayQuizQuestion(
             QuizCategory quizCategory,
             String question,
-            String questionContent,
+            String passage,
             TodayQuizAnswerOption todayQuizAnswerOption
     ) {
         this.quizCategory = quizCategory;
         this.question = question;
-        this.questionContent = questionContent;
+        this.passage = passage;
         this.todayQuizAnswerOption = todayQuizAnswerOption;
     }
 

@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.quiz.application.dto.mapper;
 
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse.GradedAnswerResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse.QuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse.QuizQuestionResponse.QuizOptionResponse;
 import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
@@ -29,22 +29,22 @@ public final class QuizApplicationMapper {
         );
     }
 
-    public static GradedAnswerCollectionResponse toDto(List<QuizGradedAnswer> quizGradedAnswers) {
+    public static QuizGradedAnswerCollectionResponse toDto(List<QuizGradedAnswer> quizGradedAnswers) {
         if (quizGradedAnswers.isEmpty()) {
-            return new GradedAnswerCollectionResponse(List.of(), null);
+            return new QuizGradedAnswerCollectionResponse(List.of(), null);
         }
 
-        List<GradedAnswerResponse> responses = quizGradedAnswers.stream()
-                                                                .map(QuizApplicationMapper::toDto)
-                                                                .toList();
+        List<QuizGradedAnswerResponse> responses = quizGradedAnswers.stream()
+                                                                    .map(QuizApplicationMapper::toDto)
+                                                                    .toList();
 
-        return new GradedAnswerCollectionResponse(responses, responses.get(responses.size() - 1).id());
+        return new QuizGradedAnswerCollectionResponse(responses, responses.get(responses.size() - 1).id());
     }
 
-    private static GradedAnswerResponse toDto(QuizGradedAnswer quizGradedAnswer) {
+    private static QuizGradedAnswerResponse toDto(QuizGradedAnswer quizGradedAnswer) {
         QuizQuestion question = quizGradedAnswer.getQuizQuestion();
 
-        return new GradedAnswerResponse(
+        return new QuizGradedAnswerResponse(
                 quizGradedAnswer.getId(),
                 quizGradedAnswer.getAccountId(),
                 quizGradedAnswer.getQuizId(),
@@ -55,12 +55,12 @@ public final class QuizApplicationMapper {
         );
     }
 
-    private static GradedAnswerResponse.QuizQuestionResponse toGradedAnswerDto(QuizQuestion quizQuestion) {
-        return new GradedAnswerResponse.QuizQuestionResponse(
+    private static QuizGradedAnswerResponse.QuizQuestionResponse toGradedAnswerDto(QuizQuestion quizQuestion) {
+        return new QuizGradedAnswerResponse.QuizQuestionResponse(
                 quizQuestion.getId(),
                 quizQuestion.getQuizCategory().getName(),
-                quizQuestion.getQuestionContent(),
-                quizQuestion.getQuestionExample()
+                quizQuestion.getQuestion(),
+                quizQuestion.getPassage()
         );
     }
 
@@ -81,6 +81,6 @@ public final class QuizApplicationMapper {
     }
 
     private static QuizOptionResponse toQuizOptionDto(QuizOptionInfo quizOption) {
-        return new QuizOptionResponse(quizOption.id(), quizOption.content());
+        return new QuizOptionResponse(quizOption.id(), quizOption.wordId(), quizOption.content());
     }
 }

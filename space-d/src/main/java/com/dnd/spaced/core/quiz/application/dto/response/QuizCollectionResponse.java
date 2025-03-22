@@ -13,7 +13,7 @@ public record QuizCollectionResponse(List<QuizResponse> quizzes, Long lastQuizId
             List<QuizQuestionResponse> quizQuestions
     ) {
 
-        public record QuizQuestionResponse(String quizCategory, String questionExample) {
+        public record QuizQuestionResponse(String quizCategory, String passage) {
         }
     }
 }

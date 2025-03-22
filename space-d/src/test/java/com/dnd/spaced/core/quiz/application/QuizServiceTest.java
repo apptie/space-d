@@ -10,7 +10,7 @@ import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSearchRequest;
-import com.dnd.spaced.core.quiz.application.dto.response.GradedAnswerCollectionResponse;
+import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedQuizQuestionEvent;
@@ -200,7 +200,7 @@ class QuizServiceTest {
         ReadQuizGradedAnswerSearchRequest request = new ReadQuizGradedAnswerSearchRequest(null);
 
         // when
-        GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
+        QuizGradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
                 1L, request, PageRequest.of(0, 10)
         );
 
@@ -225,7 +225,7 @@ class QuizServiceTest {
     })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
         // when
-        GradedAnswerCollectionResponse actual = quizService.readGradedAnswers(1L, 1L);
+        QuizGradedAnswerCollectionResponse actual = quizService.readGradedAnswers(1L, 1L);
 
         // then
         assertAll(
