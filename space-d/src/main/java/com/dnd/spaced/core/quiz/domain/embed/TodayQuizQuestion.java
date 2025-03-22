@@ -36,12 +36,12 @@ public class TodayQuizQuestion {
     public static TodayQuizQuestion of(
             QuizCategory quizCategory,
             String questionContent,
-            String questionExample,
+            String passage,
             TodayQuizAnswerOption quizAnswerOption
     ) {
-        validateContent(questionContent, questionExample);
+        validateContent(questionContent, passage);
 
-        return new TodayQuizQuestion(quizCategory, questionContent, questionExample, quizAnswerOption);
+        return new TodayQuizQuestion(quizCategory, questionContent, passage, quizAnswerOption);
     }
 
     private static void validateContent(String questionContent, String exampleContent) {
