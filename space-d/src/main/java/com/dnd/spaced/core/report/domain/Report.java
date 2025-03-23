@@ -26,6 +26,7 @@ public class Report extends CreateTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private ReportReason reportReason;
 
     private Long commentId;
