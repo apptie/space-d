@@ -42,7 +42,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
     @WithMockUser(value = "1", roles = "ADMIN")
     void 신고_목록_조회_요청_성공_테스트() throws Exception {
         // given
-        ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "기타");
+        ReportResponse reportResponse = new ReportResponse(6L, 1L, 3L, "신고 처리", "기타");
         ReportCollectionResponse reportCollectionResponse = new ReportCollectionResponse(List.of(reportResponse), 1L);
         given(adminReportService.readReports(any(ReadAllReportSearchRequest.class), any(Pageable.class)))
                 .willReturn(reportCollectionResponse);
@@ -58,7 +58,7 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                 jsonPath("reports[0].id", is(6L), Long.class),
                 jsonPath("reports[0].commentId", is(1L), Long.class),
                 jsonPath("reports[0].reporterId", is(3L), Long.class),
-                jsonPath("reports[0].reportStatus").value("기타"),
+                jsonPath("reports[0].reportStatus").value("신고 처리"),
                 jsonPath("lastReportId", is(1L), Long.class)
         );
 
@@ -83,7 +83,8 @@ class AdminReportControllerTest extends CommonControllerSliceTest {
                                 fieldWithPath("reports[*].id").type(JsonFieldType.NUMBER).description("신고 ID"),
                                 fieldWithPath("reports[*].commentId").type(JsonFieldType.NUMBER).description("신고 대상 댓글 ID"),
                                 fieldWithPath("reports[*].reporterId").type(JsonFieldType.NUMBER).description("신고자 ID"),
-                                fieldWithPath("reports[*].reportStatus").type(JsonFieldType.STRING).description("신고 사유"),
+                                fieldWithPath("reports[*].reportStatus").type(JsonFieldType.STRING).description("신고 상태"),
+                                fieldWithPath("reports[*].reportReason").type(JsonFieldType.STRING).description("신고 사유"),
                                 fieldWithPath("lastReportId").type(JsonFieldType.NUMBER).optional().description("마지막으로 조회한 신고 ID")
                         )
                 )
