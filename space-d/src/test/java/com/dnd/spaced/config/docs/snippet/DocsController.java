@@ -541,7 +541,7 @@ public class DocsController {
         putUnauthorizedExceptionContent(registerBlacklistTokenException);
         putForbiddenExceptionContent(registerBlacklistTokenException);
         putMethodArgumentNotValidExceptionContent(registerBlacklistTokenException, "accountId");
-        processAuthException(registerBlacklistTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT);
+        processAuthException(registerBlacklistTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT_EXCEPTION);
 
         return registerBlacklistTokenException;
     }
@@ -551,10 +551,10 @@ public class DocsController {
 
         processAuthException(
                 refreshTokenException,
-                AuthErrorCode.REFRESH_TOKEN_NOT_FOUND,
-                AuthErrorCode.EXPIRED_TOKEN,
-                AuthErrorCode.BLOCKED_TOKEN,
-                AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH
+                AuthErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION,
+                AuthErrorCode.EXPIRED_TOKEN_EXCEPTION,
+                AuthErrorCode.BLOCKED_TOKEN_EXCEPTION,
+                AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION
         );
 
         return refreshTokenException;
@@ -572,7 +572,7 @@ public class DocsController {
                 "experienceName"
         );
 
-        processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO);
+        processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION);
         processAccountException(
                 authProfileException,
                 AccountErrorCode.INVALID_COMPANY,

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Persistable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NicknameMetadata extends BaseTimeEntity implements Persistable<String> {
 
-    private static final long START_COUNT_VALUE = 1L;
     private static final int NICKNAME_MIN_LENGTH = 5;
     private static final int NICKNAME_MAX_LENGTH = 6;
     private static final String NICKNAME_EXCEPTION_MESSAGE = String.format(
@@ -26,7 +25,7 @@ public class NicknameMetadata extends BaseTimeEntity implements Persistable<Stri
     @Id
     private String nickname;
 
-    private long count = START_COUNT_VALUE;
+    private long count = 0L;
 
     public static NicknameMetadata from(String nickname) {
         validateContent(nickname);

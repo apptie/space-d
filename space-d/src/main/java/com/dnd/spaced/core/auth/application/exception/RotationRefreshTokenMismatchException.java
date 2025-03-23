@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class RotationRefreshTokenMismatchException extends AuthClientException {
 
     public RotationRefreshTokenMismatchException(String message) {
-        super(AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH, message);
+        super(AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION, message);
     }
 }

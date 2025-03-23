@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class ExpiredTokenException extends AuthClientException {
 
     public ExpiredTokenException(String message) {
-        super(AuthErrorCode.EXPIRED_TOKEN, message);
+        super(AuthErrorCode.EXPIRED_TOKEN_EXCEPTION, message);
     }
 }

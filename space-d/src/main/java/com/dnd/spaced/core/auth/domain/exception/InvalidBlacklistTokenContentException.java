@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class InvalidBlacklistTokenContentException extends AuthServerException {
 
     public InvalidBlacklistTokenContentException(String message) {
-        super(AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT, message);
+        super(AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT_EXCEPTION, message);
     }
 }

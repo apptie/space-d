@@ -133,7 +133,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
                                             .cookie(notRefreshTokenCookie)
         ).andExpectAll(
                 status().isUnauthorized(),
-                jsonPath("$.code").value("REFRESH_TOKEN_NOT_FOUND"),
+                jsonPath("$.code").value("REFRESH_TOKEN_NOT_FOUND_EXCEPTION"),
                 jsonPath("$.message").value("refresh token cookie가 없습니다.")
         );
     }
