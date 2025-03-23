@@ -18,7 +18,7 @@ public enum ReportStatus {
 
     public static Optional<ReportStatus> findBy(String name) {
         return Arrays.stream(ReportStatus.values())
-                     .filter(status -> status.name.equals(name))
+                     .filter(status -> status.name().equalsIgnoreCase(name))
                      .findAny();
     }
 

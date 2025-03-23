@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.admin.application.dto.mapper.AdminApplicationMapper;
+import com.dnd.spaced.core.admin.application.dto.mapper.ReportInfoMapper;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
@@ -8,6 +8,7 @@ import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.ReportStatusNotFoundException;
 import com.dnd.spaced.core.report.domain.Report;
+import com.dnd.spaced.core.report.domain.dto.ReportInfo;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import com.dnd.spaced.core.report.domain.repository.ReportRepository;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AdminReportService {
 
@@ -36,9 +36,9 @@ public class AdminReportService {
 
     public ReportCollectionResponse readReports(ReadAllReportSearchRequest request, Pageable pageable) {
         ReportStatus reportStatus = findReportStatus(request);
-        List<Report> reports = findAllReportsBy(request, reportStatus, pageable);
+        List<ReportInfo> reports = findAllReportsBy(request, reportStatus, pageable);
 
-        return AdminApplicationMapper.toDto(reports);
+        return ReportInfoMapper.toDto(reports);
     }
 
     private Report findReport(Long reportId) {
@@ -52,15 +52,7 @@ public class AdminReportService {
 
     private ReportStatus findReportStatus(ProcessReportRequest request) {
         return ReportStatus.findBy(request.reportStatus())
-                           .orElseThrow(
-                                   () -> new ReportStatusNotFoundException(
-                                           "지정한 신고 상태를 찾을 수 없습니다."
-                                   )
-                           );
-    }
-
-    private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
-        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
+                           .orElseThrow(() -> new ReportStatusNotFoundException("지정한 신고 상태를 찾을 수 없습니다."));
     }
 
     private ReportStatus findReportStatus(ReadAllReportSearchRequest request) {
@@ -68,7 +60,11 @@ public class AdminReportService {
                            .orElse(null);
     }
 
-    private List<Report> findAllReportsBy(
+    private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
+        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
+    }
+
+    private List<ReportInfo> findAllReportsBy(
             ReadAllReportSearchRequest request,
             ReportStatus reportStatus,
             Pageable pageable

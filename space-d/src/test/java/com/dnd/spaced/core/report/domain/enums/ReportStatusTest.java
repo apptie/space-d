@@ -18,9 +18,9 @@ class ReportStatusTest {
 
     private static Stream<Arguments> findByTestArguments() {
         return Stream.of(
-                Arguments.of("처리 전", ReportStatus.PENDING),
-                Arguments.of("신고 처리", ReportStatus.PROCESSED),
-                Arguments.of("신고 반려", ReportStatus.UN_PROCESSED)
+                Arguments.of("PENDING", ReportStatus.PENDING),
+                Arguments.of("PROCESSED", ReportStatus.PROCESSED),
+                Arguments.of("UN_PROCESSED", ReportStatus.UN_PROCESSED)
         );
     }
 

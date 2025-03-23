@@ -10,7 +10,7 @@ import com.dnd.spaced.core.report.application.exception.CannotReportOwnCommentEx
 import com.dnd.spaced.core.report.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.report.application.exception.ReportReasonNotFoundException;
 import com.dnd.spaced.core.report.application.helper.WithCommentTestHelper;
-import com.dnd.spaced.core.report.domain.Report;
+import com.dnd.spaced.core.report.domain.dto.ReportInfo;
 import com.dnd.spaced.core.report.domain.repository.ReportRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -58,7 +58,7 @@ class ReportServiceTest extends WithCommentTestHelper {
         reportService.report(2L, request);
 
         // then
-        List<Report> actual = reportRepository.findAllBy(
+        List<ReportInfo> actual = reportRepository.findAllBy(
                 null,
                 null,
                 Pageable.ofSize(10)
@@ -66,9 +66,9 @@ class ReportServiceTest extends WithCommentTestHelper {
 
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).getCommentId()).isEqualTo(comment.getId()),
-                () -> assertThat(actual.get(0).getReporterId()).isEqualTo(2L),
-                () -> assertThat(actual.get(0).getReportReason().getCause()).isEqualTo("광고 및 홍보성 내용")
+                () -> assertThat(actual.get(0).commentId()).isEqualTo(comment.getId()),
+                () -> assertThat(actual.get(0).reporterId()).isEqualTo(2L),
+                () -> assertThat(actual.get(0).reportReason().getCause()).isEqualTo("광고 및 홍보성 내용")
         );
     }
 
