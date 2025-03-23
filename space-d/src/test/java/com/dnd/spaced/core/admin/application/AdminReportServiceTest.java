@@ -42,7 +42,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
     @Test
     void 신고를_처리한다() {
         // when
-        ProcessReportRequest request = new ProcessReportRequest("신고 처리");
+        ProcessReportRequest request = new ProcessReportRequest("PROCESSED");
 
         adminReportService.processReport(report.getId(), request);
 

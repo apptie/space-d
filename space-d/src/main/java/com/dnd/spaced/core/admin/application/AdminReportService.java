@@ -52,20 +52,16 @@ public class AdminReportService {
 
     private ReportStatus findReportStatus(ProcessReportRequest request) {
         return ReportStatus.findBy(request.reportStatus())
-                           .orElseThrow(
-                                   () -> new ReportStatusNotFoundException(
-                                           "지정한 신고 상태를 찾을 수 없습니다."
-                                   )
-                           );
-    }
-
-    private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
-        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
+                           .orElseThrow(() -> new ReportStatusNotFoundException("지정한 신고 상태를 찾을 수 없습니다."));
     }
 
     private ReportStatus findReportStatus(ReadAllReportSearchRequest request) {
         return ReportStatus.findBy(request.reportStatus())
                            .orElse(null);
+    }
+
+    private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
+        eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
     }
 
     private List<Report> findAllReportsBy(
