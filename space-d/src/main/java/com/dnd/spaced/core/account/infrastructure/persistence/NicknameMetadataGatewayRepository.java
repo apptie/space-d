@@ -17,7 +17,6 @@ public class NicknameMetadataGatewayRepository implements NicknameMetadataReposi
     private final JPAQueryFactory queryFactory;
     private final NicknameMetadataCrudRepository nicknameMetadataCrudRepository;
 
-
     @Override
     public NicknameMetadata save(NicknameMetadata nicknameMetadata) {
         return nicknameMetadataCrudRepository.save(nicknameMetadata);
