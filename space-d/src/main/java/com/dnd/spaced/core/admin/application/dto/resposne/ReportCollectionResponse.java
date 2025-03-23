@@ -4,6 +4,6 @@ import java.util.List;
 
 public record ReportCollectionResponse(List<ReportResponse> reports, Long lastReportId) {
 
-    public record ReportResponse(Long id, Long commentId, Long reporterId, String reportStatus) {
+    public record ReportResponse(Long id, Long commentId, Long reporterId, String reportStatus, String reportReason) {
     }
 }
