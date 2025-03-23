@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AccountApplicationMapper {
+public final class AccountResponseMapper {
 
     public static AccountResponse toDto(Account account) {
         ProfileInfo profileInfo = account.getProfileInfo();

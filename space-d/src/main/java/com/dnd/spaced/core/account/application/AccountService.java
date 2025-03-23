@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.account.application;
 
-import com.dnd.spaced.core.account.application.dto.mapper.AccountApplicationMapper;
+import com.dnd.spaced.core.account.application.dto.mapper.AccountResponseMapper;
 import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
 import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
@@ -47,7 +47,7 @@ public class AccountService {
     public AccountResponse readAccount(Long accountId) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        return AccountApplicationMapper.toDto(authorizedAccount);
+        return AccountResponseMapper.toDto(authorizedAccount);
     }
 
     private Account findAuthorizedAccount(Long accountId) {
