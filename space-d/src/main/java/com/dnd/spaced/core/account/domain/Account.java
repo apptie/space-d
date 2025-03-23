@@ -37,7 +37,7 @@ public class Account extends BaseTimeEntity {
     private boolean deleted = false;
 
     @Embedded
-    SocialInfo socialInfo;
+    private SocialInfo socialInfo;
 
     @Embedded
     private ProfileInfo profileInfo;

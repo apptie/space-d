@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class RefreshTokenNotFoundException extends AuthClientException {
 
     public RefreshTokenNotFoundException(String message) {
-        super(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND, message);
+        super(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION, message);
     }
 }

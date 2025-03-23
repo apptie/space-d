@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class ForbiddenInitCareerInfoException extends AccountClientException {
 
     public ForbiddenInitCareerInfoException(String message) {
-        super(AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO, message);
+        super(AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION, message);
     }
 }

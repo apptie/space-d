@@ -25,7 +25,7 @@ class NicknameMetadataTest {
 
         assertAll(
                 () -> assertThat(actual.getNickname()).isEqualTo("재빠른지구"),
-                () -> assertThat(actual.getCount()).isEqualTo(1L)
+                () -> assertThat(actual.getCount()).isEqualTo(0L)
         );
     }
 

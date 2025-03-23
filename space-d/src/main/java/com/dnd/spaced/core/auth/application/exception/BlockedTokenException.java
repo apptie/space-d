@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class BlockedTokenException extends AuthClientException {
 
     public BlockedTokenException(String message) {
-        super(AuthErrorCode.BLOCKED_TOKEN, message);
+        super(AuthErrorCode.BLOCKED_TOKEN_EXCEPTION, message);
     }
 }

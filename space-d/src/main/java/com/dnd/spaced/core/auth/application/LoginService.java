@@ -8,6 +8,7 @@ import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
+import com.dnd.spaced.core.auth.application.exception.NicknameMetadataNotFoundException;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
@@ -68,14 +69,7 @@ public class LoginService {
                                                          profileImageName
                                                  )
                                          )
-                                         .orElseGet(
-                                                 () -> processNotExistsNicknameMetadata(
-                                                         registrationId,
-                                                         socialIdentifier,
-                                                         nickname,
-                                                         profileImageName
-                                                 )
-                                         );
+                                         .orElseThrow(() -> new NicknameMetadataNotFoundException("닉네임 메타데이터가 정상적으로 초기화되지 않았습니다."));
     }
 
     private Account processExistsNicknameMetadata(
@@ -86,23 +80,10 @@ public class LoginService {
     ) {
         nicknameMetadata.addCount();
 
-        return saveAccount(registrationId, socialIdentifier, profileImageName, nicknameMetadata);
+        return persistAccount(registrationId, socialIdentifier, profileImageName, nicknameMetadata);
     }
 
-    private Account processNotExistsNicknameMetadata(
-            RegistrationId registrationId,
-            String socialIdentifier,
-            String nickname,
-            String profileImageName
-    ) {
-        NicknameMetadata nicknameMetadata = NicknameMetadata.from(nickname);
-
-        nicknameMetadataRepository.save(nicknameMetadata);
-
-        return saveAccount(registrationId, socialIdentifier, profileImageName, nicknameMetadata);
-    }
-
-    private Account saveAccount(
+    private Account persistAccount(
             RegistrationId registrationId,
             String socialIdentifier,
             String profileImage,

@@ -6,10 +6,10 @@ import com.dnd.spaced.global.exception.code.AuthErrorCode;
 public class InvalidTokenException extends AuthClientException {
 
     public InvalidTokenException(String message) {
-        super(AuthErrorCode.INVALID_TOKEN, message);
+        super(AuthErrorCode.INVALID_TOKEN_EXCEPTION, message);
     }
 
     public InvalidTokenException(String message, Throwable e) {
-        super(AuthErrorCode.INVALID_TOKEN, message, e);
+        super(AuthErrorCode.INVALID_TOKEN_EXCEPTION, message, e);
     }
 }

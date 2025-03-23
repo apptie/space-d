@@ -46,10 +46,10 @@ public class AccountGatewayRepository implements AccountRepository {
     public Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier) {
         Account result = queryFactory.selectFrom(account)
                                      .where(
-                                             account.socialInfo.registrationId.eq(registrationId),
                                              account.socialInfo.socialIdentifier.eq(socialIdentifier),
-                                             account.deleted.isFalse()
-                                     )
+                                             account.deleted.isFalse(),
+                                             account.socialInfo.registrationId.eq(registrationId)
+                                             )
                                      .fetchOne();
 
         return Optional.ofNullable(result);
@@ -60,10 +60,8 @@ public class AccountGatewayRepository implements AccountRepository {
         Account result = queryFactory.selectFrom(account)
                                      .where(
                                              account.id.eq(accountId),
-                                             account.careerInfo.company.isNull(),
-                                             account.careerInfo.experience.isNull(),
-                                             account.careerInfo.jobGroup.isNull(),
-                                             account.deleted.isFalse()
+                                             account.deleted.isFalse(),
+                                             isNullCareerInfo()
                                      )
                                      .fetchOne();
 
@@ -76,5 +74,11 @@ public class AccountGatewayRepository implements AccountRepository {
         }
 
         return account.id.eq(accountId);
+    }
+
+    private BooleanExpression isNullCareerInfo() {
+        return account.careerInfo.company.isNull()
+                                         .or(account.careerInfo.experience.isNull())
+                                         .or(account.careerInfo.jobGroup.isNull());
     }
 }

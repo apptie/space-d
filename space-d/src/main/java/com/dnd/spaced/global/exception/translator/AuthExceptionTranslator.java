@@ -10,42 +10,45 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum AuthExceptionTranslator implements ExceptionTranslator{
     INVALID_BLACKLIST_TOKEN_CONTENT_EXCEPTION(
-            AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT,
+            AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "토큰 처리 과정에서 문제가 발생했습니다."
     ),
     INVALID_TOKEN_EXCEPTION(
-            AuthErrorCode.INVALID_TOKEN,
+            AuthErrorCode.INVALID_TOKEN_EXCEPTION,
             HttpStatus.UNAUTHORIZED,
             "유효한 토큰이 아닙니다."
     ),
     FORBIDDEN_INIT_CAREER_INFO_EXCEPTION(
-            AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO,
+            AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION,
             HttpStatus.FORBIDDEN,
             "권한이 없습니다."
     ),
     REFRESH_TOKEN_NOT_FOUND_EXCEPTION(
-            AuthErrorCode.REFRESH_TOKEN_NOT_FOUND,
+            AuthErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION,
             HttpStatus.UNAUTHORIZED,
             "refresh token cookie가 없습니다."
     ),
     EXPIRED_TOKEN_EXCEPTION(
-            AuthErrorCode.EXPIRED_TOKEN,
+            AuthErrorCode.EXPIRED_TOKEN_EXCEPTION,
             HttpStatus.UNAUTHORIZED,
             "토큰이 만료되었습니다."
     ),
     BLOCKED_TOKEN_EXCEPTION(
-            AuthErrorCode.BLOCKED_TOKEN,
+            AuthErrorCode.BLOCKED_TOKEN_EXCEPTION,
             HttpStatus.UNAUTHORIZED,
             "세션이 만료되었습니다. 다시 로그인 해 주세요."
     ),
     ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION(
-            AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH,
+            AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION,
             HttpStatus.UNAUTHORIZED,
             "세션이 만료되었습니다. 다시 로그인 해 주세요."
-    )
-
-    ;
+    ),
+    NICKNAME_METADATA_NOT_FOUND_EXCEPTION(
+            AuthErrorCode.NICKNAME_METADATA_NOT_FOUND_EXCEPTION,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "닉네임 메타데이터가 정상적으로 초기화되지 않았습니다."
+    );
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;
