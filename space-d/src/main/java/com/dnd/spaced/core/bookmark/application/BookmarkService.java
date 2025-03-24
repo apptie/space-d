@@ -5,6 +5,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
+import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
@@ -30,6 +31,7 @@ public class BookmarkService {
     @Transactional
     public void createBookmark(Long accountId, CreateBookmarkRequest request) {
         validateWordId(request);
+        validateExistsBookmark(accountId, request);
 
         Bookmark bookmark = new Bookmark(accountId, request.wordId());
 
@@ -56,6 +58,12 @@ public class BookmarkService {
     private void validateWordId(CreateBookmarkRequest request) {
         if (!wordRepository.existsBy(request.wordId())) {
             throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
+        }
+    }
+
+    private void validateExistsBookmark(Long accountId, CreateBookmarkRequest request) {
+        if (bookmarkRepository.existsBy(accountId, request.wordId())) {
+            throw new AlreadyExistsBookmarkException("이미 북마크에 추가된 용어입니다.");
         }
     }
 

@@ -190,7 +190,8 @@ public class DocsController {
         putUnauthorizedExceptionContent(exceptionContent);
         processBookmarkException(
                 exceptionContent,
-                BookmarkErrorCode.WORD_NOT_FOUND_EXCEPTION
+                BookmarkErrorCode.WORD_NOT_FOUND_EXCEPTION,
+                BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK_EXCEPTION
         );
 
         return exceptionContent;

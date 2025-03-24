@@ -34,6 +34,15 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
     }
 
     @Override
+    public boolean existsBy(Long accountId, Long wordId) {
+        Bookmark result = queryFactory.selectFrom(bookmark)
+                                      .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))
+                                      .fetchOne();
+
+        return result != null;
+    }
+
+    @Override
     public void delete(Long accountId, Long wordId) {
         queryFactory.delete(bookmark)
                     .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))

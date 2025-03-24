@@ -11,6 +11,8 @@ public interface BookmarkRepository {
 
     Optional<Bookmark> findBy(Long accountId, Long wordId);
 
+    boolean existsBy(Long accountId, Long wordId);
+
     List<Bookmark> findAllBy(Long accountId, Long lastBookmarkId, Pageable pageable);
 
     void delete(Long accountId, Long wordId);

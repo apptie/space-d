@@ -9,6 +9,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
+import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.application.helper.WithWordTestHelper;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountDecrementedEvent;
@@ -49,6 +50,18 @@ class BookmarkServiceTest extends WithWordTestHelper {
 
         // then
         assertThat(events.stream(WordBookmarkCountIncrementedEvent.class).count()).isOne();
+    }
+
+    @Test
+    void 이미_북마크에_추가된_용어를_북마에_추가할_수_없다() {
+        // given
+        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
+        bookmarkService.createBookmark(1L, request);
+
+        // when & then
+        assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
+                .isInstanceOf(AlreadyExistsBookmarkException.class)
+                .hasMessage("이미 북마크에 추가된 용어입니다.");
     }
 
     @Test

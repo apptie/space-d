@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Thu, 27 Mar 2025 02:21:45 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Thu, 27 Mar 2025 04:46:10 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -3771,7 +3771,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-03-24T11:21:46.662222",
+    "createdAt" : "2025-03-24T13:46:12.550469",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4794,7 +4794,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-03-24T11:21:46.815066"
+  "createdAt" : "2025-03-24T13:46:12.711078"
 }</code></pre>
 </div>
 </div>
@@ -5751,6 +5751,12 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지정한 식별자의 용어를 찾지 못했습니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALREADY_EXISTS_BOOKMARK_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 북마크에 추가된 용어입니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -5889,7 +5895,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-24T11:21:45.192566"
+    "createdAt" : "2025-03-24T13:46:11.062667"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
