@@ -13,6 +13,7 @@ import com.dnd.spaced.global.exception.base.QuizServerException;
 import com.dnd.spaced.global.exception.base.ReportClientException;
 import com.dnd.spaced.global.exception.base.SkillServerException;
 import com.dnd.spaced.global.exception.base.WordClientException;
+import com.dnd.spaced.global.exception.base.WordServerException;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
@@ -170,6 +171,16 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WordClientException.class)
     private ResponseEntity<ExceptionDto> handleWordClientException(WordClientException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = WordExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
+    @ExceptionHandler(WordServerException.class)
+    private ResponseEntity<ExceptionDto> handleWordClientException(WordServerException ex) {
         logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
 
         ExceptionTranslator translator = WordExceptionTranslator.findBy(ex.getErrorCode());

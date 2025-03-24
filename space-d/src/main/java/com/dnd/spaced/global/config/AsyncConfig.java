@@ -19,7 +19,6 @@ public class AsyncConfig {
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("statistics-word-view");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
@@ -36,7 +35,6 @@ public class AsyncConfig {
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("calculate-skill");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
@@ -53,7 +51,6 @@ public class AsyncConfig {
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("word-view-counter");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
@@ -70,7 +67,6 @@ public class AsyncConfig {
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("quiz-metadata-counter");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
@@ -87,7 +83,22 @@ public class AsyncConfig {
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("bookmark-counter");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setKeepAliveSeconds(30);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setAwaitTerminationSeconds(30);
+        executor.setTaskDecorator(new MDCTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
+    public Executor asyncPersistedWordEventListenerExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(1000);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setKeepAliveSeconds(30);
         executor.setWaitForTasksToCompleteOnShutdown(false);
@@ -112,7 +123,6 @@ public class AsyncConfig {
         executor.setAllowCoreThreadTimeOut(true);
         executor.setAwaitTerminationSeconds(20);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
-        executor.setThreadNamePrefix("comment-like-count");
         executor.initialize();
 
         return executor;

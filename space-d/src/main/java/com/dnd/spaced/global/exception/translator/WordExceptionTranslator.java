@@ -63,6 +63,11 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             WordErrorCode.WORD_METADATA_COUNTER_NOT_FOUND_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "용어 메타데이터에 변경사항을 반영하지 못했습니다."
+    ),
+    WORD_NOT_FOUND_IN_LISTENER_EXCEPTION(
+            WordErrorCode.WORD_NOT_FOUND_IN_LISTENER_EXCEPTION,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "용어 생성 이벤트 리스너에 문제가 발생했습니다."
     );
 
     private final ErrorCode errorCode;
