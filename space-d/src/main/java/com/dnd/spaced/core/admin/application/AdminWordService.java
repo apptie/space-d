@@ -66,8 +66,8 @@ public class AdminWordService {
     }
 
     @Transactional
-    public void deletePronunciation(Long pronunciationId) {
-        validatePronunciationCount(pronunciationId);
+    public void deletePronunciation(Long wordId, Long pronunciationId) {
+        validatePronunciationCount(wordId);
 
         pronunciationRepository.deleteBy(pronunciationId);
     }
@@ -123,8 +123,8 @@ public class AdminWordService {
         }
     }
 
-    private void validatePronunciationCount(Long pronunciationId) {
-        if (pronunciationRepository.countBy(pronunciationId) <= PRONUNCIATION_MIN_COUNT) {
+    private void validatePronunciationCount(Long wordId) {
+        if (pronunciationRepository.countBy(wordId) <= PRONUNCIATION_MIN_COUNT) {
             throw new PronunciationDeletionNotAllowedException("해당 용어의 발음 정보 개수가 최소치입니다.");
         }
     }

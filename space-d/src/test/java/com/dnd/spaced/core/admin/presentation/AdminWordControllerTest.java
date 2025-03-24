@@ -173,7 +173,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deletePronunciation(anyLong());
+        verify(adminWordService).deletePronunciation(anyLong(), anyLong());
 
         용어_발음_정보_삭제_요청_문서화(resultAction);
     }

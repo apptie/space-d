@@ -15,10 +15,10 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
     private final PronunciationCrudRepository pronunciationCrudRepository;
 
     @Override
-    public long countBy(Long pronunciationId) {
+    public long countBy(Long wordId) {
         return queryFactory.select(pronunciation.id.count())
                            .from(pronunciation)
-                           .where(pronunciation.word.id.eq(pronunciationId))
+                           .where(pronunciation.word.id.eq(wordId))
                            .fetchFirst();
     }
 

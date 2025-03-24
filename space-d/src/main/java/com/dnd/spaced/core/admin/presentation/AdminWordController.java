@@ -54,7 +54,7 @@ public class AdminWordController {
 
     @DeleteMapping("/{wordId}/pronunciations/{pronunciationId}")
     public ResponseEntity<Void> deletePronunciation(@PathVariable Long wordId, @PathVariable Long pronunciationId) {
-        adminWordService.deletePronunciation(pronunciationId);
+        adminWordService.deletePronunciation(wordId, pronunciationId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
