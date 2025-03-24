@@ -16,6 +16,8 @@ import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +40,11 @@ public class AdminWordService {
     @Transactional
     public Long createWord(CreateWordRequest createWordRequest) {
         Word word = buildWordFromRequest(createWordRequest);
-
-        addExamplesToWord(word, createWordRequest);
-        addPronunciationsToWord(word, createWordRequest);
-
         Word savedWord = wordRepository.save(word);
+
+        persistExamples(savedWord, createWordRequest);
+        persistPronunciations(savedWord, createWordRequest);
+
         WordMetadata wordMetadata = findWordMetadata();
 
         addWordMetadata(word, wordMetadata);
@@ -80,20 +82,33 @@ public class AdminWordService {
                    .build();
     }
 
-    private void addExamplesToWord(Word word, CreateWordRequest request) {
+    private void persistExamples(Word word, CreateWordRequest request) {
+        List<WordExample> wordExamples = new ArrayList<>();
+
         for (String example : request.examples()) {
-            word.addWordExample(new WordExample(example));
+            WordExample wordExample = new WordExample(example);
+
+            wordExample.initWord(word);
+            wordExamples.add(wordExample);
         }
+
+        wordExampleRepository.saveAll(wordExamples);
     }
 
-    private void addPronunciationsToWord(Word word, CreateWordRequest request) {
-        for (CreatePronunciationRequest dto : request.pronunciations()) {
+    private void persistPronunciations(Word word, CreateWordRequest request) {
+        List<Pronunciation> pronunciations = new ArrayList<>();
+
+        for (CreatePronunciationRequest pronunciationInfo : request.pronunciations()) {
             Pronunciation pronunciation = new Pronunciation(
-                    dto.pronunciation(),
-                    dto.typeName()
+                    pronunciationInfo.pronunciation(),
+                    pronunciationInfo.typeName()
             );
-            word.addPronunciation(pronunciation);
+
+            pronunciation.initWord(word);
+            pronunciations.add(pronunciation);
         }
+
+        pronunciationRepository.saveAll(pronunciations);
     }
 
     private WordMetadata findWordMetadata() {

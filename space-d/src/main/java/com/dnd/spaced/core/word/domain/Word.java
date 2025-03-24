@@ -5,7 +5,6 @@ import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.exception.InvalidCategoryNameException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordNameException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -44,10 +43,10 @@ public class Word extends BaseTimeEntity {
     @Embedded
     private WordMeaning wordMeaning;
 
-    @OneToMany(mappedBy = "word", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "word")
     private List<Pronunciation> pronunciations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "word", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "word")
     private List<WordExample> wordExamples = new ArrayList<>();
 
     private long viewCount = 0L;
