@@ -30,12 +30,4 @@ public class Bookmark extends CreateTimeEntity {
         this.accountId = accountId;
         this.wordId = wordId;
     }
-
-    public boolean isCreator(Long accountId) {
-        return this.accountId.equals(accountId);
-    }
-
-    public boolean isNotCreator(Long accountId) {
-        return !isCreator(accountId);
-    }
 }

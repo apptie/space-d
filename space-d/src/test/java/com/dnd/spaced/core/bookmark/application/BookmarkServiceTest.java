@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
+import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
-import com.dnd.spaced.core.bookmark.application.exception.ForbiddenDeleteBookmarkException;
+import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.application.helper.WithWordTestHelper;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountDecrementedEvent;
@@ -52,6 +53,18 @@ class BookmarkServiceTest extends WithWordTestHelper {
     }
 
     @Test
+    void 이미_북마크에_추가된_용어를_북마에_추가할_수_없다() {
+        // given
+        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
+        bookmarkService.createBookmark(1L, request);
+
+        // when & then
+        assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
+                .isInstanceOf(AlreadyExistsBookmarkException.class)
+                .hasMessage("이미 북마크에 추가된 용어입니다.");
+    }
+
+    @Test
     void 지정한_용어_식별자로_용어를_찾지_못하면_북마크를_추가할_수_없다() {
         // given
         CreateBookmarkRequest request = new CreateBookmarkRequest(-999L);
@@ -65,30 +78,15 @@ class BookmarkServiceTest extends WithWordTestHelper {
 
     @Test
     void 북마크를_삭제한다() {
+        // given
         bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
+        DeleteBookmarkRequest request = new DeleteBookmarkRequest(1L);
 
         // when
-        bookmarkService.deleteBookmark(1L, 1L);
+        bookmarkService.deleteBookmark(1L, request);
 
         // then
         assertThat(events.stream(WordBookmarkCountDecrementedEvent.class).count()).isOne();
-    }
-
-    @Test
-    void 지정한_식별자로_삭제할_북마크를_찾지_못하면_북마크를_삭제할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> bookmarkService.deleteBookmark(1L, 1L));
-    }
-
-    @Test
-    void 지정한_식별자의_북마크를_작성한_회원이_아니라면_북마크를_삭제할_수_없다() {
-        // given
-        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
-
-        // when & then
-        assertThatThrownBy(() -> bookmarkService.deleteBookmark(2L, 1L))
-                .isInstanceOf(ForbiddenDeleteBookmarkException.class)
-                .hasMessage("북마크 삭제는 생성자만이 가능합니다.");
     }
 
     @Test

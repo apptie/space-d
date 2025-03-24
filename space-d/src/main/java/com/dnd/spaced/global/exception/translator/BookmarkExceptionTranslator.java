@@ -19,10 +19,10 @@ public enum BookmarkExceptionTranslator implements ExceptionTranslator {
             HttpStatus.BAD_REQUEST,
             "지정한 식별자의 용어를 찾지 못했습니다."
     ),
-    FORBIDDEN_DELETE_BOOKMARK_EXCEPTION(
-            BookmarkErrorCode.FORBIDDEN_DELETE_BOOKMARK_EXCEPTION,
-            HttpStatus.FORBIDDEN,
-            "북마크를 생성한 회원만이 삭제할 수 있습니다."
+    ALREADY_EXISTS_BOOKMARK_EXCEPTION(
+            BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "이미 북마크에 추가된 용어입니다."
     );
 
     private final ErrorCode errorCode;

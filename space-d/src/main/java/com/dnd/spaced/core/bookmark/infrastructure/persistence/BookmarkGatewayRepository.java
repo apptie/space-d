@@ -25,13 +25,28 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
     }
 
     @Override
-    public Optional<Bookmark> findBy(Long bookmarkId) {
-        return bookmarkCrudRepository.findById(bookmarkId);
+    public Optional<Bookmark> findBy(Long accountId, Long wordId) {
+        Bookmark result = queryFactory.selectFrom(bookmark)
+                                      .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))
+                                      .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
-    public void delete(Bookmark bookmark) {
-        bookmarkCrudRepository.delete(bookmark);
+    public boolean existsBy(Long accountId, Long wordId) {
+        Bookmark result = queryFactory.selectFrom(bookmark)
+                                      .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))
+                                      .fetchOne();
+
+        return result != null;
+    }
+
+    @Override
+    public void delete(Long accountId, Long wordId) {
+        queryFactory.delete(bookmark)
+                    .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))
+                    .execute();
     }
 
     @Override
