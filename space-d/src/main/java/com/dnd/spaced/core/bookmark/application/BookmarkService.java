@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookmarkService {
 
@@ -28,7 +27,6 @@ public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
     public void createBookmark(Long accountId, CreateBookmarkRequest request) {
         validateWordId(request);
         validateExistsBookmark(accountId, request);
