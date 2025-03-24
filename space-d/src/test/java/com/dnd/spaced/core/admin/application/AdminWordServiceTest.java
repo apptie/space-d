@@ -150,7 +150,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertDoesNotThrow(
-                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(wordId, word.getWordExamples().get(0).getId())
             );
         }
 
@@ -175,7 +175,7 @@ class AdminWordServiceTest {
 
             // when & then
             assertThatThrownBy(
-                    () -> adminWordService.deleteWordExample(word.getWordExamples().get(0).getId())
+                    () -> adminWordService.deleteWordExample(wordId, word.getWordExamples().get(0).getId())
             ).isInstanceOf(WordExampleDeletionNotAllowedException.class)
              .hasMessage("해당 용어의 예문 개수가 최소치입니다.");
         }

@@ -143,7 +143,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deleteWordExample(anyLong());
+        verify(adminWordService).deleteWordExample(anyLong(), anyLong());
 
         용어_예문_삭제_요청_문서화(resultActions);
     }

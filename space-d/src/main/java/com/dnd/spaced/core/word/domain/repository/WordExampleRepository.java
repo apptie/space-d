@@ -2,7 +2,7 @@ package com.dnd.spaced.core.word.domain.repository;
 
 public interface WordExampleRepository {
 
-    long countBy(Long wordExampleId);
+    long countBy(Long wordId);
 
     long update(Long wordExampleId, String example);
 

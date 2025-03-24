@@ -59,8 +59,8 @@ public class AdminWordService {
     }
 
     @Transactional
-    public void deleteWordExample(Long wordExampleId) {
-        validateExampleCount(wordExampleId);
+    public void deleteWordExample(Long wordId, Long wordExampleId) {
+        validateExampleCount(wordId);
 
         wordExampleRepository.deleteBy(wordExampleId);
     }
@@ -117,8 +117,8 @@ public class AdminWordService {
         }
     }
 
-    private void validateExampleCount(Long wordExampleId) {
-        if (wordExampleRepository.countBy(wordExampleId) <= WORD_EXAMPLE_MIN_COUNT) {
+    private void validateExampleCount(Long wordId) {
+        if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
             throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
         }
     }

@@ -47,7 +47,7 @@ public class AdminWordController {
 
     @DeleteMapping("/{wordId}/examples/{wordExampleId}")
     public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long wordExampleId) {
-        adminWordService.deleteWordExample(wordExampleId);
+        adminWordService.deleteWordExample(wordId, wordExampleId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

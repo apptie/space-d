@@ -14,10 +14,10 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final JPAQueryFactory queryFactory;
     private final WordExampleCrudRepository wordExampleCrudRepository;
 
-    public long countBy(Long wordExampleId) {
+    public long countBy(Long wordId) {
         return queryFactory.select(wordExample.id.count())
                            .from(wordExample)
-                           .where(wordExample.word.id.eq(wordExampleId))
+                           .where(wordExample.word.id.eq(wordId))
                            .fetchFirst();
     }
 
