@@ -2,6 +2,7 @@ package com.dnd.spaced.core.bookmark.presentation;
 
 import com.dnd.spaced.core.bookmark.application.BookmarkService;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
+import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,12 +48,12 @@ public class BookmarkController {
         return ResponseEntityConst.NO_CONTENT;
     }
 
-    @DeleteMapping("{bookmarkId}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteBookmark(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
-            @PathVariable Long bookmarkId
+            @Valid @RequestBody DeleteBookmarkRequest request
     ) {
-        bookmarkService.deleteBookmark(accountInfo.accountId(), bookmarkId);
+        bookmarkService.deleteBookmark(accountInfo.accountId(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -22,28 +22,4 @@ class BookmarkTest {
                 () -> assertThat(actual.getWordId()).isEqualTo(1L)
         );
     }
-
-    @Test
-    void 회원_식별자로_북마크의_생성자인지_확인한다() {
-        // given
-        Bookmark bookmark = new Bookmark(1L, 1L);
-
-        // when
-        boolean actual = bookmark.isCreator(1L);
-
-        // then
-        assertThat(actual).isTrue();
-    }
-
-    @Test
-    void 회원_식별자로_북마크의_생성자가_아닌지_확인한다() {
-        // given
-        Bookmark bookmark = new Bookmark(1L, 1L);
-
-        // when
-        boolean actual = bookmark.isNotCreator(1L);
-
-        // then
-        assertThat(actual).isFalse();
-    }
 }

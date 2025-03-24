@@ -9,9 +9,9 @@ public interface BookmarkRepository {
 
     void save(Bookmark bookmark);
 
-    Optional<Bookmark> findBy(Long bookmarkId);
+    Optional<Bookmark> findBy(Long accountId, Long wordId);
 
     List<Bookmark> findAllBy(Long accountId, Long lastBookmarkId, Pageable pageable);
 
-    void delete(Bookmark bookmark);
+    void delete(Long accountId, Long wordId);
 }

@@ -178,8 +178,7 @@ public class DocsController {
         putUnauthorizedExceptionContent(exceptionContent);
         processBookmarkException(
                 exceptionContent,
-                BookmarkErrorCode.BOOKMARK_NOT_FOUND_EXCEPTION,
-                BookmarkErrorCode.FORBIDDEN_DELETE_BOOKMARK_EXCEPTION
+                BookmarkErrorCode.BOOKMARK_NOT_FOUND_EXCEPTION
         );
 
         return exceptionContent;

@@ -12,14 +12,13 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
+import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse.BookmarkResponse;
@@ -71,12 +70,17 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
     @Test
     @WithMockUser("1")
     void 북마크_삭제_요청_성공_테스트() throws Exception {
+        // given
+        DeleteBookmarkRequest request = new DeleteBookmarkRequest(1L);
+
         // when & then
         ResultActions resultActions = mockMvc.perform(
-                delete("/bookmarks/{bookmarkId}", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                delete("/bookmarks", 1L).header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
 
-        verify(bookmarkService).deleteBookmark(anyLong(), anyLong());
+        verify(bookmarkService).deleteBookmark(anyLong(), any(DeleteBookmarkRequest.class));
 
         북마크_삭제_요청_문서화(resultActions);
     }
@@ -87,8 +91,8 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                         requestHeaders(
                                 headerWithName("Authorization").description("Bearer 타입의 Access Token")
                         ),
-                        pathParameters(
-                                parameterWithName("bookmarkId").description("삭제할 북마크 ID")
+                        requestFields(
+                                fieldWithPath("wordId").description("북마크를 삭제할 용어 ID")
                         )
                 )
         );

@@ -2,10 +2,9 @@ package com.dnd.spaced.core.bookmark.application;
 
 import com.dnd.spaced.core.bookmark.application.dto.mapper.BookmarkApplicationMapper;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
+import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
-import com.dnd.spaced.core.bookmark.application.exception.BookmarkNotFoundException;
-import com.dnd.spaced.core.bookmark.application.exception.ForbiddenDeleteBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
@@ -39,13 +38,9 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void deleteBookmark(Long accountId, Long bookmarkId) {
-        Bookmark bookmark = findBookmark(bookmarkId);
-
-        validateBookmarkCreator(accountId, bookmark);
-
-        bookmarkRepository.delete(bookmark);
-        publishDeletedBookmarkEvent(bookmark);
+    public void deleteBookmark(Long accountId, DeleteBookmarkRequest request) {
+        bookmarkRepository.delete(accountId, request.wordId());
+        publishDeletedBookmarkEvent(request.wordId());
     }
 
     public BookmarkCollectionResponse readBookmarks(
@@ -58,32 +53,17 @@ public class BookmarkService {
         return BookmarkApplicationMapper.toDto(bookmarks);
     }
 
-    private void validateBookmarkCreator(Long accountId, Bookmark bookmark) {
-        if (bookmark.isNotCreator(accountId)) {
-            throw new ForbiddenDeleteBookmarkException("북마크 삭제는 생성자만이 가능합니다.");
-        }
-    }
-
     private void validateWordId(CreateBookmarkRequest request) {
         if (!wordRepository.existsBy(request.wordId())) {
             throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
         }
     }
 
-    private Bookmark findBookmark(Long bookmarkId) {
-        return bookmarkRepository.findBy(bookmarkId)
-                                 .orElseThrow(
-                                         () -> new BookmarkNotFoundException(
-                                                 "지정한 식별자의 북마크를 찾지 못했습니다."
-                                         )
-                                 );
-    }
-
     private void publishAddedBookmarkEvent(Bookmark bookmark) {
-        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getId()));
+        eventPublisher.publishEvent(new WordBookmarkCountIncrementedEvent(bookmark.getWordId()));
     }
 
-    private void publishDeletedBookmarkEvent(Bookmark bookmark) {
-        eventPublisher.publishEvent(new WordBookmarkCountDecrementedEvent(bookmark.getId()));
+    private void publishDeletedBookmarkEvent(Long wordId) {
+        eventPublisher.publishEvent(new WordBookmarkCountDecrementedEvent(wordId));
     }
 }
