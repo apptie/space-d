@@ -81,6 +81,23 @@ public class AsyncConfig {
     }
 
     @Bean
+    public Executor asyncBookmarkCounterExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("bookmark-counter");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setKeepAliveSeconds(30);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setAwaitTerminationSeconds(30);
+        executor.setTaskDecorator(new MDCTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
     public Executor asyncCommentLikeCountExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
