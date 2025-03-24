@@ -15,6 +15,7 @@ import com.dnd.spaced.global.exception.base.SkillServerException;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
 import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
+import com.dnd.spaced.global.exception.translator.BookmarkExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ImageExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
@@ -149,7 +150,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     private ResponseEntity<ExceptionDto> handleBookmarkClientException(BookmarkClientException ex) {
         logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
 
-        ExceptionTranslator translator = ReportExceptionTranslator.findBy(ex.getErrorCode());
+        ExceptionTranslator translator = BookmarkExceptionTranslator.findBy(ex.getErrorCode());
 
         return ResponseEntity.status(translator.getHttpStatus())
                              .body(translator.translate());
