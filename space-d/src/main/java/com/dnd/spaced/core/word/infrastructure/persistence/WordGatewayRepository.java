@@ -25,7 +25,12 @@ public class WordGatewayRepository implements WordRepository {
 
     @Override
     public boolean existsBy(Long wordId) {
-        return wordCrudRepository.existsById(wordId);
+        Long result = queryFactory.select(word.id)
+                                  .from(word)
+                                  .where(word.id.eq(wordId))
+                                  .fetchOne();
+
+        return result != null;
     }
 
     @Override
