@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
+import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import java.util.List;
@@ -64,7 +65,7 @@ class AdminWordServiceTest {
     }
 
     @Test
-    void 없는_용어_예문_ID라면_용어_예문을_변경할_수_없다() {
+    void 잘못된_용어_예문_ID라면_용어_예문을_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> adminWordService.updateWordExample(
@@ -82,6 +83,19 @@ class AdminWordServiceTest {
             "classpath:sql/admin/word/word.sql"
     })
     void 용어_예문을_삭제한다() {
+        // when & then
+        assertThatThrownBy(() -> adminWordService.deleteWordExample(1L, -999L))
+                .isInstanceOf(UnexpectedDeleteWordExampleCountException.class)
+                .hasMessage("용어 예문이 정상적으로 삭제되지 않았습니다.");
+    }
+
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/word/word_metadata.sql",
+            "classpath:sql/admin/word/word.sql"
+    })
+    void 잘못된_용어_예문_ID로_용어_예문을_삭제할_수_없다() {
         // when & then
         assertDoesNotThrow(
                 () -> adminWordService.deleteWordExample(1L, 1L)

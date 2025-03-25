@@ -11,5 +11,5 @@ public interface WordExampleRepository {
 
     long update(Long wordExampleId, String example);
 
-    void deleteBy(Long wordExampleId);
+    long deleteBy(Long wordExampleId);
 }

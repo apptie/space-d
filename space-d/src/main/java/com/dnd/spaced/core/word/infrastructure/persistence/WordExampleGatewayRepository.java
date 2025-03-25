@@ -43,8 +43,10 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     }
 
     @Override
-    public void deleteBy(Long wordExampleId) {
-        wordExampleCrudRepository.deleteById(wordExampleId);
+    public long deleteBy(Long wordExampleId) {
+        return queryFactory.delete(wordExample)
+                           .where(wordExample.id.eq(wordExampleId))
+                           .execute();
     }
 
     @Override
