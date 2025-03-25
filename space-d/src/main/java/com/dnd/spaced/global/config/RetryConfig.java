@@ -28,9 +28,9 @@ public class RetryConfig {
         retryTemplate.setRetryPolicy(retryPolicy);
 
         ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-        backOffPolicy.setInitialInterval(1_000);
+        backOffPolicy.setInitialInterval(1_000L);
         backOffPolicy.setMultiplier(2.0d);
-        backOffPolicy.setMaxInterval(10_000);
+        backOffPolicy.setMaxInterval(10_000L);
         retryTemplate.setBackOffPolicy(backOffPolicy);
 
         return retryTemplate;
