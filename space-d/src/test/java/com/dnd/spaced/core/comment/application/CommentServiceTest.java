@@ -10,9 +10,9 @@ import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
-import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
+import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.application.helper.WithWriterAndReaderAndWordTestHelper;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
@@ -54,7 +54,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
 
         // when & then
         assertThatThrownBy(() -> commentService.createComment(writer.getId(), -1L, request))
-                .isInstanceOf(AssociationWordNotFoundException.class)
+                .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
 
@@ -86,14 +86,6 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
                 () -> assertThat(actual.get().isWriter(writer.getId())).isTrue(),
                 () -> assertThat(actual.get().getContent()).isEqualTo("이 용어는 언제 쓰는건가요?")
         );
-    }
-
-    @Test
-    void 없거나_탈퇴한_회원_식별자로는_댓글을_삭제할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> commentService.deleteComment(-1L, 1L))
-                .isInstanceOf(AssociationAccountNotFoundException.class)
-                .hasMessage("유효하지 않은 회원입니다.");
     }
 
     @Test

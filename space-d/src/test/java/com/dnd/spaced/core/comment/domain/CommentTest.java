@@ -86,21 +86,25 @@ class CommentTest {
     @Test
     void 회원_ID로_댓글의_작성자인지_확인한다() {
         // given
-        Account writer = Account.builder()
-                                .registrationId(RegistrationId.KAKAO)
-                                .socialIdentifier("12345")
-                                .nickname("재빠른지구001")
-                                .profileImage("earth.png")
-                                .role(Role.ROLE_USER)
-                                .build();
-        ReflectionTestUtils.setField(writer, "id", 1L);
-        Comment comment = new Comment(writer.getId(), 1L, "이 용어 언제 쓰는건가요?");
+        Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
 
         // when
         boolean actual = comment.isWriter(1L);
 
         // then
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void 회원_ID로_댓글의_작성자가_아닌지_확인한다() {
+        // given
+        Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
+
+        // when
+        boolean actual = comment.isNotWriter(1L);
+
+        // then
+        assertThat(actual).isFalse();
     }
 
     @Test

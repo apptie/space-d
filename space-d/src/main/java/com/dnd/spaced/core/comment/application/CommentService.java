@@ -7,13 +7,12 @@ import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
 import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
-import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
+import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
-import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,9 @@ public class CommentService {
 
     @Transactional
     public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
-        Word word = findWord(wordId);
-        Comment comment = new Comment(accountId, word.getId(), request.content());
+        validateWordId(wordId);
+
+        Comment comment = new Comment(accountId, wordId, request.content());
 
         commentRepository.save(comment);
     }
@@ -68,9 +68,10 @@ public class CommentService {
                                 .orElseThrow(() -> new AssociationAccountNotFoundException("유효하지 않은 회원입니다."));
     }
 
-    private Word findWord(Long wordId) {
-        return wordRepository.findBy(wordId)
-                             .orElseThrow(() -> new AssociationWordNotFoundException("댓글과 관련된 용어를 찾을 수 없습니다."));
+    private void validateWordId(Long wordId) {
+        if (!wordRepository.existsBy(wordId)) {
+            throw new WordNotFoundException("댓글과 관련된 용어를 찾을 수 없습니다.");
+        }
     }
 
     private Comment findComment(Long commentId) {

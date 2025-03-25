@@ -33,6 +33,11 @@ public enum CommentExceptionTranslator implements ExceptionTranslator {
             CommentErrorCode.INVALID_COMMENT_CONTENT,
             HttpStatus.BAD_REQUEST,
             "댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다."
+    ),
+    WORD_NOT_FOUND_EXCEPTION(
+            CommentErrorCode.WORD_NOT_FOUND_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "댓글과 관련된 용어를 찾을 수 없습니다."
     );
 
     private final ErrorCode errorCode;

@@ -72,6 +72,10 @@ public class Comment extends BaseTimeEntity {
         return !isWriter(account);
     }
 
+    public boolean isNotWriter(Long accountId) {
+        return !isWriter(accountId);
+    }
+
     public void changeContent(String content) {
         if (isInvalidContent(content)) {
             throw new InvalidCommentContentException("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
