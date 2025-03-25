@@ -73,7 +73,12 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION,
             HttpStatus.BAD_REQUEST,
             "용어 예문이 정상적으로 삭제되지 않았습니다."
-    );
+    ),
+    UNEXPECTED_DELETE_PRONUNCIATION_COUNT(
+            WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "용어 발음이 정상적으로 삭제되지 않았습니다."
+    );;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;

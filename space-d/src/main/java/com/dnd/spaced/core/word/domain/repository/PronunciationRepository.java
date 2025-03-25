@@ -9,5 +9,5 @@ public interface PronunciationRepository {
 
     long countBy(Long wordId);
 
-    void deleteBy(Long pronunciationId);
+    long deleteBy(Long pronunciationId);
 }

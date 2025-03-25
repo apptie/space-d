@@ -428,7 +428,11 @@ public class DocsController {
 
         putUnauthorizedExceptionContent(deletePronunciationException);
         putForbiddenExceptionContent(deletePronunciationException);
-        processWordException(deletePronunciationException, WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED);
+        processWordException(
+                deletePronunciationException,
+                WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
+                WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION
+        );
 
         return deletePronunciationException;
     }

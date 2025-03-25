@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
+import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
@@ -114,6 +115,19 @@ class AdminWordServiceTest {
                 () -> adminWordService.deleteWordExample(2L, 3L)
         ).isInstanceOf(WordExampleDeletionNotAllowedException.class)
          .hasMessage("해당 용어의 예문 개수가 최소치입니다.");
+    }
+
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/word/word_metadata.sql",
+            "classpath:sql/admin/word/word.sql"
+    })
+    void 잘못된_용어_발음_ID로_용어_발음을_삭제할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> adminWordService.deletePronunciation(1L, -999L))
+                .isInstanceOf(UnexpectedDeletePronunciationCountException.class)
+                .hasMessage("용어 발음이 정상적으로 삭제되지 않았습니다.");
     }
 
     @Test

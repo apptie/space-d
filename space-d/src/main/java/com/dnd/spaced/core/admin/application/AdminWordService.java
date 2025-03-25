@@ -3,6 +3,7 @@ package com.dnd.spaced.core.admin.application;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
+import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
@@ -59,14 +60,16 @@ public class AdminWordService {
 
         long deleteCount = wordExampleRepository.deleteBy(wordExampleId);
 
-        validateDeleteCount(deleteCount);
+        validateWordExampleDeleteCount(deleteCount);
     }
 
     @Transactional
     public void deletePronunciation(Long wordId, Long pronunciationId) {
         validatePronunciationCount(wordId);
 
-        pronunciationRepository.deleteBy(pronunciationId);
+        long deleteCount = pronunciationRepository.deleteBy(pronunciationId);
+
+        validatePronunciationDeleteCount(deleteCount);
     }
 
     private Word buildWordFromRequest(CreateWordRequest request) {
@@ -124,9 +127,15 @@ public class AdminWordService {
         }
     }
 
-    private void validateDeleteCount(long deleteCount) {
+    private void validateWordExampleDeleteCount(long deleteCount) {
         if (deleteCount != SUCCESS_DELETE_COUNT) {
             throw new UnexpectedDeleteWordExampleCountException("용어 예문이 정상적으로 삭제되지 않았습니다.");
+        }
+    }
+
+    private void validatePronunciationDeleteCount(long deleteCount) {
+        if (deleteCount != SUCCESS_DELETE_COUNT) {
+            throw new UnexpectedDeletePronunciationCountException("용어 발음이 정상적으로 삭제되지 않았습니다.");
         }
     }
 

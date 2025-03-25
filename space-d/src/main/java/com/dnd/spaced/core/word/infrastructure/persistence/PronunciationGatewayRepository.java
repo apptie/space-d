@@ -63,7 +63,9 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
     }
 
     @Override
-    public void deleteBy(Long pronunciationId) {
-        pronunciationCrudRepository.deleteById(pronunciationId);
+    public long deleteBy(Long pronunciationId) {
+        return queryFactory.delete(pronunciation)
+                           .where(pronunciation.id.eq(pronunciationId))
+                           .execute();
     }
 }
