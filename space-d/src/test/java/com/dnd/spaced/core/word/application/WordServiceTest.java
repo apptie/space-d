@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpPersistence;
 import com.dnd.spaced.core.word.application.dto.request.ReadAllWordRequest;
 import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
 import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
@@ -13,11 +12,8 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
-import com.dnd.spaced.core.word.domain.Pronunciation;
-import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
-import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import com.dnd.spaced.core.word.domain.dto.PopularWord;
+import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -29,11 +25,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@CleanUpPersistence
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -43,38 +37,22 @@ class WordServiceTest {
     WordService wordService;
 
     @Autowired
-    WordRepository wordRepository;
-
-    @Autowired
     PopularWordRepository popularWordRepository;
 
     @Autowired
     ApplicationEvents events;
 
     @Test
+    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
     void 용어를_조회한다() {
-        // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
-
-        word.addPronunciation(pronunciation);
-        wordRepository.save(word);
-
         // when
-        WordResponse actual = wordService.readWord(word.getId());
+        WordResponse actual = wordService.readWord(1L);
 
         // then
         assertAll(
-                () -> assertThat(actual.name()).isEqualTo(name),
-                () -> assertThat(actual.category()).isEqualTo(categoryName),
-                () -> assertThat(actual.meaning()).isEqualTo(meaning),
+                () -> assertThat(actual.name()).isEqualTo("Authorization"),
+                () -> assertThat(actual.category()).isEqualTo("개발"),
+                () -> assertThat(actual.meaning()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
                 () -> assertThat(events.stream(WordViewCountIncrementEvent.class).count()).isOne(),
                 () -> assertThat(events.stream(WordViewCountStatisticsEvent.class).count()).isOne()
         );
@@ -83,27 +61,15 @@ class WordServiceTest {
     @Test
     void 용어_식별자로_용어를_찾지_못하면_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> wordService.readWord(-1L))
+        assertThatThrownBy(() -> wordService.readWord(-999L))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 용어를 찾을 수 없습니다.");
     }
 
     @Test
+    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
     void 용어_목록을_조회한다() {
         // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
-
-        word.addPronunciation(pronunciation);
-        wordRepository.save(word);
-
         ReadAllWordRequest request = new ReadAllWordRequest(
                 null,
                 null,
@@ -121,21 +87,9 @@ class WordServiceTest {
     }
 
     @Test
+    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
     void 용어를_검색한다() {
         // given
-        String name = "Authorization";
-        String categoryName = "개발";
-        String meaning = "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘";
-        Word word = Word.builder()
-                        .name(name)
-                        .categoryName(categoryName)
-                        .meaning(meaning)
-                        .build();
-        Pronunciation pronunciation = new Pronunciation("어써라이제이션", "한글 발음");
-
-        word.addPronunciation(pronunciation);
-        wordRepository.save(word);
-
         SearchWordRequest request = new SearchWordRequest(
                 "Authorization",
                 null,

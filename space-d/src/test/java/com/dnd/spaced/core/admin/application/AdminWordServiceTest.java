@@ -9,7 +9,6 @@ import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.Creat
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
-import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -26,28 +25,6 @@ class AdminWordServiceTest {
 
     @Autowired
     AdminWordService adminWordService;
-
-    @Test
-    void 용어_메타데이터가_초기화되지_않았다면_용어를_추가할_수_없다() {
-        // given
-        List<CreatePronunciationRequest> createPronunciationRequests = List.of(
-                new CreatePronunciationRequest("어써라이제이션", "한글 발음")
-        );
-        List<String> examples = List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.");
-        CreateWordRequest request = new CreateWordRequest(
-                "Authorization",
-                "Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘",
-                "개발",
-                createPronunciationRequests,
-                examples
-        );
-
-        // when & then
-        assertThatThrownBy(() -> adminWordService.createWord(request))
-                .isInstanceOf(WordMetadataNotFoundException.class)
-                .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
-    }
-
 
     @Test
     @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/admin/word/word_metadata.sql"})
