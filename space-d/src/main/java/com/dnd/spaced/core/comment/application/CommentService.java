@@ -40,10 +40,9 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long accountId, Long commentId) {
-        Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        validateDeleteAuthority(comment, writer);
+        validateDeleteAuthority(comment, accountId);
 
         commentRepository.delete(comment);
     }
@@ -79,8 +78,8 @@ public class CommentService {
                                 .orElseThrow(() -> new CommentNotFoundException("지정한 ID에 해당하는 댓글이 없습니다."));
     }
 
-    private void validateDeleteAuthority(Comment comment, Account writer) {
-        if (comment.isNotWriter(writer)) {
+    private void validateDeleteAuthority(Comment comment, Long accountId) {
+        if (comment.isNotWriter(accountId)) {
             throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
         }
     }
