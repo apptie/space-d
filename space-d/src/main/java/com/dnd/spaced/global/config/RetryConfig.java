@@ -1,9 +1,38 @@
 package com.dnd.spaced.global.config;
 
+import com.dnd.spaced.global.exception.base.BaseServerException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
+@Profile("!test")
 @EnableRetry
 @Configuration
 public class RetryConfig {
+
+    @Bean
+    public RetryTemplate wordPersistEventRetryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+
+        Map<Class<? extends Throwable>, Boolean> targetException = new HashMap<>();
+        targetException.put(BaseServerException.class, true);
+
+        RetryPolicy retryPolicy = new SimpleRetryPolicy(3, targetException);
+        retryTemplate.setRetryPolicy(retryPolicy);
+
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(1_000);
+        backOffPolicy.setMultiplier(2.0d);
+        backOffPolicy.setMaxInterval(10_000);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+
+        return retryTemplate;
+    }
 }
