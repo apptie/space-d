@@ -428,7 +428,11 @@ public class DocsController {
 
         putUnauthorizedExceptionContent(deletePronunciationException);
         putForbiddenExceptionContent(deletePronunciationException);
-        processWordException(deletePronunciationException, WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED);
+        processWordException(
+                deletePronunciationException,
+                WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
+                WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION
+        );
 
         return deletePronunciationException;
     }
@@ -439,7 +443,11 @@ public class DocsController {
 
         putUnauthorizedExceptionContent(deleteWordExampleException);
         putForbiddenExceptionContent(deleteWordExampleException);
-        processWordException(deleteWordExampleException, WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED);
+        processWordException(
+                deleteWordExampleException,
+                WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,
+                WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION
+        );
 
         return deleteWordExampleException;
     }
@@ -453,7 +461,7 @@ public class DocsController {
         processWordException(
                 updateWordExampleException,
                 WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
-                WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT
+                WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION
         );
 
         return updateWordExampleException;

@@ -1,8 +1,13 @@
 package com.dnd.spaced.core.word.domain.repository;
 
+import com.dnd.spaced.core.word.domain.Pronunciation;
+import java.util.List;
+
 public interface PronunciationRepository {
 
-    long countBy(Long pronunciationId);
+    void saveAll(List<Pronunciation> pronunciations);
 
-    void deleteBy(Long pronunciationId);
+    long countBy(Long wordId);
+
+    long deleteBy(Long pronunciationId);
 }

@@ -143,7 +143,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deleteWordExample(anyLong());
+        verify(adminWordService).deleteWordExample(anyLong(), anyLong());
 
         용어_예문_삭제_요청_문서화(resultActions);
     }
@@ -173,7 +173,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deletePronunciation(anyLong());
+        verify(adminWordService).deletePronunciation(anyLong(), anyLong());
 
         용어_발음_정보_삭제_요청_문서화(resultAction);
     }

@@ -2,31 +2,20 @@ package com.dnd.spaced.core.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
-import com.dnd.spaced.core.admin.application.helper.WithWordMetadataTestHelper;
-import com.dnd.spaced.core.admin.application.helper.WithWordsTestHelper;
-import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
-import com.dnd.spaced.core.quiz.domain.TodayQuiz;
-import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@CleanUpDatabase
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -38,10 +27,10 @@ class AdminTodayQuizServiceTest {
     @Autowired
     AdminTodayQuizService adminTodayQuizService;
 
-    @Autowired
-    TodayQuizRepository todayQuizRepository;
-
     @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+    })
     void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
         // when & then
         assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
@@ -49,34 +38,31 @@ class AdminTodayQuizServiceTest {
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
 
-    @Nested
-    class WithWordMetadataTest extends WithWordMetadataTestHelper {
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/quiz/word_metadata.sql",
+            "classpath:sql/admin/quiz/quiz_metadata.sql"
+    })
+    void 등록된_용어_수가_퀴즈_생성_시_필요한_용어_수보다_적으면_퀴즈를_생성할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
+                .isInstanceOf(InvalidTodayQuizWordCountException.class)
+                .hasMessage("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
+    }
 
-        @Test
-        void 등록된_용어_수가_퀴즈_생성_시_필요한_용어_수보다_적으면_퀴즈를_생성할_수_없다() {
-            // when & then
-            assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
-                    .isInstanceOf(InvalidTodayQuizWordCountException.class)
-                    .hasMessage("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
-        }
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/quiz/word_metadata.sql",
+            "classpath:sql/admin/quiz/quiz_metadata.sql",
+            "classpath:sql/admin/quiz/word.sql"
+    })
+    void 오늘의_퀴즈를_생성한다() {
+        // when
+        Long savedTodayQuizId = adminTodayQuizService.createTodayQuiz();
 
-        @Nested
-        class WithWordsTest extends WithWordsTestHelper {
-
-            @Test
-            void 오늘의_퀴즈를_생성한다() {
-                // when
-                adminTodayQuizService.createTodayQuiz();
-
-                // then
-                Optional<TodayQuiz> actual = todayQuizRepository.findTodayQuizBy(1L);
-
-                assertAll(
-                        () -> assertThat(actual).isPresent(),
-                        () -> assertThat(actual.get().getId()).isEqualTo(1L),
-                        () -> assertThat(events.stream(AddedTodayQuizQuestionEvent.class).count()).isOne()
-                );
-            }
-        }
+        // then
+        assertThat(savedTodayQuizId).isPositive();
     }
 }

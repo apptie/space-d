@@ -1,5 +1,6 @@
 package com.dnd.spaced.global.config;
 
+import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -61,5 +63,17 @@ public class RedisConfig {
         likeCountRedisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Integer.class));
 
         return likeCountRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate() {
+        RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate = new RedisTemplate<>();
+
+        deadLetterQueueRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        deadLetterQueueRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        deadLetterQueueRedisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(FailedWordPersistedEvent.class)
+        );
+        return deadLetterQueueRedisTemplate;
     }
 }

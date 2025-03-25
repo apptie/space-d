@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Thu, 27 Mar 2025 04:46:10 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Fri, 28 Mar 2025 13:12:51 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -1282,7 +1282,7 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어가 없습니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
@@ -1304,6 +1304,24 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">용어 메타데이터에 변경사항을 반영하지 못했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_NOT_FOUND_IN_LISTENER_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 생성 이벤트 리스너에 문제가 발생했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 삭제되지 않았습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 발음이 정상적으로 삭제되지 않았습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1430,7 +1448,7 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
@@ -1518,6 +1536,12 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 삭제되지 않았습니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1600,6 +1624,12 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 발음이 정상적으로 삭제되지 않았습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3771,7 +3801,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-03-24T13:46:12.550469",
+    "createdAt" : "2025-03-25T22:12:52.93703",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4794,7 +4824,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-03-24T13:46:12.711078"
+  "createdAt" : "2025-03-25T22:12:53.104866"
 }</code></pre>
 </div>
 </div>
@@ -5895,7 +5925,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-24T13:46:11.062667"
+    "createdAt" : "2025-03-25T22:12:51.366712"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>

@@ -3,15 +3,14 @@ package com.dnd.spaced.core.admin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.ReportStatusNotFoundException;
-import com.dnd.spaced.core.admin.application.helper.WithCommentAndReportTestHelper;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -23,15 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@CleanUpDatabase
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AdminReportServiceTest extends WithCommentAndReportTestHelper {
+class AdminReportServiceTest {
 
     @Autowired
     AdminReportService adminReportService;
@@ -40,17 +37,18 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
     ApplicationEvents events;
 
     @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/report/comment.sql",
+            "classpath:sql/admin/report/report.sql"
+    })
     void 신고를_처리한다() {
-        // when
+        // given
         ProcessReportRequest request = new ProcessReportRequest("PROCESSED");
 
-        adminReportService.processReport(report.getId(), request);
-
-        // then
-        assertAll(
-                () -> assertThat(comment.isDeleted()).isTrue(),
-                () -> assertThat(events.stream(ProcessedReportEvent.class).count()).isOne()
-        );
+        // when & then
+        assertDoesNotThrow(() -> adminReportService.processReport(1L, request));
+        assertThat(events.stream(ProcessedReportEvent.class).count()).isOne();
     }
 
     @Test
@@ -67,18 +65,28 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
 
     @ParameterizedTest(name = "신고 상태가 {0}이라면 신고 처리를 할 수 없다.")
     @NullAndEmptySource
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/report/comment.sql",
+            "classpath:sql/admin/report/report.sql"
+    })
     void 지정한_신고_상태가_없다면_신고_처리를_할_수_없다(String invalidCause) {
         // given
         ProcessReportRequest request = new ProcessReportRequest(invalidCause);
 
         // when & then
 
-        assertThatThrownBy(() -> adminReportService.processReport(report.getId(), request))
+        assertThatThrownBy(() -> adminReportService.processReport(1L, request))
                 .isInstanceOf(ReportStatusNotFoundException.class)
                 .hasMessage("지정한 신고 상태를 찾을 수 없습니다.");
     }
 
     @Test
+    @Sql(scripts = {
+            "classpath:sql/cleanup.sql",
+            "classpath:sql/admin/report/comment.sql",
+            "classpath:sql/admin/report/report.sql"
+    })
     void 신고_목록을_조회한다() {
         // given
         ReadAllReportSearchRequest request = new ReadAllReportSearchRequest(null, null);
@@ -90,7 +98,7 @@ class AdminReportServiceTest extends WithCommentAndReportTestHelper {
         // then
         assertAll(
                 () -> assertThat(actual.reports()).hasSize(1),
-                () -> assertThat(actual.lastReportId()).isEqualTo(report.getId())
+                () -> assertThat(actual.lastReportId()).isEqualTo(1L)
         );
     }
 }

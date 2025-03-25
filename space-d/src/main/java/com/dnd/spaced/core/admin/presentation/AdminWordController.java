@@ -47,14 +47,14 @@ public class AdminWordController {
 
     @DeleteMapping("/{wordId}/examples/{wordExampleId}")
     public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long wordExampleId) {
-        adminWordService.deleteWordExample(wordExampleId);
+        adminWordService.deleteWordExample(wordId, wordExampleId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("/{wordId}/pronunciations/{pronunciationId}")
     public ResponseEntity<Void> deletePronunciation(@PathVariable Long wordId, @PathVariable Long pronunciationId) {
-        adminWordService.deletePronunciation(pronunciationId);
+        adminWordService.deletePronunciation(wordId, pronunciationId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
