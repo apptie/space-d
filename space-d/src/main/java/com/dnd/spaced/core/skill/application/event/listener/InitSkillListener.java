@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.skill.application.event.listener;
 
-import com.dnd.spaced.core.skill.application.event.dto.AccountInitializedEvent;
+import com.dnd.spaced.core.skill.application.event.dto.InitializedAccountEvent;
 import com.dnd.spaced.core.skill.domain.Skill;
 import com.dnd.spaced.core.skill.domain.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class InitSkillListener {
 
     @EventListener
     @Transactional
-    public void listen(AccountInitializedEvent event) {
+    public void listen(InitializedAccountEvent event) {
         Skill skill = new Skill(event.accountId());
 
         skillRepository.save(skill);

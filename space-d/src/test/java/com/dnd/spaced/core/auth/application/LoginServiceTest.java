@@ -9,16 +9,20 @@ import com.dnd.spaced.core.account.domain.NicknameMetadata;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
 import com.dnd.spaced.core.auth.application.exception.NicknameMetadataNotFoundException;
+import com.dnd.spaced.core.skill.application.event.dto.InitializedAccountEvent;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @CleanUpDatabase
+@RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -26,6 +30,9 @@ class LoginServiceTest {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    ApplicationEvents events;
 
     @Autowired
     NicknameMetadataRepository nicknameMetadataRepository;
@@ -42,7 +49,8 @@ class LoginServiceTest {
         assertAll(
                 () -> assertThat(actual.id()).isPositive(),
                 () -> assertThat(actual.roleName()).isEqualTo("ROLE_USER"),
-                () -> assertThat(actual.isSignUp()).isTrue()
+                () -> assertThat(actual.isSignUp()).isTrue(),
+                () -> assertThat(events.stream(InitializedAccountEvent.class).count()).isOne()
         );
     }
 
@@ -59,7 +67,8 @@ class LoginServiceTest {
         assertAll(
                 () -> assertThat(actual.id()).isPositive(),
                 () -> assertThat(actual.roleName()).isEqualTo("ROLE_USER"),
-                () -> assertThat(actual.isSignUp()).isFalse()
+                () -> assertThat(actual.isSignUp()).isFalse(),
+                () -> assertThat(events.stream(InitializedAccountEvent.class).count()).isOne()
         );
     }
 
@@ -79,7 +88,8 @@ class LoginServiceTest {
                 () -> assertThat(loggedInAccountInfo2.id()).isNotEqualTo(loggedInAccountInfo1.id()),
                 () -> assertThat(loggedInAccountInfo2.roleName()).isEqualTo("ROLE_USER"),
                 () -> assertThat(loggedInAccountInfo2.isSignUp()).isTrue(),
-                () -> assertThat(nicknameMetadata.getCount()).isEqualTo(2L)
+                () -> assertThat(nicknameMetadata.getCount()).isEqualTo(2L),
+                () -> assertThat(events.stream(InitializedAccountEvent.class).count()).isEqualTo(2L)
         );
     }
 
