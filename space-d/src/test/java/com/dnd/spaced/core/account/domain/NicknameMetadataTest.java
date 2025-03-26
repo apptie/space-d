@@ -25,7 +25,7 @@ class NicknameMetadataTest {
 
         assertAll(
                 () -> assertThat(actual.getNickname()).isEqualTo("재빠른지구"),
-                () -> assertThat(actual.getCount()).isEqualTo(0L)
+                () -> assertThat(actual.getTotalCount()).isZero()
         );
     }
 
@@ -52,13 +52,13 @@ class NicknameMetadataTest {
     void 닉네임_메타데이터의_닉네임_생성_횟수를_1_증가시킨다() {
         // given
         NicknameMetadata nicknameMetadata = NicknameMetadata.from("재빠른지구");
-        long beforeCount = nicknameMetadata.getCount();
+        long beforeCount = nicknameMetadata.getTotalCount();
 
         // when
         nicknameMetadata.addCount();
 
         // then
-        assertThat(nicknameMetadata.getCount()).isEqualTo(beforeCount + 1);
+        assertThat(nicknameMetadata.getTotalCount()).isEqualTo(beforeCount + 1);
     }
 
     @Test

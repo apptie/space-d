@@ -94,7 +94,7 @@ public class LoginService {
     ) {
         String nickname = nicknameProperties.format(
                 nicknameMetadata.getNickname(),
-                nicknameMetadata.getCount()
+                nicknameMetadata.getTotalCount()
         );
         Account account = Account.builder()
                                  .registrationId(registrationId)

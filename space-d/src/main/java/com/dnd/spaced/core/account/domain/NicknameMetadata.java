@@ -25,7 +25,7 @@ public class NicknameMetadata extends BaseTimeEntity implements Persistable<Stri
     @Id
     private String nickname;
 
-    private long count = 0L;
+    private long totalCount = 0L;
 
     public static NicknameMetadata from(String nickname) {
         validateContent(nickname);
@@ -49,7 +49,7 @@ public class NicknameMetadata extends BaseTimeEntity implements Persistable<Stri
     }
 
     public void addCount() {
-        this.count++;
+        this.totalCount++;
     }
 
     @Override
