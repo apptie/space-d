@@ -409,7 +409,8 @@ public class DocsController {
                 saveCommentException,
                 CommentErrorCode.ASSOCIATION_ACCOUNT_NOT_FOUND,
                 CommentErrorCode.ASSOCIATION_WORD_NOT_FOUND,
-                CommentErrorCode.INVALID_COMMENT_CONTENT
+                CommentErrorCode.INVALID_COMMENT_CONTENT,
+                CommentErrorCode.WORD_NOT_FOUND_EXCEPTION
         );
 
         return saveCommentException;

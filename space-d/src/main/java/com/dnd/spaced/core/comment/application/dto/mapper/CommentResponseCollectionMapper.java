@@ -5,35 +5,35 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
+import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CommentApplicationMapper {
+public final class CommentResponseCollectionMapper {
 
-    public static CommentCollectionResponse toDto(List<LikedCommentDto> comments) {
+    public static CommentCollectionResponse toCollectionDto(List<LikedCommentInfo> comments) {
         if (comments.isEmpty()) {
             return new CommentCollectionResponse(List.of(), null);
         }
 
         List<CommentResponse> responses = comments.stream()
-                                                  .map(CommentApplicationMapper::toCommentResponse)
+                                                  .map(CommentResponseCollectionMapper::toCommentResponse)
                                                   .toList();
 
         return new CommentCollectionResponse(responses, comments.get(comments.size() - 1).comment().getId());
     }
 
-    private static CommentResponse toCommentResponse(LikedCommentDto likedCommentDto) {
+    private static CommentResponse toCommentResponse(LikedCommentInfo likedCommentInfo) {
         return new CommentResponse(
-                toCommentContentResponse(likedCommentDto.comment()),
+                toCommentContentResponse(likedCommentInfo.comment()),
                 toCommentWriterResponse(
-                        likedCommentDto.writerNickname(),
-                        likedCommentDto.writerProfileImage(),
-                        likedCommentDto.writerId()
+                        likedCommentInfo.writerNickname(),
+                        likedCommentInfo.writerProfileImage(),
+                        likedCommentInfo.comment().getWriterId()
                 ),
-                likedCommentDto.isLiked()
+                likedCommentInfo.isLiked()
         );
     }
 

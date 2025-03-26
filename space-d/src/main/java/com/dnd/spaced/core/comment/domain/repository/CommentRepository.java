@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.comment.domain.repository;
 
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.repository.dto.response.LikedCommentDto;
+import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,7 @@ public interface CommentRepository {
 
     Optional<Comment> findBy(Long commentId);
 
-    List<LikedCommentDto> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable);
+    List<LikedCommentInfo> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable);
 
     void delete(Comment comment);
 

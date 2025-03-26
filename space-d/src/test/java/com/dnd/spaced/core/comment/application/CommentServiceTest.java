@@ -9,10 +9,9 @@ import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
-import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
-import com.dnd.spaced.core.comment.application.exception.AssociationWordNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
+import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.application.helper.WithWriterAndReaderAndWordTestHelper;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
@@ -54,7 +53,7 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
 
         // when & then
         assertThatThrownBy(() -> commentService.createComment(writer.getId(), -1L, request))
-                .isInstanceOf(AssociationWordNotFoundException.class)
+                .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
 
@@ -89,14 +88,6 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
     }
 
     @Test
-    void 없거나_탈퇴한_회원_식별자로는_댓글을_삭제할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> commentService.deleteComment(-1L, 1L))
-                .isInstanceOf(AssociationAccountNotFoundException.class)
-                .hasMessage("유효하지 않은 회원입니다.");
-    }
-
-    @Test
     void 없는_댓글_식별자를_통해_댓글을_삭제할_수_없다() {
         // when & then
         assertThatThrownBy(() -> commentService.deleteComment(writer.getId(), -1L))
@@ -124,22 +115,6 @@ class CommentServiceTest extends WithWriterAndReaderAndWordTestHelper {
 
         // when & then
         assertDoesNotThrow(() -> commentService.deleteComment(writer.getId(), 1L));
-    }
-
-    @Test
-    void 없거나_탈퇴한_회원의_식별자로는_댓글을_수정할_수_없다() {
-        // given
-        UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
-
-        // when & then
-        assertThatThrownBy(() ->
-                commentService.updateComment(
-                        -999L,
-                        1L,
-                        request
-                )
-        ).isInstanceOf(AssociationAccountNotFoundException.class)
-         .hasMessage("유효하지 않은 회원입니다.");
     }
 
     @Test
