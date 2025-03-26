@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.retry.RetryCallback;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -49,7 +48,7 @@ public class WordPersistEventListener {
 
         try {
             wordPersistEventRetryTemplate.execute(
-                    (RetryCallback<Object, Throwable>) retryContext -> {
+                    retryContext -> {
                         persistWordRandom(event.wordId(), event.category());
                         updateWordMetadata(event.category());
 
