@@ -1,18 +1,16 @@
 package com.dnd.spaced.core.comment.application;
 
-import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.application.dto.mapper.CommentResponseCollectionMapper;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
-import com.dnd.spaced.core.comment.application.exception.AssociationAccountNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.CommentNotFoundException;
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +46,9 @@ public class CommentService {
 
     @Transactional
     public void updateComment(Long accountId, Long commentId, UpdateCommentRequest request) {
-        Account writer = findAccount(accountId);
         Comment comment = findComment(commentId);
 
-        validateUpdateAuthority(comment, writer);
+        validateUpdateAuthority(comment, accountId);
         comment.changeContent(request.content());
     }
 
@@ -59,11 +56,6 @@ public class CommentService {
         List<LikedCommentInfo> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
 
         return CommentResponseCollectionMapper.toCollectionDto(comments);
-    }
-
-    private Account findAccount(Long accountId) {
-        return accountRepository.findBy(accountId)
-                                .orElseThrow(() -> new AssociationAccountNotFoundException("유효하지 않은 회원입니다."));
     }
 
     private void validateWordId(Long wordId) {
@@ -83,8 +75,8 @@ public class CommentService {
         }
     }
 
-    private void validateUpdateAuthority(Comment comment, Account writer) {
-        if (comment.isNotWriter(writer)) {
+    private void validateUpdateAuthority(Comment comment, Long accountId) {
+        if (comment.isNotWriter(accountId)) {
             throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
         }
     }
