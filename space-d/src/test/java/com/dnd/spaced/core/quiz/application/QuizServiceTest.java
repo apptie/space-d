@@ -30,7 +30,7 @@ import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
 
-@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
