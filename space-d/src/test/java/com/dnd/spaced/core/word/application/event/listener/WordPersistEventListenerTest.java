@@ -11,6 +11,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.dnd.spaced.config.annotation.MockInContextBean;
+import com.dnd.spaced.config.annotation.SpyInContextBean;
+import com.dnd.spaced.config.listener.MockInContextBeanTestExecutionListener;
 import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
@@ -32,9 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 
@@ -42,31 +44,29 @@ import org.springframework.test.context.event.RecordApplicationEvents;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestExecutionListeners(value = MockInContextBeanTestExecutionListener.class, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class WordPersistEventListenerTest {
 
-    @MockBean
+    @MockInContextBean({AdminWordService.class, WordPersistEventListener.class})
     WordRepository wordRepository;
 
-    @MockBean
+    @MockInContextBean(AdminWordService.class)
     WordExampleRepository wordExampleRepository;
 
-    @MockBean
+    @MockInContextBean(AdminWordService.class)
     PronunciationRepository pronunciationRepository;
 
     @Autowired
     AdminWordService adminWordService;
 
-    @MockBean
+    @MockInContextBean(WordPersistEventListener.class)
     WordRandomRepository wordRandomRepository;
 
-    @MockBean
+    @MockInContextBean(WordPersistEventListener.class)
     WordMetadataRepository wordMetadataRepository;
 
-    @SpyBean
-    RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate;
-
-    @SpyBean
-    WordPersistEventListener wordPersistEventListener;
+    @SpyInContextBean(WordPersistEventListener.class)
+    RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
 
     @Autowired
     ApplicationEvents events;
@@ -96,9 +96,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordRandomRepository).saveWith(any(Word.class), any(Category.class)),
-                () -> verify(deadLetterQueueRedisTemplate, never()).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate, never()).opsForList()
         );
     }
 
@@ -129,9 +128,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
-                () -> verify(deadLetterQueueRedisTemplate, never()).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate, never()).opsForList()
         );
     }
 
@@ -161,9 +159,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
-                () -> verify(deadLetterQueueRedisTemplate).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate).opsForList()
         );
     }
 }

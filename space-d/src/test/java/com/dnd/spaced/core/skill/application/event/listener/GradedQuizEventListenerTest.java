@@ -9,6 +9,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.dnd.spaced.config.annotation.SpyInContextBean;
+import com.dnd.spaced.config.listener.MockInContextBeanTestExecutionListener;
 import com.dnd.spaced.core.quiz.application.QuizService;
 import com.dnd.spaced.core.quiz.application.TodayQuizService;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
@@ -27,8 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
@@ -37,16 +39,11 @@ import org.springframework.test.context.jdbc.Sql;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestExecutionListeners(value = MockInContextBeanTestExecutionListener.class, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class GradedQuizEventListenerTest {
 
     @Autowired
     ApplicationEvents events;
-
-    @SpyBean
-    RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate;
-
-    @SpyBean
-    RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
 
     @Autowired
     QuizService quizService;
@@ -54,8 +51,14 @@ class GradedQuizEventListenerTest {
     @Autowired
     TodayQuizService todayQuizService;
 
-    @SpyBean
+    @SpyInContextBean(GradedQuizEventListener.class)
     SkillRepository skillRepository;
+
+    @SpyInContextBean(GradedQuizEventListener.class)
+    RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate;
+
+    @SpyInContextBean(GradedQuizEventListener.class)
+    RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
 
     @Test
     @Sql(value = {
