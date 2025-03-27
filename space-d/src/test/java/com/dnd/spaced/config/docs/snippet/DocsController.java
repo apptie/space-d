@@ -2,6 +2,7 @@ package com.dnd.spaced.config.docs.snippet;
 
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.enums.EnumDocs;
+import com.dnd.spaced.config.docs.snippet.enums.EnumDocsConverter;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionDocs;
 import com.dnd.spaced.core.account.domain.enums.Company;
@@ -14,7 +15,6 @@ import com.dnd.spaced.core.report.domain.enums.ReportReason;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.enums.PronunciationType;
-import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.code.BookmarkErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
@@ -25,7 +25,6 @@ import com.dnd.spaced.global.exception.code.ReportErrorCode;
 import com.dnd.spaced.global.exception.code.SkillErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
-import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.BookmarkExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
@@ -36,10 +35,8 @@ import com.dnd.spaced.global.exception.translator.QuizExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ReportExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.SkillExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.WordExceptionTranslator;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,42 +49,17 @@ public class DocsController {
 
     @GetMapping("/enums")
     public ResponseEntity<CommonDocsResponse<EnumDocs>> findEnums() {
-        Map<String, String> jobGroup = Arrays.stream(JobGroup.values())
-                                             .collect(Collectors.toMap(Enum::name, JobGroup::getName));
-        Map<String, String> company = Arrays.stream(Company.values())
-                                            .collect(Collectors.toMap(Enum::name, Company::getName));
-        Map<String, String> experience = Arrays.stream(Experience.values())
-                                               .collect(Collectors.toMap(Enum::name, Experience::getName));
-        Map<String, String> profileImageName = Arrays.stream(ProfileImageName.values())
-                                                     .collect(
-                                                             Collectors.toMap(Enum::name, ProfileImageName::getKorean)
-                                                     );
-        Map<String, String> category = Arrays.stream(Category.values())
-                                             .collect(Collectors.toMap(Enum::name, Category::getName));
-        Map<String, String> pronunciationType = Arrays.stream(PronunciationType.values())
-                                                      .collect(
-                                                              Collectors.toMap(Enum::name, PronunciationType::getName)
-                                                      );
-        Map<String, String> quizCategory = Arrays.stream(QuizCategory.values())
-                                                 .collect(Collectors.toMap(Enum::name, QuizCategory::getName));
-        Map<String, String> reportReason = Arrays.stream(ReportReason.values())
-                                                 .collect(Collectors.toMap(Enum::name, ReportReason::getCause));
-        Map<String, String> reportStatus = Arrays.stream(ReportStatus.values())
-                                                 .collect(Collectors.toMap(Enum::name, ReportStatus::getName));
-        Map<String, String> todayQuizStatus = Arrays.stream(TodayQuizStatus.values())
-                                                    .collect(Collectors.toMap(Enum::name, TodayQuizStatus::getName));
-
         EnumDocs enumDocs = EnumDocs.builder()
-                                    .jobGroup(jobGroup)
-                                    .company(company)
-                                    .experience(experience)
-                                    .profileImageName(profileImageName)
-                                    .category(category)
-                                    .pronunciationType(pronunciationType)
-                                    .quizCategory(quizCategory)
-                                    .reportReason(reportReason)
-                                    .reportStatus(reportStatus)
-                                    .todayQuizStatus(todayQuizStatus)
+                                    .jobGroup(EnumDocsConverter.convert(JobGroup.values(), JobGroup::getName))
+                                    .company(EnumDocsConverter.convert(Company.values(), Company::getName))
+                                    .experience(EnumDocsConverter.convert(Experience.values(), Experience::getName))
+                                    .profileImageName(EnumDocsConverter.convert(ProfileImageName.values(), ProfileImageName::getKorean))
+                                    .category(EnumDocsConverter.convert(Category.values(), Category::getName))
+                                    .pronunciationType(EnumDocsConverter.convert(PronunciationType.values(), PronunciationType::getName))
+                                    .quizCategory(EnumDocsConverter.convert(QuizCategory.values(), QuizCategory::getName))
+                                    .reportReason(EnumDocsConverter.convert(ReportReason.values(), ReportReason::getCause))
+                                    .reportStatus(EnumDocsConverter.convert(ReportStatus.values(), ReportStatus::getName))
+                                    .todayQuizStatus(EnumDocsConverter.convert(TodayQuizStatus.values(), TodayQuizStatus::getName))
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
@@ -96,19 +68,13 @@ public class DocsController {
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
-                                                   .authProfileException(calculateAuthProfileException())
                                                    .refreshTokenException(calculateRefreshTokenException())
-                                                   .registerBlacklistTokenException(
-                                                           calculateRegisterBlacklistTokenException())
-                                                   .withdrawalException(calculateWithdrawalException())
-                                                   .changeCareerInfoException(calculateChangeCareerInfoException())
-                                                   .changeProfileInfoException(calculateChangeProfileInfoException())
+                                                   .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
                                                    .findAccountInfoException(calculateFindAccountInfoException())
                                                    .saveWordException(calculateSaveWordException())
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
-                                                   .deletePronunciationException(
-                                                           calculateDeletePronunciationException())
+                                                   .deletePronunciationException(calculateDeletePronunciationException())
                                                    .readWordException(calculateReadWordException())
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
@@ -116,19 +82,14 @@ public class DocsController {
                                                    .processLikeException(calculateProcessLikeException())
                                                    .createQuizException(calculateCreateQuizException())
                                                    .gradeQuizException(calculateGradeQuizException())
-                                                   .findGradedAnswersAllByException(
-                                                           calculateFindGradedAnswersAllByException())
-                                                   .findGradedAnswersAllByQuizException(
-                                                           calculateFindGradedAnswersAllByQuizException())
+                                                   .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
+                                                   .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
                                                    .findQuizByException(calculateFindQuizByException())
-                                                   .findLatestTodayQuizException(
-                                                           calculateFindLatestTodayQuizException())
+                                                   .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
                                                    .findTodayQuizByException(calculateFindTodayQuizByException())
                                                    .gradeTodayQuizException(calculateGradeTodayQuizException())
-                                                   .findTodayQuizGradedAnswerByException(
-                                                           calculateFindTodayQuizGradedAnswerByException())
-                                                   .findTodayQuizGradedAnswersAllByException(
-                                                           calculateFindTodayQuizGradedAnswersAllByException())
+                                                   .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
+                                                   .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
                                                    .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
                                                    .reportException(calculateReportException())
@@ -496,54 +457,6 @@ public class DocsController {
         return findAccountInfoException;
     }
 
-    private Map<String, ExceptionContent> calculateChangeProfileInfoException() {
-        Map<String, ExceptionContent> changeProfileInfoException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(changeProfileInfoException);
-        putMethodArgumentNotValidExceptionContent(
-                changeProfileInfoException,
-                "nickname",
-                "profileImageKoreanName"
-        );
-        processAccountException(
-                changeProfileInfoException,
-                AccountErrorCode.INVALID_NICKNAME,
-                AccountErrorCode.INVALID_PROFILE_NAME,
-                AccountErrorCode.INVALID_PROFILE_IMAGE
-        );
-
-        return changeProfileInfoException;
-    }
-
-    private Map<String, ExceptionContent> calculateChangeCareerInfoException() {
-        Map<String, ExceptionContent> changeCareerInfoException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(changeCareerInfoException);
-        putMethodArgumentNotValidExceptionContent(
-                changeCareerInfoException,
-                "jobGroupName",
-                "companyName",
-                "experienceName"
-        );
-        processAccountException(
-                changeCareerInfoException,
-                AccountErrorCode.INVALID_COMPANY,
-                AccountErrorCode.INVALID_EXPERIENCE,
-                AccountErrorCode.INVALID_JOB_GROUP
-        );
-
-        return changeCareerInfoException;
-    }
-
-    private Map<String, ExceptionContent> calculateWithdrawalException() {
-        Map<String, ExceptionContent> withdrawalException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(withdrawalException);
-        processAccountException(withdrawalException, AccountErrorCode.FORBIDDEN_ACCOUNT);
-
-        return withdrawalException;
-    }
-
     private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
         Map<String, ExceptionContent> registerBlacklistTokenException = new LinkedHashMap<>();
 
@@ -567,29 +480,6 @@ public class DocsController {
         );
 
         return refreshTokenException;
-    }
-
-    private Map<String, ExceptionContent> calculateAuthProfileException() {
-        Map<String, ExceptionContent> authProfileException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(authProfileException);
-        putForbiddenExceptionContent(authProfileException);
-        putMethodArgumentNotValidExceptionContent(
-                authProfileException,
-                "jobGroupName",
-                "companyName",
-                "experienceName"
-        );
-
-        processAuthException(authProfileException, AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION);
-        processAccountException(
-                authProfileException,
-                AccountErrorCode.INVALID_COMPANY,
-                AccountErrorCode.INVALID_EXPERIENCE,
-                AccountErrorCode.INVALID_JOB_GROUP
-        );
-
-        return authProfileException;
     }
 
     private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
@@ -674,14 +564,6 @@ public class DocsController {
     private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
         for (AuthErrorCode errorCode : errorCodes) {
             ExceptionTranslator translator = AuthExceptionTranslator.findBy(errorCode);
-
-            processExceptionContent(target, translator);
-        }
-    }
-
-    private void processAccountException(Map<String, ExceptionContent> target, AccountErrorCode... errorCodes) {
-        for (AccountErrorCode errorCode : errorCodes) {
-            ExceptionTranslator translator = AccountExceptionTranslator.findBy(errorCode);
 
             processExceptionContent(target, translator);
         }
