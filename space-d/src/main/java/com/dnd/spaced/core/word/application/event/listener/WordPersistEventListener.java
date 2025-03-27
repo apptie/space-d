@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.retry.RetryCallback;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,14 +31,14 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class WordPersistEventListener {
 
     private static final long DEFAULT_WORD_METADATA_ID = 1L;
-    private static final String DEAD_LETTER_QUEUE_KEY = "word-persisted-event-dlq";
+    private static final String KEY = "failed-word-persist-event";
 
     private final Clock clock;
     private final WordRepository wordRepository;
     private final WordRandomRepository wordRandomRepository;
     private final RetryTemplate wordPersistEventRetryTemplate;
     private final WordMetadataRepository wordMetadataRepository;
-    private final RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate;
+    private final RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
 
     @Async("asyncPersistedWordEventListenerExecutor")
     @TransactionalEventListener
@@ -49,7 +48,7 @@ public class WordPersistEventListener {
 
         try {
             wordPersistEventRetryTemplate.execute(
-                    (RetryCallback<Object, Throwable>) retryContext -> {
+                    retryContext -> {
                         persistWordRandom(event.wordId(), event.category());
                         updateWordMetadata(event.category());
 
@@ -77,8 +76,8 @@ public class WordPersistEventListener {
                 LocalDateTime.now(clock)
         );
 
-        deadLetterQueueRedisTemplate.opsForList()
-                                    .rightPush(DEAD_LETTER_QUEUE_KEY, failedEvent);
+        wordPersistFailedRedisTemplate.opsForList()
+                                      .rightPush(KEY, failedEvent);
     }
 
     private void persistWordRandom(Long wordId, Category category) {

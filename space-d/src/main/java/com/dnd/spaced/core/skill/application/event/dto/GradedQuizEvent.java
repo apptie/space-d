@@ -3,7 +3,7 @@ package com.dnd.spaced.core.skill.application.event.dto;
 import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import java.util.List;
 
-public record GradedQuizEvent(Long accountId, Long correctCount) {
+public record GradedQuizEvent(Long accountId, long correctCount) {
 
     public static GradedQuizEvent of(Long accountId, List<QuizGradedAnswer> quizGradedAnswers) {
         long correctCount = quizGradedAnswers.stream()

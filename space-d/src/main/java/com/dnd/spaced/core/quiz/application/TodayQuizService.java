@@ -106,7 +106,7 @@ public class TodayQuizService {
     }
 
     private void publishGradedTodayQuizEvent(Long accountId, TodayQuizGradedAnswer gradedAnswer) {
-        eventPublisher.publishEvent(new GradedTodayQuizEvent(accountId, gradedAnswer.isCorrect()));
+        eventPublisher.publishEvent(GradedTodayQuizEvent.of(accountId, gradedAnswer.isCorrect()));
     }
 
     private TodayQuizGradedAnswer findTodayQuizGradedAnswer(Long accountId, Long todayQuizId) {

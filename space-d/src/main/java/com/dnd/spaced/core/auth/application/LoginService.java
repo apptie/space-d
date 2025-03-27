@@ -9,22 +9,24 @@ import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.account.domain.repository.NicknameMetadataRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
 import com.dnd.spaced.core.auth.application.exception.NicknameMetadataNotFoundException;
+import com.dnd.spaced.core.skill.application.event.dto.InitializedAccountEvent;
 import com.dnd.spaced.global.config.properties.NicknameProperties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LoginService {
 
     private static final Role DEFAULT_ROLE = Role.ROLE_USER;
 
-    private final NicknameProperties nicknameProperties;
     private final AccountRepository accountRepository;
+    private final NicknameProperties nicknameProperties;
     private final NicknameMetadataRepository nicknameMetadataRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public LoggedInAccountInfoDto login(String registrationIdName, String socialIdentifier) {
@@ -42,7 +44,7 @@ public class LoginService {
     ) {
         return accountRepository.findBy(registrationId, socialIdentifier)
                                 .orElseGet(
-                                        () -> processSignUpAccount(
+                                        () -> signUp(
                                                 registrationId,
                                                 socialIdentifier,
                                                 isSignUp
@@ -50,10 +52,11 @@ public class LoginService {
                                 );
     }
 
-    private Account processSignUpAccount(
+    private Account signUp(
             RegistrationId registrationId,
             String socialIdentifier,
-            AtomicBoolean isSignUp) {
+            AtomicBoolean isSignUp
+    ) {
         isSignUp.set(true);
 
         String nickname = nicknameProperties.generate();
@@ -91,7 +94,7 @@ public class LoginService {
     ) {
         String nickname = nicknameProperties.format(
                 nicknameMetadata.getNickname(),
-                nicknameMetadata.getCount()
+                nicknameMetadata.getTotalCount()
         );
         Account account = Account.builder()
                                  .registrationId(registrationId)
@@ -100,7 +103,14 @@ public class LoginService {
                                  .role(DEFAULT_ROLE)
                                  .profileImage(profileImage)
                                  .build();
+        Account savedAccount = accountRepository.save(account);
 
-        return accountRepository.save(account);
+        publishIniInitializedAccountEvent(savedAccount);
+
+        return savedAccount;
+    }
+
+    private void publishIniInitializedAccountEvent(Account account) {
+        eventPublisher.publishEvent(new InitializedAccountEvent(account.getId()));
     }
 }
