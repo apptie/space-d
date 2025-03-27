@@ -116,12 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.authProfileException").withSubsectionId("authProfileException"),
-                                      attributes(key("title").value("`POST /auths/profile` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getAuthProfileException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.refreshTokenException").withSubsectionId("refreshTokenException"),
                                       attributes(key("title").value("`POST /auths/refresh-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRefreshTokenException())
@@ -131,30 +125,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
                                       attributes(key("title").value("`POST /auths/blacklist-token` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.withdrawalException").withSubsectionId("withdrawalException"),
-                                      attributes(key("title").value("`DELETE /accounts/withdrawal` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getWithdrawalException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.changeCareerInfoException").withSubsectionId("changeCareerInfoException"),
-                                      attributes(key("title").value("`PUT /accounts/career-info` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getChangeCareerInfoException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.changeProfileInfoException").withSubsectionId("changeProfileInfoException"),
-                                      attributes(key("title").value("`PUT /accounts/profile-info` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getChangeProfileInfoException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findAccountInfoException").withSubsectionId("findAccountInfoException"),
-                                      attributes(key("title").value("`GET /accounts` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindAccountInfoException())
                               ),
                               customResponseFields(
                                       "exception-response",

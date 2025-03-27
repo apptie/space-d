@@ -1,0 +1,30 @@
+[[Account-API]]
+== Account API
+
+[[Withdrawal]]
+=== 회원 탈퇴 API
+
+operation::account-controller-test/회원_탈퇴_요청_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/account-exception-controller-test/exceptions/exception-response-fields-withdrawalException.adoc[]
+
+[[Change-Career-Info]]
+=== 회원 경력 정보 변경 API
+
+operation::account-controller-test/회원_경력_정보_변경_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/account-exception-controller-test/exceptions/exception-response-fields-changeCareerInfoException.adoc[]
+
+[[Change-Profile-Info]]
+=== 회원 프로필 정보 변경 API
+
+operation::account-controller-test/회원_프로필_정보_변경_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/account-exception-controller-test/exceptions/exception-response-fields-changeProfileInfoException.adoc[]
+
+[[Find-Account-Info]]
+=== 회원 정보 조회 API
+
+operation::account-controller-test/회원_정보_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
+
+include::{snippets}/account-exception-controller-test/exceptions/exception-response-fields-findAccountInfoException.adoc[]

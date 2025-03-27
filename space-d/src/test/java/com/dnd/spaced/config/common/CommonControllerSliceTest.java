@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
+import com.dnd.spaced.config.docs.snippet.exceptions.account.AccountExceptionController;
 import com.dnd.spaced.config.stub.StudAccountRepository;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
@@ -73,7 +74,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                AuthController.class, DocsController.class, AdminReportController.class, AccountController.class,
+                AuthController.class, DocsController.class, AccountExceptionController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
                 TodayQuizController.class, LocalImageController.class, ReportController.class,
                 BookmarkController.class, SkillController.class, AdminAuthenticationController.class,
@@ -94,6 +95,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     protected DocsController commonDocsController;
+
+    @Autowired
+    protected AccountExceptionController accountExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -238,7 +242,8 @@ public class CommonControllerSliceTest {
                                               skillController,
                                               adminWordController,
                                               adminAuthenticationController,
-                                              adminTodayQuizController
+                                              adminTodayQuizController,
+                                              accountExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

@@ -70,7 +70,6 @@ public class DocsController {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
                                                    .refreshTokenException(calculateRefreshTokenException())
                                                    .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
-                                                   .findAccountInfoException(calculateFindAccountInfoException())
                                                    .saveWordException(calculateSaveWordException())
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
