@@ -63,6 +63,11 @@ public enum AccountExceptionTranslator implements ExceptionTranslator {
             AccountErrorCode.INVALID_REGISTRATION_ID,
             HttpStatus.BAD_REQUEST,
             "지원하는 소셜 로그인 방식이 아닙니다."
+    ),
+    FORBIDDEN_INIT_CAREER_INFO_EXCEPTION(
+            AccountErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION,
+            HttpStatus.FORBIDDEN,
+            "권한이 없습니다."
     );
 
     private final ErrorCode errorCode;
