@@ -35,4 +35,23 @@ public class RetryConfig {
 
         return retryTemplate;
     }
+
+    @Bean
+    public RetryTemplate gradedQuizRetryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+
+        Map<Class<? extends Throwable>, Boolean> targetException = new HashMap<>();
+        targetException.put(BaseServerException.class, true);
+
+        RetryPolicy retryPolicy = new SimpleRetryPolicy(3, targetException);
+        retryTemplate.setRetryPolicy(retryPolicy);
+
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(1_000L);
+        backOffPolicy.setMultiplier(2.0d);
+        backOffPolicy.setMaxInterval(10_000L);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+
+        return retryTemplate;
+    }
 }

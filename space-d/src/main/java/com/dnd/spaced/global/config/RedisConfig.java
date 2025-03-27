@@ -1,5 +1,7 @@
 package com.dnd.spaced.global.config;
 
+import com.dnd.spaced.core.skill.application.event.dto.FailedGradedQuizSkillEvent;
+import com.dnd.spaced.core.skill.application.event.dto.FailedGradedTodayQuizSkillEvent;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import lombok.RequiredArgsConstructor;
@@ -66,14 +68,40 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate() {
-        RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate() {
+        RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate = new RedisTemplate<>();
 
-        deadLetterQueueRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        deadLetterQueueRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        deadLetterQueueRedisTemplate.setValueSerializer(
+        wordPersistFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        wordPersistFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        wordPersistFailedRedisTemplate.setValueSerializer(
                 new Jackson2JsonRedisSerializer<>(FailedWordPersistedEvent.class)
         );
-        return deadLetterQueueRedisTemplate;
+        return wordPersistFailedRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate() {
+        RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate =
+                new RedisTemplate<>();
+
+        gradedQuizEventFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        gradedQuizEventFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        gradedQuizEventFailedRedisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(FailedGradedQuizSkillEvent.class)
+        );
+        return gradedQuizEventFailedRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate() {
+        RedisTemplate<String, FailedGradedTodayQuizSkillEvent> calculateTodayQuizSkillFailedRedisTemplate =
+                new RedisTemplate<>();
+
+        calculateTodayQuizSkillFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        calculateTodayQuizSkillFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        calculateTodayQuizSkillFailedRedisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(FailedGradedTodayQuizSkillEvent.class)
+        );
+        return calculateTodayQuizSkillFailedRedisTemplate;
     }
 }

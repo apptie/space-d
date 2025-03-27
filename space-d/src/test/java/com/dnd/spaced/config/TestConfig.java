@@ -6,7 +6,6 @@ import com.dnd.spaced.global.exception.base.BaseServerException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -34,7 +33,7 @@ public class TestConfig {
     @Bean(name = "asyncCalculateSkillExecutor")
     @Primary
     public Executor asyncCalculateSkillExecutor() {
-        return Executors.newCachedThreadPool();
+        return Runnable::run;
     }
 
     @Bean(name = "asyncWordViewCounterExecutor")
