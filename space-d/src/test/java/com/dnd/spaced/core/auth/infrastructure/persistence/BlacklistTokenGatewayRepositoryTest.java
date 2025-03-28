@@ -3,7 +3,6 @@ package com.dnd.spaced.core.auth.infrastructure.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpRedis;
 import com.dnd.spaced.core.auth.domain.BlacklistToken;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@CleanUpRedis
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
