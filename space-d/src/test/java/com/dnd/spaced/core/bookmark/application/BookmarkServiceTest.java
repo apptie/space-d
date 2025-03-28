@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
-import com.dnd.spaced.core.bookmark.application.helper.WithWordTestHelper;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountDecrementedEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountIncrementedEvent;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -23,15 +21,13 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@CleanUpDatabase
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BookmarkServiceTest extends WithWordTestHelper {
+class BookmarkServiceTest {
 
     @Autowired
     ApplicationEvents events;
@@ -40,12 +36,12 @@ class BookmarkServiceTest extends WithWordTestHelper {
     BookmarkService bookmarkService;
 
     @Test
+    @Sql("classpath:sql/bookmark/word.sql")
     void 북마크를_추가한다() {
         // given
-        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
+        CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
 
         // when
-
         bookmarkService.createBookmark(1L, request);
 
         // then
@@ -53,10 +49,10 @@ class BookmarkServiceTest extends WithWordTestHelper {
     }
 
     @Test
+    @Sql(value = {"classpath:sql/bookmark/word.sql", "classpath:sql/bookmark/bookmark.sql"})
     void 이미_북마크에_추가된_용어를_북마에_추가할_수_없다() {
         // given
-        CreateBookmarkRequest request = new CreateBookmarkRequest(word.getId());
-        bookmarkService.createBookmark(1L, request);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
 
         // when & then
         assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
@@ -77,9 +73,9 @@ class BookmarkServiceTest extends WithWordTestHelper {
     }
 
     @Test
+    @Sql("classpath:sql/bookmark/bookmark.sql")
     void 북마크를_삭제한다() {
         // given
-        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
         DeleteBookmarkRequest request = new DeleteBookmarkRequest(1L);
 
         // when
@@ -90,21 +86,21 @@ class BookmarkServiceTest extends WithWordTestHelper {
     }
 
     @Test
+    @Sql("classpath:sql/bookmark/bookmark.sql")
     void 회원이_생성한_북마크를_모두_조회한다() {
         // given
-        bookmarkService.createBookmark(1L, new CreateBookmarkRequest(word.getId()));
-
-        // when
         ReadAllBookmarkRequest request = new ReadAllBookmarkRequest(null);
 
+        // when
         BookmarkCollectionResponse actual = bookmarkService.readBookmarks(1L, request, PageRequest.of(0, 10));
 
+        // then
         assertAll(
                 () -> assertThat(actual.bookmarks()).hasSize(1),
                 () -> assertThat(actual.lastBookmarkId()).isEqualTo(1L),
                 () -> assertThat(actual.bookmarks().get(0).bookmarkId()).isEqualTo(1L),
                 () -> assertThat(actual.bookmarks().get(0).accountId()).isEqualTo(1L),
-                () -> assertThat(actual.bookmarks().get(0).wordId()).isEqualTo(word.getId())
+                () -> assertThat(actual.bookmarks().get(0).wordId()).isEqualTo(1L)
         );
     }
 }
