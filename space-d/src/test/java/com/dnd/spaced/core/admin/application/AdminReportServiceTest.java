@@ -38,7 +38,6 @@ class AdminReportServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/report/comment.sql",
             "classpath:sql/admin/report/report.sql"
     })
@@ -66,7 +65,6 @@ class AdminReportServiceTest {
     @ParameterizedTest(name = "신고 상태가 {0}이라면 신고 처리를 할 수 없다.")
     @NullAndEmptySource
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/report/comment.sql",
             "classpath:sql/admin/report/report.sql"
     })
@@ -83,7 +81,6 @@ class AdminReportServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/report/comment.sql",
             "classpath:sql/admin/report/report.sql"
     })

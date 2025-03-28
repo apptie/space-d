@@ -36,7 +36,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @RecordApplicationEvents
@@ -69,7 +68,6 @@ class WordPersistEventListenerTest {
     ApplicationEvents events;
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 용어_생성_후_정상적으로_용어_생성_이벤트를_수행한다() {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
@@ -100,7 +98,6 @@ class WordPersistEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 용어_생성_후_용어_생성_이벤트_처리에_실패하더라도_최대_재시도_횟수만큼_이벤트_처리를_재시도한다() {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
@@ -133,7 +130,6 @@ class WordPersistEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 용어_생성_후_최대_재시도_횟수보다_더_이벤트_처리에_실패한_횟수가_많다면_실패한_이벤트를_별도로_관리한다() {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);

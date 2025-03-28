@@ -43,7 +43,7 @@ class WordServiceTest {
     ApplicationEvents events;
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
+    @Sql("classpath:sql/word/word.sql")
     void 용어를_조회한다() {
         // when
         WordResponse actual = wordService.readWord(1L);
@@ -67,7 +67,7 @@ class WordServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
+    @Sql("classpath:sql/word/word.sql")
     void 용어_목록을_조회한다() {
         // given
         ReadAllWordRequest request = new ReadAllWordRequest(
@@ -87,7 +87,7 @@ class WordServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/word/word.sql"})
+    @Sql("classpath:sql/word/word.sql")
     void 용어를_검색한다() {
         // given
         SearchWordRequest request = new SearchWordRequest(

@@ -43,7 +43,6 @@ class QuizServiceTest {
     QuizService quizService;
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 용어_메타데이터가_정상적으로_설정되지_않다면_퀴즈를_생성할_수_없다() {
         // given
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
@@ -55,7 +54,7 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql"})
+    @Sql("classpath:sql/quiz/word_metadata.sql")
     void 등록된_용어_수가_퀴즈_생성_시_필요한_용어_수보다_적으면_퀴즈를_생성할_수_없다() {
         // given
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
@@ -68,7 +67,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql"
@@ -91,7 +89,7 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/word.sql"})
+    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/word.sql"})
     void 퀴즈를_생성한다() {
         // given
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
@@ -115,7 +113,7 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
+    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
     void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
         // when & then
         assertThatThrownBy(() -> quizService.readQuiz(5L, 1L))
@@ -143,7 +141,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql"
@@ -165,7 +162,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/solved_quiz.sql"
@@ -189,7 +185,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql",
@@ -217,7 +212,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql",
@@ -240,7 +234,6 @@ class QuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/quiz.sql"

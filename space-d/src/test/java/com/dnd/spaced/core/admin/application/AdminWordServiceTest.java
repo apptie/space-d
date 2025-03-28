@@ -29,7 +29,7 @@ class AdminWordServiceTest {
     AdminWordService adminWordService;
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/admin/word/word_metadata.sql"})
+    @Sql("classpath:sql/admin/word/word_metadata.sql")
     void 용어를_추가한다() {
         // given
         List<CreatePronunciationRequest> createPronunciationRequests = List.of(
@@ -53,7 +53,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -79,7 +78,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -92,7 +90,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -105,7 +102,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -119,7 +115,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -132,7 +127,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
@@ -145,7 +139,6 @@ class AdminWordServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/word/word_metadata.sql",
             "classpath:sql/admin/word/word.sql"
     })
