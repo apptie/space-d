@@ -68,11 +68,6 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs =
                 ExceptionDocs.builder()
-                             .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
-                             .findTodayQuizByException(calculateFindTodayQuizByException())
-                             .gradeTodayQuizException(calculateGradeTodayQuizException())
-                             .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
-                             .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
                              .readLocalImageException(calculateLocalImageNotFoundException())
                              .createBookmarkException(calculateCreateBookmarkException())
                              .deleteBookmarkException(calculateDeleteBookmarkException())
@@ -142,64 +137,6 @@ public class DocsController {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         processImageException(exceptionContent, ImageErrorCode.IMAGE_FILE_NOT_FOUND_EXCEPTION);
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindLatestTodayQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindTodayQuizByException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateGradeTodayQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putMethodArgumentNotValidExceptionContent(exceptionContent, "answer");
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.INVALID_SUBMITTED_TODAY_QUIZ_OPTION_INDEX_EXCEPTION,
-                QuizErrorCode.ALREADY_GRADE_TODAY_QUIZ_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindTodayQuizGradedAnswerByException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.TODAY_QUIZ_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindTodayQuizGradedAnswersAllByException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
 
         return exceptionContent;
     }

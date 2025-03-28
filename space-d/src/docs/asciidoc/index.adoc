@@ -14,44 +14,7 @@ include::{docdir}/domain/word.adoc[]
 include::{docdir}/domain/comment.adoc[]
 include::{docdir}/domain/like.adoc[]
 include::{docdir}/domain/quiz.adoc[]
-
-[[Today-Quiz-API]]
-== 오늘의 퀴즈 API
-
-[[Find-Today-Latest-Quiz-API]]
-=== 최신 오늘의 퀴즈 조회 API
-
-operation::today-quiz-controller-test/최신_오늘의_퀴즈_요청_성공_테스트[snippets='http-request,http-response,response-fields']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findLatestTodayQuizException.adoc[]
-
-[[Find-Today-Quiz-API]]
-==== 오늘의 퀴즈 조회 API
-
-operation::today-quiz-controller-test/오늘의_퀴즈_조회_요청_성공_테스트[snippets='http-request,http-response,response-fields']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findTodayQuizByException.adoc[]
-
-[[Graded-Today-Quiz-API]]
-=== 오늘의 퀴즈 채점 요청 API
-
-operation::today-quiz-controller-test/오늘의_퀴즈_채점_요청_성공_테스트[snippets='http-request,http-response,response-headers']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-gradeTodayQuizException.adoc[]
-
-[[Find-All-Graded-Today-Quiz-Answers]]
-=== 오늘의 퀴즈 채점 목록 조회 API
-
-operation::today-quiz-controller-test/회원이_제출한_오늘의_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트[snippets='http-request,http-response,response-fields']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findTodayQuizGradedAnswersAllByException.adoc[]
-
-[[Find-Graded-Today-Quiz-Answers]]
-=== 특정 오늘의 퀴즈 채점 목록 조회 API
-
-operation::today-quiz-controller-test/특정_오늘의_퀴즈에_대한_채점_결과_조회_요청_성공_테스트[snippets='http-request,http-response,response-fields']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-findTodayQuizGradedAnswerByException.adoc[]
+include::{docdir}/domain/today-quiz.adoc[]
 
 [[Local-Image-API]]
 == 로컬 이미지 API
