@@ -35,7 +35,7 @@ public class Comment extends BaseTimeEntity {
 
     private long likeCount = 0L;
 
-    private boolean isDeleted = false;
+    private boolean deleted = false;
 
     public Comment(Long writerId, Long wordId, String content) {
         if (isInvalidContent(content)) {
@@ -53,11 +53,11 @@ public class Comment extends BaseTimeEntity {
     }
 
     public void delete() {
-        isDeleted = true;
+        deleted = true;
     }
 
     public void recover() {
-        isDeleted = false;
+        deleted = false;
     }
 
     public boolean isWriter(Long accountId) {

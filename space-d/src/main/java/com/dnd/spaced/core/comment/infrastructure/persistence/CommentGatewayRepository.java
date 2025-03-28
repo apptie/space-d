@@ -85,7 +85,7 @@ public class CommentGatewayRepository implements CommentRepository {
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
                            .where(
                                    comment.wordId.eq(wordId),
-                                   comment.isDeleted.isFalse(),
+                                   comment.deleted.isFalse(),
                                    calculateLastIdExpression(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
@@ -106,7 +106,7 @@ public class CommentGatewayRepository implements CommentRepository {
                            .leftJoin(account).on(comment.writerId.eq(account.id))
                            .where(
                                    comment.wordId.eq(wordId),
-                                   comment.isDeleted.isFalse(),
+                                   comment.deleted.isFalse(),
                                    calculateLastIdExpression(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
