@@ -116,12 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.readWordException").withSubsectionId("readWordException"),
-                                      attributes(key("title").value("`GET /words/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getReadWordException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.saveCommentException").withSubsectionId("saveCommentException"),
                                       attributes(key("title").value("`POST /words/{wordId}/comments` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getSaveCommentException())
