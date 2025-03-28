@@ -16,37 +16,23 @@ import com.dnd.spaced.config.docs.snippet.exceptions.report.ReportExceptionContr
 import com.dnd.spaced.config.docs.snippet.exceptions.skill.SkillExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.todayquiz.TodayQuizExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.word.WordExceptionController;
+import com.dnd.spaced.config.listener.ResetMockTestExecutionListener;
+import com.dnd.spaced.config.processor.InjectMockBeanFactoryPostProcessor;
 import com.dnd.spaced.config.stub.StudAccountRepository;
-import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
-import com.dnd.spaced.core.admin.application.AdminReportService;
-import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
-import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.presentation.AdminAuthenticationController;
 import com.dnd.spaced.core.admin.presentation.AdminReportController;
 import com.dnd.spaced.core.admin.presentation.AdminTodayQuizController;
 import com.dnd.spaced.core.admin.presentation.AdminWordController;
-import com.dnd.spaced.core.auth.application.BlacklistTokenService;
-import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
-import com.dnd.spaced.core.auth.application.TokenService;
 import com.dnd.spaced.core.auth.presentation.AuthController;
-import com.dnd.spaced.core.bookmark.application.BookmarkService;
 import com.dnd.spaced.core.bookmark.presentation.BookmarkController;
-import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.presentation.CommentController;
-import com.dnd.spaced.core.image.application.LocalImageService;
 import com.dnd.spaced.core.image.presentation.LocalImageController;
-import com.dnd.spaced.core.like.application.LikeService;
 import com.dnd.spaced.core.like.presentation.LikeController;
-import com.dnd.spaced.core.quiz.application.QuizService;
-import com.dnd.spaced.core.quiz.application.TodayQuizService;
 import com.dnd.spaced.core.quiz.presentation.QuizController;
 import com.dnd.spaced.core.quiz.presentation.TodayQuizController;
-import com.dnd.spaced.core.report.application.ReportService;
 import com.dnd.spaced.core.report.presentation.ReportController;
-import com.dnd.spaced.core.skill.application.SkillService;
 import com.dnd.spaced.core.skill.presentation.SkillController;
-import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.presentation.WordController;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
@@ -68,7 +54,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -78,6 +63,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestExecutionListeners.MergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -104,7 +91,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GuestAccountInfoArgumentResolver.class)
         }
 )
-@Import(RestDocsConfiguration.class)
+@Import({RestDocsConfiguration.class, InjectMockBeanFactoryPostProcessor.class})
+@TestExecutionListeners(value = ResetMockTestExecutionListener.class, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureRestDocs
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class CommonControllerSliceTest {
@@ -202,59 +190,12 @@ public class CommonControllerSliceTest {
     @Autowired
     AdminTodayQuizController adminTodayQuizController;
 
-    @MockBean
-    protected AccountService accountService;
-
-    @MockBean
-    protected BlacklistTokenService blacklistTokenService;
-
-    @MockBean
-    protected InitAccountCareerInfoService initAccountCareerInfoService;
-
-    @MockBean
-    protected AdminWordService adminWordService;
-
-    @MockBean
-    protected TokenService tokenService;
-
-    @MockBean
-    protected WordService wordService;
-
-    @MockBean
-    protected CommentService commentService;
-
-    @MockBean
-    protected LikeService likeService;
-
-    @MockBean
-    protected AdminTodayQuizService adminTodayQuizService;
-
-    @MockBean
-    protected QuizService quizService;
-
-    @MockBean
-    protected TodayQuizService todayQuizService;
-
-    @MockBean
-    protected LocalImageService localImageService;
-
-    @MockBean
-    protected ReportService reportService;
-
-    @MockBean
-    protected AdminReportService adminReportService;
-
-    @MockBean
-    protected BookmarkService bookmarkService;
-
-    @MockBean
-    protected SkillService skillService;
-
     protected MockMvc mockMvc;
+
+    AuthStore store = new AuthStore();
 
     @BeforeEach
     void beforeEach() {
-        AuthStore store = new AuthStore();
         AuthInterceptor authInterceptor = new AuthInterceptor(store);
         AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store, new StudAccountRepository());
         GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver = new GuestAccountInfoArgumentResolver(store);

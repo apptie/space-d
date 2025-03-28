@@ -22,11 +22,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.admin.application.AdminWordService;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleRequest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -34,6 +37,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class AdminWordControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    AdminWordService adminWordService;
 
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")

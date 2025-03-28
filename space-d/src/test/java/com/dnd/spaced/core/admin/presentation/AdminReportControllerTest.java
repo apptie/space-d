@@ -22,12 +22,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.admin.application.AdminReportService;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse.ReportResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,6 +40,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class AdminReportControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    AdminReportService adminReportService;
 
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")

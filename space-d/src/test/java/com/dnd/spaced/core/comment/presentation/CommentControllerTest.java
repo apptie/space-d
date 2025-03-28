@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
+import com.dnd.spaced.core.comment.application.CommentService;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
@@ -31,6 +32,8 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,6 +43,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class CommentControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    CommentService commentService;
 
     @Test
     @WithMockUser("1")
