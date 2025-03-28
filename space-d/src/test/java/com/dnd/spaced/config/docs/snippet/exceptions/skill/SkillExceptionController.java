@@ -19,13 +19,13 @@ public class SkillExceptionController extends CommonExceptionController {
     public ResponseEntity<CommonDocsResponse<SkillExceptionDocs>> findExceptions() {
         SkillExceptionDocs exceptionDocs =
                 SkillExceptionDocs.builder()
-                             .findSkillException(calculateFindSkillException())
+                             .readSkillException(calculateReadSkillException())
                              .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
     }
 
-    private Map<String, ExceptionContent> calculateFindSkillException() {
+    private Map<String, ExceptionContent> calculateReadSkillException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);

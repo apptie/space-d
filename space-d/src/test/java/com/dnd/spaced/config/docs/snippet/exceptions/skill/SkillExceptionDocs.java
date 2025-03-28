@@ -5,5 +5,5 @@ import java.util.Map;
 import lombok.Builder;
 
 @Builder
-public record SkillExceptionDocs(Map<String, ExceptionContent> findSkillException) {
+public record SkillExceptionDocs(Map<String, ExceptionContent> readSkillException) {
 }

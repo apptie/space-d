@@ -1,9 +1,9 @@
 [[Skill-API]]
 == 스킬 API
 
-[[Find-Skill]]
+[[Read-Skill]]
 === 스킬 조회
 
 operation::skill-controller-test/스킬_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
 
-include::{snippets}/skill-exception-controller-test/exceptions/exception-response-fields-findSkillException.adoc[]
+include::{snippets}/skill-exception-controller-test/exceptions/exception-response-fields-readSkillException.adoc[]

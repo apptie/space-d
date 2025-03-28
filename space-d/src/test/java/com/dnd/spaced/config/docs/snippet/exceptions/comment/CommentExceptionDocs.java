@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record CommentExceptionDocs(
-        Map<String, ExceptionContent> saveCommentException,
+        Map<String, ExceptionContent> createCommentException,
         Map<String, ExceptionContent> deleteCommentException,
         Map<String, ExceptionContent> updateCommentException
 ) {

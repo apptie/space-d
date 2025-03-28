@@ -28,9 +28,9 @@ class AdminExceptionControllerTest extends CommonExceptionControllerTest {
                         restDocs.document(
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.saveWordException").withSubsectionId("saveWordException"),
+                                        beneathPath("data.createWordException").withSubsectionId("createWordException"),
                                         attributes(key("title").value("`POST /admin/words` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.saveWordException())
+                                        exceptionConvertFieldDescriptor(data.createWordException())
                                 ),
                                 customResponseFields(
                                         "exception-response",
@@ -49,12 +49,6 @@ class AdminExceptionControllerTest extends CommonExceptionControllerTest {
                                         beneathPath("data.deletePronunciationException").withSubsectionId("deletePronunciationException"),
                                         attributes(key("title").value("`DELETE /admin/words/pronunciations/{id}` 예외 상황")),
                                         exceptionConvertFieldDescriptor(data.deletePronunciationException())
-                                ),
-                                customResponseFields(
-                                        "exception-response",
-                                        beneathPath("data.readReportsException").withSubsectionId("readReportsException"),
-                                        attributes(key("title").value("`GET /reports` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readReportsException())
                                 ),
                                 customResponseFields(
                                         "exception-response",

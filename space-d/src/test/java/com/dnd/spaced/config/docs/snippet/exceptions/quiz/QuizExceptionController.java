@@ -22,9 +22,9 @@ public class QuizExceptionController extends CommonExceptionController {
                                  .createQuizException(calculateCreateQuizException())
                                  .readQuizzesException(calculateReadQuizzesException())
                                  .gradeQuizException(calculateGradeQuizException())
-                                 .readGradedAnswerAllByQuizIdException(calculateReadGradedAnswerAllByQuizIdException())
-                                 .readGradedAnswerAllException(calculateReadGradedAnswerAllException())
-                                 .findQuizByException(calculateFindQuizByException())
+                                 .readTargetQuizGradedAnswers(calculateReadTargetQuizGradedAnswersException())
+                                 .readQuizGradedAnswers(calculateReadQuizGradedAnswersException())
+                                 .readQuizException(calculateReadQuizException())
                                  .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(quizExceptionDocs));
@@ -59,7 +59,7 @@ public class QuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateReadGradedAnswerAllByQuizIdException() {
+    private Map<String, ExceptionContent> calculateReadTargetQuizGradedAnswersException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);
@@ -67,7 +67,7 @@ public class QuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateReadGradedAnswerAllException() {
+    private Map<String, ExceptionContent> calculateReadQuizGradedAnswersException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);
@@ -75,7 +75,7 @@ public class QuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateFindQuizByException() {
+    private Map<String, ExceptionContent> calculateReadQuizException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);

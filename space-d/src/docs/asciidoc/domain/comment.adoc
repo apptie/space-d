@@ -1,12 +1,12 @@
 [[Comment-API]]
 == Comment API
 
-[[Save-Comment]]
+[[Create-Comment]]
 === 댓글 작성 API
 
 operation::comment-controller-test/댓글_작성_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,request-fields,http-response']
 
-include::{snippets}/comment-exception-controller-test/exceptions/exception-response-fields-saveCommentException.adoc[]
+include::{snippets}/comment-exception-controller-test/exceptions/exception-response-fields-createCommentException.adoc[]
 
 [[Delete-Comment]]
 === 댓글 삭제 API
@@ -22,7 +22,7 @@ operation::comment-controller-test/댓글_수정_요청_성공_테스트[snippet
 
 include::{snippets}/comment-exception-controller-test/exceptions/exception-response-fields-updateCommentException.adoc[]
 
-[[Read-All-Comments]]
+[[Read-Comments]]
 === 댓글 목록 조회 API
 
 operation::comment-controller-test/댓글_목록_조회_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response,response-fields']

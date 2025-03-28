@@ -28,12 +28,6 @@ class AccountExceptionControllerTest extends CommonExceptionControllerTest {
                         restDocs.document(
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.authProfileException").withSubsectionId("authProfileException"),
-                                        attributes(key("title").value("`POST /auths/profile` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.authProfileException())
-                                ),
-                                customResponseFields(
-                                        "exception-response",
                                         beneathPath("data.withdrawalException").withSubsectionId("withdrawalException"),
                                         attributes(key("title").value("`DELETE /accounts/withdrawal` 예외 상황")),
                                         exceptionConvertFieldDescriptor(data.withdrawalException())
@@ -52,9 +46,9 @@ class AccountExceptionControllerTest extends CommonExceptionControllerTest {
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.findAccountInfoException").withSubsectionId("findAccountInfoException"),
+                                        beneathPath("data.readAccountException").withSubsectionId("readAccountException"),
                                         attributes(key("title").value("`GET /accounts` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.findAccountInfoException())
+                                        exceptionConvertFieldDescriptor(data.readAccountException())
                                 )
                         )
                 );

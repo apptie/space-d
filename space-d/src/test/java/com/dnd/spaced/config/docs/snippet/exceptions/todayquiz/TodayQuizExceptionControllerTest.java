@@ -34,9 +34,9 @@ class TodayQuizExceptionControllerTest extends CommonExceptionControllerTest {
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.readTodayQuizByException").withSubsectionId("readTodayQuizByException"),
+                                        beneathPath("data.readTodayQuizException").withSubsectionId("readTodayQuizException"),
                                         attributes(key("title").value("`GET /today-quizzes/{todayQuizId}` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readTodayQuizByException())
+                                        exceptionConvertFieldDescriptor(data.readTodayQuizException())
                                 ),
                                 customResponseFields(
                                         "exception-response",
@@ -46,15 +46,15 @@ class TodayQuizExceptionControllerTest extends CommonExceptionControllerTest {
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.readGradedAnswerAllByTodayQuizIdException").withSubsectionId("readGradedAnswerAllByTodayQuizIdException"),
+                                        beneathPath("data.readTargetTodayQuizGradedAnswersException").withSubsectionId("readTargetTodayQuizGradedAnswersException"),
                                         attributes(key("title").value("`GET /today-quizzes/{todayQuizId}/graded-answers` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readGradedAnswerAllByTodayQuizIdException())
+                                        exceptionConvertFieldDescriptor(data.readTargetTodayQuizGradedAnswersException())
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.readGradedAnswerAllException").withSubsectionId("readGradedAnswerAllException"),
+                                        beneathPath("data.readTodayQuizGradedAnswersException").withSubsectionId("readTodayQuizGradedAnswersException"),
                                         attributes(key("title").value("`GET /today-quizzes/graded-answers` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readGradedAnswerAllException())
+                                        exceptionConvertFieldDescriptor(data.readTodayQuizGradedAnswersException())
                                 )
                         )
                 );

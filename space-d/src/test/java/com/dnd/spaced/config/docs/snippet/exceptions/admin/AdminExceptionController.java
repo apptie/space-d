@@ -4,7 +4,6 @@ import com.dnd.spaced.config.docs.snippet.CommonExceptionController;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
 import com.dnd.spaced.global.exception.code.QuizErrorCode;
-import com.dnd.spaced.global.exception.code.ReportErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,11 +20,10 @@ public class AdminExceptionController extends CommonExceptionController {
     public ResponseEntity<CommonDocsResponse<AdminExceptionDocs>> findExceptions() {
         AdminExceptionDocs adminExceptionDocs =
                 AdminExceptionDocs.builder()
-                                  .saveWordException(calculateSaveWordException())
+                                  .createWordException(calculateCreateWordException())
                                   .updateWordExampleException(calculateUpdateWordExampleException())
                                   .deleteWordExampleException(calculateDeleteWordExampleException())
                                   .deletePronunciationException(calculateDeletePronunciationException())
-                                  .readReportsException(calculateReadReportException())
                                   .processReportException(calculateProcessReportException())
                                   .createTodayQuizException(calculateCreateTodayQuizException())
                                   .build();
@@ -33,7 +31,7 @@ public class AdminExceptionController extends CommonExceptionController {
         return ResponseEntity.ok(new CommonDocsResponse<>(adminExceptionDocs));
     }
 
-    private Map<String, ExceptionContent> calculateSaveWordException() {
+    private Map<String, ExceptionContent> calculateCreateWordException() {
         Map<String, ExceptionContent> saveWordException = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(saveWordException);
@@ -96,32 +94,10 @@ public class AdminExceptionController extends CommonExceptionController {
         return deletePronunciationException;
     }
 
-    private Map<String, ExceptionContent> calculateReadReportException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putMethodArgumentNotValidExceptionContent(exceptionContent, "commentId", "cause");
-        processReportException(
-                exceptionContent,
-                ReportErrorCode.CANNOT_REPORT_OWN_COMMENT_EXCEPTION,
-                ReportErrorCode.REPORT_REASON_NOT_FOUND_EXCEPTION,
-                ReportErrorCode.COMMENT_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
     private Map<String, ExceptionContent> calculateProcessReportException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);
-        putForbiddenExceptionContent(exceptionContent);
-        processReportException(
-                exceptionContent,
-                ReportErrorCode.REPORT_NOT_FOUND_EXCEPTION,
-                ReportErrorCode.REPORT_STATUS_NOT_FOUND_EXCEPTION
-        );
-
         return exceptionContent;
     }
 

@@ -19,7 +19,7 @@ public class CommentExceptionController extends CommonExceptionController {
     public ResponseEntity<CommonDocsResponse<CommentExceptionDocs>> findExceptions() {
         CommentExceptionDocs commentExceptionDocs =
                 CommentExceptionDocs.builder()
-                                    .saveCommentException(calculateSaveCommentException())
+                                    .createCommentException(calculateCreateCommentException())
                                     .updateCommentException(calculateUpdateCommentException())
                                     .deleteCommentException(calculateDeleteCommentException())
                                     .build();
@@ -27,7 +27,7 @@ public class CommentExceptionController extends CommonExceptionController {
         return ResponseEntity.ok(new CommonDocsResponse<>(commentExceptionDocs));
     }
 
-    private Map<String, ExceptionContent> calculateSaveCommentException() {
+    private Map<String, ExceptionContent> calculateCreateCommentException() {
         Map<String, ExceptionContent> saveCommentException = new LinkedHashMap<>();
 
         processCommentException(

@@ -40,21 +40,21 @@ class QuizExceptionControllerTest extends CommonExceptionControllerTest {
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.readGradedAnswerAllByQuizIdException").withSubsectionId("readGradedAnswerAllByQuizIdException"),
+                                        beneathPath("data.readTargetQuizGradedAnswers").withSubsectionId("readTargetQuizGradedAnswers"),
                                         attributes(key("title").value("`GET /quizzes/graded-answers` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readGradedAnswerAllByQuizIdException())
+                                        exceptionConvertFieldDescriptor(data.readTargetQuizGradedAnswers())
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.readGradedAnswerAllException").withSubsectionId("readGradedAnswerAllException"),
+                                        beneathPath("data.readQuizGradedAnswers").withSubsectionId("readQuizGradedAnswers"),
                                         attributes(key("title").value("`GET /quizzes/{quizId}/graded-answers` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.readGradedAnswerAllException())
+                                        exceptionConvertFieldDescriptor(data.readQuizGradedAnswers())
                                 ),
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.findQuizByException").withSubsectionId("findQuizByException"),
+                                        beneathPath("data.readQuizException").withSubsectionId("readQuizException"),
                                         attributes(key("title").value("`GET /quizzes/{quizId}` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.findQuizByException())
+                                        exceptionConvertFieldDescriptor(data.readQuizException())
                                 ),
                                 customResponseFields(
                                         "exception-response",

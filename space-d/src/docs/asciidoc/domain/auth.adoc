@@ -113,13 +113,13 @@ Set-Cookie: refreshToken={refreshToken}
 
 |===
 
-[[Auth-Init-Profile]]
+[[Init-Account-Career-Info]]
 === 회원 프로필 정보 초기화 API
 operation::auth-controller-test/회원_프로필_초기화_요청_성공_테스트[snippets='http-request,request-headers,request-body,request-fields,http-response']
 
-include::{snippets}/account-exception-controller-test/exceptions/exception-response-fields-authProfileException.adoc[]
+include::{snippets}/auth-exception-controller-test/exceptions/exception-response-fields-initAccountCareerInfoException.adoc[]
 
-[[Auth-Refresh-Token]]
+[[Refresh-Token]]
 === 토큰 재발급 API
 
 operation::auth-controller-test/토큰_재발급_요청_성공_테스트[snippets='http-request,request-cookies,http-response,response-fields,response-cookies']

@@ -28,9 +28,9 @@ class CommentExceptionControllerTest extends CommonExceptionControllerTest {
                         restDocs.document(
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.saveCommentException").withSubsectionId("saveCommentException"),
+                                        beneathPath("data.createCommentException").withSubsectionId("createCommentException"),
                                         attributes(key("title").value("`POST /words/{wordId}/comments` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.saveCommentException())
+                                        exceptionConvertFieldDescriptor(data.createCommentException())
                                 ),
                                 customResponseFields(
                                         "exception-response",

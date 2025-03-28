@@ -15,30 +15,30 @@ operation::quiz-controller-test/퀴즈_목록_조회_요청_성공_테스트[sni
 
 include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readQuizzesException.adoc[]
 
-[[Find-Quiz]]
+[[Read-Quiz]]
 === 퀴즈 조회 API
 
 operation::quiz-controller-test/퀴즈_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
 
-include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-findQuizByException.adoc[]
+include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readQuizException.adoc[]
 
-[[Graded-Quiz-Answers]]
-=== 퀴즈 채점 API
+[[Grade-Quiz]]
+=== 퀴즈 채점(답안지 제출) API
 
 operation::quiz-controller-test/퀴즈_채점_요청_성공_테스트[snippets='http-request,request-headers,http-response']
 
 include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-gradeQuizException.adoc[]
 
-[[Find-All-Graded-Quiz-Answers]]
+[[Read-Target-Quiz-Graded-Answers]]
 === 특정 퀴즈 채점 목록 조회 API
 
 operation::quiz-controller-test/특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
-include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readGradedAnswerAllByQuizIdException.adoc[]
+include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readTargetQuizGradedAnswers.adoc[]
 
-[[Find-Graded-Quiz-Answers]]
+[[Read-Quiz-Graded-Answers]]
 === 퀴즈 채점 목록 조회 API
 
 operation::quiz-controller-test/회원이_제출한_퀴즈에_대한_채점_결과_목록_조회_요청_성공_테스트[snippets='http-request,request-headers,query-parameters,http-response,response-fields']
 
-include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readGradedAnswerAllException.adoc[]
+include::{snippets}/quiz-exception-controller-test/exceptions/exception-response-fields-readQuizGradedAnswers.adoc[]

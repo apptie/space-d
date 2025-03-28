@@ -20,10 +20,10 @@ public class TodayQuizExceptionController extends CommonExceptionController {
         TodayQuizExceptionDocs todayQuizExceptionDocs =
                 TodayQuizExceptionDocs.builder()
                                       .readLatestTodayQuizException(calculateReadLatestTodayQuizException())
-                                      .readTodayQuizByException(calculateReadTodayQuizByException())
+                                      .readTodayQuizException(calculateReadTodayQuizException())
                                       .gradeTodayQuizException(calculateGradeTodayQuizException())
-                                      .readGradedAnswerAllException(calculateReadGradedAnswerAllException())
-                                      .readGradedAnswerAllByTodayQuizIdException(calculatereadGradedAnswerAllByTodayQuizIdException())
+                                      .readTodayQuizGradedAnswersException(calculateReadTodayQuizGradedAnswersException())
+                                      .readTargetTodayQuizGradedAnswersException(calculateReadTargetTodayQuizGradedAnswersException())
                                       .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(todayQuizExceptionDocs));
@@ -40,7 +40,7 @@ public class TodayQuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateReadTodayQuizByException() {
+    private Map<String, ExceptionContent> calculateReadTodayQuizException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         processQuizException(
@@ -66,7 +66,7 @@ public class TodayQuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateReadGradedAnswerAllException() {
+    private Map<String, ExceptionContent> calculateReadTodayQuizGradedAnswersException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);
@@ -79,7 +79,7 @@ public class TodayQuizExceptionController extends CommonExceptionController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculatereadGradedAnswerAllByTodayQuizIdException() {
+    private Map<String, ExceptionContent> calculateReadTargetTodayQuizGradedAnswersException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(exceptionContent);

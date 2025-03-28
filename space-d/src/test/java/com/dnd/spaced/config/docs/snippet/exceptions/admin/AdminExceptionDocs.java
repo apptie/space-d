@@ -6,13 +6,11 @@ import lombok.Builder;
 
 @Builder
 public record AdminExceptionDocs(
-
         Map<String, ExceptionContent> registerBlacklistTokenException,
-        Map<String, ExceptionContent> saveWordException,
+        Map<String, ExceptionContent> createWordException,
         Map<String, ExceptionContent> updateWordExampleException,
         Map<String, ExceptionContent> deleteWordExampleException,
         Map<String, ExceptionContent> deletePronunciationException,
-        Map<String, ExceptionContent> readReportsException,
         Map<String, ExceptionContent> processReportException,
         Map<String, ExceptionContent> createTodayQuizException
 ) {

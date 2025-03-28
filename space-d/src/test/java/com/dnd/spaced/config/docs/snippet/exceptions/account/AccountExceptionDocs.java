@@ -10,6 +10,6 @@ public record AccountExceptionDocs(
         Map<String, ExceptionContent> withdrawalException,
         Map<String, ExceptionContent> changeCareerInfoException,
         Map<String, ExceptionContent> changeProfileInfoException,
-        Map<String, ExceptionContent> findAccountInfoException
+        Map<String, ExceptionContent> readAccountException
 ) {
 }

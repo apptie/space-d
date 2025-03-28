@@ -28,9 +28,9 @@ class SkillExceptionControllerTest extends CommonExceptionControllerTest {
                         restDocs.document(
                                 customResponseFields(
                                         "exception-response",
-                                        beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
+                                        beneathPath("data.readSkillException").withSubsectionId("readSkillException"),
                                         attributes(key("title").value("`GET /skills` 예외 상황")),
-                                        exceptionConvertFieldDescriptor(data.findSkillException())
+                                        exceptionConvertFieldDescriptor(data.readSkillException())
                                 )
                         )
                 );

@@ -37,6 +37,12 @@ class AuthExceptionControllerTest extends CommonExceptionControllerTest {
                                         beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
                                         attributes(key("title").value("`POST /auths/blacklist-token` 예외 상황")),
                                         exceptionConvertFieldDescriptor(data.registerBlacklistTokenException())
+                                ),
+                                customResponseFields(
+                                        "exception-response",
+                                        beneathPath("data.initAccountCareerInfoException").withSubsectionId("initAccountCareerInfoException"),
+                                        attributes(key("title").value("`POST /auths/profile` 예외 상황")),
+                                        exceptionConvertFieldDescriptor(data.initAccountCareerInfoException())
                                 )
                         )
                 );

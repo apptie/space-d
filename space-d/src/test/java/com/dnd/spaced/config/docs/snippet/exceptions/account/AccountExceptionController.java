@@ -19,17 +19,16 @@ public class AccountExceptionController extends CommonExceptionController {
     public ResponseEntity<CommonDocsResponse<AccountExceptionDocs>> findExceptions() {
         AccountExceptionDocs accountExceptionDocs =
                 AccountExceptionDocs.builder()
-                                    .authProfileException(calculateAuthProfileException())
                                     .withdrawalException(calculateWithdrawalException())
                                     .changeCareerInfoException(calculateChangeCareerInfoException())
                                     .changeProfileInfoException(calculateChangeProfileInfoException())
-                                    .findAccountInfoException(calculateFindAccountInfoException())
+                                    .readAccountException(calculateReadAccountException())
                                     .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(accountExceptionDocs));
     }
 
-    private Map<String, ExceptionContent> calculateFindAccountInfoException() {
+    private Map<String, ExceptionContent> calculateReadAccountException() {
         Map<String, ExceptionContent> findAccountInfoException = new LinkedHashMap<>();
 
         putUnauthorizedExceptionContent(findAccountInfoException);
@@ -83,28 +82,5 @@ public class AccountExceptionController extends CommonExceptionController {
         processAccountException(withdrawalException, AccountErrorCode.FORBIDDEN_ACCOUNT);
 
         return withdrawalException;
-    }
-
-    private Map<String, ExceptionContent> calculateAuthProfileException() {
-        Map<String, ExceptionContent> authProfileException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(authProfileException);
-        putForbiddenExceptionContent(authProfileException);
-        putMethodArgumentNotValidExceptionContent(
-                authProfileException,
-                "jobGroupName",
-                "companyName",
-                "experienceName"
-        );
-
-        processAccountException(
-                authProfileException,
-                AccountErrorCode.INVALID_COMPANY,
-                AccountErrorCode.INVALID_EXPERIENCE,
-                AccountErrorCode.INVALID_JOB_GROUP,
-                AccountErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION
-        );
-
-        return authProfileException;
     }
 }

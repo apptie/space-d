@@ -629,9 +629,9 @@ Set-Cookie: refreshToken={refreshToken}
 </div>
 </div>
 <div class="sect2">
-<h3 id="Auth-Init-Profile"><a class="link" href="#Auth-Init-Profile">회원 프로필 정보 초기화 API</a></h3>
+<h3 id="Init-Account-Career-Info"><a class="link" href="#Init-Account-Career-Info">회원 프로필 정보 초기화 API</a></h3>
 <div class="sect3">
-<h4 id="Auth-Init-Profile_http_request"><a class="link" href="#Auth-Init-Profile_http_request">HTTP request</a></h4>
+<h4 id="Init-Account-Career-Info_http_request"><a class="link" href="#Init-Account-Career-Info_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /auths/profile HTTP/1.1
@@ -647,7 +647,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Auth-Init-Profile_request_headers"><a class="link" href="#Auth-Init-Profile_request_headers">Request headers</a></h4>
+<h4 id="Init-Account-Career-Info_request_headers"><a class="link" href="#Init-Account-Career-Info_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -671,7 +671,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Auth-Init-Profile_request_body"><a class="link" href="#Auth-Init-Profile_request_body">Request body</a></h4>
+<h4 id="Init-Account-Career-Info_request_body"><a class="link" href="#Init-Account-Career-Info_request_body">Request body</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-json" data-lang="json">{
@@ -683,7 +683,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Auth-Init-Profile_request_fields"><a class="link" href="#Auth-Init-Profile_request_fields">Request fields</a></h4>
+<h4 id="Init-Account-Career-Info_request_fields"><a class="link" href="#Init-Account-Career-Info_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -727,7 +727,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Auth-Init-Profile_http_response"><a class="link" href="#Auth-Init-Profile_http_response">HTTP response</a></h4>
+<h4 id="Init-Account-Career-Info_http_response"><a class="link" href="#Init-Account-Career-Info_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
@@ -799,9 +799,9 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="Auth-Refresh-Token"><a class="link" href="#Auth-Refresh-Token">토큰 재발급 API</a></h3>
+<h3 id="Refresh-Token"><a class="link" href="#Refresh-Token">토큰 재발급 API</a></h3>
 <div class="sect3">
-<h4 id="Auth-Refresh-Token_http_request"><a class="link" href="#Auth-Refresh-Token_http_request">HTTP request</a></h4>
+<h4 id="Refresh-Token_http_request"><a class="link" href="#Refresh-Token_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /auths/refresh-token HTTP/1.1
@@ -811,7 +811,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Auth-Refresh-Token_request_cookies"><a class="link" href="#Auth-Refresh-Token_request_cookies">Request cookies</a></h4>
+<h4 id="Refresh-Token_request_cookies"><a class="link" href="#Refresh-Token_request_cookies">Request cookies</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -835,11 +835,11 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Auth-Refresh-Token_http_response"><a class="link" href="#Auth-Refresh-Token_http_response">HTTP response</a></h4>
+<h4 id="Refresh-Token_http_response"><a class="link" href="#Refresh-Token_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Mon, 31 Mar 2025 06:41:27 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Mon, 31 Mar 2025 08:13:03 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -850,7 +850,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Auth-Refresh-Token_response_fields"><a class="link" href="#Auth-Refresh-Token_response_fields">Response fields</a></h4>
+<h4 id="Refresh-Token_response_fields"><a class="link" href="#Refresh-Token_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -879,7 +879,7 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="sect3">
-<h4 id="Auth-Refresh-Token_response_cookies"><a class="link" href="#Auth-Refresh-Token_response_cookies">Response cookies</a></h4>
+<h4 id="Refresh-Token_response_cookies"><a class="link" href="#Refresh-Token_response_cookies">Response cookies</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1075,9 +1075,9 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="Save-Word"><a class="link" href="#Save-Word">용어 등록 API</a></h3>
+<h3 id="Create-Word"><a class="link" href="#Create-Word">용어 등록 API</a></h3>
 <div class="sect3">
-<h4 id="Save-Word_http_request"><a class="link" href="#Save-Word_http_request">HTTP request</a></h4>
+<h4 id="Create-Word_http_request"><a class="link" href="#Create-Word_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /admin/words HTTP/1.1
@@ -1098,7 +1098,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Save-Word_request_headers"><a class="link" href="#Save-Word_request_headers">Request headers</a></h4>
+<h4 id="Create-Word_request_headers"><a class="link" href="#Create-Word_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1122,7 +1122,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Save-Word_request_fields"><a class="link" href="#Save-Word_request_fields">Request fields</a></h4>
+<h4 id="Create-Word_request_fields"><a class="link" href="#Create-Word_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1194,7 +1194,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Save-Word_http_response"><a class="link" href="#Save-Word_http_response">HTTP response</a></h4>
+<h4 id="Create-Word_http_response"><a class="link" href="#Create-Word_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
@@ -1738,9 +1738,9 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Read-Report"><a class="link" href="#Read-Report">신고 목록 조회 API</a></h3>
+<h3 id="Read-Reports"><a class="link" href="#Read-Reports">신고 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Read-Report_http_request"><a class="link" href="#Read-Report_http_request">HTTP request</a></h4>
+<h4 id="Read-Reports_http_request"><a class="link" href="#Read-Reports_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /admin/reports?reportStatus=%EA%B8%B0%ED%83%80&amp;lastReportId=5 HTTP/1.1
@@ -1749,7 +1749,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-Report_request_headers"><a class="link" href="#Read-Report_request_headers">Request headers</a></h4>
+<h4 id="Read-Reports_request_headers"><a class="link" href="#Read-Reports_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1773,7 +1773,7 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Read-Report_query_parameters"><a class="link" href="#Read-Report_query_parameters">Query parameters</a></h4>
+<h4 id="Read-Reports_query_parameters"><a class="link" href="#Read-Reports_query_parameters">Query parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1806,7 +1806,7 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Read-Report_response_fields"><a class="link" href="#Read-Report_response_fields">Response fields</a></h4>
+<h4 id="Read-Reports_response_fields"><a class="link" href="#Read-Reports_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1962,24 +1962,6 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>REPORT_NOT_FOUND_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 신고 식별자로 신고 내역을 찾을 수 없습니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>REPORT_STATUS_NOT_FOUND_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 신고 상태를 찾을 수 없습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2142,9 +2124,9 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="sect2">
-<h3 id="Read-All-Word"><a class="link" href="#Read-All-Word">용어 목록 조회 API</a></h3>
+<h3 id="Read-Words"><a class="link" href="#Read-Words">용어 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Read-All-Word_http_request"><a class="link" href="#Read-All-Word_http_request">HTTP request</a></h4>
+<h4 id="Read-Words_http_request"><a class="link" href="#Read-Words_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words?categoryName=%EA%B0%9C%EB%B0%9C&amp;lastWordName=Agile HTTP/1.1
@@ -2153,7 +2135,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Word_query_parameters"><a class="link" href="#Read-All-Word_query_parameters">Query parameters</a></h4>
+<h4 id="Read-Words_query_parameters"><a class="link" href="#Read-Words_query_parameters">Query parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -2186,7 +2168,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Word_http_response"><a class="link" href="#Read-All-Word_http_response">HTTP response</a></h4>
+<h4 id="Read-Words_http_response"><a class="link" href="#Read-Words_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -2212,7 +2194,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Word_response_fields"><a class="link" href="#Read-All-Word_response_fields">Response fields</a></h4>
+<h4 id="Read-Words_response_fields"><a class="link" href="#Read-Words_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2292,9 +2274,9 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect2">
-<h3 id="Search-Word"><a class="link" href="#Search-Word">용어 검색 API</a></h3>
+<h3 id="Search-Words"><a class="link" href="#Search-Words">용어 검색 API</a></h3>
 <div class="sect3">
-<h4 id="Search-Word_http_request"><a class="link" href="#Search-Word_http_request">HTTP request</a></h4>
+<h4 id="Search-Words_http_request"><a class="link" href="#Search-Words_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/search?name=Authorization&amp;categoryName=%EA%B0%9C%EB%B0%9C&amp;pronunciation=%EC%96%B4%EC%8D%A8%EB%9D%BC%EC%9D%B4%EC%A0%9C%EC%9D%B4%EC%85%98&amp;lastWordName=Agile HTTP/1.1
@@ -2303,7 +2285,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Search-Word_query_parameters"><a class="link" href="#Search-Word_query_parameters">Query parameters</a></h4>
+<h4 id="Search-Words_query_parameters"><a class="link" href="#Search-Words_query_parameters">Query parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -2348,7 +2330,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Search-Word_http_response"><a class="link" href="#Search-Word_http_response">HTTP response</a></h4>
+<h4 id="Search-Words_http_response"><a class="link" href="#Search-Words_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -2374,7 +2356,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Search-Word_response_fields"><a class="link" href="#Search-Word_response_fields">Response fields</a></h4>
+<h4 id="Search-Words_response_fields"><a class="link" href="#Search-Words_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2454,9 +2436,9 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect2">
-<h3 id="Read-All-Popular-Word"><a class="link" href="#Read-All-Popular-Word">많이 조회한 용어 목록 조회 API</a></h3>
+<h3 id="Read-Popular-Words"><a class="link" href="#Read-Popular-Words">많이 조회한 용어 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Read-All-Popular-Word_http_request"><a class="link" href="#Read-All-Popular-Word_http_request">HTTP request</a></h4>
+<h4 id="Read-Popular-Words_http_request"><a class="link" href="#Read-Popular-Words_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/popular HTTP/1.1
@@ -2465,7 +2447,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Popular-Word_http_response"><a class="link" href="#Read-All-Popular-Word_http_response">HTTP response</a></h4>
+<h4 id="Read-Popular-Words_http_response"><a class="link" href="#Read-Popular-Words_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -2482,7 +2464,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Popular-Word_response_fields"><a class="link" href="#Read-All-Popular-Word_response_fields">Response fields</a></h4>
+<h4 id="Read-Popular-Words_response_fields"><a class="link" href="#Read-Popular-Words_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2527,9 +2509,9 @@ Content-Type: application/json;charset=UTF-8
 <h2 id="Comment-API"><a class="link" href="#Comment-API">Comment API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Save-Comment"><a class="link" href="#Save-Comment">댓글 작성 API</a></h3>
+<h3 id="Create-Comment"><a class="link" href="#Create-Comment">댓글 작성 API</a></h3>
 <div class="sect3">
-<h4 id="Save-Comment_http_request"><a class="link" href="#Save-Comment_http_request">HTTP request</a></h4>
+<h4 id="Create-Comment_http_request"><a class="link" href="#Create-Comment_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /words/1/comments HTTP/1.1
@@ -2543,7 +2525,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Save-Comment_request_headers"><a class="link" href="#Save-Comment_request_headers">Request headers</a></h4>
+<h4 id="Create-Comment_request_headers"><a class="link" href="#Create-Comment_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2567,7 +2549,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Save-Comment_path_parameters"><a class="link" href="#Save-Comment_path_parameters">Path parameters</a></h4>
+<h4 id="Create-Comment_path_parameters"><a class="link" href="#Create-Comment_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2588,7 +2570,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Save-Comment_request_fields"><a class="link" href="#Save-Comment_request_fields">Request fields</a></h4>
+<h4 id="Create-Comment_request_fields"><a class="link" href="#Create-Comment_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2618,7 +2600,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Save-Comment_http_response"><a class="link" href="#Save-Comment_http_response">HTTP response</a></h4>
+<h4 id="Create-Comment_http_response"><a class="link" href="#Create-Comment_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
@@ -2922,9 +2904,9 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="Read-All-Comments"><a class="link" href="#Read-All-Comments">댓글 목록 조회 API</a></h3>
+<h3 id="Read-Comments"><a class="link" href="#Read-Comments">댓글 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Read-All-Comments_http_request"><a class="link" href="#Read-All-Comments_http_request">HTTP request</a></h4>
+<h4 id="Read-Comments_http_request"><a class="link" href="#Read-Comments_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /words/1/comments HTTP/1.1
@@ -2933,7 +2915,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Comments_request_headers"><a class="link" href="#Read-All-Comments_request_headers">Request headers</a></h4>
+<h4 id="Read-Comments_request_headers"><a class="link" href="#Read-Comments_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2957,7 +2939,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Comments_path_parameters"><a class="link" href="#Read-All-Comments_path_parameters">Path parameters</a></h4>
+<h4 id="Read-Comments_path_parameters"><a class="link" href="#Read-Comments_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2978,7 +2960,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Comments_http_response"><a class="link" href="#Read-All-Comments_http_response">HTTP response</a></h4>
+<h4 id="Read-Comments_http_response"><a class="link" href="#Read-Comments_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -3005,7 +2987,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Read-All-Comments_response_fields"><a class="link" href="#Read-All-Comments_response_fields">Response fields</a></h4>
+<h4 id="Read-Comments_response_fields"><a class="link" href="#Read-Comments_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3335,7 +3317,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-03-28T15:41:28.371216",
+    "createdAt" : "2025-03-28T17:13:04.560445",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -3451,9 +3433,9 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-Quiz"><a class="link" href="#Find-Quiz">퀴즈 조회 API</a></h3>
+<h3 id="Read-Quiz"><a class="link" href="#Read-Quiz">퀴즈 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-Quiz_http_request"><a class="link" href="#Find-Quiz_http_request">HTTP request</a></h4>
+<h4 id="Read-Quiz_http_request"><a class="link" href="#Read-Quiz_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/1 HTTP/1.1
@@ -3462,7 +3444,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Quiz_request_headers"><a class="link" href="#Find-Quiz_request_headers">Request headers</a></h4>
+<h4 id="Read-Quiz_request_headers"><a class="link" href="#Read-Quiz_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3486,7 +3468,7 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-Quiz_http_response"><a class="link" href="#Find-Quiz_http_response">HTTP response</a></h4>
+<h4 id="Read-Quiz_http_response"><a class="link" href="#Read-Quiz_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -3616,7 +3598,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Quiz_response_fields"><a class="link" href="#Find-Quiz_response_fields">Response fields</a></h4>
+<h4 id="Read-Quiz_response_fields"><a class="link" href="#Read-Quiz_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3729,9 +3711,9 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="sect2">
-<h3 id="Graded-Quiz-Answers"><a class="link" href="#Graded-Quiz-Answers">퀴즈 채점 API</a></h3>
+<h3 id="Grade-Quiz"><a class="link" href="#Grade-Quiz">퀴즈 채점(답안지 제출) API</a></h3>
 <div class="sect3">
-<h4 id="Graded-Quiz-Answers_http_request"><a class="link" href="#Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<h4 id="Grade-Quiz_http_request"><a class="link" href="#Grade-Quiz_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /quizzes/1/graded-answers HTTP/1.1
@@ -3760,7 +3742,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Graded-Quiz-Answers_request_headers"><a class="link" href="#Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<h4 id="Grade-Quiz_request_headers"><a class="link" href="#Grade-Quiz_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3784,7 +3766,7 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect3">
-<h4 id="Graded-Quiz-Answers_http_response"><a class="link" href="#Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<h4 id="Grade-Quiz_http_response"><a class="link" href="#Grade-Quiz_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
@@ -3839,9 +3821,9 @@ Location: /quizzes/1/graded-answer</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-All-Graded-Quiz-Answers"><a class="link" href="#Find-All-Graded-Quiz-Answers">특정 퀴즈 채점 목록 조회 API</a></h3>
+<h3 id="Read-Target-Quiz-Graded-Answers"><a class="link" href="#Read-Target-Quiz-Graded-Answers">특정 퀴즈 채점 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-All-Graded-Quiz-Answers_http_request"><a class="link" href="#Find-All-Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<h4 id="Read-Target-Quiz-Graded-Answers_http_request"><a class="link" href="#Read-Target-Quiz-Graded-Answers_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/1/graded-answers HTTP/1.1
@@ -3851,7 +3833,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Quiz-Answers_request_headers"><a class="link" href="#Find-All-Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<h4 id="Read-Target-Quiz-Graded-Answers_request_headers"><a class="link" href="#Read-Target-Quiz-Graded-Answers_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3875,7 +3857,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Quiz-Answers_path_parameters"><a class="link" href="#Find-All-Graded-Quiz-Answers_path_parameters">Path parameters</a></h4>
+<h4 id="Read-Target-Quiz-Graded-Answers_path_parameters"><a class="link" href="#Read-Target-Quiz-Graded-Answers_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3896,7 +3878,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Quiz-Answers_http_response"><a class="link" href="#Find-All-Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<h4 id="Read-Target-Quiz-Graded-Answers_http_response"><a class="link" href="#Read-Target-Quiz-Graded-Answers_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -3975,7 +3957,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Quiz-Answers_response_fields"><a class="link" href="#Find-All-Graded-Quiz-Answers_response_fields">Response fields</a></h4>
+<h4 id="Read-Target-Quiz-Graded-Answers_response_fields"><a class="link" href="#Read-Target-Quiz-Graded-Answers_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4087,9 +4069,9 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-Graded-Quiz-Answers"><a class="link" href="#Find-Graded-Quiz-Answers">퀴즈 채점 목록 조회 API</a></h3>
+<h3 id="Read-Quiz-Graded-Answers"><a class="link" href="#Read-Quiz-Graded-Answers">퀴즈 채점 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-Graded-Quiz-Answers_http_request"><a class="link" href="#Find-Graded-Quiz-Answers_http_request">HTTP request</a></h4>
+<h4 id="Read-Quiz-Graded-Answers_http_request"><a class="link" href="#Read-Quiz-Graded-Answers_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /quizzes/graded-answers HTTP/1.1
@@ -4099,7 +4081,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Quiz-Answers_request_headers"><a class="link" href="#Find-Graded-Quiz-Answers_request_headers">Request headers</a></h4>
+<h4 id="Read-Quiz-Graded-Answers_request_headers"><a class="link" href="#Read-Quiz-Graded-Answers_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4123,7 +4105,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Quiz-Answers_query_parameters"><a class="link" href="#Find-Graded-Quiz-Answers_query_parameters">Query parameters</a></h4>
+<h4 id="Read-Quiz-Graded-Answers_query_parameters"><a class="link" href="#Read-Quiz-Graded-Answers_query_parameters">Query parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -4150,7 +4132,7 @@ Accept: application/json</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Quiz-Answers_http_response"><a class="link" href="#Find-Graded-Quiz-Answers_http_response">HTTP response</a></h4>
+<h4 id="Read-Quiz-Graded-Answers_http_response"><a class="link" href="#Read-Quiz-Graded-Answers_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -4229,7 +4211,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Quiz-Answers_response_fields"><a class="link" href="#Find-Graded-Quiz-Answers_response_fields">Response fields</a></h4>
+<h4 id="Read-Quiz-Graded-Answers_response_fields"><a class="link" href="#Read-Quiz-Graded-Answers_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4346,9 +4328,9 @@ Content-Type: application/json;charset=UTF-8
 <h2 id="Today-Quiz-API"><a class="link" href="#Today-Quiz-API">오늘의 퀴즈 API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Find-Today-Latest-Quiz-API"><a class="link" href="#Find-Today-Latest-Quiz-API">최신 오늘의 퀴즈 조회 API</a></h3>
+<h3 id="Read-Latest-Today-Quiz-API"><a class="link" href="#Read-Latest-Today-Quiz-API">최신 오늘의 퀴즈 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-Today-Latest-Quiz-API_http_request"><a class="link" href="#Find-Today-Latest-Quiz-API_http_request">HTTP request</a></h4>
+<h4 id="Read-Latest-Today-Quiz-API_http_request"><a class="link" href="#Read-Latest-Today-Quiz-API_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/latest HTTP/1.1
@@ -4357,7 +4339,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Today-Latest-Quiz-API_http_response"><a class="link" href="#Find-Today-Latest-Quiz-API_http_response">HTTP response</a></h4>
+<h4 id="Read-Latest-Today-Quiz-API_http_response"><a class="link" href="#Read-Latest-Today-Quiz-API_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -4370,13 +4352,13 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-03-28T15:41:28.526407"
+  "createdAt" : "2025-03-28T17:13:04.754371"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Today-Latest-Quiz-API_response_fields"><a class="link" href="#Find-Today-Latest-Quiz-API_response_fields">Response fields</a></h4>
+<h4 id="Read-Latest-Today-Quiz-API_response_fields"><a class="link" href="#Read-Latest-Today-Quiz-API_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4452,9 +4434,9 @@ Content-Type: application/json;charset=UTF-8
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="Find-Today-Quiz-API"><a class="link" href="#Find-Today-Quiz-API">오늘의 퀴즈 조회 API</a></h4>
+<h4 id="Read-Today-Quiz-API"><a class="link" href="#Read-Today-Quiz-API">오늘의 퀴즈 조회 API</a></h4>
 <div class="sect4">
-<h5 id="Find-Today-Quiz-API_http_request"><a class="link" href="#Find-Today-Quiz-API_http_request">HTTP request</a></h5>
+<h5 id="Read-Today-Quiz-API_http_request"><a class="link" href="#Read-Today-Quiz-API_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/1 HTTP/1.1
@@ -4463,7 +4445,7 @@ Accept: application/json</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="Find-Today-Quiz-API_http_response"><a class="link" href="#Find-Today-Quiz-API_http_response">HTTP response</a></h5>
+<h5 id="Read-Today-Quiz-API_http_response"><a class="link" href="#Read-Today-Quiz-API_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -4505,7 +4487,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect4">
-<h5 id="Find-Today-Quiz-API_response_fields"><a class="link" href="#Find-Today-Quiz-API_response_fields">Response fields</a></h5>
+<h5 id="Read-Today-Quiz-API_response_fields"><a class="link" href="#Read-Today-Quiz-API_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4717,9 +4699,9 @@ Location: /today-quizzes/1/graded-answers</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-All-Graded-Today-Quiz-Answers"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers">오늘의 퀴즈 채점 목록 조회 API</a></h3>
+<h3 id="Read-Today-Quiz-Graded-Answers"><a class="link" href="#Read-Today-Quiz-Graded-Answers">오늘의 퀴즈 채점 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-All-Graded-Today-Quiz-Answers_http_request"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_http_request">HTTP request</a></h4>
+<h4 id="Read-Today-Quiz-Graded-Answers_http_request"><a class="link" href="#Read-Today-Quiz-Graded-Answers_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/graded-answers HTTP/1.1
@@ -4733,7 +4715,7 @@ Authorization: Bearer AccessToken
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Today-Quiz-Answers_http_response"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_http_response">HTTP response</a></h4>
+<h4 id="Read-Today-Quiz-Graded-Answers_http_response"><a class="link" href="#Read-Today-Quiz-Graded-Answers_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -4758,7 +4740,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Graded-Today-Quiz-Answers_response_fields"><a class="link" href="#Find-All-Graded-Today-Quiz-Answers_response_fields">Response fields</a></h4>
+<h4 id="Read-Today-Quiz-Graded-Answers_response_fields"><a class="link" href="#Read-Today-Quiz-Graded-Answers_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4832,7 +4814,7 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="paragraph">
-<p><code>GET /today-quizzes/{todayQuizId}/graded-answers</code> 예외 상황</p>
+<p><code>GET /today-quizzes/graded-answers</code> 예외 상황</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -4856,13 +4838,19 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-Graded-Today-Quiz-Answers"><a class="link" href="#Find-Graded-Today-Quiz-Answers">특정 오늘의 퀴즈 채점 목록 조회 API</a></h3>
+<h3 id="Read-Target-Today-Quiz-Graded-Answers"><a class="link" href="#Read-Target-Today-Quiz-Graded-Answers">특정 오늘의 퀴즈 채점 목록 조회 API</a></h3>
 <div class="sect3">
-<h4 id="Find-Graded-Today-Quiz-Answers_http_request"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_request">HTTP request</a></h4>
+<h4 id="Read-Target-Today-Quiz-Graded-Answers_http_request"><a class="link" href="#Read-Target-Today-Quiz-Graded-Answers_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /today-quizzes/1/graded-answers HTTP/1.1
@@ -4871,7 +4859,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Today-Quiz-Answers_http_response"><a class="link" href="#Find-Graded-Today-Quiz-Answers_http_response">HTTP response</a></h4>
+<h4 id="Read-Target-Today-Quiz-Graded-Answers_http_response"><a class="link" href="#Read-Target-Today-Quiz-Graded-Answers_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -4894,7 +4882,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Graded-Today-Quiz-Answers_response_fields"><a class="link" href="#Find-Graded-Today-Quiz-Answers_response_fields">Response fields</a></h4>
+<h4 id="Read-Target-Today-Quiz-Graded-Answers_response_fields"><a class="link" href="#Read-Target-Today-Quiz-Graded-Answers_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4963,7 +4951,7 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="paragraph">
-<p><code>GET /today-quizzes/graded-answers</code> 예외 상황</p>
+<p><code>GET /today-quizzes/{todayQuizId}/graded-answers</code> 예외 상황</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -4986,12 +4974,6 @@ Content-Type: application/json;charset=UTF-8
 <td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TODAY_QUIZ_NOT_FOUND_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오늘의 퀴즈를 찾지 못했습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -5425,9 +5407,9 @@ Authorization: Bearer AccessToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="Find-All-Bookmark"><a class="link" href="#Find-All-Bookmark">북마크 목록 조회</a></h3>
+<h3 id="Read-Bookmarks"><a class="link" href="#Read-Bookmarks">북마크 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="Find-All-Bookmark_http_request"><a class="link" href="#Find-All-Bookmark_http_request">HTTP request</a></h4>
+<h4 id="Read-Bookmarks_http_request"><a class="link" href="#Read-Bookmarks_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /bookmarks HTTP/1.1
@@ -5436,7 +5418,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Bookmark_request_headers"><a class="link" href="#Find-All-Bookmark_request_headers">Request headers</a></h4>
+<h4 id="Read-Bookmarks_request_headers"><a class="link" href="#Read-Bookmarks_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -5460,7 +5442,7 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Bookmark_http_response"><a class="link" href="#Find-All-Bookmark_http_response">HTTP response</a></h4>
+<h4 id="Read-Bookmarks_http_response"><a class="link" href="#Read-Bookmarks_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -5471,7 +5453,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-28T15:41:27.509186"
+    "createdAt" : "2025-03-28T17:13:03.7052"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
@@ -5479,7 +5461,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-All-Bookmark_response_fields"><a class="link" href="#Find-All-Bookmark_response_fields">Response fields</a></h4>
+<h4 id="Read-Bookmarks_response_fields"><a class="link" href="#Read-Bookmarks_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -5561,9 +5543,9 @@ Content-Type: application/json;charset=UTF-8
 <h2 id="Skill-API"><a class="link" href="#Skill-API">스킬 API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Find-Skill"><a class="link" href="#Find-Skill">스킬 조회</a></h3>
+<h3 id="Read-Skill"><a class="link" href="#Read-Skill">스킬 조회</a></h3>
 <div class="sect3">
-<h4 id="Find-Skill_http_request"><a class="link" href="#Find-Skill_http_request">HTTP request</a></h4>
+<h4 id="Read-Skill_http_request"><a class="link" href="#Read-Skill_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /skills HTTP/1.1
@@ -5572,7 +5554,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Skill_request_headers"><a class="link" href="#Find-Skill_request_headers">Request headers</a></h4>
+<h4 id="Read-Skill_request_headers"><a class="link" href="#Read-Skill_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -5596,7 +5578,7 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Find-Skill_http_response"><a class="link" href="#Find-Skill_http_response">HTTP response</a></h4>
+<h4 id="Read-Skill_http_response"><a class="link" href="#Read-Skill_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -5615,7 +5597,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="Find-Skill_response_fields"><a class="link" href="#Find-Skill_response_fields">Response fields</a></h4>
+<h4 id="Read-Skill_response_fields"><a class="link" href="#Read-Skill_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">

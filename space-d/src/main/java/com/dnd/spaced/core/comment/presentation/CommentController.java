@@ -31,7 +31,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/words/{wordId}/comments")
-    public ResponseEntity<Void> save(
+    public ResponseEntity<Void> creteComment(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
@@ -47,7 +47,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> delete(@CurrentAccountInfo AuthAccountInfo accountInfo, @PathVariable Long commentId) {
+    public ResponseEntity<Void> deleteComment(@CurrentAccountInfo AuthAccountInfo accountInfo, @PathVariable Long commentId) {
         commentService.deleteComment(accountInfo.accountId(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
@@ -65,7 +65,7 @@ public class CommentController {
     }
 
     @GetMapping("/words/{wordId}/comments")
-    public ResponseEntity<CommentCollectionResponse> readAllBy(
+    public ResponseEntity<CommentCollectionResponse> readComments(
             @CurrentAccountInfo GuestAccountInfo accountInfo,
             @PathVariable Long wordId,
             ReadAllCommentRequest request,

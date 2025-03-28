@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record AuthExceptionDocs(
+        Map<String, ExceptionContent> initAccountCareerInfoException,
         Map<String, ExceptionContent> refreshTokenException,
         Map<String, ExceptionContent> registerBlacklistTokenException
 ) {

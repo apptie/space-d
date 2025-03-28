@@ -3,6 +3,7 @@ package com.dnd.spaced.config.docs.snippet.exceptions.auth;
 import com.dnd.spaced.config.docs.snippet.CommonExceptionController;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
+import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class AuthExceptionController extends CommonExceptionController {
                 AuthExceptionDocs.builder()
                                  .refreshTokenException(calculateRefreshTokenException())
                                  .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
+                                 .initAccountCareerInfoException(calculateInitAccountCareerInfoException())
                                  .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(authExceptionDocs));
@@ -49,5 +51,28 @@ public class AuthExceptionController extends CommonExceptionController {
         );
 
         return refreshTokenException;
+    }
+
+    private Map<String, ExceptionContent> calculateInitAccountCareerInfoException() {
+        Map<String, ExceptionContent> authProfileException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(authProfileException);
+        putForbiddenExceptionContent(authProfileException);
+        putMethodArgumentNotValidExceptionContent(
+                authProfileException,
+                "jobGroupName",
+                "companyName",
+                "experienceName"
+        );
+
+        processAccountException(
+                authProfileException,
+                AccountErrorCode.INVALID_COMPANY,
+                AccountErrorCode.INVALID_EXPERIENCE,
+                AccountErrorCode.INVALID_JOB_GROUP,
+                AccountErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION
+        );
+
+        return authProfileException;
     }
 }

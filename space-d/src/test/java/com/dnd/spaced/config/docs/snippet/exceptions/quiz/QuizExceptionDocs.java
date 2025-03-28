@@ -8,9 +8,9 @@ import lombok.Builder;
 public record QuizExceptionDocs(
         Map<String, ExceptionContent> createQuizException,
         Map<String, ExceptionContent> readQuizzesException,
-        Map<String, ExceptionContent> findQuizByException,
+        Map<String, ExceptionContent> readQuizException,
         Map<String, ExceptionContent> gradeQuizException,
-        Map<String, ExceptionContent> readGradedAnswerAllByQuizIdException,
-        Map<String, ExceptionContent> readGradedAnswerAllException
+        Map<String, ExceptionContent> readTargetQuizGradedAnswers,
+        Map<String, ExceptionContent> readQuizGradedAnswers
 ) {
 }

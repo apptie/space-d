@@ -7,9 +7,9 @@ import lombok.Builder;
 @Builder
 public record TodayQuizExceptionDocs(
         Map<String, ExceptionContent> readLatestTodayQuizException,
-        Map<String, ExceptionContent> readTodayQuizByException,
+        Map<String, ExceptionContent> readTodayQuizException,
         Map<String, ExceptionContent> gradeTodayQuizException,
-        Map<String, ExceptionContent> readGradedAnswerAllByTodayQuizIdException,
-        Map<String, ExceptionContent> readGradedAnswerAllException
+        Map<String, ExceptionContent> readTargetTodayQuizGradedAnswersException,
+        Map<String, ExceptionContent> readTodayQuizGradedAnswersException
 ) {
 }
