@@ -4,8 +4,6 @@ import com.dnd.spaced.config.docs.snippet.CommonExceptionController;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
-import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
-import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -51,13 +49,5 @@ public class AuthExceptionController extends CommonExceptionController {
         );
 
         return refreshTokenException;
-    }
-
-    private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
-        for (AuthErrorCode errorCode : errorCodes) {
-            ExceptionTranslator translator = AuthExceptionTranslator.findBy(errorCode);
-
-            processExceptionContent(target, translator);
-        }
     }
 }

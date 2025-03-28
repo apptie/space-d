@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.snippet.exceptions.account.AccountExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.admin.AdminExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
 import com.dnd.spaced.config.stub.StudAccountRepository;
 import com.dnd.spaced.core.account.application.AccountService;
@@ -75,7 +76,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                DocsController.class, AccountExceptionController.class, AuthExceptionController.class,
+                DocsController.class, AccountExceptionController.class, AuthExceptionController.class, AdminExceptionController.class,
 
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -104,6 +105,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     AuthExceptionController authExceptionController;
+
+    @Autowired
+    AdminExceptionController adminExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -250,7 +254,8 @@ public class CommonControllerSliceTest {
                                               adminAuthenticationController,
                                               adminTodayQuizController,
                                               accountExceptionController,
-                                              authExceptionController
+                                              authExceptionController,
+                                              adminExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

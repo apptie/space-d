@@ -4,8 +4,6 @@ import com.dnd.spaced.config.docs.snippet.CommonExceptionController;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
 import com.dnd.spaced.global.exception.code.AccountErrorCode;
-import com.dnd.spaced.global.exception.translator.AccountExceptionTranslator;
-import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -108,13 +106,5 @@ public class AccountExceptionController extends CommonExceptionController {
         );
 
         return authProfileException;
-    }
-
-    private void processAccountException(Map<String, ExceptionContent> target, AccountErrorCode... errorCodes) {
-        for (AccountErrorCode errorCode : errorCodes) {
-            ExceptionTranslator translator = AccountExceptionTranslator.findBy(errorCode);
-
-            processExceptionContent(target, translator);
-        }
     }
 }

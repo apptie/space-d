@@ -66,10 +66,6 @@ public class DocsController {
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
-                                                   .saveWordException(calculateSaveWordException())
-                                                   .updateWordExampleException(calculateUpdateWordExampleException())
-                                                   .deleteWordExampleException(calculateDeleteWordExampleException())
-                                                   .deletePronunciationException(calculateDeletePronunciationException())
                                                    .readWordException(calculateReadWordException())
                                                    .saveCommentException(calculateSaveCommentException())
                                                    .deleteCommentException(calculateDeleteCommentException())
@@ -85,10 +81,7 @@ public class DocsController {
                                                    .gradeTodayQuizException(calculateGradeTodayQuizException())
                                                    .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
                                                    .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
-                                                   .createTodayQuizException(calculateCreateTodayQuizException())
                                                    .readLocalImageException(calculateLocalImageNotFoundException())
-                                                   .reportException(calculateReportException())
-                                                   .processReportException(calculateProcessReportException())
                                                    .createBookmarkException(calculateCreateBookmarkException())
                                                    .deleteBookmarkException(calculateDeleteBookmarkException())
                                                    .findAllBookmarkException(calculateFindAllBookmarkException())
@@ -153,53 +146,10 @@ public class DocsController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateProcessReportException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putForbiddenExceptionContent(exceptionContent);
-        processReportException(
-                exceptionContent,
-                ReportErrorCode.REPORT_NOT_FOUND_EXCEPTION,
-                ReportErrorCode.REPORT_STATUS_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateReportException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putMethodArgumentNotValidExceptionContent(exceptionContent, "commentId", "cause");
-        processReportException(
-                exceptionContent,
-                ReportErrorCode.CANNOT_REPORT_OWN_COMMENT_EXCEPTION,
-                ReportErrorCode.REPORT_REASON_NOT_FOUND_EXCEPTION,
-                ReportErrorCode.COMMENT_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
     private Map<String, ExceptionContent> calculateLocalImageNotFoundException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         processImageException(exceptionContent, ImageErrorCode.IMAGE_FILE_NOT_FOUND_EXCEPTION);
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateCreateTodayQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putForbiddenExceptionContent(exceptionContent);
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.INVALID_TODAY_QUIZ_WORD_COUNT_EXCEPTION
-        );
 
         return exceptionContent;
     }
@@ -380,78 +330,6 @@ public class DocsController {
         return readWordException;
     }
 
-    private Map<String, ExceptionContent> calculateDeletePronunciationException() {
-        Map<String, ExceptionContent> deletePronunciationException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(deletePronunciationException);
-        putForbiddenExceptionContent(deletePronunciationException);
-        processWordException(
-                deletePronunciationException,
-                WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION
-        );
-
-        return deletePronunciationException;
-    }
-
-
-    private Map<String, ExceptionContent> calculateDeleteWordExampleException() {
-        Map<String, ExceptionContent> deleteWordExampleException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(deleteWordExampleException);
-        putForbiddenExceptionContent(deleteWordExampleException);
-        processWordException(
-                deleteWordExampleException,
-                WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION
-        );
-
-        return deleteWordExampleException;
-    }
-
-    private Map<String, ExceptionContent> calculateUpdateWordExampleException() {
-        Map<String, ExceptionContent> updateWordExampleException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(updateWordExampleException);
-        putForbiddenExceptionContent(updateWordExampleException);
-        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
-        processWordException(
-                updateWordExampleException,
-                WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
-                WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION
-        );
-
-        return updateWordExampleException;
-    }
-
-    private Map<String, ExceptionContent> calculateSaveWordException() {
-        Map<String, ExceptionContent> saveWordException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(saveWordException);
-        putForbiddenExceptionContent(saveWordException);
-        putMethodArgumentNotValidExceptionContent(
-                saveWordException,
-                "name",
-                "meaning",
-                "categoryName",
-                "pronunciations",
-                "pronunciation",
-                "typeName",
-                "examples"
-        );
-        processWordException(saveWordException, WordErrorCode.values());
-
-        return saveWordException;
-    }
-
-    private Map<String, ExceptionContent> calculateFindAccountInfoException() {
-        Map<String, ExceptionContent> findAccountInfoException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(findAccountInfoException);
-
-        return findAccountInfoException;
-    }
-
     private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
         target.put(
                 "UNAUTHORIZED",
@@ -523,7 +401,7 @@ public class DocsController {
         }
     }
 
-    private void processWordException(Map<String, ExceptionContent> target, WordErrorCode... errorCodes) {
+    protected void processWordException(Map<String, ExceptionContent> target, WordErrorCode... errorCodes) {
         for (WordErrorCode errorCode : errorCodes) {
             ExceptionTranslator translator = WordExceptionTranslator.findBy(errorCode);
 

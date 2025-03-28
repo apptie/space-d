@@ -116,30 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.saveWordException").withSubsectionId("saveWordException"),
-                                      attributes(key("title").value("`POST /admin/words` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getSaveWordException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.updateWordExampleException").withSubsectionId("updateWordExampleException"),
-                                      attributes(key("title").value("`PATCH /admin/words/examples/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getUpdateWordExampleException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.deleteWordExampleException").withSubsectionId("deleteWordExampleException"),
-                                      attributes(key("title").value("`DELETE /admin/words/examples/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getDeleteWordExampleException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.deletePronunciationException").withSubsectionId("deletePronunciationException"),
-                                      attributes(key("title").value("`DELETE /admin/words/pronunciations/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getDeletePronunciationException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.readWordException").withSubsectionId("readWordException"),
                                       attributes(key("title").value("`GET /words/{id}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getReadWordException())
@@ -230,27 +206,9 @@ class DocsControllerTest extends CommonControllerSliceTest {
                               ),
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.createTodayQuizException").withSubsectionId("createTodayQuizException"),
-                                      attributes(key("title").value("`POST /admin/today-quizzes` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindTodayQuizGradedAnswersAllByException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.readLocalImageException").withSubsectionId("readLocalImageException"),
                                       attributes(key("title").value("`GET /images/{imageName}` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getReadLocalImageException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.reportException").withSubsectionId("reportException"),
-                                      attributes(key("title").value("`POST /reports` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getReportException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.processReportException").withSubsectionId("processReportException"),
-                                      attributes(key("title").value("`POST /reports/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getProcessReportException())
                               ),
                               customResponseFields(
                                       "exception-response",
