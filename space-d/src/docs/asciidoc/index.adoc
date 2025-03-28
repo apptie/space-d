@@ -12,16 +12,7 @@ include::{docdir}/domain/auth.adoc[]
 include::{docdir}/domain/admin.adoc[]
 include::{docdir}/domain/word.adoc[]
 include::{docdir}/domain/comment.adoc[]
-
-[[Like-API]]
-== Like API
-
-[[Process-Like]]
-=== 좋아요 API
-
-operation::like-controller-test/좋아요_처리_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-processLikeException.adoc[]
+include::{docdir}/domain/like.adoc[]
 
 [[Quiz-API]]
 == 퀴즈 API

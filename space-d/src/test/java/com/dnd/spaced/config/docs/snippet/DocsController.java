@@ -68,7 +68,6 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs =
                 ExceptionDocs.builder()
-                             .processLikeException(calculateProcessLikeException())
                              .createQuizException(calculateCreateQuizException())
                              .gradeQuizException(calculateGradeQuizException())
                              .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
@@ -265,18 +264,6 @@ public class DocsController {
         );
 
         return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateProcessLikeException() {
-        Map<String, ExceptionContent> processLikeException = new LinkedHashMap<>();
-
-        processLikeException(
-                processLikeException,
-                LikeErrorCode.FORBIDDEN_LIKE,
-                LikeErrorCode.ASSOCIATION_COMMENT_NOT_FOUND
-        );
-
-        return processLikeException;
     }
 
     private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {

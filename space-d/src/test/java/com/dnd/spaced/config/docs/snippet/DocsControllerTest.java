@@ -116,12 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.processLikeException").withSubsectionId("processLikeException"),
-                                      attributes(key("title").value("`POST /comments/{commentId}/likes` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getProcessLikeException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.createQuizException").withSubsectionId("createQuizException"),
                                       attributes(key("title").value("`POST /quizzes` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getCreateQuizException())
