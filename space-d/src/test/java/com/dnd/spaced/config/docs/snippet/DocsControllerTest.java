@@ -116,24 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.createBookmarkException").withSubsectionId("createBookmarkException"),
-                                      attributes(key("title").value("`POST /bookmarks` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getCreateBookmarkException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.deleteBookmarkException").withSubsectionId("deleteBookmarkException"),
-                                      attributes(key("title").value("`DELETE /bookmarks/{bookmarkId}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getDeleteBookmarkException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findAllBookmarkException").withSubsectionId("findAllBookmarkException"),
-                                      attributes(key("title").value("`DELETE /bookmarks/{bookmarkId}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindAllBookmarkException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
                                       attributes(key("title").value("`GET /skills` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindSkillException())

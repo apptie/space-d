@@ -7,6 +7,7 @@ import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.snippet.exceptions.account.AccountExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.admin.AdminExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.bookmark.BookmarkExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.comment.CommentExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.like.LikeExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.localimage.LocalImageExceptionController;
@@ -86,7 +87,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 DocsController.class, AccountExceptionController.class, AuthExceptionController.class,
                 AdminExceptionController.class, WordExceptionController.class, ReportExceptionController.class,
                 CommentExceptionController.class, LikeExceptionController.class, QuizExceptionController.class,
-                TodayQuizExceptionController.class, LocalImageExceptionController.class,
+                TodayQuizExceptionController.class, LocalImageExceptionController.class, BookmarkExceptionController.class,
+
 
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -139,6 +141,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     LocalImageExceptionController localImageExceptionController;
+
+    @Autowired
+    BookmarkExceptionController bookmarkExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -292,7 +297,8 @@ public class CommonControllerSliceTest {
                                               likeExceptionController,
                                               quizExceptionController,
                                               todayQuizExceptionController,
-                                              localImageExceptionController
+                                              localImageExceptionController,
+                                              bookmarkExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

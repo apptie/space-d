@@ -68,9 +68,6 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs =
                 ExceptionDocs.builder()
-                             .createBookmarkException(calculateCreateBookmarkException())
-                             .deleteBookmarkException(calculateDeleteBookmarkException())
-                             .findAllBookmarkException(calculateFindAllBookmarkException())
                              .findSkillException(calculateFindSkillException())
                              .build();
 
@@ -94,47 +91,6 @@ public class DocsController {
                 exceptionContent,
                 SkillErrorCode.QUIZ_METADATA_NOT_FOUND_EXCEPTION
         );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindAllBookmarkException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateDeleteBookmarkException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        processBookmarkException(
-                exceptionContent,
-                BookmarkErrorCode.BOOKMARK_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateCreateBookmarkException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        processBookmarkException(
-                exceptionContent,
-                BookmarkErrorCode.WORD_NOT_FOUND_EXCEPTION,
-                BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateLocalImageNotFoundException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        processImageException(exceptionContent, ImageErrorCode.IMAGE_FILE_NOT_FOUND_EXCEPTION);
 
         return exceptionContent;
     }
