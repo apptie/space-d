@@ -116,36 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.createQuizException").withSubsectionId("createQuizException"),
-                                      attributes(key("title").value("`POST /quizzes` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getCreateQuizException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.gradeQuizException").withSubsectionId("gradeQuizException"),
-                                      attributes(key("title").value("`POST /quizzes/{quizId}/graded-answers` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getGradeQuizException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findGradedAnswersAllByException").withSubsectionId("findGradedAnswersAllByException"),
-                                      attributes(key("title").value("`GET /quizzes/graded-answers` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindGradedAnswersAllByException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findGradedAnswersAllByQuizException").withSubsectionId("findGradedAnswersAllByQuizException"),
-                                      attributes(key("title").value("`GET /quizzes/{quizId}/graded-answers` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindGradedAnswersAllByException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findQuizByException").withSubsectionId("findQuizByException"),
-                                      attributes(key("title").value("`GET /quizzes/{quizId}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindQuizByException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.findLatestTodayQuizException").withSubsectionId("findLatestTodayQuizException"),
                                       attributes(key("title").value("`GET /today-quizzes/latest` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindLatestTodayQuizException())

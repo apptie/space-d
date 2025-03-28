@@ -12,11 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExceptionDocs {
 
-    private Map<String, ExceptionContent> createQuizException;
-    private Map<String, ExceptionContent> gradeQuizException;
-    private Map<String, ExceptionContent> findGradedAnswersAllByException;
-    private Map<String, ExceptionContent> findGradedAnswersAllByQuizException;
-    private Map<String, ExceptionContent> findQuizByException;
     private Map<String, ExceptionContent> findLatestTodayQuizException;
     private Map<String, ExceptionContent> findTodayQuizByException;
     private Map<String, ExceptionContent> gradeTodayQuizException;

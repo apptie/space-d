@@ -68,11 +68,6 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs =
                 ExceptionDocs.builder()
-                             .createQuizException(calculateCreateQuizException())
-                             .gradeQuizException(calculateGradeQuizException())
-                             .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
-                             .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
-                             .findQuizByException(calculateFindQuizByException())
                              .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
                              .findTodayQuizByException(calculateFindTodayQuizByException())
                              .gradeTodayQuizException(calculateGradeTodayQuizException())
@@ -209,21 +204,6 @@ public class DocsController {
         return exceptionContent;
     }
 
-    private Map<String, ExceptionContent> calculateCreateQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.INVALID_QUIZ_CATEGORY_NAME_EXCEPTION,
-                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.INVALID_QUIZ_WORD_COUNT_EXCEPTION,
-                QuizErrorCode.WORD_METADATA_NOT_FOUND_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
     private Map<String, ExceptionContent> calculateGradeQuizException() {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
@@ -234,22 +214,6 @@ public class DocsController {
                 QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION,
                 QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION
         );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindGradedAnswersAllByException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindGradedAnswersAllByQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
 
         return exceptionContent;
     }

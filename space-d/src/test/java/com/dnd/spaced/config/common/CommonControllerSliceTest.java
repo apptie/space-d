@@ -9,6 +9,7 @@ import com.dnd.spaced.config.docs.snippet.exceptions.admin.AdminExceptionControl
 import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.comment.CommentExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.like.LikeExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.quiz.QuizExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.report.ReportExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.word.WordExceptionController;
 import com.dnd.spaced.config.stub.StudAccountRepository;
@@ -82,7 +83,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         controllers = {
                 DocsController.class, AccountExceptionController.class, AuthExceptionController.class,
                 AdminExceptionController.class, WordExceptionController.class, ReportExceptionController.class,
-                CommentExceptionController.class, LikeExceptionController.class,
+                CommentExceptionController.class, LikeExceptionController.class, QuizExceptionController.class,
 
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -126,6 +127,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     LikeExceptionController likeExceptionController;
+
+    @Autowired
+    QuizExceptionController quizExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -277,7 +281,8 @@ public class CommonControllerSliceTest {
                                               wordExceptionController,
                                               reportExceptionController,
                                               commentExceptionController,
-                                              likeExceptionController
+                                              likeExceptionController,
+                                              quizExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)
