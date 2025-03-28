@@ -11,35 +11,7 @@
 include::{docdir}/domain/auth.adoc[]
 include::{docdir}/domain/admin.adoc[]
 include::{docdir}/domain/word.adoc[]
-
-[[Comment-API]]
-== Comment API
-
-[[Save-Comment]]
-=== 댓글 작성 API
-
-operation::comment-controller-test/댓글_작성_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,request-fields,http-response']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-saveCommentException.adoc[]
-
-[[Delete-Comment]]
-=== 댓글 삭제 API
-
-operation::comment-controller-test/댓글_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-deleteCommentException.adoc[]
-
-[[Update-Comment]]
-=== 댓글 수정 API
-
-operation::comment-controller-test/댓글_수정_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,request-fields,http-response']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-updateCommentException.adoc[]
-
-[[Read-All-Comments]]
-=== 댓글 목록 조회 API
-
-operation::comment-controller-test/댓글_목록_조회_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+include::{docdir}/domain/comment.adoc[]
 
 [[Like-API]]
 == Like API

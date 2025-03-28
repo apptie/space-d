@@ -116,24 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.saveCommentException").withSubsectionId("saveCommentException"),
-                                      attributes(key("title").value("`POST /words/{wordId}/comments` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getSaveCommentException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.deleteCommentException").withSubsectionId("deleteCommentException"),
-                                      attributes(key("title").value("`DELETE /comments/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getDeleteCommentException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.updateCommentException").withSubsectionId("updateCommentException"),
-                                      attributes(key("title").value("`PUT /comments/{id}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getUpdateCommentException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.processLikeException").withSubsectionId("processLikeException"),
                                       attributes(key("title").value("`POST /comments/{commentId}/likes` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getProcessLikeException())

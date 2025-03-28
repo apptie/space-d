@@ -7,6 +7,7 @@ import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.snippet.exceptions.account.AccountExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.admin.AdminExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.comment.CommentExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.report.ReportExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.word.WordExceptionController;
 import com.dnd.spaced.config.stub.StudAccountRepository;
@@ -79,7 +80,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @WebMvcTest(
         controllers = {
                 DocsController.class, AccountExceptionController.class, AuthExceptionController.class, AdminExceptionController.class,
-                WordExceptionController.class, ReportExceptionController.class,
+                WordExceptionController.class, ReportExceptionController.class, CommentExceptionController.class,
 
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -117,6 +118,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     ReportExceptionController reportExceptionController;
+
+    @Autowired
+    CommentExceptionController commentExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -266,7 +270,8 @@ public class CommonControllerSliceTest {
                                               authExceptionController,
                                               adminExceptionController,
                                               wordExceptionController,
-                                              reportExceptionController
+                                              reportExceptionController,
+                                              commentExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

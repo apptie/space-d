@@ -47,46 +47,45 @@ public class DocsController {
 
     @GetMapping("/enums")
     public ResponseEntity<CommonDocsResponse<EnumDocs>> findEnums() {
-        EnumDocs enumDocs = EnumDocs.builder()
-                                    .jobGroup(EnumDocsConverter.convert(JobGroup.values(), JobGroup::getName))
-                                    .company(EnumDocsConverter.convert(Company.values(), Company::getName))
-                                    .experience(EnumDocsConverter.convert(Experience.values(), Experience::getName))
-                                    .profileImageName(EnumDocsConverter.convert(ProfileImageName.values(), ProfileImageName::getKorean))
-                                    .category(EnumDocsConverter.convert(Category.values(), Category::getName))
-                                    .pronunciationType(EnumDocsConverter.convert(PronunciationType.values(), PronunciationType::getName))
-                                    .quizCategory(EnumDocsConverter.convert(QuizCategory.values(), QuizCategory::getName))
-                                    .reportReason(EnumDocsConverter.convert(ReportReason.values(), ReportReason::getCause))
-                                    .reportStatus(EnumDocsConverter.convert(ReportStatus.values(), ReportStatus::getName))
-                                    .todayQuizStatus(EnumDocsConverter.convert(TodayQuizStatus.values(), TodayQuizStatus::getName))
-                                    .build();
+        EnumDocs enumDocs =
+                EnumDocs.builder()
+                        .jobGroup(EnumDocsConverter.convert(JobGroup.values(), JobGroup::getName))
+                        .company(EnumDocsConverter.convert(Company.values(), Company::getName))
+                        .experience(EnumDocsConverter.convert(Experience.values(), Experience::getName))
+                        .profileImageName(EnumDocsConverter.convert(ProfileImageName.values(), ProfileImageName::getKorean))
+                        .category(EnumDocsConverter.convert(Category.values(), Category::getName))
+                        .pronunciationType(EnumDocsConverter.convert(PronunciationType.values(), PronunciationType::getName))
+                        .quizCategory(EnumDocsConverter.convert(QuizCategory.values(), QuizCategory::getName))
+                        .reportReason(EnumDocsConverter.convert(ReportReason.values(), ReportReason::getCause))
+                        .reportStatus(EnumDocsConverter.convert(ReportStatus.values(), ReportStatus::getName))
+                        .todayQuizStatus(EnumDocsConverter.convert(TodayQuizStatus.values(), TodayQuizStatus::getName))
+                        .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(enumDocs));
     }
 
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
-        ExceptionDocs exceptionDocs = ExceptionDocs.builder()
-                                                   .saveCommentException(calculateSaveCommentException())
-                                                   .deleteCommentException(calculateDeleteCommentException())
-                                                   .updateCommentException(calculateUpdateCommentException())
-                                                   .processLikeException(calculateProcessLikeException())
-                                                   .createQuizException(calculateCreateQuizException())
-                                                   .gradeQuizException(calculateGradeQuizException())
-                                                   .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
-                                                   .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
-                                                   .findQuizByException(calculateFindQuizByException())
-                                                   .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
-                                                   .findTodayQuizByException(calculateFindTodayQuizByException())
-                                                   .gradeTodayQuizException(calculateGradeTodayQuizException())
-                                                   .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
-                                                   .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
-                                                   .readLocalImageException(calculateLocalImageNotFoundException())
-                                                   .createBookmarkException(calculateCreateBookmarkException())
-                                                   .deleteBookmarkException(calculateDeleteBookmarkException())
-                                                   .findAllBookmarkException(calculateFindAllBookmarkException())
-                                                   .findSkillException(calculateFindSkillException())
-                                                   .readQuizzesException(calculateReadQuizzesException())
-                                                   .build();
+        ExceptionDocs exceptionDocs =
+                ExceptionDocs.builder()
+                             .processLikeException(calculateProcessLikeException())
+                             .createQuizException(calculateCreateQuizException())
+                             .gradeQuizException(calculateGradeQuizException())
+                             .findGradedAnswersAllByException(calculateFindGradedAnswersAllByException())
+                             .findGradedAnswersAllByQuizException(calculateFindGradedAnswersAllByQuizException())
+                             .findQuizByException(calculateFindQuizByException())
+                             .findLatestTodayQuizException(calculateFindLatestTodayQuizException())
+                             .findTodayQuizByException(calculateFindTodayQuizByException())
+                             .gradeTodayQuizException(calculateGradeTodayQuizException())
+                             .findTodayQuizGradedAnswerByException(calculateFindTodayQuizGradedAnswerByException())
+                             .findTodayQuizGradedAnswersAllByException(calculateFindTodayQuizGradedAnswersAllByException())
+                             .readLocalImageException(calculateLocalImageNotFoundException())
+                             .createBookmarkException(calculateCreateBookmarkException())
+                             .deleteBookmarkException(calculateDeleteBookmarkException())
+                             .findAllBookmarkException(calculateFindAllBookmarkException())
+                             .findSkillException(calculateFindSkillException())
+                             .readQuizzesException(calculateReadQuizzesException())
+                             .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
     }
@@ -278,55 +277,6 @@ public class DocsController {
         );
 
         return processLikeException;
-    }
-
-    private Map<String, ExceptionContent> calculateUpdateCommentException() {
-        Map<String, ExceptionContent> updateCommentException = new LinkedHashMap<>();
-
-        processCommentException(
-                updateCommentException,
-                CommentErrorCode.ASSOCIATION_ACCOUNT_NOT_FOUND,
-                CommentErrorCode.ASSOCIATION_WORD_NOT_FOUND,
-                CommentErrorCode.FORBIDDEN_COMMENT,
-                CommentErrorCode.INVALID_COMMENT_CONTENT
-        );
-
-        return updateCommentException;
-    }
-
-    private Map<String, ExceptionContent> calculateDeleteCommentException() {
-        Map<String, ExceptionContent> deleteCommentException = new LinkedHashMap<>();
-
-        processCommentException(
-                deleteCommentException,
-                CommentErrorCode.ASSOCIATION_ACCOUNT_NOT_FOUND,
-                CommentErrorCode.ASSOCIATION_WORD_NOT_FOUND,
-                CommentErrorCode.FORBIDDEN_COMMENT
-        );
-
-        return deleteCommentException;
-    }
-
-    private Map<String, ExceptionContent> calculateSaveCommentException() {
-        Map<String, ExceptionContent> saveCommentException = new LinkedHashMap<>();
-
-        processCommentException(
-                saveCommentException,
-                CommentErrorCode.ASSOCIATION_ACCOUNT_NOT_FOUND,
-                CommentErrorCode.ASSOCIATION_WORD_NOT_FOUND,
-                CommentErrorCode.INVALID_COMMENT_CONTENT,
-                CommentErrorCode.WORD_NOT_FOUND_EXCEPTION
-        );
-
-        return saveCommentException;
-    }
-
-    private Map<String, ExceptionContent> calculateReadWordException() {
-        Map<String, ExceptionContent> readWordException = new LinkedHashMap<>();
-
-        processWordException(readWordException, WordErrorCode.WORD_NOT_FOUND);
-
-        return readWordException;
     }
 
     private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
