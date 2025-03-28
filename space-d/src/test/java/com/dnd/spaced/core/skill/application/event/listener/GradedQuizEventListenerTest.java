@@ -57,7 +57,7 @@ class GradedQuizEventListenerTest {
     RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
 
     @Test
-    @Sql("classpath:sql/skill/event/quiz.sql")
+    @Sql("classpath:sql/skill/quiz.sql")
     void 퀴즈_정답지_제출_이후_퀴즈_정답지_제출_이벤트를_수행한다() {
         // given
         Skill spySkill = spy(Skill.class);
@@ -87,7 +87,7 @@ class GradedQuizEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/skill/event/quiz.sql")
+    @Sql("classpath:sql/skill/quiz.sql")
     void 퀴즈_정답지_제출_이후_퀴즈_정답지_제출_이벤트_처리에_실패하더라도_최대_재시도_횟수만큼_이벤트_처리를_재시도한다() {
         // given
         Skill spySkill = spy(Skill.class);
@@ -119,7 +119,7 @@ class GradedQuizEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/skill/event/quiz.sql")
+    @Sql("classpath:sql/skill/quiz.sql")
     void 퀴즈_정답지_제출_이후_최대_재시도_횟수보다_더_이벤트_처리에_실패한_횟수가_많다면_실패한_이벤트를_별도로_관리한다() {
         // given
         given(skillRepository.findBy(anyLong())).willReturn(Optional.empty())
@@ -148,7 +148,7 @@ class GradedQuizEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/skill/event/today_quiz.sql")
+    @Sql("classpath:sql/skill/today_quiz.sql")
     void 오늘의_퀴즈_정답지_제출_이후_퀴즈_정답지_제출_이벤트를_수행한다() {
         // given
         Skill spySkill = spy(Skill.class);
@@ -171,7 +171,7 @@ class GradedQuizEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/skill/event/today_quiz.sql")
+    @Sql("classpath:sql/skill/today_quiz.sql")
     void 오늘의_퀴즈_정답지_제출_이후_퀴즈_정답지_제출_이벤트_처리에_실패하더라도_최대_재시도_횟수만큼_이벤트_처리를_재시도한다() {
         // given
         Skill spySkill = spy(Skill.class);
@@ -196,7 +196,7 @@ class GradedQuizEventListenerTest {
     }
 
     @Test
-    @Sql("classpath:sql/skill/event/today_quiz.sql")
+    @Sql("classpath:sql/skill/today_quiz.sql")
     void 오늘의_퀴즈_정답지_제출_이후_최대_재시도_횟수보다_더_이벤트_처리에_실패한_횟수가_많다면_실패한_이벤트를_별도로_관리한다() {
         // given
         given(skillRepository.findBy(anyLong())).willReturn(Optional.empty())
