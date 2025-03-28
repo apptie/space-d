@@ -30,7 +30,6 @@ public class LikeExceptionController extends CommonExceptionController {
 
         processLikeException(
                 processLikeException,
-                LikeErrorCode.FORBIDDEN_LIKE,
                 LikeErrorCode.ASSOCIATION_COMMENT_NOT_FOUND
         );
 

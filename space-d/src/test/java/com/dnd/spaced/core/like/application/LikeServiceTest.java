@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.dnd.spaced.core.comment.application.event.dto.LikedEvent;
 import com.dnd.spaced.core.comment.application.event.dto.UnlikedEvent;
 import com.dnd.spaced.core.like.application.exception.AssociationCommentNotFoundException;
-import com.dnd.spaced.core.like.application.exception.ForbiddenLikeException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -63,14 +62,5 @@ class LikeServiceTest {
                 assertThatThrownBy(() -> likeService.processLike(1L, -999L))
                 .isInstanceOf(AssociationCommentNotFoundException.class)
                 .hasMessage("좋아요 대상인 댓글을 찾을 수 없습니다.");
-    }
-
-    @Test
-    @Sql("classpath:sql/like/comment.sql")
-    void 없거나_이미_탈퇴한_회원_ID로_좋아요를_할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> likeService.processLike(-999L, 1L))
-                .isInstanceOf(ForbiddenLikeException.class)
-                .hasMessage("지정한 ID에 대한 회원을 찾지 못했습니다.");
     }
 }
