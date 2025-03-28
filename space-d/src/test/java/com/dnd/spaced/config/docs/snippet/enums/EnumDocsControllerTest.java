@@ -1,6 +1,5 @@
-package com.dnd.spaced.config.docs.snippet;
+package com.dnd.spaced.config.docs.snippet.enums;
 
-import static com.dnd.spaced.config.docs.RestDocsConfiguration.field;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -11,9 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.CustomResponseFieldsSnippet;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
-import com.dnd.spaced.config.docs.snippet.enums.EnumDocs;
-import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
-import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionDocs;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,7 +21,7 @@ import org.springframework.restdocs.payload.PayloadSubsectionExtractor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-class DocsControllerTest extends CommonControllerSliceTest {
+class EnumDocsControllerTest extends CommonControllerSliceTest {
 
     @Test
     void enums() throws Exception {
@@ -102,28 +98,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       ));
     }
 
-    @Test
-    void exceptions() throws Exception {
-        ResultActions result = mockMvc.perform(
-                get("/test/exceptions").contentType(MediaType.APPLICATION_JSON)
-        );
-
-        MvcResult mvcResult = result.andReturn();
-        ExceptionDocs data = findExceptionData(mvcResult);
-
-        result.andExpect(status().isOk())
-              .andDo(
-                      restDocs.document(
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
-                                      attributes(key("title").value("`GET /skills` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getFindSkillException())
-                              )
-                      )
-              );
-    }
-
     public static CustomResponseFieldsSnippet customResponseFields(
             String type,
             PayloadSubsectionExtractor<?> subsectionExtractor,
@@ -148,28 +122,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
 
     private EnumDocs findEnumData(MvcResult result) throws IOException {
         CommonDocsResponse<EnumDocs> apiResponseDto = objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                new TypeReference<>() {
-                }
-        );
-
-        return apiResponseDto.data();
-    }
-
-    private static FieldDescriptor[] exceptionConvertFieldDescriptor(Map<String, ExceptionContent> exceptionValues) {
-        return exceptionValues.entrySet()
-                              .stream()
-                              .map(
-                                      exceptionValue -> fieldWithPath(exceptionValue.getKey()).description(exceptionValue.getValue().httpStatus().name())
-                                                                                              .attributes(
-                                                                                                      field("status", String.valueOf(exceptionValue.getValue().httpStatus().value())),
-                                                                                                      field("message", exceptionValue.getValue().message())
-                                                                                              )
-                              ).toArray(FieldDescriptor[]::new);
-    }
-
-    private ExceptionDocs findExceptionData(MvcResult result) throws IOException {
-        CommonDocsResponse<ExceptionDocs> apiResponseDto = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(),
                 new TypeReference<>() {
                 }
