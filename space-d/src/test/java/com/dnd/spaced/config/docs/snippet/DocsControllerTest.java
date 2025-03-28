@@ -116,18 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.refreshTokenException").withSubsectionId("refreshTokenException"),
-                                      attributes(key("title").value("`POST /auths/refresh-token` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getRefreshTokenException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.registerBlacklistTokenException").withSubsectionId("registerBlacklistTokenException"),
-                                      attributes(key("title").value("`POST /auths/blacklist-token` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getRegisterBlacklistTokenException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.saveWordException").withSubsectionId("saveWordException"),
                                       attributes(key("title").value("`POST /admin/words` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getSaveWordException())

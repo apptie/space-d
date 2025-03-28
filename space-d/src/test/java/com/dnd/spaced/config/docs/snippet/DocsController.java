@@ -15,7 +15,6 @@ import com.dnd.spaced.core.report.domain.enums.ReportReason;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.enums.PronunciationType;
-import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import com.dnd.spaced.global.exception.code.BookmarkErrorCode;
 import com.dnd.spaced.global.exception.code.CommentErrorCode;
 import com.dnd.spaced.global.exception.code.ImageErrorCode;
@@ -25,7 +24,6 @@ import com.dnd.spaced.global.exception.code.ReportErrorCode;
 import com.dnd.spaced.global.exception.code.SkillErrorCode;
 import com.dnd.spaced.global.exception.code.WordErrorCode;
 import com.dnd.spaced.global.exception.response.ExceptionDto;
-import com.dnd.spaced.global.exception.translator.AuthExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.BookmarkExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.CommentExceptionTranslator;
 import com.dnd.spaced.global.exception.translator.ExceptionTranslator;
@@ -68,8 +66,6 @@ public class DocsController {
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs = ExceptionDocs.builder()
-                                                   .refreshTokenException(calculateRefreshTokenException())
-                                                   .registerBlacklistTokenException(calculateRegisterBlacklistTokenException())
                                                    .saveWordException(calculateSaveWordException())
                                                    .updateWordExampleException(calculateUpdateWordExampleException())
                                                    .deleteWordExampleException(calculateDeleteWordExampleException())
@@ -456,31 +452,6 @@ public class DocsController {
         return findAccountInfoException;
     }
 
-    private Map<String, ExceptionContent> calculateRegisterBlacklistTokenException() {
-        Map<String, ExceptionContent> registerBlacklistTokenException = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(registerBlacklistTokenException);
-        putForbiddenExceptionContent(registerBlacklistTokenException);
-        putMethodArgumentNotValidExceptionContent(registerBlacklistTokenException, "accountId");
-        processAuthException(registerBlacklistTokenException, AuthErrorCode.INVALID_BLACKLIST_TOKEN_CONTENT_EXCEPTION);
-
-        return registerBlacklistTokenException;
-    }
-
-    private Map<String, ExceptionContent> calculateRefreshTokenException() {
-        Map<String, ExceptionContent> refreshTokenException = new LinkedHashMap<>();
-
-        processAuthException(
-                refreshTokenException,
-                AuthErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION,
-                AuthErrorCode.EXPIRED_TOKEN_EXCEPTION,
-                AuthErrorCode.BLOCKED_TOKEN_EXCEPTION,
-                AuthErrorCode.ROTATION_REFRESH_TOKEN_MISMATCH_EXCEPTION
-        );
-
-        return refreshTokenException;
-    }
-
     private void putUnauthorizedExceptionContent(Map<String, ExceptionContent> target) {
         target.put(
                 "UNAUTHORIZED",
@@ -555,14 +526,6 @@ public class DocsController {
     private void processWordException(Map<String, ExceptionContent> target, WordErrorCode... errorCodes) {
         for (WordErrorCode errorCode : errorCodes) {
             ExceptionTranslator translator = WordExceptionTranslator.findBy(errorCode);
-
-            processExceptionContent(target, translator);
-        }
-    }
-
-    private void processAuthException(Map<String, ExceptionContent> target, AuthErrorCode... errorCodes) {
-        for (AuthErrorCode errorCode : errorCodes) {
-            ExceptionTranslator translator = AuthExceptionTranslator.findBy(errorCode);
 
             processExceptionContent(target, translator);
         }

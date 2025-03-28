@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.docs.snippet.DocsController;
 import com.dnd.spaced.config.docs.snippet.exceptions.account.AccountExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
 import com.dnd.spaced.config.stub.StudAccountRepository;
 import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.presentation.AccountController;
@@ -74,7 +75,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @WebMvcTest(
         controllers = {
-                AuthController.class, DocsController.class, AccountExceptionController.class, AdminReportController.class, AccountController.class,
+                DocsController.class, AccountExceptionController.class, AuthExceptionController.class,
+
+                AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
                 TodayQuizController.class, LocalImageController.class, ReportController.class,
                 BookmarkController.class, SkillController.class, AdminAuthenticationController.class,
@@ -94,10 +97,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CommonControllerSliceTest {
 
     @Autowired
-    protected DocsController commonDocsController;
+    DocsController commonDocsController;
 
     @Autowired
-    protected AccountExceptionController accountExceptionController;
+    AccountExceptionController accountExceptionController;
+
+    @Autowired
+    AuthExceptionController authExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -243,7 +249,8 @@ public class CommonControllerSliceTest {
                                               adminWordController,
                                               adminAuthenticationController,
                                               adminTodayQuizController,
-                                              accountExceptionController
+                                              accountExceptionController,
+                                              authExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

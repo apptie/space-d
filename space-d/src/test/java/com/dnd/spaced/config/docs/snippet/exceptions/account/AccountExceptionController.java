@@ -19,13 +19,14 @@ public class AccountExceptionController extends CommonExceptionController {
 
     @GetMapping("/exceptions")
     public ResponseEntity<CommonDocsResponse<AccountExceptionDocs>> findExceptions() {
-        AccountExceptionDocs accountExceptionDocs = AccountExceptionDocs.builder()
-                                                         .authProfileException(calculateAuthProfileException())
-                                                         .withdrawalException(calculateWithdrawalException())
-                                                         .changeCareerInfoException(calculateChangeCareerInfoException())
-                                                         .changeProfileInfoException(calculateChangeProfileInfoException())
-                                                         .findAccountInfoException(calculateFindAccountInfoException())
-                                                         .build();
+        AccountExceptionDocs accountExceptionDocs =
+                AccountExceptionDocs.builder()
+                                    .authProfileException(calculateAuthProfileException())
+                                    .withdrawalException(calculateWithdrawalException())
+                                    .changeCareerInfoException(calculateChangeCareerInfoException())
+                                    .changeProfileInfoException(calculateChangeProfileInfoException())
+                                    .findAccountInfoException(calculateFindAccountInfoException())
+                                    .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(accountExceptionDocs));
     }
