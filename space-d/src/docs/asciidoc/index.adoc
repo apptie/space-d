@@ -10,31 +10,7 @@
 
 include::{docdir}/domain/auth.adoc[]
 include::{docdir}/domain/admin.adoc[]
-
-[[Word-API]]
-== Word API
-
-[[Read-Word]]
-=== 용어 상세 조회 API
-
-operation::word-controller-test/용어_조회_요청_성공_테스트[snippets='http-request,path-parameters,http-response,response-fields']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-readWordException.adoc[]
-
-[[Read-All-Word]]
-=== 용어 목록 조회 API
-
-operation::word-controller-test/용어_목록_조회_요청_성공_테스트[snippets='http-request,query-parameters,http-response,response-fields']
-
-[[Search-Word]]
-=== 용어 검색 API
-
-operation::word-controller-test/용어_검색_요청_성공_테스트[snippets='http-request,query-parameters,http-response,response-fields']
-
-[[Read-All-Popular-Word]]
-=== 많이 조회한 용어 목록 조회 API
-
-operation::word-controller-test/많이_찾아본_용어_목록_조회_요청_성공_테스트[snippets='http-request,http-response,response-fields']
+include::{docdir}/domain/word.adoc[]
 
 [[Comment-API]]
 == Comment API
@@ -168,15 +144,7 @@ operation::local-image-controller-test/로컬_이미지_요청_성공_테스트[
 
 include::{snippets}/docs-controller-test/exceptions/exception-response-fields-readLocalImageException.adoc[]
 
-[[Report-API]]
-== 신고 API
-
-[[Report]]
-=== 신고
-
-operation::report-controller-test/신고_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
-
-include::{snippets}/docs-controller-test/exceptions/exception-response-fields-reportException.adoc[]
+include::{docdir}/domain/report.adoc[]
 
 [[Bookmark-API]]
 == 북마크 API

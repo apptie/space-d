@@ -1,0 +1,9 @@
+[[Report-API]]
+== 신고 API
+
+[[Report]]
+=== 신고
+
+operation::report-controller-test/신고_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/report-exception-controller-test/exceptions/exception-response-fields-reportException.adoc[]
