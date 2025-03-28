@@ -116,12 +116,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                       restDocs.document(
                               customResponseFields(
                                       "exception-response",
-                                      beneathPath("data.readLocalImageException").withSubsectionId("readLocalImageException"),
-                                      attributes(key("title").value("`GET /images/{imageName}` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getReadLocalImageException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
                                       beneathPath("data.createBookmarkException").withSubsectionId("createBookmarkException"),
                                       attributes(key("title").value("`POST /bookmarks` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getCreateBookmarkException())
@@ -143,12 +137,6 @@ class DocsControllerTest extends CommonControllerSliceTest {
                                       beneathPath("data.findSkillException").withSubsectionId("findSkillException"),
                                       attributes(key("title").value("`GET /skills` 예외 상황")),
                                       exceptionConvertFieldDescriptor(data.getFindSkillException())
-                              ),
-                              customResponseFields(
-                                      "exception-response",
-                                      beneathPath("data.readQuizzesException").withSubsectionId("readQuizzesException"),
-                                      attributes(key("title").value("`GET /quizzes` 예외 상황")),
-                                      exceptionConvertFieldDescriptor(data.getReadQuizzesException())
                               )
                       )
               );

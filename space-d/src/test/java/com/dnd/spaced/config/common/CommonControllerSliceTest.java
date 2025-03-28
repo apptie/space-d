@@ -9,6 +9,7 @@ import com.dnd.spaced.config.docs.snippet.exceptions.admin.AdminExceptionControl
 import com.dnd.spaced.config.docs.snippet.exceptions.auth.AuthExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.comment.CommentExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.like.LikeExceptionController;
+import com.dnd.spaced.config.docs.snippet.exceptions.localimage.LocalImageExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.quiz.QuizExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.report.ReportExceptionController;
 import com.dnd.spaced.config.docs.snippet.exceptions.todayquiz.TodayQuizExceptionController;
@@ -85,7 +86,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 DocsController.class, AccountExceptionController.class, AuthExceptionController.class,
                 AdminExceptionController.class, WordExceptionController.class, ReportExceptionController.class,
                 CommentExceptionController.class, LikeExceptionController.class, QuizExceptionController.class,
-                TodayQuizExceptionController.class,
+                TodayQuizExceptionController.class, LocalImageExceptionController.class,
 
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -135,6 +136,9 @@ public class CommonControllerSliceTest {
 
     @Autowired
     TodayQuizExceptionController todayQuizExceptionController;
+
+    @Autowired
+    LocalImageExceptionController localImageExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -262,7 +266,6 @@ public class CommonControllerSliceTest {
                 )
         );
 
-
         this.mockMvc = MockMvcBuilders.standaloneSetup(
                                               authController,
                                               adminReportController,
@@ -288,7 +291,8 @@ public class CommonControllerSliceTest {
                                               commentExceptionController,
                                               likeExceptionController,
                                               quizExceptionController,
-                                              todayQuizExceptionController
+                                              todayQuizExceptionController,
+                                              localImageExceptionController
                                       )
                                       .setControllerAdvice(new GlobalControllerAdvice())
                                       .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)

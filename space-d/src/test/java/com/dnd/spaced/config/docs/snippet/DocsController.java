@@ -68,12 +68,10 @@ public class DocsController {
     public ResponseEntity<CommonDocsResponse<ExceptionDocs>> findExceptions() {
         ExceptionDocs exceptionDocs =
                 ExceptionDocs.builder()
-                             .readLocalImageException(calculateLocalImageNotFoundException())
                              .createBookmarkException(calculateCreateBookmarkException())
                              .deleteBookmarkException(calculateDeleteBookmarkException())
                              .findAllBookmarkException(calculateFindAllBookmarkException())
                              .findSkillException(calculateFindSkillException())
-                             .readQuizzesException(calculateReadQuizzesException())
                              .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(exceptionDocs));
@@ -137,32 +135,6 @@ public class DocsController {
         Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
 
         processImageException(exceptionContent, ImageErrorCode.IMAGE_FILE_NOT_FOUND_EXCEPTION);
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateGradeQuizException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        putMethodArgumentNotValidExceptionContent(exceptionContent, "answers");
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION,
-                QuizErrorCode.ALREADY_GRADE_QUIZ_EXCEPTION
-        );
-
-        return exceptionContent;
-    }
-
-    private Map<String, ExceptionContent> calculateFindQuizByException() {
-        Map<String, ExceptionContent> exceptionContent = new LinkedHashMap<>();
-
-        putUnauthorizedExceptionContent(exceptionContent);
-        processQuizException(
-                exceptionContent,
-                QuizErrorCode.QUIZ_NOT_FOUND_EXCEPTION
-        );
 
         return exceptionContent;
     }
