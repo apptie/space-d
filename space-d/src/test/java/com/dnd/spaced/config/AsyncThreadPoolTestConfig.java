@@ -1,7 +1,5 @@
 package com.dnd.spaced.config;
 
-import com.dnd.spaced.config.stub.StubNicknameProperties;
-import com.dnd.spaced.global.config.properties.NicknameProperties;
 import com.dnd.spaced.global.exception.base.BaseServerException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,13 +14,7 @@ import org.springframework.retry.support.RetryTemplate;
 
 @Profile("test")
 @Configuration
-public class TestConfig {
-
-    @Bean
-    @Primary
-    public NicknameProperties nicknameProperties() {
-        return new StubNicknameProperties();
-    }
+public class AsyncThreadPoolTestConfig {
 
     @Bean(name = "asyncQuizMetadataCounterExecutor")
     @Primary
