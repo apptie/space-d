@@ -68,6 +68,8 @@ import org.springframework.test.context.TestExecutionListeners.MergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -76,7 +78,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 EnumDocsController.class, AccountExceptionController.class, AuthExceptionController.class,
                 AdminExceptionController.class, WordExceptionController.class, ReportExceptionController.class,
                 CommentExceptionController.class, LikeExceptionController.class, QuizExceptionController.class,
-                TodayQuizExceptionController.class, LocalImageExceptionController.class, BookmarkExceptionController.class,
+                TodayQuizExceptionController.class, LocalImageExceptionController.class,
+                BookmarkExceptionController.class,
                 SkillExceptionController.class,
                 AuthController.class, AdminReportController.class, AccountController.class,
                 WordController.class, CommentController.class, LikeController.class, QuizController.class,
@@ -92,50 +95,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GuestAccountInfoArgumentResolver.class)
         }
 )
-@Import({RestDocsConfiguration.class, InjectMockBeanFactoryPostProcessor.class})
+@Import({
+        RestDocsConfiguration.class,
+        InjectMockBeanFactoryPostProcessor.class
+})
 @TestExecutionListeners(value = ResetMockTestExecutionListener.class, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureRestDocs
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class CommonControllerSliceTest {
-
-    @Autowired
-    EnumDocsController commonEnumDocsController;
-
-    @Autowired
-    AccountExceptionController accountExceptionController;
-
-    @Autowired
-    AuthExceptionController authExceptionController;
-
-    @Autowired
-    AdminExceptionController adminExceptionController;
-
-    @Autowired
-    WordExceptionController wordExceptionController;
-
-    @Autowired
-    ReportExceptionController reportExceptionController;
-
-    @Autowired
-    CommentExceptionController commentExceptionController;
-
-    @Autowired
-    LikeExceptionController likeExceptionController;
-
-    @Autowired
-    QuizExceptionController quizExceptionController;
-
-    @Autowired
-    TodayQuizExceptionController todayQuizExceptionController;
-
-    @Autowired
-    LocalImageExceptionController localImageExceptionController;
-
-    @Autowired
-    BookmarkExceptionController bookmarkExceptionController;
-
-    @Autowired
-    SkillExceptionController skillExceptionController;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -147,86 +114,13 @@ public class CommonControllerSliceTest {
     protected RestDocumentationContextProvider provider;
 
     @Autowired
-    AuthController authController;
-
-    @Autowired
-    AdminReportController adminReportController;
-
-    @Autowired
-    AccountController accountController;
-
-    @Autowired
-    WordController wordController;
-
-    @Autowired
-    CommentController commentController;
-
-    @Autowired
-    LikeController likeController;
-
-    @Autowired
-    QuizController quizController;
-
-    @Autowired
-    TodayQuizController todayQuizController;
-
-    @Autowired
-    LocalImageController localImageController;
-
-    @Autowired
-    ReportController reportController;
-
-    @Autowired
-    BookmarkController bookmarkController;
-
-    @Autowired
-    SkillController skillController;
-
-    @Autowired
-    AdminWordController adminWordController;
-
-    @Autowired
-    AdminAuthenticationController adminAuthenticationController;
-
-    @Autowired
-    AdminTodayQuizController adminTodayQuizController;
+    WebApplicationContext webApplicationContext;
 
     protected MockMvc mockMvc;
 
-    AuthStore store = new AuthStore();
-
     @BeforeEach
     void beforeEach() {
-        StandaloneMockMvcBuilder standaloneMockMvcBuilder = MockMvcBuilders.standaloneSetup(
-                authController,
-                adminReportController,
-                accountController,
-                commonEnumDocsController,
-                wordController,
-                commentController,
-                likeController,
-                quizController,
-                todayQuizController,
-                localImageController,
-                reportController,
-                bookmarkController,
-                skillController,
-                adminWordController,
-                adminAuthenticationController,
-                adminTodayQuizController,
-                accountExceptionController,
-                authExceptionController,
-                adminExceptionController,
-                wordExceptionController,
-                reportExceptionController,
-                commentExceptionController,
-                likeExceptionController,
-                quizExceptionController,
-                todayQuizExceptionController,
-                localImageExceptionController,
-                bookmarkExceptionController,
-                skillExceptionController
-        );
+        StandaloneMockMvcBuilder standaloneMockMvcBuilder = MockMvcBuilders.standaloneSetup(findRestControllers());
         this.mockMvc = new FixedStandaloneMockMvcBuilder(standaloneMockMvcBuilder).configureMessageConverters()
                                                                                   .configureArgumentResolvers()
                                                                                   .configureInterceptors()
@@ -234,6 +128,12 @@ public class CommonControllerSliceTest {
                                                                                   .configureRestDocs()
                                                                                   .configureFilters()
                                                                                   .build();
+    }
+
+    private Object[] findRestControllers() {
+        return webApplicationContext.getBeansWithAnnotation(RestController.class)
+                                    .values()
+                                    .toArray();
     }
 
     private class FixedStandaloneMockMvcBuilder {
