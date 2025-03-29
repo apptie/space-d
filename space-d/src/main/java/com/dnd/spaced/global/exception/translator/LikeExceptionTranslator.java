@@ -9,11 +9,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum LikeExceptionTranslator implements ExceptionTranslator{
-    FORBIDDEN_LIKE_EXCEPTION(
-            LikeErrorCode.FORBIDDEN_LIKE,
-            HttpStatus.FORBIDDEN,
-            "지정한 ID에 대한 회원을 찾지 못했습니다."
-    ),
+
     ASSOCIATION_COMMENT_NOT_FOUND_EXCEPTION(
             LikeErrorCode.ASSOCIATION_COMMENT_NOT_FOUND,
             HttpStatus.NOT_FOUND,

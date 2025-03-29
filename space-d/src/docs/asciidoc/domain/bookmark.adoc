@@ -1,0 +1,23 @@
+[[Bookmark-API]]
+== 북마크 API
+
+[[Create-Bookmark]]
+=== 북마크 추가
+
+operation::bookmark-controller-test/북마크_생성_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/bookmark-exception-controller-test/exceptions/exception-response-fields-createBookmarkException.adoc[]
+
+[[Delete-Bookmark]]
+=== 북마크 삭제
+
+operation::bookmark-controller-test/북마크_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
+
+include::{snippets}/bookmark-exception-controller-test/exceptions/exception-response-fields-deleteBookmarkException.adoc[]
+
+[[Read-Bookmarks]]
+=== 북마크 목록 조회
+
+operation::bookmark-controller-test/북마크_목록_조회_요청_성공_테스트[snippets='http-request,request-headers,http-response,response-fields']
+
+include::{snippets}/bookmark-exception-controller-test/exceptions/exception-response-fields-readBookmarksException.adoc[]

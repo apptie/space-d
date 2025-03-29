@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -32,8 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
@@ -44,29 +43,26 @@ import org.springframework.test.context.event.RecordApplicationEvents;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class WordPersistEventListenerTest {
 
-    @MockBean
+    @Autowired
     WordRepository wordRepository;
 
-    @MockBean
+    @Autowired
     WordExampleRepository wordExampleRepository;
 
-    @MockBean
+    @Autowired
     PronunciationRepository pronunciationRepository;
 
     @Autowired
     AdminWordService adminWordService;
 
-    @MockBean
+    @Autowired
     WordRandomRepository wordRandomRepository;
 
-    @MockBean
+    @Autowired
     WordMetadataRepository wordMetadataRepository;
 
-    @SpyBean
-    RedisTemplate<String, FailedWordPersistedEvent> deadLetterQueueRedisTemplate;
-
-    @SpyBean
-    WordPersistEventListener wordPersistEventListener;
+    @Autowired
+    RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
 
     @Autowired
     ApplicationEvents events;
@@ -76,7 +72,7 @@ class WordPersistEventListenerTest {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
         given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        given(wordRepository.save(any(Word.class))).willReturn(mockWord);
+        willReturn(mockWord).given(wordRepository).save(any(Word.class));
         given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
         willDoNothing().given(pronunciationRepository).saveAll(any());
         willDoNothing().given(wordExampleRepository).saveAll(any());
@@ -96,9 +92,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordRandomRepository).saveWith(any(Word.class), any(Category.class)),
-                () -> verify(deadLetterQueueRedisTemplate, never()).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate, never()).opsForList()
         );
     }
 
@@ -107,7 +102,7 @@ class WordPersistEventListenerTest {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
         given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        given(wordRepository.save(any(Word.class))).willReturn(mockWord);
+        willReturn(mockWord).given(wordRepository).save(any(Word.class));
         given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
         willDoNothing().given(pronunciationRepository).saveAll(any());
         willDoNothing().given(wordExampleRepository).saveAll(any());
@@ -129,9 +124,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
-                () -> verify(deadLetterQueueRedisTemplate, never()).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate, never()).opsForList()
         );
     }
 
@@ -140,7 +134,7 @@ class WordPersistEventListenerTest {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
         given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        given(wordRepository.save(any(Word.class))).willReturn(mockWord);
+        willReturn(mockWord).given(wordRepository).save(any(Word.class));
         given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
         willDoNothing().given(pronunciationRepository).saveAll(any());
         willDoNothing().given(wordExampleRepository).saveAll(any());
@@ -161,9 +155,8 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordPersistEventListener).listen(any()),
                 () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
-                () -> verify(deadLetterQueueRedisTemplate).opsForList()
+                () -> verify(wordPersistFailedRedisTemplate).opsForList()
         );
     }
 }

@@ -47,7 +47,7 @@ public class QuizController {
     }
 
     @PostMapping("/{quizId}/graded-answers")
-    public ResponseEntity<Void> grade(
+    public ResponseEntity<Void> gradeQuiz(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId,
             @Valid @RequestBody GradeQuizRequest request
@@ -62,7 +62,7 @@ public class QuizController {
     }
 
     @GetMapping("/graded-answers")
-    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readQuizGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
@@ -77,7 +77,7 @@ public class QuizController {
     }
 
     @GetMapping("/{quizId}/graded-answers")
-    public ResponseEntity<QuizGradedAnswerCollectionResponse> readGradedAnswers(
+    public ResponseEntity<QuizGradedAnswerCollectionResponse> readTargetQuizGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long quizId
     ) {

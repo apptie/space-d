@@ -1,0 +1,56 @@
+[[Admin-API]]
+== Admin API
+
+[[Register-Blacklist-Token]]
+=== 블랙리스트 토큰 등록 API
+
+operation::admin-authentication-controller-test/토큰_블랙리스트_등록_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/auth-exception-controller-test/exceptions/exception-response-fields-registerBlacklistTokenException.adoc[]
+
+[[Create-Word]]
+=== 용어 등록 API
+
+operation::admin-word-controller-test/용어_등록_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createWordException.adoc[]
+
+[[Update-Word-Example]]
+=== 용어 예문 변경 API
+
+operation::admin-word-controller-test/용어_예문_변경_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-updateWordExampleException.adoc[]
+
+[[Delete-Word-Example]]
+=== 용어 예문 삭제 API
+
+operation::admin-word-controller-test/용어_예문_삭제_요청_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-deleteWordExampleException.adoc[]
+
+[[Delete-Pronunciation]]
+=== 용어 발음 정보 삭제 API
+
+operation::admin-word-controller-test/용어_발음_정보_삭제_요청_성공_테스트[snippets='http-request,request-headers,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-deletePronunciationException.adoc[]
+
+[[Create-Today-Quiz]]
+=== 오늘의 퀴즈 수동 생성 API
+
+operation::admin-today-quiz-controller-test/오늘의_퀴즈_수동_생성_요청_성공_테스트[snippets='http-request,request-headers,response-headers']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createTodayQuizException.adoc[]
+
+[[Read-Reports]]
+=== 신고 목록 조회 API
+
+operation::admin-report-controller-test/신고_목록_조회_요청_성공_테스트[snippets='http-request,request-headers,query-parameters,response-fields']
+
+[[Process-Report]]
+=== 신고 처리 API
+
+operation::admin-report-controller-test/신고_처리_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-processReportException.adoc[]

@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.word.application.WordService;
 import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
 import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
 import com.dnd.spaced.core.word.application.dto.response.WordCollectionResponse;
@@ -25,6 +26,8 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.dto.response.WordResponse.PronunciationResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -32,6 +35,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class WordControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    WordService wordService;
 
     @Test
     void 용어_조회_요청_성공_테스트() throws Exception {

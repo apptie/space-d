@@ -58,7 +58,7 @@ public class AppConfig implements WebMvcConfigurer {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
         objectMapper.setDateFormat(dateFormat);
         return objectMapper;
     }

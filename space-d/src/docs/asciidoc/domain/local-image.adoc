@@ -1,0 +1,10 @@
+[[Local-Image-API]]
+== 로컬 이미지 API
+
+[[Read-Local-Image]]
+=== 로컬 이미지 조회
+
+operation::local-image-controller-test/로컬_이미지_요청_성공_테스트[snippets='http-request,http-response,response-headers']
+
+include::{snippets}/local-image-exception-controller-test/exceptions/exception-response-fields-readLocalImageException.adoc[]
+

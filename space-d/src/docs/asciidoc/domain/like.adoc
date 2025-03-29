@@ -1,0 +1,9 @@
+[[Like-API]]
+== Like API
+
+[[Process-Like]]
+=== 좋아요 API
+
+operation::like-controller-test/좋아요_처리_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
+
+include::{snippets}/like-exception-controller-test/exceptions/exception-response-fields-processLikeException.adoc[]

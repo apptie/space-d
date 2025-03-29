@@ -28,9 +28,6 @@ class AdminTodayQuizServiceTest {
     AdminTodayQuizService adminTodayQuizService;
 
     @Test
-    @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
-    })
     void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
         // when & then
         assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
@@ -40,7 +37,6 @@ class AdminTodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/quiz/word_metadata.sql",
             "classpath:sql/admin/quiz/quiz_metadata.sql"
     })
@@ -53,7 +49,6 @@ class AdminTodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/admin/quiz/word_metadata.sql",
             "classpath:sql/admin/quiz/quiz_metadata.sql",
             "classpath:sql/admin/quiz/word.sql"

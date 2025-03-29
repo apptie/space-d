@@ -1,0 +1,2 @@
+INSERT INTO accounts(id, created_at, updated_at, registration_id, social_identifier, company, experience, job_group, deleted, nickname, profile_image)
+VALUES (1, now(), now(), 'KAKAO', '12345', 'STARTUP', 'UNDER_FIRST', 'ETC', false, '재빠른지구001', 'earth.png');

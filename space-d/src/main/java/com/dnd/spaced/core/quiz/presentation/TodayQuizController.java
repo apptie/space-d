@@ -32,12 +32,12 @@ public class TodayQuizController {
     private final TodayQuizService todayQuizService;
 
     @GetMapping("/latest")
-    public ResponseEntity<SimpleTodayQuizResponse> findLatest() {
+    public ResponseEntity<SimpleTodayQuizResponse> readLatestTodayQuiz() {
         return ResponseEntity.ok(todayQuizService.readLatestTodayQuiz());
     }
 
     @GetMapping("/{todayQuizId}")
-    public ResponseEntity<TodayQuizResponse> findBy(
+    public ResponseEntity<TodayQuizResponse> readTodayQuiz(
             @CurrentAccountInfo GuestAccountInfo accountInfo,
             @PathVariable Long todayQuizId
     ) {
@@ -47,7 +47,7 @@ public class TodayQuizController {
     }
 
     @PostMapping("/{todayQuizId}/graded-answers")
-    public ResponseEntity<Void> grade(
+    public ResponseEntity<Void> gradeTodayQuiz(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId,
             @Valid @RequestBody GradeTodayQuizRequest request
@@ -62,7 +62,7 @@ public class TodayQuizController {
     }
 
     @GetMapping("/{todayQuizId}/graded-answers")
-    public ResponseEntity<TodayQuizGradedAnswerResponse> findTodayQuizGradedAnswerBy(
+    public ResponseEntity<TodayQuizGradedAnswerResponse> readTargetTodayQuizGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @PathVariable Long todayQuizId
     ) {
@@ -70,7 +70,7 @@ public class TodayQuizController {
     }
 
     @GetMapping("/graded-answers")
-    public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> findTodayQuizGradedAnswerAllBy(
+    public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> readTodayQuizGradedAnswers(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             ReadTodayQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable

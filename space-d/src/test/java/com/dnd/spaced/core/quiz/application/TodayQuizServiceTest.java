@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @RecordApplicationEvents
@@ -45,7 +44,7 @@ class TodayQuizServiceTest {
     TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
     @Autowired
-    private CacheManager cacheManager;
+    CacheManager cacheManager;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +54,6 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql"
@@ -72,7 +70,6 @@ class TodayQuizServiceTest {
     }
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 오늘의_퀴즈가_생성된_적이_없다면_최근에_생성한_오늘의_퀴즈를_조회할_수_없다() {
         // when & then
         assertThatThrownBy(() -> todayQuizService.readLatestTodayQuiz())
@@ -81,7 +78,6 @@ class TodayQuizServiceTest {
     }
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
         // when & then
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
@@ -93,7 +89,6 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql"
@@ -117,7 +112,6 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql",
@@ -143,7 +137,6 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql",
@@ -161,13 +154,11 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql",
             "classpath:sql/quiz/today_quiz_graded_answer.sql"
     })
-    @Sql(value = "classpath:sql/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void 사용자가_제출한_오늘의_퀴즈_채점_결과를_조회한다() {
         // when
         TodayQuizGradedAnswerResponse actual = todayQuizService.readTargetTodayQuizGradedAnswers(
@@ -192,7 +183,6 @@ class TodayQuizServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
             "classpath:sql/quiz/today_quiz.sql"

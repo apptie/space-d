@@ -19,11 +19,6 @@ public enum AuthExceptionTranslator implements ExceptionTranslator{
             HttpStatus.UNAUTHORIZED,
             "유효한 토큰이 아닙니다."
     ),
-    FORBIDDEN_INIT_CAREER_INFO_EXCEPTION(
-            AuthErrorCode.FORBIDDEN_INIT_CAREER_INFO_EXCEPTION,
-            HttpStatus.FORBIDDEN,
-            "권한이 없습니다."
-    ),
     REFRESH_TOKEN_NOT_FOUND_EXCEPTION(
             AuthErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION,
             HttpStatus.UNAUTHORIZED,

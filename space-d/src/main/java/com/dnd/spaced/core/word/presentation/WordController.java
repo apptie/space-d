@@ -40,7 +40,7 @@ public class WordController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<WordCollectionResponse> searchWord(
+    public ResponseEntity<WordCollectionResponse> searchWords(
             SearchWordRequest request,
             @WordPageable Pageable pageable
     ) {

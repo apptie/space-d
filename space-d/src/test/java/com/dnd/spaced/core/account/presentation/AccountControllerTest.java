@@ -19,10 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
+import com.dnd.spaced.core.account.application.AccountService;
 import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
 import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -30,6 +33,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class AccountControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    AccountService accountService;
 
     @Test
     @WithMockUser("1")

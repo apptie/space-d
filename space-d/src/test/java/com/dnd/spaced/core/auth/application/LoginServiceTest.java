@@ -30,7 +30,7 @@ class LoginServiceTest {
     ApplicationEvents events;
 
     @Test
-    @Sql(scripts = {"classpath:sql/cleanup.sql", "classpath:sql/auth/nickname_metadata.sql"})
+    @Sql("classpath:sql/auth/nickname_metadata.sql")
     void 회원가입하지_않은_회원이_로그인하면_회원_가입과_로그인_절차를_진행한다() {
         // when
         LoggedInAccountInfoDto actual = loginService.login("kakao", "12345");
@@ -46,7 +46,6 @@ class LoginServiceTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/cleanup.sql",
             "classpath:sql/auth/nickname_metadata.sql",
             "classpath:sql/auth/account.sql"
     })
@@ -65,7 +64,6 @@ class LoginServiceTest {
     }
 
     @Test
-    @Sql("classpath:sql/cleanup.sql")
     void 닉네임_메타데이터가_정상적으로_초기화되지_않았다면_로그인을_할_수_없다() {
         // when & then
         assertThatThrownBy(() -> loginService.login("kakao", "54321"))

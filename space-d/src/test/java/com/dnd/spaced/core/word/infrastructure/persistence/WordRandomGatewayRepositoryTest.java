@@ -3,32 +3,25 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.config.clean.annotation.CleanUpDatabase;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.WordRandom;
 import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
 import com.dnd.spaced.core.word.domain.enums.Category;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
-@DataJpaTest
-@CleanUpDatabase
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class WordRandomGatewayRepositoryTest {
-
-    @PersistenceContext
-    EntityManager em;
 
     @Autowired
     WordRandomCrudRepository wordRandomCrudRepository;
@@ -47,6 +40,7 @@ class WordRandomGatewayRepositoryTest {
     }
 
     @Test
+    @Transactional
     void 용어_랜덤값을_저장한다() {
         // given
         Word word = Word.builder()
@@ -54,20 +48,19 @@ class WordRandomGatewayRepositoryTest {
                         .meaning("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
                         .categoryName("개발")
                         .build();
-
-        wordCrudRepository.save(word);
+        Word savedWord = wordCrudRepository.save(word);
 
         // when
-        wordRandomGatewayRepository.saveWith(word, Category.DEVELOP);
+        wordRandomGatewayRepository.saveWith(savedWord, Category.DEVELOP);
 
         // then
-        Optional<WordRandom> actual = wordRandomCrudRepository.findById(1L);
+        List<SimpleWordInfo> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.DEVELOP, 1L);
 
         assertAll(
-                () -> assertThat(actual.get().getId()).isPositive(),
-                () -> assertThat(actual.get().getWord()).isEqualTo(word),
-                () -> assertThat(actual.get().getCategory()).isEqualTo(Category.DEVELOP),
-                () -> assertThat(actual.get().getRandom()).isPositive()
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual.get(0).id()).isPositive(),
+                () -> assertThat(actual.get(0).meaning()).isEqualTo("인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"),
+                () -> assertThat(actual.get(0).name()).isEqualTo("Authorization")
         );
     }
 

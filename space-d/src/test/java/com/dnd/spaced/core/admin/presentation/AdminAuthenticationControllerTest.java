@@ -12,7 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.core.admin.application.dto.request.UpdateBlacklistTokenRequest;
+import com.dnd.spaced.core.auth.application.BlacklistTokenService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -20,6 +23,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @SuppressWarnings("NonAsciiCharacters")
 class AdminAuthenticationControllerTest extends CommonControllerSliceTest {
+
+    @Autowired
+    BlacklistTokenService blacklistTokenService;
 
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")

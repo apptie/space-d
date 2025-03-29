@@ -18,7 +18,7 @@ public class LocalImageController {
     private final LocalImageService localImageService;
 
     @GetMapping(value = "/{imageName}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<Resource> readImage(@PathVariable String imageName) {
+    public ResponseEntity<Resource> readLocalImage(@PathVariable String imageName) {
         Resource resource = localImageService.readImage(imageName);
 
         return ResponseEntity.ok()
