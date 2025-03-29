@@ -2,20 +2,18 @@ package com.dnd.spaced.config.docs.snippet.enums;
 
 import java.util.Map;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
-public class EnumDocs {
-
-    private Map<String, String> jobGroup;
-    private Map<String, String> company;
-    private Map<String, String> experience;
-    private Map<String, String> profileImageName;
-    private Map<String, String> category;
-    private Map<String, String> pronunciationType;
-    private Map<String, String> quizCategory;
-    private Map<String, String> reportReason;
-    private Map<String, String> reportStatus;
-    private Map<String, String> todayQuizStatus;
+public record EnumDocs (
+        Map<String, String> jobGroup,
+        Map<String, String> company,
+        Map<String, String> experience,
+        Map<String, String> profileImageName,
+        Map<String, String> category,
+        Map<String, String> pronunciationType,
+        Map<String, String> quizCategory,
+        Map<String, String> reportReason,
+        Map<String, String> reportStatus,
+        Map<String, String> todayQuizStatus
+) {
 }
