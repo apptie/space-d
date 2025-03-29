@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.auth.presentation;
 
 import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
-import com.dnd.spaced.core.auth.application.TokenService;
+import com.dnd.spaced.core.auth.application.RefreshTokenService;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
@@ -34,7 +34,7 @@ public class AuthController {
     private static final String COOKIE_DOMAIN = "/";
 
     private final TokenProperties tokenProperties;
-    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final InitAccountCareerInfoService initAccountCareerInfoService;
 
     @PostMapping("/profile")
@@ -53,7 +53,7 @@ public class AuthController {
                 () -> new RefreshTokenNotFoundException("Cookie에서 refreshToken을 찾을 수 없습니다.")
         );
 
-        TokenDto tokenDto = tokenService.refreshToken(refreshToken);
+        TokenDto tokenDto = refreshTokenService.refreshToken(refreshToken);
         HttpCookie cookie = createCookie(tokenDto);
 
         return ResponseEntity.ok()

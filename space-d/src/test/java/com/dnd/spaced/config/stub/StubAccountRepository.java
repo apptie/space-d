@@ -5,7 +5,7 @@ import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import java.util.Optional;
 
-public class StudAccountRepository implements AccountRepository {
+public class StubAccountRepository implements AccountRepository {
 
     @Override
     public boolean existsBy(Long accountId) {

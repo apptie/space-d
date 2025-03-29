@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BlacklistTokenServiceTest {
+class BlacklistRefreshTokenServiceTest {
 
     @Autowired
     BlacklistTokenService blacklistTokenService;

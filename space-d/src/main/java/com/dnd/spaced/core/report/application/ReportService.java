@@ -17,18 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReportService {
 
-    private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void report(Long reporterId, ReportRequest request) {
-        commentRepository.findBy(request.commentId())
-                         .ifPresentOrElse(
-                                 comment -> processReport(comment, reporterId, request),
-                                 () -> {
-                                     throw new CommentNotFoundException("신고하려는 댓글을 찾을 수 없습니다.");
-                                 }
-                         );
+        Comment comment = findComment(request);
+
+        processReport(comment, reporterId, request);
+    }
+
+    private Comment findComment(ReportRequest request) {
+        return commentRepository.findBy(request.commentId())
+                                .orElseThrow(() -> new CommentNotFoundException("신고하려는 댓글을 찾을 수 없습니다."));
     }
 
     private void processReport(Comment comment, Long reporterId, ReportRequest request) {

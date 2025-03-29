@@ -25,13 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
 import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
-import com.dnd.spaced.core.auth.application.TokenService;
+import com.dnd.spaced.core.auth.application.RefreshTokenService;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -44,7 +43,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
     InitAccountCareerInfoService initAccountCareerInfoService;
 
     @Autowired
-    TokenService tokenService;
+    RefreshTokenService refreshTokenService;
 
     @Test
     @WithMockUser("1")
@@ -94,7 +93,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
 
         given(refreshTokenCookie.getName()).willReturn("refreshToken");
         given(refreshTokenCookie.getValue()).willReturn("Bearer refreshToken");
-        given(tokenService.refreshToken(anyString())).willReturn(
+        given(refreshTokenService.refreshToken(anyString())).willReturn(
                 new TokenDto("accessToken", "refreshToken", "BEARER")
         );
 

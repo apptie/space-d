@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import com.dnd.spaced.config.context.RestControllerTestInitializer;
 import com.dnd.spaced.config.docs.RestDocsConfiguration;
 import com.dnd.spaced.config.listener.ResetMockTestExecutionListener;
-import com.dnd.spaced.config.stub.StudAccountRepository;
+import com.dnd.spaced.config.stub.StubAccountRepository;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
@@ -113,8 +113,8 @@ public class CommonControllerSliceTest {
 
         FixedStandaloneMockMvcBuilder configureArgumentResolvers() {
             builder.setCustomArgumentResolvers(
-                    new AuthAccountInfoArgumentResolver(store, new StudAccountRepository()),
-                    new GuestAccountInfoArgumentResolver(store),
+                    new AuthAccountInfoArgumentResolver(store, new StubAccountRepository()),
+                    new GuestAccountInfoArgumentResolver(store, new StubAccountRepository()),
                     new WordPageableArgumentResolver(),
                     new CommentPageableArgumentResolver(),
                     new GradedAnswerPageableArgumentResolver(),

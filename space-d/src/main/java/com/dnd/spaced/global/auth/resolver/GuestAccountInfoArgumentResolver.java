@@ -1,7 +1,9 @@
 package com.dnd.spaced.global.auth.resolver;
 
+import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.global.auth.AccountInfo;
 import com.dnd.spaced.global.auth.AuthStore;
+import com.dnd.spaced.global.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class GuestAccountInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final AuthStore store;
+    private final AccountRepository accountRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -35,10 +38,18 @@ public class GuestAccountInfoArgumentResolver implements HandlerMethodArgumentRe
             return new GuestAccountInfo();
         }
 
+        validateExistsAccountId(accountInfo.accountId());
+
         return new GuestAccountInfo(accountInfo.accountId());
     }
 
     private boolean isInvalidAccountPrincipal(AccountInfo accountInfo) {
         return accountInfo == null || accountInfo.accountId() == null;
+    }
+
+    private void validateExistsAccountId(Long accountId) {
+        if (!accountRepository.existsBy(accountId)) {
+            throw new UnauthorizedException();
+        }
     }
 }

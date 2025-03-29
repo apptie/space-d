@@ -1,6 +1,5 @@
 package com.dnd.spaced.core.comment.application;
 
-import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.comment.application.dto.mapper.CommentResponseCollectionMapper;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final WordRepository wordRepository;
-    private final AccountRepository accountRepository;
     private final CommentRepository commentRepository;
 
     @Transactional
@@ -40,7 +38,6 @@ public class CommentService {
         Comment comment = findComment(commentId);
 
         validateDeleteAuthority(comment, accountId);
-
         commentRepository.delete(comment);
     }
 
