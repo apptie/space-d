@@ -839,7 +839,7 @@ Cookie: refreshToken=Bearer refreshToken</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=259200; Expires=Mon, 31 Mar 2025 08:13:03 GMT; Secure; HttpOnly; SameSite=NONE
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=0; Expires=Thu, 1 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=NONE
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -3156,12 +3156,6 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN_LIKE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 ID에 대한 회원을 찾지 못했습니다.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ASSOCIATION_COMMENT_NOT_FOUND</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
@@ -3317,7 +3311,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-03-28T17:13:04.560445",
+    "createdAt" : "2025-03-29T21:02:14.12051",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4352,7 +4346,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-03-28T17:13:04.754371"
+  "createdAt" : "2025-03-29T21:02:14.270216"
 }</code></pre>
 </div>
 </div>
@@ -5453,7 +5447,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-28T17:13:03.7052"
+    "createdAt" : "2025-03-29T21:02:13.420472"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
