@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class TokenService {
+public class RefreshTokenService {
 
     private final TokenDecoder tokenDecoder;
     private final GenerateTokenService generateTokenService;
