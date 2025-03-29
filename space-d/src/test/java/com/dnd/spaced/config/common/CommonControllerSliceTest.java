@@ -67,6 +67,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestExecutionListeners.MergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -196,72 +197,109 @@ public class CommonControllerSliceTest {
 
     @BeforeEach
     void beforeEach() {
-        AuthInterceptor authInterceptor = new AuthInterceptor(store);
-        AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver = new AuthAccountInfoArgumentResolver(store, new StudAccountRepository());
-        GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver = new GuestAccountInfoArgumentResolver(store);
-        WordPageableArgumentResolver wordPageableArgumentResolver = new WordPageableArgumentResolver();
-        CommentPageableArgumentResolver commentPageableArgumentResolver = new CommentPageableArgumentResolver();
-        GradedAnswerPageableArgumentResolver gradedAnswerPageableArgumentResolver = new GradedAnswerPageableArgumentResolver();
-        BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver = new BookmarkPageableArgumentResolver();
-        ReportPageableArgumentResolver reportPageableArgumentResolver = new ReportPageableArgumentResolver();
-        QuizPageableArgumentResolver quizPageableArgumentResolver = new QuizPageableArgumentResolver();
-        MappingJackson2HttpMessageConverter jacksonMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
-        ResourceHttpMessageConverter resourceMessageConverter = new ResourceHttpMessageConverter();
-        resourceMessageConverter.setSupportedMediaTypes(
-                List.of(
-                        MediaType.IMAGE_PNG,
-                        MediaType.IMAGE_JPEG,
-                        MediaType.IMAGE_GIF
-                )
+        StandaloneMockMvcBuilder standaloneMockMvcBuilder = MockMvcBuilders.standaloneSetup(
+                authController,
+                adminReportController,
+                accountController,
+                commonEnumDocsController,
+                wordController,
+                commentController,
+                likeController,
+                quizController,
+                todayQuizController,
+                localImageController,
+                reportController,
+                bookmarkController,
+                skillController,
+                adminWordController,
+                adminAuthenticationController,
+                adminTodayQuizController,
+                accountExceptionController,
+                authExceptionController,
+                adminExceptionController,
+                wordExceptionController,
+                reportExceptionController,
+                commentExceptionController,
+                likeExceptionController,
+                quizExceptionController,
+                todayQuizExceptionController,
+                localImageExceptionController,
+                bookmarkExceptionController,
+                skillExceptionController
         );
+        this.mockMvc = new FixedStandaloneMockMvcBuilder(standaloneMockMvcBuilder).configureMessageConverters()
+                                                                                  .configureArgumentResolvers()
+                                                                                  .configureInterceptors()
+                                                                                  .configureControllerAdvice()
+                                                                                  .configureRestDocs()
+                                                                                  .configureFilters()
+                                                                                  .build();
+    }
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(
-                                              authController,
-                                              adminReportController,
-                                              accountController,
-                                              commonEnumDocsController,
-                                              wordController,
-                                              commentController,
-                                              likeController,
-                                              quizController,
-                                              todayQuizController,
-                                              localImageController,
-                                              reportController,
-                                              bookmarkController,
-                                              skillController,
-                                              adminWordController,
-                                              adminAuthenticationController,
-                                              adminTodayQuizController,
-                                              accountExceptionController,
-                                              authExceptionController,
-                                              adminExceptionController,
-                                              wordExceptionController,
-                                              reportExceptionController,
-                                              commentExceptionController,
-                                              likeExceptionController,
-                                              quizExceptionController,
-                                              todayQuizExceptionController,
-                                              localImageExceptionController,
-                                              bookmarkExceptionController,
-                                              skillExceptionController
-                                      )
-                                      .setControllerAdvice(new GlobalControllerAdvice())
-                                      .setMessageConverters(jacksonMessageConverter, resourceMessageConverter)
-                                      .addInterceptors(authInterceptor)
-                                      .setCustomArgumentResolvers(
-                                              authAccountInfoArgumentResolver,
-                                              guestAccountInfoArgumentResolver,
-                                              wordPageableArgumentResolver,
-                                              commentPageableArgumentResolver,
-                                              gradedAnswerPageableArgumentResolver,
-                                              bookmarkPageableArgumentResolver,
-                                              reportPageableArgumentResolver,
-                                              quizPageableArgumentResolver
-                                      )
-                                      .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                                      .addFilters(new CharacterEncodingFilter("UTF-8", true))
-                                      .alwaysDo(print())
-                                      .alwaysDo(restDocs)
-                                      .build();
+    private class FixedStandaloneMockMvcBuilder {
+
+        final StandaloneMockMvcBuilder builder;
+        final AuthStore store;
+
+        public FixedStandaloneMockMvcBuilder(StandaloneMockMvcBuilder builder) {
+            this.builder = builder;
+            this.store = new AuthStore();
+        }
+
+        MockMvc build() {
+            return builder.build();
+        }
+
+        FixedStandaloneMockMvcBuilder configureMessageConverters() {
+            MappingJackson2HttpMessageConverter jacksonMessageConverter =
+                    new MappingJackson2HttpMessageConverter(objectMapper);
+            ResourceHttpMessageConverter resourceMessageConverter = new ResourceHttpMessageConverter();
+            resourceMessageConverter.setSupportedMediaTypes(
+                    List.of(
+                            MediaType.IMAGE_PNG,
+                            MediaType.IMAGE_JPEG,
+                            MediaType.IMAGE_GIF
+                    )
+            );
+
+            builder.setMessageConverters(jacksonMessageConverter, resourceMessageConverter);
+            return this;
+        }
+
+        FixedStandaloneMockMvcBuilder configureArgumentResolvers() {
+            builder.setCustomArgumentResolvers(
+                    new AuthAccountInfoArgumentResolver(store, new StudAccountRepository()),
+                    new GuestAccountInfoArgumentResolver(store),
+                    new WordPageableArgumentResolver(),
+                    new CommentPageableArgumentResolver(),
+                    new GradedAnswerPageableArgumentResolver(),
+                    new BookmarkPageableArgumentResolver(),
+                    new ReportPageableArgumentResolver(),
+                    new QuizPageableArgumentResolver()
+            );
+            return this;
+        }
+
+        FixedStandaloneMockMvcBuilder configureInterceptors() {
+            builder.addInterceptors(new AuthInterceptor(store));
+            return this;
+        }
+
+        FixedStandaloneMockMvcBuilder configureControllerAdvice() {
+            builder.setControllerAdvice(new GlobalControllerAdvice());
+            return this;
+        }
+
+        FixedStandaloneMockMvcBuilder configureRestDocs() {
+            builder.apply(MockMvcRestDocumentation.documentationConfiguration(provider))
+                   .alwaysDo(print())
+                   .alwaysDo(restDocs);
+            return this;
+        }
+
+        FixedStandaloneMockMvcBuilder configureFilters() {
+            builder.addFilters(new CharacterEncodingFilter("UTF-8", true));
+            return this;
+        }
     }
 }
