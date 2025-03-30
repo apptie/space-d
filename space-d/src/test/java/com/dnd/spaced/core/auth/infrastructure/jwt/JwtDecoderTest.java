@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
+import com.dnd.spaced.global.auth.encryptor.GcmEncryptor;
+import com.dnd.spaced.global.auth.encryptor.exception.DecryptException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -32,22 +34,23 @@ class JwtDecoderTest {
             43200000L,
             259200000L
     );
-    JwtDecoder jwtDecoder = new JwtDecoder(tokenProperties);
+    GcmEncryptor gcmAesEncryptor = new GcmEncryptor("secretKey", "salt");
+    JwtDecoder jwtDecoder = new JwtDecoder(gcmAesEncryptor, tokenProperties);
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
     void 유효하지_않은_길이의_토큰을_인코딩_할_수_없다(TokenType tokenType) {
         // when & then
         assertThatThrownBy(() -> jwtDecoder.decode(tokenType, "Bearer invalid"))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("유효한 토큰이 아닙니다.");
+                .isInstanceOf(DecryptException.class)
+                .hasMessage("토큰 복호화에 실패했습니다.");
     }
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)
     void 만료된_토큰을_디코딩_하면_빈_claim을_반환한다(TokenType tokenType) {
         // given
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(gcmAesEncryptor, tokenProperties);
         String token = jwtEncoder.encode(
                 LocalDateTime.of(2022, 2, 2, 13, 13),
                 tokenType,
@@ -84,7 +87,7 @@ class JwtDecoderTest {
     @EnumSource(value = TokenType.class)
     void 유효한_토큰을_디코딩_한다(TokenType tokenType) {
         // given
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(gcmAesEncryptor, tokenProperties);
         LocalDateTime publishTime = LocalDateTime.now();
         String token = jwtEncoder.encode(publishTime, tokenType, 1L, "ROLE_USER");
 
@@ -113,7 +116,7 @@ class JwtDecoderTest {
                 43200000L,
                 259200000L
         );
-        JwtEncoder jwtEncoder = new JwtEncoder(otherIssuerTokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(gcmAesEncryptor, otherIssuerTokenProperties);
         String token = jwtEncoder.encode(LocalDateTime.now(), tokenType, 1L, "ROLE_USER");
 
         // when & then

@@ -2,6 +2,7 @@ package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
+import com.dnd.spaced.global.auth.encryptor.Encryptor;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,6 +23,7 @@ public class JwtEncoder implements TokenEncoder {
     private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
 
+    private final Encryptor encryptor;
     private final TokenProperties tokenProperties;
 
     @Override
@@ -30,17 +32,18 @@ public class JwtEncoder implements TokenEncoder {
         String key = tokenProperties.findTokenKey(tokenType);
         Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
         Map<String, Object> attributes = Map.of(CLAIM_ID, accountId, CLAIM_ROLE, roleName);
+        String token = Jwts.builder()
+                             .setIssuer(tokenProperties.issuer())
+                             .setIssuedAt(targetDate)
+                             .setExpiration(new Date(targetDate.getTime() + expiredMillisSeconds))
+                             .addClaims(attributes)
+                             .signWith(
+                                     Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)),
+                                     SignatureAlgorithm.HS256
+                             )
+                             .compact();
 
-        return Jwts.builder()
-                   .setIssuer(tokenProperties.issuer())
-                   .setIssuedAt(targetDate)
-                   .setExpiration(new Date(targetDate.getTime() + expiredMillisSeconds))
-                   .addClaims(attributes)
-                   .signWith(
-                           Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)),
-                           SignatureAlgorithm.HS256
-                   )
-                   .compact();
+        return encryptor.encrypt(token);
     }
 
     private Date convertDate(LocalDateTime target) {
