@@ -1,4 +1,8 @@
 spring:
+  config:
+    import:
+      - application-app.yml
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
@@ -47,43 +51,3 @@ spring:
             user-name-attribute: sub
             jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
             issuer-uri: https://kauth.kakao.com
-
-log:
-  directory: ./
-
-token:
-  access-key: thisistoolargeaccesstokenkeyfordummykeydataforlocal
-  refresh-key: thisistoolargerefreshtokenkeyfordummykeydataforlocal
-  issuer: localissuer
-  access-expired-seconds: 3600
-  refresh-expired-seconds: 259200
-  access-expired-millis-seconds: 3600000
-  refresh-expired-millis-seconds: 259200000
-
-app:
-  profile:
-    nickname:
-      adjective:
-        - 멋있는
-        - 무서운
-        - 상큼한
-        - 행복한
-        - 재빠른
-      planet:
-        - 수성
-        - 금성
-        - 지구
-        - 화성
-        - 목성
-        - 토성
-        - 천왕성
-        - 해왕성
-      format: "%s%03d"
-  quiz:
-    question: "다음 예문을 보고 예문에 맞는 용어를 선택해주세요."
-  image:
-    path: /home/
-
-auth:
-  secret-key: secret_key
-  salt: salt
