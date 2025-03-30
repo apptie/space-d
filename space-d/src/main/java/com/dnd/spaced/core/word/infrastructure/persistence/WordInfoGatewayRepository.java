@@ -32,18 +32,13 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
 
     @Override
     public Optional<WordInfo> findBy(Long wordId) {
-        Word result = queryFactory.selectFrom(word)
-                                  .leftJoin(word.wordExamples).fetchJoin()
-                                  .where(word.id.eq(wordId))
-                                  .fetchOne();
+        Word result = findWord(wordId);
 
         if (result == null) {
             return Optional.empty();
         }
 
-        List<Pronunciation> pronunciations = queryFactory.selectFrom(pronunciation)
-                                                         .where(pronunciation.word.id.eq(result.getId()))
-                                                         .fetch();
+        List<Pronunciation> pronunciations = findPronunciations(result);
 
         return Optional.of(WordInfoMapper.toDto(result, pronunciations));
     }
@@ -73,6 +68,19 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
         }
 
         return mapToWordInfos(wordIds);
+    }
+
+    private Word findWord(Long wordId) {
+        return queryFactory.selectFrom(word)
+                           .leftJoin(word.wordExamples).fetchJoin()
+                           .where(word.id.eq(wordId))
+                           .fetchOne();
+    }
+
+    private List<Pronunciation> findPronunciations(Word result) {
+        return queryFactory.selectFrom(pronunciation)
+                           .where(pronunciation.word.id.eq(result.getId()))
+                           .fetch();
     }
 
     private BooleanExpression buildWordPaginationCondition(
