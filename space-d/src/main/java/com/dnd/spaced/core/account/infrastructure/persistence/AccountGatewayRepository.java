@@ -49,7 +49,7 @@ public class AccountGatewayRepository implements AccountRepository {
                                              account.socialInfo.socialIdentifier.eq(socialIdentifier),
                                              account.deleted.isFalse(),
                                              account.socialInfo.registrationId.eq(registrationId)
-                                             )
+                                     )
                                      .fetchOne();
 
         return Optional.ofNullable(result);
