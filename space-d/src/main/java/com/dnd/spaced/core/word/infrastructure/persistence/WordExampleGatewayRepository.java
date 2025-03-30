@@ -25,7 +25,6 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final Clock clock;
     private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory queryFactory;
-    private final WordExampleCrudRepository wordExampleCrudRepository;
 
     public long countBy(Long wordId) {
         return queryFactory.select(wordExample.id.count())

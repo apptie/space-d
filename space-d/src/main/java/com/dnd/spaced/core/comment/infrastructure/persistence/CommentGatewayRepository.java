@@ -7,6 +7,8 @@ import static com.dnd.spaced.core.like.domain.QLike.like;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.global.consts.AuthConst;
+import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,8 +21,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class CommentGatewayRepository implements CommentRepository {
-
-    private static final Long GUEST_ACCOUNT_ID = -1L;
 
     private final JPAQueryFactory queryFactory;
     private final CommentCrudRepository commentCrudRepository;
@@ -37,7 +37,7 @@ public class CommentGatewayRepository implements CommentRepository {
 
     @Override
     public List<LikedCommentInfo> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        if (GUEST_ACCOUNT_ID.equals(accountId)) {
+        if (AuthConst.GUEST_ACCOUNT_ID.equals(accountId)) {
             return findAllWithoutIsLikedBy(wordId, lastCommentId, pageable);
         }
 
@@ -71,15 +71,7 @@ public class CommentGatewayRepository implements CommentRepository {
             Long lastCommentId,
             Pageable pageable
     ) {
-        return queryFactory.select(
-                                   Projections.constructor(
-                                           LikedCommentInfo.class,
-                                           comment,
-                                           like.id.isNotNull(),
-                                           account.profileInfo.nickname,
-                                           account.profileInfo.profileImage
-                                   )
-                           )
+        return queryFactory.select(getLikedCommentInfoWithLiked())
                            .from(comment)
                            .leftJoin(account).on(comment.writerId.eq(account.id))
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
@@ -94,14 +86,7 @@ public class CommentGatewayRepository implements CommentRepository {
     }
 
     private List<LikedCommentInfo> findAllWithoutIsLikedBy(Long wordId, Long lastCommentId, Pageable pageable) {
-        return queryFactory.select(
-                                   Projections.constructor(
-                                           LikedCommentInfo.class,
-                                           comment,
-                                           account.profileInfo.nickname,
-                                           account.profileInfo.profileImage
-                                   )
-                           )
+        return queryFactory.select(getLikedCommentInfoWithoutLiked())
                            .from(comment)
                            .leftJoin(account).on(comment.writerId.eq(account.id))
                            .where(
@@ -128,5 +113,24 @@ public class CommentGatewayRepository implements CommentRepository {
         }
 
         return comment.id.gt(commentId);
+    }
+
+    private ConstructorExpression<LikedCommentInfo> getLikedCommentInfoWithLiked() {
+        return Projections.constructor(
+                LikedCommentInfo.class,
+                comment,
+                like.id.isNotNull(),
+                account.profileInfo.nickname,
+                account.profileInfo.profileImage
+        );
+    }
+
+    private ConstructorExpression<LikedCommentInfo> getLikedCommentInfoWithoutLiked() {
+        return Projections.constructor(
+                LikedCommentInfo.class,
+                comment,
+                account.profileInfo.nickname,
+                account.profileInfo.profileImage
+        );
     }
 }
