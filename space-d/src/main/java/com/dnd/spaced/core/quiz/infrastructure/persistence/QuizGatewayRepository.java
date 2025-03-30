@@ -30,8 +30,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class QuizGatewayRepository implements QuizRepository {
 
-    private static final RowMapper<SimpleQuizData> simpleQuizRowMapper = (rs, ignoreRowNum) -> new SimpleQuizData(
-        rs.getLong(1),
+    private static final RowMapper<SimpleQuizValue> simpleQuizRowMapper = (rs, ignoreRowNum) -> new SimpleQuizValue(
+            rs.getLong(1),
             rs.getLong(2),
             rs.getBoolean(3),
             rs.getTimestamp(4).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
@@ -78,30 +78,14 @@ public class QuizGatewayRepository implements QuizRepository {
 
     @Override
     public Optional<QuizInfo> findBy(Long quizId, Long accountId) {
-        Quiz result = queryFactory.selectFrom(quiz)
-                                  .where(quiz.id.eq(quizId), quiz.accountId.eq(accountId))
-                                  .leftJoin(quiz.quizQuestions).fetchJoin()
-                                  .fetchOne();
+        Quiz result = findQuizFetchJoinWithQuizQuestions(quizId, accountId);
 
         if (result == null) {
             return Optional.empty();
         }
 
-        List<QuizQuestion> quizQuestions = result.getQuizQuestions();
-        List<Long> quizQuestionId = quizQuestions.stream()
-                                                 .map(QuizQuestion::getId)
-                                                 .toList();
-        Map<Long, List<QuizOption>> quizOptionMap = queryFactory.selectFrom(quizOption)
-                                                                .where(quizOption.quizQuestionId.in(quizQuestionId))
-                                                                .fetch()
-                                                                .stream()
-                                                                .collect(Collectors.groupingBy(
-                                                                        QuizOption::getQuizQuestionId,
-                                                                        Collectors.mapping(
-                                                                                Function.identity(),
-                                                                                Collectors.toList()
-                                                                        )
-                                                                ));
+        List<Long> quizQuestionId = findQuizQuestionIds(result);
+        Map<Long, List<QuizOption>> quizOptionMap = findQuizOptions(quizQuestionId);
         QuizInfo quizInfo = QuizInfoMapper.toDto(result, quizOptionMap);
 
         return Optional.of(quizInfo);
@@ -109,46 +93,72 @@ public class QuizGatewayRepository implements QuizRepository {
 
     @Override
     public List<SimpleQuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
-        String sql = calculateSql(lastQuizId);
+        String sql = calculateFinAllSql(lastQuizId);
         MapSqlParameterSource sqlParameters = calculateSqlParameters(accountId, lastQuizId, pageable);
 
         return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleQuizRowMapper)
-                                                                .stream()
-                                                                .collect(Collectors.groupingBy(
-                                                                        simpleQuizData -> new SimpleQuizKey(
-                                                                                simpleQuizData.id,
-                                                                                simpleQuizData.accountId,
-                                                                                simpleQuizData.solved,
-                                                                                simpleQuizData.createdAt
-                                                                        ),
-                                                                        Collectors.mapping(
-                                                                                simpleQuizData -> new QuizQuestionInfo(
-                                                                                        simpleQuizData.quizCategory,
-                                                                                        simpleQuizData.questionContent
-                                                                                ),
-                                                                                Collectors.toList()
-                                                                        )
-                                                                ))
-                                                                .entrySet()
-                                                                .stream()
-                                                                .map(entry -> new SimpleQuizInfo(
-                                                                        entry.getKey().id,
-                                                                        entry.getKey().accountId,
-                                                                        entry.getKey().solved,
-                                                                        entry.getKey().createdAt,
-                                                                        entry.getValue()
-                                                                ))
-                                                                .toList();
+                                         .stream()
+                                         .collect(Collectors.groupingBy(
+                                                 simpleQuizValue -> new SimpleQuizKey(
+                                                         simpleQuizValue.id,
+                                                         simpleQuizValue.accountId,
+                                                         simpleQuizValue.solved,
+                                                         simpleQuizValue.createdAt
+                                                 ),
+                                                 Collectors.mapping(
+                                                         simpleQuizValue -> new QuizQuestionInfo(
+                                                                 simpleQuizValue.quizCategory,
+                                                                 simpleQuizValue.questionContent
+                                                         ),
+                                                         Collectors.toList()
+                                                 )
+                                         ))
+                                         .entrySet()
+                                         .stream()
+                                         .map(entry -> new SimpleQuizInfo(
+                                                 entry.getKey().id,
+                                                 entry.getKey().accountId,
+                                                 entry.getKey().solved,
+                                                 entry.getKey().createdAt,
+                                                 entry.getValue()
+                                         ))
+                                         .toList();
     }
 
-    private String calculateSql(Long lastQuizId) {
+    private Quiz findQuizFetchJoinWithQuizQuestions(Long quizId, Long accountId) {
+        return queryFactory.selectFrom(quiz)
+                           .where(quiz.id.eq(quizId), quiz.accountId.eq(accountId))
+                           .leftJoin(quiz.quizQuestions).fetchJoin()
+                           .fetchOne();
+    }
+
+    private List<Long> findQuizQuestionIds(Quiz result) {
+        List<QuizQuestion> quizQuestions = result.getQuizQuestions();
+
+        return quizQuestions.stream()
+                            .map(QuizQuestion::getId)
+                            .toList();
+    }
+
+    private Map<Long, List<QuizOption>> findQuizOptions(List<Long> quizQuestionId) {
+        return queryFactory.selectFrom(quizOption)
+                           .where(quizOption.quizQuestionId.in(quizQuestionId))
+                           .fetch()
+                           .stream()
+                           .collect(Collectors.groupingBy(
+                                   QuizOption::getQuizQuestionId,
+                                   Collectors.mapping(Function.identity(), Collectors.toList())
+                           ));
+    }
+
+    private String calculateFinAllSql(Long lastQuizId) {
         String sql = """
-        SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.passage
-        FROM (
-            SELECT id
-            FROM quizzes
-            WHERE account_id = :accountId
-        """;
+                SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.passage
+                FROM (
+                    SELECT id
+                    FROM quizzes
+                    WHERE account_id = :accountId
+                """;
 
         if (lastQuizId != null) {
             sql = sql.concat(" AND id < :lastQuizId");
@@ -173,7 +183,7 @@ public class QuizGatewayRepository implements QuizRepository {
     private record SimpleQuizKey(Long id, Long accountId, boolean solved, LocalDateTime createdAt) {
     }
 
-    private record SimpleQuizData(
+    private record SimpleQuizValue(
             Long id,
             Long accountId,
             boolean solved,
