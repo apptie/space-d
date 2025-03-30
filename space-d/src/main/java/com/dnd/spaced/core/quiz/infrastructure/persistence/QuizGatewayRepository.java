@@ -93,7 +93,7 @@ public class QuizGatewayRepository implements QuizRepository {
 
     @Override
     public List<SimpleQuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
-        String sql = calculateFinAllSql(lastQuizId);
+        String sql = calculateFindAllSql(lastQuizId);
         MapSqlParameterSource sqlParameters = calculateSqlParameters(accountId, lastQuizId, pageable);
 
         return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleQuizRowMapper)
@@ -151,7 +151,7 @@ public class QuizGatewayRepository implements QuizRepository {
                            ));
     }
 
-    private String calculateFinAllSql(Long lastQuizId) {
+    private String calculateFindAllSql(Long lastQuizId) {
         String sql = """
                 SELECT q.id, q.account_id, q.solved, q.created_at, qq.quiz_category, qq.passage
                 FROM (
