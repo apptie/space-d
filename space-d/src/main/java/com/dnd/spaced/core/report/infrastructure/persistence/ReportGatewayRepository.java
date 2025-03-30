@@ -60,6 +60,13 @@ public class ReportGatewayRepository implements ReportRepository {
 
     @Override
     public List<ReportInfo> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable) {
+        String sql = calculateFindAllSql(reportStatus, lastReportId);
+        MapSqlParameterSource sqlParameters = calculateSqlParameters(reportStatus, lastReportId, pageable);
+
+        return namedParameterJdbcTemplate.query(sql, sqlParameters, reportRowMapper);
+    }
+
+    private String calculateFindAllSql(ReportStatus reportStatus, Long lastReportId) {
         String sql = """
                 SELECT
                      r.id,
@@ -86,7 +93,14 @@ public class ReportGatewayRepository implements ReportRepository {
         }
 
         sql = sql.concat(" ORDER BY id DESC LIMIT :limit) t LEFT JOIN reports r ON r.id = t.id");
+        return sql;
+    }
 
+    private MapSqlParameterSource calculateSqlParameters(
+            ReportStatus reportStatus,
+            Long lastReportId,
+            Pageable pageable
+    ) {
         MapSqlParameterSource sqlParameters = new MapSqlParameterSource()
                 .addValue("limit", pageable.getPageSize());
 
@@ -96,7 +110,6 @@ public class ReportGatewayRepository implements ReportRepository {
         if (reportStatus != null) {
             sqlParameters.addValue("reportStatus", reportStatus.name());
         }
-
-        return namedParameterJdbcTemplate.query(sql, sqlParameters, reportRowMapper);
+        return sqlParameters;
     }
 }
