@@ -4,6 +4,7 @@ import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
+import com.dnd.spaced.global.auth.encryptor.Encryptor;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,6 +27,7 @@ public class JwtDecoder implements TokenDecoder {
     private static final String CLAIM_ROLE = "role";
     private static final String CLAIM_ISSUED_AT = "iat";
 
+    private final Encryptor encryptor;
     private final TokenProperties tokenProperties;
 
     @Override
@@ -42,11 +44,12 @@ public class JwtDecoder implements TokenDecoder {
         }
     }
 
-    private Optional<Claims> parse(TokenType tokenType, String token) {
+    private Optional<Claims> parse(TokenType tokenType, String cipherToken) {
         String key = tokenProperties.findTokenKey(tokenType);
 
         try {
-            Claims claims = parseJwtToken(token, key);
+            String decryptToken = encryptor.decrypt(cipherToken);
+            Claims claims = parseJwtToken(decryptToken, key);
 
             validateIssuer(claims);
 
@@ -55,6 +58,9 @@ public class JwtDecoder implements TokenDecoder {
             return Optional.empty();
         } catch (JwtException e) {
             throw new InvalidTokenException("유효한 토큰이 아닙니다.", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 

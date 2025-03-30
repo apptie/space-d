@@ -3,6 +3,7 @@ package com.dnd.spaced.core.auth.infrastructure.jwt;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
+import com.dnd.spaced.global.auth.encryptor.GcmEncryptor;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -23,7 +24,8 @@ class JwtEncoderTest {
             43200000L,
             259200000L
     );
-    JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+    GcmEncryptor gcmAesEncryptor = new GcmEncryptor("secretKey", "salt");
+    JwtEncoder jwtEncoder = new JwtEncoder(gcmAesEncryptor, tokenProperties);
 
     @ParameterizedTest
     @EnumSource(value = TokenType.class)

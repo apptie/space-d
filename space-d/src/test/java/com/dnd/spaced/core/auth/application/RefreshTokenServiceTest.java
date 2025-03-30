@@ -15,6 +15,8 @@ import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository
 import com.dnd.spaced.core.auth.infrastructure.jwt.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.fixture.LocalDateTimeFixture;
+import com.dnd.spaced.global.auth.encryptor.Encryptor;
+import com.dnd.spaced.global.auth.encryptor.exception.DecryptException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -47,6 +49,9 @@ class RefreshTokenServiceTest {
     @Autowired
     RefreshTokenRotationRepository refreshTokenRotationRepository;
 
+    @Autowired
+    Encryptor encryptor;
+
     @Test
     void 기존_refreshToken을_통해_토큰을_갱신한다() {
         // given
@@ -72,11 +77,11 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void Bearer_타입의_토큰이_아니라면_토큰_갱신을_할_수_없다() {
+    void 암호화_식별_접두사가_없는_토큰이라면_토큰_갱신을_할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("Basic refresh token"))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("유효한 토큰이 아닙니다.");
+        assertThatThrownBy(() -> refreshTokenService.refreshToken("refresh token"))
+                .isInstanceOf(DecryptException.class)
+                .hasMessage("토큰 복호화에 실패했습니다.");
     }
 
     @Test
@@ -98,9 +103,9 @@ class RefreshTokenServiceTest {
     @Test
     void 길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("Bearer abcde"))
-                .isInstanceOf(InvalidTokenException.class)
-                .hasMessage("유효한 토큰이 아닙니다.");
+        assertThatThrownBy(() -> refreshTokenService.refreshToken("{gcm}abcde"))
+                .isInstanceOf(DecryptException.class)
+                .hasMessage("토큰 복호화에 실패했습니다.");
     }
 
     @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
@@ -123,7 +128,7 @@ class RefreshTokenServiceTest {
                 43200000L,
                 259200000L
         );
-        JwtEncoder jwtEncoder = new JwtEncoder(tokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(encryptor, tokenProperties);
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,
