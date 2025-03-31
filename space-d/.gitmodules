@@ -1,0 +1,2 @@
+[submodule "src/main/resources/sub"]
+	branch = main

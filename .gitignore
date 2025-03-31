@@ -16,6 +16,7 @@ application-prod*
 .idea/
 build/
 generated
+bin
 
 # CMake
 cmake-build-*/

@@ -1,0 +1,4 @@
+[submodule "space-d/src/main/resources/sub"]
+	path = space-d/src/main/resources/sub
+	url = https://github.com/apptie/space-d-sub-module.git
+	branch = main
