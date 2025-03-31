@@ -2,48 +2,88 @@ package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import com.dnd.spaced.core.auth.domain.TokenEncoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
-import com.dnd.spaced.global.auth.encryptor.Encryptor;
+import com.dnd.spaced.core.auth.infrastructure.jwt.exception.FailedEncodeTokenException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEEncrypter;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSHeader.Builder;
+import com.nimbusds.jose.KeyLengthException;
+import com.nimbusds.jose.Payload;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
 public class JwtEncoder implements TokenEncoder {
 
     private static final String CLAIM_ID = "id";
     private static final String CLAIM_ROLE = "role";
+    private static final String TOKEN_CONTENT_TYPE = "JWT";
 
-    private final Encryptor encryptor;
+    private final JWEEncrypter jweEncrypter;
+    private final JwsSignerFinder jwsSignerFinder;
     private final TokenProperties tokenProperties;
 
     @Override
     public String encode(LocalDateTime publishTime, TokenType tokenType, Long accountId, String roleName) {
-        Date targetDate = convertDate(publishTime);
-        String key = tokenProperties.findTokenKey(tokenType);
-        Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
-        Map<String, Object> attributes = Map.of(CLAIM_ID, accountId, CLAIM_ROLE, roleName);
-        String token = Jwts.builder()
-                             .setIssuer(tokenProperties.issuer())
-                             .setIssuedAt(targetDate)
-                             .setExpiration(new Date(targetDate.getTime() + expiredMillisSeconds))
-                             .addClaims(attributes)
-                             .signWith(
-                                     Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)),
-                                     SignatureAlgorithm.HS256
-                             )
-                             .compact();
+        try {
+            JWEHeader header = createJweHeader();
+            JWTClaimsSet claims = createJwtPayload(tokenType, accountId, roleName, publishTime);
+            SignedJWT signedJwt = createSignedJwt(claims, tokenType);
+            JWEObject jweObject = createJweObject(header, signedJwt);
 
-        return encryptor.encrypt(token);
+            jweObject.encrypt(jweEncrypter);
+            return jweObject.serialize();
+        } catch (KeyLengthException e) {
+            throw new FailedEncodeTokenException("키 길이를 지원하지 않는 환경입니다.", e);
+        } catch (JOSEException e) {
+            throw new FailedEncodeTokenException("토큰 인코딩 작업 중 문제가 발생했습니다.", e);
+        }
+    }
+
+    private JWEHeader createJweHeader() {
+        return new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM)
+                .contentType(TOKEN_CONTENT_TYPE)
+                .build();
+    }
+
+    private JWTClaimsSet createJwtPayload(
+            TokenType tokenType,
+            Long accountId,
+            String roleName,
+            LocalDateTime publishTime
+    ) {
+        Date issuedTime = convertDate(publishTime);
+
+        return new JWTClaimsSet.Builder()
+                .issuer(tokenProperties.issuer())
+                .issueTime(issuedTime)
+                .expirationTime(calculateExpirationTime(issuedTime, tokenType))
+                .claim(CLAIM_ID, accountId)
+                .claim(CLAIM_ROLE, roleName)
+                .build();
+    }
+
+    private SignedJWT createSignedJwt(JWTClaimsSet claims, TokenType tokenType) throws JOSEException {
+        JWSHeader jwsHeader = new Builder(JWSAlgorithm.HS256).build();
+        SignedJWT signedJwt = new SignedJWT(jwsHeader, claims);
+
+        signedJwt.sign(jwsSignerFinder.findByTokenType(tokenType));
+        return signedJwt;
+    }
+
+    private JWEObject createJweObject(JWEHeader header, SignedJWT signedJwt) {
+        return new JWEObject(header, new Payload(signedJwt));
     }
 
     private Date convertDate(LocalDateTime target) {
@@ -51,5 +91,11 @@ public class JwtEncoder implements TokenEncoder {
                                       .toInstant();
 
         return Date.from(targetInstant);
+    }
+
+    private Date calculateExpirationTime(Date issuedTime, TokenType tokenType) {
+        Long expiredMillisSeconds = tokenProperties.findExpiredMillisSeconds(tokenType);
+
+        return new Date(issuedTime.getTime() + expiredMillisSeconds);
     }
 }
