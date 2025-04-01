@@ -17,7 +17,7 @@ import com.dnd.spaced.core.auth.infrastructure.jwt.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.fixture.LocalDateTimeFixture;
 import com.dnd.spaced.global.config.properties.TokenProperties;
-import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.JWEEncrypter;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -50,7 +50,7 @@ class RefreshTokenServiceTest {
     RefreshTokenRotationRepository refreshTokenRotationRepository;
 
     @Autowired
-    DirectEncrypter directEncrypter;
+    JWEEncrypter jweEncrypter;
 
     @Autowired
     JwsSignerFinder jwsSignerFinder;
@@ -115,7 +115,7 @@ class RefreshTokenServiceTest {
                 43200000L,
                 259200000L
         );
-        JwtEncoder jwtEncoder = new JwtEncoder(directEncrypter, jwsSignerFinder, tokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(jweEncrypter, jwsSignerFinder, tokenProperties);
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,

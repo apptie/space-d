@@ -13,8 +13,8 @@ import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWEEncrypter;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.DirectDecrypter;
-import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.crypto.AESDecrypter;
+import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +59,7 @@ class JwtDecoderTest {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(256);
         SecretKey secretKey = keyGenerator.generateKey();
-        JWEDecrypter jweDecrypter =  new DirectDecrypter(secretKey);
+        JWEDecrypter jweDecrypter =  new AESDecrypter(secretKey);
         byte[] accessTokenKeyBytes = tokenProperties.accessKey().getBytes(StandardCharsets.UTF_8);
         SecretKey accessTokenSecretKey = new SecretKeySpec(accessTokenKeyBytes, "HmacSHA256");
         JWSVerifier accessTokenJwsVerifier = new MACVerifier(accessTokenSecretKey);
@@ -67,7 +67,7 @@ class JwtDecoderTest {
         SecretKey refreshTokenSecretKey = new SecretKeySpec(refreshTokenKeyBytes, "HmacSHA256");
         JWSVerifier refreshTokenJwsVerifier = new MACVerifier(refreshTokenSecretKey);
         JwsVerifierFinder jwsVerifierFinder = new JwsVerifierFinder(accessTokenJwsVerifier, refreshTokenJwsVerifier);
-        jweEncrypter =  new DirectEncrypter(secretKey);
+        jweEncrypter =  new AESEncrypter(secretKey);
         JWSSigner accessTokenJwsSigner = new MACSigner(accessTokenSecretKey);
         JWSSigner refreshTokenJwsSigner = new MACSigner(refreshTokenSecretKey);
         jwsSignerFinder = new JwsSignerFinder(accessTokenJwsSigner, refreshTokenJwsSigner);

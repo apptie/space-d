@@ -10,10 +10,11 @@ import com.dnd.spaced.global.config.properties.AesProperties;
 import com.dnd.spaced.global.config.properties.TokenProperties;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEDecrypter;
+import com.nimbusds.jose.JWEEncrypter;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.KeyLengthException;
-import com.nimbusds.jose.crypto.DirectDecrypter;
-import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.crypto.AESDecrypter;
+import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +37,8 @@ public class TokenConfig {
     private final TokenProperties tokenProperties;
 
     @Bean
-    public TokenEncoder tokenEncoder(DirectEncrypter directEncrypter, JwsSignerFinder jwsSignerFinder) {
-        return new JwtEncoder(directEncrypter, jwsSignerFinder, tokenProperties);
+    public TokenEncoder tokenEncoder(JWEEncrypter jweEncrypter, JwsSignerFinder jwsSignerFinder) {
+        return new JwtEncoder(jweEncrypter, jwsSignerFinder, tokenProperties);
     }
 
     @Bean
@@ -82,13 +83,13 @@ public class TokenConfig {
     }
 
     @Bean
-    public DirectDecrypter directDecrypter(SecretKey gcmAesSecretKey) throws KeyLengthException {
-        return new DirectDecrypter(gcmAesSecretKey);
+    public JWEDecrypter jweDecrypter(SecretKey gcmAesSecretKey) throws KeyLengthException {
+        return new AESDecrypter(gcmAesSecretKey);
     }
 
     @Bean
-    public DirectEncrypter directEncrypter(SecretKey gcmAesSecretKey) throws KeyLengthException {
-        return new DirectEncrypter(gcmAesSecretKey);
+    public JWEEncrypter jweEncrypter(SecretKey gcmAesSecretKey) throws KeyLengthException {
+        return new AESEncrypter(gcmAesSecretKey);
     }
 
     @Bean

@@ -3,7 +3,6 @@ package com.dnd.spaced.config.docs.snippet.exceptions.auth;
 import com.dnd.spaced.config.docs.snippet.CommonExceptionController;
 import com.dnd.spaced.config.docs.snippet.dto.response.CommonDocsResponse;
 import com.dnd.spaced.config.docs.snippet.exceptions.ExceptionContent;
-import com.dnd.spaced.global.exception.code.AccountErrorCode;
 import com.dnd.spaced.global.exception.code.AuthErrorCode;
 import java.util.LinkedHashMap;
 import java.util.Map;

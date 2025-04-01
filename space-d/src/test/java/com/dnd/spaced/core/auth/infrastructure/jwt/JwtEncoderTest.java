@@ -1,17 +1,13 @@
 package com.dnd.spaced.core.auth.infrastructure.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
-import com.dnd.spaced.global.auth.encryptor.GcmEncryptor;
 import com.dnd.spaced.global.config.properties.TokenProperties;
-import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.JWEEncrypter;
 import com.nimbusds.jose.KeyLengthException;
-import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -45,7 +41,7 @@ class JwtEncoderTest {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(256);
         SecretKey secretKey = keyGenerator.generateKey();
-        DirectEncrypter directEncrypter = new DirectEncrypter(secretKey);
+        JWEEncrypter jweEncrypter = new AESEncrypter(secretKey);
         byte[] accessTokenKeyBytes = tokenProperties.accessKey().getBytes(StandardCharsets.UTF_8);
         SecretKey accessTokenSecretKey = new SecretKeySpec(accessTokenKeyBytes, "HmacSHA256");
         MACSigner accessTokenSigner = new MACSigner(accessTokenSecretKey);
@@ -54,7 +50,7 @@ class JwtEncoderTest {
         MACSigner refreshTokenSigner = new MACSigner(refreshTokenSecretKey);
         JwsSignerFinder jwsSignerFinder = new JwsSignerFinder(accessTokenSigner, refreshTokenSigner);
 
-        jwtEncoder = new JwtEncoder(directEncrypter, jwsSignerFinder, tokenProperties);
+        jwtEncoder = new JwtEncoder(jweEncrypter, jwsSignerFinder, tokenProperties);
     }
 
     @ParameterizedTest
