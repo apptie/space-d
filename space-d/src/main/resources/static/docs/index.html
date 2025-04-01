@@ -439,9 +439,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article">
 <div id="header">
 <h1>Space D API 문서</h1>
-<div class="details">
-<span id="revnumber">version 0.0.1-SNAPSHOT</span>
-</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -3311,7 +3308,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-03-29T21:02:14.12051",
+    "createdAt" : "2025-04-01T14:10:07.262517",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4346,7 +4343,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-03-29T21:02:14.270216"
+  "createdAt" : "2025-04-01T14:10:07.414773"
 }</code></pre>
 </div>
 </div>
@@ -5447,7 +5444,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-03-29T21:02:13.420472"
+    "createdAt" : "2025-04-01T14:10:06.519052"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
@@ -5680,11 +5677,54 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Token-Exception"><a class="link" href="#Token-Exception">토큰 공통 예외</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>토큰 공통 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FAILED_ENCODE_TOKEN_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">토큰 인코딩에 실패했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FAILED_DECODE_TOKEN_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">토큰 디코딩에 실패했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_TOKEN_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 토큰이 아닙니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-03-28 15:27:32 +0900
+Last updated 2025-04-01 14:09:46 +0900
 </div>
 </div>
 </body>

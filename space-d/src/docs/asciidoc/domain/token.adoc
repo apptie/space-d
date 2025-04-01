@@ -1,0 +1,4 @@
+[[Token-Exception]]
+== 토큰 공통 예외
+
+include::{snippets}/token-exception-controller-test/exceptions/exception-response-fields-commonTokenException.adoc[]
