@@ -3,7 +3,6 @@ package com.dnd.spaced.core.auth.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.mock;
 
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.application.exception.BlockedTokenException;
@@ -17,18 +16,10 @@ import com.dnd.spaced.core.auth.infrastructure.jwt.JwsSignerFinder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.fixture.LocalDateTimeFixture;
-import com.dnd.spaced.global.auth.encryptor.Encryptor;
-import com.dnd.spaced.global.auth.encryptor.exception.DecryptException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.DirectEncrypter;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -38,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@Disabled
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -60,7 +50,10 @@ class RefreshTokenServiceTest {
     RefreshTokenRotationRepository refreshTokenRotationRepository;
 
     @Autowired
-    Encryptor encryptor;
+    DirectEncrypter directEncrypter;
+
+    @Autowired
+    JwsSignerFinder jwsSignerFinder;
 
     @Test
     void 기존_refreshToken을_통해_토큰을_갱신한다() {
@@ -87,14 +80,6 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void 암호화_식별_접두사가_없는_토큰이라면_토큰_갱신을_할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("refresh token"))
-                .isInstanceOf(DecryptException.class)
-                .hasMessage("토큰 복호화에 실패했습니다.");
-    }
-
-    @Test
     void 만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
         String refreshToken = tokenEncoder.encode(
@@ -110,14 +95,6 @@ class RefreshTokenServiceTest {
                 .hasMessage("Refresh Token이 만료되었습니다.");
     }
 
-    @Test
-    void 길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("{gcm}abcde"))
-                .isInstanceOf(DecryptException.class)
-                .hasMessage("토큰 복호화에 실패했습니다.");
-    }
-
     @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
     @NullAndEmptySource
     void 비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
@@ -128,21 +105,16 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void 다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() throws NoSuchAlgorithmException, KeyLengthException {
+    void 다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
         TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
+                "thisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortest",
+                "thisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortest",
                 "other-issuer",
                 43200,
                 259200,
                 43200000L,
                 259200000L
         );
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256);
-        SecretKey secretKey = keyGenerator.generateKey();
-        DirectEncrypter directEncrypter = new DirectEncrypter(secretKey);
-        JwsSignerFinder jwsSignerFinder = new JwsSignerFinder(mock(JWSSigner.class), mock(JWSSigner.class));
         JwtEncoder jwtEncoder = new JwtEncoder(directEncrypter, jwsSignerFinder, tokenProperties);
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),

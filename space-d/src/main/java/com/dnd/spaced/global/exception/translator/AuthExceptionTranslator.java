@@ -46,9 +46,15 @@ public enum AuthExceptionTranslator implements ExceptionTranslator{
     ),
     FAILED_ENCODE_TOKEN_EXCEPTION(
             AuthErrorCode.FAILED_ENCODE_TOKEN_EXCEPTION,
-            HttpStatus.INTERNAL_SERVER_ERROR,
+            HttpStatus.BAD_REQUEST,
             "토큰 인코딩에 실패했습니다."
-    );
+    ),
+    FAILED_DECODE_TOKEN_EXCEPTION(
+            AuthErrorCode.FAILED_DECODE_TOKEN_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "토큰 디코딩에 실패했습니다."
+    )
+    ;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;
