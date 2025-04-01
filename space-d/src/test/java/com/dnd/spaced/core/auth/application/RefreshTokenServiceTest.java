@@ -12,12 +12,12 @@ import com.dnd.spaced.core.auth.domain.TokenEncoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.domain.repository.BlacklistTokenRepository;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
+import com.dnd.spaced.core.auth.infrastructure.jwt.JwsSignerFinder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.JwtEncoder;
 import com.dnd.spaced.core.auth.infrastructure.jwt.exception.InvalidTokenException;
 import com.dnd.spaced.fixture.LocalDateTimeFixture;
-import com.dnd.spaced.global.auth.encryptor.Encryptor;
-import com.dnd.spaced.global.auth.encryptor.exception.DecryptException;
 import com.dnd.spaced.global.config.properties.TokenProperties;
+import com.nimbusds.jose.JWEEncrypter;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -50,7 +50,10 @@ class RefreshTokenServiceTest {
     RefreshTokenRotationRepository refreshTokenRotationRepository;
 
     @Autowired
-    Encryptor encryptor;
+    JWEEncrypter jweEncrypter;
+
+    @Autowired
+    JwsSignerFinder jwsSignerFinder;
 
     @Test
     void 기존_refreshToken을_통해_토큰을_갱신한다() {
@@ -77,14 +80,6 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void 암호화_식별_접두사가_없는_토큰이라면_토큰_갱신을_할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("refresh token"))
-                .isInstanceOf(DecryptException.class)
-                .hasMessage("토큰 복호화에 실패했습니다.");
-    }
-
-    @Test
     void 만료된_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
         // given
         String refreshToken = tokenEncoder.encode(
@@ -100,14 +95,6 @@ class RefreshTokenServiceTest {
                 .hasMessage("Refresh Token이 만료되었습니다.");
     }
 
-    @Test
-    void 길이가_유효하지_않은_refreshToken을_전달하면_토큰_갱신을_할_수_없다() {
-        // when & then
-        assertThatThrownBy(() -> refreshTokenService.refreshToken("{gcm}abcde"))
-                .isInstanceOf(DecryptException.class)
-                .hasMessage("토큰 복호화에 실패했습니다.");
-    }
-
     @ParameterizedTest(name = "refreshToken이 {0}일 때 토큰 갱신을 할 수 없다")
     @NullAndEmptySource
     void 비어_있는_refreshToken을_전달하면_토큰_갱신을_할_수_없다(String invalidRefreshToken) {
@@ -120,15 +107,15 @@ class RefreshTokenServiceTest {
     @Test
     void 다른_서비스에서_생성한_토큰을_전달하면_토큰_갱신을_할_수_없다() {
         TokenProperties tokenProperties = new TokenProperties(
-                "thisistoolargeaccesstokenkeyfordummykeydatafortest",
-                "thisistoolargerefreshtokenkeyfordummykeydatafortest",
+                "thisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortestthisistoolargeaccesstokenkeyfordummykeydatafortest",
+                "thisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortestthisistoolargerefreshtokenkeyfordummykeydatafortest",
                 "other-issuer",
                 43200,
                 259200,
                 43200000L,
                 259200000L
         );
-        JwtEncoder jwtEncoder = new JwtEncoder(encryptor, tokenProperties);
+        JwtEncoder jwtEncoder = new JwtEncoder(jweEncrypter, jwsSignerFinder, tokenProperties);
         String refreshToken = jwtEncoder.encode(
                 LocalDateTime.now(),
                 TokenType.REFRESH,

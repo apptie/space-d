@@ -43,6 +43,16 @@ public enum AuthExceptionTranslator implements ExceptionTranslator{
             AuthErrorCode.NICKNAME_METADATA_NOT_FOUND_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "닉네임 메타데이터가 정상적으로 초기화되지 않았습니다."
+    ),
+    FAILED_ENCODE_TOKEN_EXCEPTION(
+            AuthErrorCode.FAILED_ENCODE_TOKEN_EXCEPTION,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "토큰 인코딩에 실패했습니다."
+    ),
+    FAILED_DECODE_TOKEN_EXCEPTION(
+            AuthErrorCode.FAILED_DECODE_TOKEN_EXCEPTION,
+            HttpStatus.BAD_REQUEST,
+            "토큰 디코딩에 실패했습니다."
     );
 
     private final ErrorCode errorCode;
