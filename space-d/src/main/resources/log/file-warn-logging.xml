@@ -2,12 +2,10 @@
   <springProfile name="file-warn-logging">
 
     <appender name="FILE-WARN-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>${LOG_DIR}/warn/warn-${BY_DATE}.log</file>
+      <file>${LOG_DIR}/warn/warn.log</file>
 
-      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>WARN</level>
-        <onMatch>ACCEPT</onMatch>
-        <onMismatch>DENY</onMismatch>
       </filter>
 
       <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">

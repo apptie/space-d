@@ -80,3 +80,8 @@ app:
 auth:
   secret-key: secret_key
   salt: salt
+
+management:
+  endpoints:
+    web:
+      base-path: /local-actuator

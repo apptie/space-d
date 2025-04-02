@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -57,6 +58,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 )
 public class SecurityConfig {
 
+    @Value("${management.endpoints.web.base-path}")
+    private String actuatorPath;
+
     private final ObjectMapper objectMapper;
     private final TokenDecoder tokenDecoder;
     private final CorsProperties corsProperties;
@@ -89,6 +93,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/today-quizzes/{todayQuizId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/images/{imageName}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/words/{wordId}/comments").permitAll()
+                    .requestMatchers(HttpMethod.GET, actuatorPath + "/**").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )

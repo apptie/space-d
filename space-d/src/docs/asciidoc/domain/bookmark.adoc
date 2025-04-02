@@ -11,7 +11,7 @@ include::{snippets}/bookmark-exception-controller-test/exceptions/exception-resp
 [[Delete-Bookmark]]
 === 북마크 삭제
 
-operation::bookmark-controller-test/북마크_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
+operation::bookmark-controller-test/북마크_삭제_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
 
 include::{snippets}/bookmark-exception-controller-test/exceptions/exception-response-fields-deleteBookmarkException.adoc[]
 

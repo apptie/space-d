@@ -3,10 +3,12 @@ package com.dnd.spaced.global.config;
 import com.dnd.spaced.global.consts.LogConst;
 import com.dnd.spaced.global.log.QueryTracer;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,6 +22,10 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 @Slf4j
 @Profile("!test")
@@ -27,7 +33,7 @@ import org.springframework.context.annotation.Profile;
 @RequiredArgsConstructor
 public class DataSourceProxyConfig {
 
-    private static final String TRANSACTION_METHOD_NAME = "setAutoCommit|commit|rollback|setReadOnly|setTransactionIsolation|setHoldability|setCatalog|setSchema";
+    private static final String SET_OPTION_METHOD = "setAutoCommit|commit|rollback|setReadOnly|setTransactionIsolation|setHoldability|setCatalog|setSchema";
 
     private final QueryTracer queryTracer;
 
@@ -39,7 +45,7 @@ public class DataSourceProxyConfig {
                 if (bean instanceof DataSource dataSourceBean && !(Proxy.isProxyClass(bean.getClass()))) {
                     return Proxy.newProxyInstance(
                             dataSourceBean.getClass().getClassLoader(),
-                            new Class<?>[] { DataSource.class },
+                            getAllInterfaces(dataSourceBean),
                             getConnectionInvocationHandler(dataSourceBean)
                     );
                 }
@@ -47,121 +53,179 @@ public class DataSourceProxyConfig {
             }
 
             private InvocationHandler getConnectionInvocationHandler(DataSource dataSourceBean) {
+                SQLExceptionTranslator exceptionTranslator = new SQLErrorCodeSQLExceptionTranslator(dataSourceBean);
+
                 return (proxy, method, args) -> {
-                    Object result = method.invoke(dataSourceBean, args);
+                    try {
+                        Object result = method.invoke(dataSourceBean, args);
 
-                    if ("getConnection".equals(method.getName()) && result instanceof Connection) {
-                        Connection connection = (Connection) result;
+                        if ("getConnection".equals(method.getName()) && result instanceof Connection) {
+                            Connection connection = (Connection) result;
 
-                        return Proxy.newProxyInstance(
-                                connection.getClass().getClassLoader(),
-                                new Class<?>[]{Connection.class},
-                                getStatementInvocationHandler(connection)
-                        );
+                            return Proxy.newProxyInstance(
+                                    connection.getClass().getClassLoader(),
+                                    getAllInterfaces(connection),
+                                    getStatementInvocationHandler(connection, exceptionTranslator)
+                            );
+                        }
+                        return result;
+                    } catch (InvocationTargetException ex) {
+                        Throwable cause = ex.getCause();
+                        if (cause instanceof SQLException) {
+                            DataAccessException dae = exceptionTranslator.translate("DataSource operation", null, (SQLException) cause);
+                            throw dae != null ? dae : new UncategorizedSQLException("DataSource operation failed", null, (SQLException) cause);
+                        }
+                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
                     }
-                    return result;
                 };
             }
 
-            private InvocationHandler getStatementInvocationHandler(Connection connection) {
+            private InvocationHandler getStatementInvocationHandler(Connection connection, SQLExceptionTranslator exceptionTranslator) {
                 String requestId = MDC.get(LogConst.REQUEST_ID);
 
                 return (connProxy, connMethod, connArgs) -> {
-                    if (isTransactionControlMethod(connMethod.getName())) {
-                        queryTracer.increaseTotalCount();
-                        log.info(
-                                "[{}] {} {}",
-                                requestId,
-                                connMethod.getName(),
-                                (connArgs != null && connArgs.length > 0 ? connArgs[0] : "")
-                        );
-                    }
+                    try {
+                        if (isTransactionControlMethod(connMethod.getName())) {
+                            queryTracer.increaseTotalCount();
+                            log.info(
+                                    "[{}] {} {}",
+                                    requestId,
+                                    connMethod.getName(),
+                                    (connArgs != null && connArgs.length > 0 ? connArgs[0] : "")
+                            );
+                        }
 
-                    Object connResult = connMethod.invoke(connection, connArgs);
+                        Object connResult = connMethod.invoke(connection, connArgs);
 
-                    if ("createStatement".equals(connMethod.getName()) && connResult instanceof Statement statement) {
-                        return createStatementProxy(statement, "");
-                    }
-                    if ("prepareStatement".equals(connMethod.getName())
-                            && connResult instanceof PreparedStatement preparedStatement
-                            && connArgs != null && connArgs[0] instanceof String sql
-                    ) {
-                        return createPreparedStatementProxy(preparedStatement, sql);
-                    }
-                    if ("prepareCall".equals(connMethod.getName())
-                            && connResult instanceof CallableStatement callableStatement
-                            && connArgs != null && connArgs[0] instanceof String sql
-                    ) {
-                        return createCallableStatementProxy(callableStatement, sql);
-                    }
+                        if ("createStatement".equals(connMethod.getName()) && connResult instanceof Statement statement) {
+                            return createStatementProxy(statement, "", exceptionTranslator);
+                        }
+                        if ("prepareStatement".equals(connMethod.getName())
+                                && connResult instanceof PreparedStatement preparedStatement
+                                && connArgs != null && connArgs[0] instanceof String sql
+                        ) {
+                            return createPreparedStatementProxy(preparedStatement, (String) connArgs[0], exceptionTranslator);
+                        }
+                        if ("prepareCall".equals(connMethod.getName())
+                                && connResult instanceof CallableStatement callableStatement
+                                && connArgs != null && connArgs[0] instanceof String sql
+                        ) {
+                            return createCallableStatementProxy(callableStatement, (String) connArgs[0], exceptionTranslator);
+                        }
 
-                    return connResult;
+                        return connResult;
+                    } catch (InvocationTargetException ex) {
+                        Throwable cause = ex.getCause();
+                        if (cause instanceof SQLException) {
+                            DataAccessException dae = exceptionTranslator.translate("Connection operation", null, (SQLException) cause);
+                            throw dae != null ? dae : new UncategorizedSQLException("Connection operation failed", null, (SQLException) cause);
+                        }
+                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
+                    }
                 };
             }
         };
     }
 
     private boolean isTransactionControlMethod(String methodName) {
-        return methodName.matches(TRANSACTION_METHOD_NAME);
+        return methodName.matches(SET_OPTION_METHOD);
     }
 
-    private Statement createStatementProxy(Statement stmt, String sql) {
+    private Statement createStatementProxy(Statement stmt, String sql, SQLExceptionTranslator exceptionTranslator) {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         return (Statement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getInterfaces(stmt),
+                getAllInterfaces(stmt),
                 (proxy, method, args) -> {
-                    if (method.getName().startsWith("execute")) {
-                        queryTracer.increaseCrudCount();
-                        String executeSql = sql;
-                        if (args != null && args.length > 0 && args[0] instanceof String argSql) {
-                            executeSql = argSql;
+                    try {
+                        if (method.getName().startsWith("execute")) {
+                            queryTracer.increaseCrudCount();
+                            String executeSql = sql;
+                            if (args != null && args.length > 0 && args[0] instanceof String argSql) {
+                                executeSql = argSql;
+                            }
+                            log.info("[{}] {}", requestId, executeSql);
                         }
-                        log.info("[{}] {}", requestId, executeSql);
+                        return method.invoke(stmt, args);
+                    } catch (InvocationTargetException ex) {
+                        Throwable cause = ex.getCause();
+                        if (cause instanceof SQLException) {
+                            String querySql = sql;
+                            if (args != null && args.length > 0 && args[0] instanceof String argSql) {
+                                querySql = argSql;
+                            }
+                            DataAccessException dae = exceptionTranslator.translate("Statement execution", querySql, (SQLException) cause);
+                            throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", querySql, (SQLException) cause);
+                        }
+                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
                     }
-                    return method.invoke(stmt, args);
                 }
         );
     }
 
-    private PreparedStatement createPreparedStatementProxy(PreparedStatement stmt, String sql) {
+    private PreparedStatement createPreparedStatementProxy(PreparedStatement stmt, String sql, SQLExceptionTranslator exceptionTranslator) {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         return (PreparedStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getInterfaces(stmt),
-                getExecuteStatementInvocationHandler(stmt, sql, requestId)
+                getAllInterfaces(stmt),
+                getExecuteStatementInvocationHandler(stmt, sql, requestId, exceptionTranslator)
         );
     }
 
-    private CallableStatement createCallableStatementProxy(CallableStatement stmt, String sql) {
+    private CallableStatement createCallableStatementProxy(CallableStatement stmt, String sql, SQLExceptionTranslator exceptionTranslator) {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         return (CallableStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getInterfaces(stmt),
-                getExecuteStatementInvocationHandler(stmt, sql, requestId)
+                getAllInterfaces(stmt),
+                getExecuteStatementInvocationHandler(stmt, sql, requestId, exceptionTranslator)
         );
     }
 
-    private InvocationHandler getExecuteStatementInvocationHandler(Statement stmt, String sql, String requestId) {
+    private InvocationHandler getExecuteStatementInvocationHandler(Statement stmt, String sql, String requestId, SQLExceptionTranslator exceptionTranslator) {
         return (proxy, method, args) -> {
-            if (method.getName().startsWith("execute")) {
-                queryTracer.increaseCrudCount();
-                log.info("[{}] {}", requestId, sql);
+            try {
+                if (method.getName().startsWith("execute")) {
+                    queryTracer.increaseCrudCount();
+                    log.info("[{}] {}", requestId, sql);
+                }
+                return method.invoke(stmt, args);
+            } catch (InvocationTargetException ex) {
+                Throwable cause = ex.getCause();
+                if (cause instanceof SQLException) {
+                    DataAccessException dae = exceptionTranslator.translate("Statement execution", sql, (SQLException) cause);
+                    throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", sql, (SQLException) cause);
+                }
+                throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
             }
-            return method.invoke(stmt, args);
         };
     }
 
-    private Class<?>[] getInterfaces(Object obj) {
+    // 모든 인터페이스를 얻는 메소드 (기존 getInterfaces 메소드 교체)
+    private Class<?>[] getAllInterfaces(Object obj) {
         Set<Class<?>> interfaces = new HashSet<>();
         Class<?> current = obj.getClass();
 
         while (current != null) {
             interfaces.addAll(Arrays.asList(current.getInterfaces()));
             current = current.getSuperclass();
+        }
+
+        // 주요 인터페이스가 없는 경우를 대비해 명시적으로 주요 인터페이스 추가
+        if (obj instanceof DataSource) {
+            interfaces.add(DataSource.class);
+        } else if (obj instanceof Connection) {
+            interfaces.add(Connection.class);
+        } else if (obj instanceof Statement) {
+            interfaces.add(Statement.class);
+            if (obj instanceof PreparedStatement) {
+                interfaces.add(PreparedStatement.class);
+                if (obj instanceof CallableStatement) {
+                    interfaces.add(CallableStatement.class);
+                }
+            }
         }
 
         return interfaces.toArray(new Class<?>[0]);
