@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application;
+package com.dnd.spaced.core.auth.application.internal;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;

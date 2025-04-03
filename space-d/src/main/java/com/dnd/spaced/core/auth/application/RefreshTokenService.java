@@ -4,6 +4,7 @@ import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.application.exception.BlockedTokenException;
 import com.dnd.spaced.core.auth.application.exception.ExpiredTokenException;
 import com.dnd.spaced.core.auth.application.exception.RotationRefreshTokenMismatchException;
+import com.dnd.spaced.core.auth.application.internal.GenerateTokenService;
 import com.dnd.spaced.core.auth.domain.PrivateClaims;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.core.auth.domain.enums.TokenType;

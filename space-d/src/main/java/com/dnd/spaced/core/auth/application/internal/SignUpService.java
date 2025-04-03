@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application;
+package com.dnd.spaced.core.auth.application.internal;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
@@ -27,7 +27,7 @@ public class SignUpService {
     private final NicknameMetadataRepository nicknameMetadataRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public Account signUp(RegistrationId registrationId, String socialIdentifier) {
+    Account signUp(RegistrationId registrationId, String socialIdentifier) {
         String profileImageName = findRandomProfileImage();
         String formattedNickname = formatNickname();
         Account persistedAccount = persistAccount(

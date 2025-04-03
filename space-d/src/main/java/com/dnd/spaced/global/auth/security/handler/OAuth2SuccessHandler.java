@@ -1,7 +1,7 @@
 package com.dnd.spaced.global.auth.security.handler;
 
-import com.dnd.spaced.core.auth.application.GenerateTokenService;
-import com.dnd.spaced.core.auth.application.LoginService;
+import com.dnd.spaced.core.auth.application.internal.GenerateTokenService;
+import com.dnd.spaced.core.auth.application.internal.LoginService;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.global.auth.exception.InvalidResponseWriteException;
