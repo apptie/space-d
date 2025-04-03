@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application;
+package com.dnd.spaced.core.auth.application.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
