@@ -87,20 +87,11 @@ public class WordPersistEventListener {
     }
 
     private void updateWordMetadata(Category category) {
-        WordMetadata wordMetadata = findWordMetadata();
-
-        WordMetadataCounter.add(category, wordMetadata);
+        wordMetadataRepository.update(category);
     }
 
     private Word findWord(Long wordId) {
         return wordRepository.findBy(wordId)
                              .orElseThrow(() -> new WordNotFoundException("지정한 식별자에 해당하는 용어를 찾을 수 없습니다."));
-    }
-
-    private WordMetadata findWordMetadata() {
-        return wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
-                                     .orElseThrow(() -> new WordMetadataNotFoundException(
-                                             "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
-                                     );
     }
 }
