@@ -1,5 +1,6 @@
 package com.dnd.spaced.global.config;
 
+import com.dnd.spaced.global.exception.base.BaseClientException;
 import com.dnd.spaced.global.exception.base.BaseServerException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class RetryConfig {
 
         Map<Class<? extends Throwable>, Boolean> targetException = new HashMap<>();
         targetException.put(BaseServerException.class, true);
+        targetException.put(BaseClientException.class, true);
 
         RetryPolicy retryPolicy = new SimpleRetryPolicy(3, targetException);
         retryTemplate.setRetryPolicy(retryPolicy);

@@ -27,7 +27,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class WordPersistEventListener {
 
-    private static final long DEFAULT_WORD_METADATA_ID = 1L;
     private static final String KEY = "failed-word-persist-event";
 
     private final Clock clock;
