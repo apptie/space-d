@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -18,11 +17,9 @@ import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.Creat
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
-import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
@@ -59,9 +56,6 @@ class WordPersistEventListenerTest {
     WordRandomRepository wordRandomRepository;
 
     @Autowired
-    WordMetadataRepository wordMetadataRepository;
-
-    @Autowired
     RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
 
     @Autowired
@@ -72,12 +66,10 @@ class WordPersistEventListenerTest {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
         given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        willReturn(mockWord).given(wordRepository).save(any(Word.class));
         given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
         willDoNothing().given(pronunciationRepository).saveAll(any());
         willDoNothing().given(wordExampleRepository).saveAll(any());
-        WordMetadata mockWordMetadata = mock(WordMetadata.class);
-        given(wordMetadataRepository.findBy(anyLong())).willReturn(Optional.of(mockWordMetadata));
+        willDoNothing().given(wordRandomRepository).saveWith(any(Word.class), any(Category.class));
 
         CreatePronunciationRequest createPronunciationRequest = new CreatePronunciationRequest("어싸라이제이션", "한글 발음");
         CreateWordRequest request = new CreateWordRequest(
@@ -102,14 +94,12 @@ class WordPersistEventListenerTest {
         Word mockWord = mock(Word.class);
         given(mockWord.getId()).willReturn(5L);
         given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        willReturn(mockWord).given(wordRepository).save(any(Word.class));
-        given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
+        given(wordRepository.findBy(anyLong())).willReturn(Optional.empty())
+                                               .willReturn(Optional.empty())
+                                               .willReturn(Optional.of(mockWord));
         willDoNothing().given(pronunciationRepository).saveAll(any());
         willDoNothing().given(wordExampleRepository).saveAll(any());
-        WordMetadata mockWordMetadata = mock(WordMetadata.class);
-        given(wordMetadataRepository.findBy(anyLong())).willReturn(Optional.empty())
-                                                       .willReturn(Optional.empty())
-                                                       .willReturn(Optional.of(mockWordMetadata));
+        willDoNothing().given(wordRandomRepository).saveWith(any(Word.class), any(Category.class));
 
         CreatePronunciationRequest createPronunciationRequest = new CreatePronunciationRequest("어싸라이제이션", "한글 발음");
         CreateWordRequest request = new CreateWordRequest(
@@ -124,23 +114,17 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
+                () -> verify(wordRepository, times(3)).findBy(anyLong()),
                 () -> verify(wordPersistFailedRedisTemplate, never()).opsForList()
         );
     }
 
     @Test
     void 용어_생성_후_최대_재시도_횟수보다_더_이벤트_처리에_실패한_횟수가_많다면_실패한_이벤트를_별도로_관리한다() {
-        Word mockWord = mock(Word.class);
-        given(mockWord.getId()).willReturn(5L);
-        given(mockWord.getCategory()).willReturn(Category.DEVELOP);
-        willReturn(mockWord).given(wordRepository).save(any(Word.class));
-        given(wordRepository.findBy(anyLong())).willReturn(Optional.of(mockWord));
-        willDoNothing().given(pronunciationRepository).saveAll(any());
-        willDoNothing().given(wordExampleRepository).saveAll(any());
-        given(wordMetadataRepository.findBy(anyLong())).willReturn(Optional.empty())
-                                                       .willReturn(Optional.empty())
-                                                       .willReturn(Optional.empty());
+        // given
+        given(wordRepository.findBy(anyLong())).willReturn(Optional.empty())
+                                               .willReturn(Optional.empty())
+                                               .willReturn(Optional.empty());
 
         CreatePronunciationRequest createPronunciationRequest = new CreatePronunciationRequest("어싸라이제이션", "한글 발음");
         CreateWordRequest request = new CreateWordRequest(
@@ -155,7 +139,7 @@ class WordPersistEventListenerTest {
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
-                () -> verify(wordMetadataRepository, times(3)).findBy(anyLong()),
+                () -> verify(wordRepository, times(3)).findBy(anyLong()),
                 () -> verify(wordPersistFailedRedisTemplate).opsForList()
         );
     }

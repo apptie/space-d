@@ -5,32 +5,39 @@ import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 import com.dnd.spaced.core.word.domain.WordExample;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class WordExampleGatewayRepository implements WordExampleRepository {
 
-    private static final int DEFAULT_BATCH_INSERT_SIZE = 10;
-
     private final Clock clock;
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final JPAQueryFactory queryFactory;
 
+    public WordExampleGatewayRepository(Clock clock, JdbcTemplate jdbcTemplate, JPAQueryFactory queryFactory) {
+        this.clock = clock;
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.queryFactory = queryFactory;
+    }
+
     public long countBy(Long wordId) {
-        return queryFactory.select(wordExample.id.count())
-                           .from(wordExample)
-                           .where(wordExample.word.id.eq(wordId))
-                           .fetchFirst();
+        String sql = """
+                SELECT COUNT(id) FROM word_examples WHERE word_id = :wordId
+                """;
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("wordId", wordId);
+
+        Long result = namedParameterJdbcTemplate.queryForObject(sql, parameters, Long.class);
+        return result != null ? result : 0L;
     }
 
     @Override
@@ -52,25 +59,20 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     public void saveAll(List<WordExample> wordExamples) {
         String sql = """
                 INSERT INTO word_examples(created_at, updated_at, example, word_id)
-                VALUES(?, ?, ?, ?)
+                VALUES(:createdAt, :updatedAt, :example, :wordId)
                 """;
+        List<SqlParameterSource> parameterSources = new ArrayList<>();
 
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+        for (WordExample wordExample : wordExamples) {
+            parameterSources.add(
+                    new MapSqlParameterSource()
+                            .addValue("createdAt", Timestamp.valueOf(LocalDateTime.now(clock)))
+                            .addValue("updatedAt", Timestamp.valueOf(LocalDateTime.now(clock)))
+                            .addValue("example", wordExample.getExample())
+                            .addValue("wordId", wordExample.getWord().getId())
+            );
+        }
 
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                WordExample wordExample = wordExamples.get(i);
-
-                ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now(clock)));
-                ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now(clock)));
-                ps.setString(3, wordExample.getExample());
-                ps.setLong(4, wordExample.getWord().getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return Math.min(DEFAULT_BATCH_INSERT_SIZE, wordExamples.size());
-            }
-        });
+        namedParameterJdbcTemplate.batchUpdate(sql, parameterSources.toArray(SqlParameterSource[]::new));
     }
 }

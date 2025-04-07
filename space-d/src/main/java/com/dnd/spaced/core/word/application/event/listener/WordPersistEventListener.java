@@ -1,12 +1,9 @@
 package com.dnd.spaced.core.word.application.event.listener;
 
-import com.dnd.spaced.core.admin.application.enums.WordMetadataCounter;
-import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.application.event.listener.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
@@ -30,7 +27,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class WordPersistEventListener {
 
-    private static final long DEFAULT_WORD_METADATA_ID = 1L;
     private static final String KEY = "failed-word-persist-event";
 
     private final Clock clock;
@@ -87,20 +83,11 @@ public class WordPersistEventListener {
     }
 
     private void updateWordMetadata(Category category) {
-        WordMetadata wordMetadata = findWordMetadata();
-
-        WordMetadataCounter.add(category, wordMetadata);
+        wordMetadataRepository.update(category);
     }
 
     private Word findWord(Long wordId) {
         return wordRepository.findBy(wordId)
                              .orElseThrow(() -> new WordNotFoundException("지정한 식별자에 해당하는 용어를 찾을 수 없습니다."));
-    }
-
-    private WordMetadata findWordMetadata() {
-        return wordMetadataRepository.findBy(DEFAULT_WORD_METADATA_ID)
-                                     .orElseThrow(() -> new WordMetadataNotFoundException(
-                                             "용어 메타데이터가 정상적으로 설정되지 않았습니다.")
-                                     );
     }
 }

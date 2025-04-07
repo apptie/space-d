@@ -22,4 +22,16 @@ public enum Category {
                      .filter(category -> category.name.equals(name))
                      .findAny();
     }
+
+    public boolean isBusiness() {
+        return this == BUSINESS;
+    }
+
+    public boolean isDevelop() {
+        return this == DEVELOP;
+    }
+
+    public boolean isDesign() {
+        return this == DESIGN;
+    }
 }
