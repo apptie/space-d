@@ -1,12 +1,9 @@
 package com.dnd.spaced.core.word.application.event.listener;
 
-import com.dnd.spaced.core.admin.application.enums.WordMetadataCounter;
-import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.application.event.listener.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
