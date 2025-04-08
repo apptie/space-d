@@ -45,7 +45,7 @@ public class DataSourceProxyConfig {
                 if (bean instanceof DataSource dataSourceBean && !(Proxy.isProxyClass(bean.getClass()))) {
                     return Proxy.newProxyInstance(
                             dataSourceBean.getClass().getClassLoader(),
-                            getAllInterfaces(dataSourceBean),
+                            findInterfaces(dataSourceBean),
                             getConnectionInvocationHandler(dataSourceBean)
                     );
                 }
@@ -64,7 +64,7 @@ public class DataSourceProxyConfig {
 
                             return Proxy.newProxyInstance(
                                     connection.getClass().getClassLoader(),
-                                    getAllInterfaces(connection),
+                                    findInterfaces(connection),
                                     getStatementInvocationHandler(connection, exceptionTranslator)
                             );
                         }
@@ -136,7 +136,7 @@ public class DataSourceProxyConfig {
 
         return (Statement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getAllInterfaces(stmt),
+                findInterfaces(stmt),
                 (proxy, method, args) -> {
                     try {
                         if (method.getName().startsWith("execute")) {
@@ -169,7 +169,7 @@ public class DataSourceProxyConfig {
 
         return (PreparedStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getAllInterfaces(stmt),
+                findInterfaces(stmt),
                 getExecuteStatementInvocationHandler(stmt, sql, requestId, exceptionTranslator)
         );
     }
@@ -179,7 +179,7 @@ public class DataSourceProxyConfig {
 
         return (CallableStatement) Proxy.newProxyInstance(
                 stmt.getClass().getClassLoader(),
-                getAllInterfaces(stmt),
+                findInterfaces(stmt),
                 getExecuteStatementInvocationHandler(stmt, sql, requestId, exceptionTranslator)
         );
     }
@@ -203,29 +203,13 @@ public class DataSourceProxyConfig {
         };
     }
 
-    // 모든 인터페이스를 얻는 메소드 (기존 getInterfaces 메소드 교체)
-    private Class<?>[] getAllInterfaces(Object obj) {
+    private Class<?>[] findInterfaces(Object obj) {
         Set<Class<?>> interfaces = new HashSet<>();
         Class<?> current = obj.getClass();
 
         while (current != null) {
             interfaces.addAll(Arrays.asList(current.getInterfaces()));
             current = current.getSuperclass();
-        }
-
-        // 주요 인터페이스가 없는 경우를 대비해 명시적으로 주요 인터페이스 추가
-        if (obj instanceof DataSource) {
-            interfaces.add(DataSource.class);
-        } else if (obj instanceof Connection) {
-            interfaces.add(Connection.class);
-        } else if (obj instanceof Statement) {
-            interfaces.add(Statement.class);
-            if (obj instanceof PreparedStatement) {
-                interfaces.add(PreparedStatement.class);
-                if (obj instanceof CallableStatement) {
-                    interfaces.add(CallableStatement.class);
-                }
-            }
         }
 
         return interfaces.toArray(new Class<?>[0]);
