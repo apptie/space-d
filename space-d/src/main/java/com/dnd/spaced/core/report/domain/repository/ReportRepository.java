@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.report.domain.repository;
 
 import com.dnd.spaced.core.report.domain.Report;
-import com.dnd.spaced.core.report.domain.dto.ReportInfo;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +12,5 @@ public interface ReportRepository {
 
     Optional<Report> findBy(Long reportId);
 
-    List<ReportInfo> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable);
+    List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable);
 }
