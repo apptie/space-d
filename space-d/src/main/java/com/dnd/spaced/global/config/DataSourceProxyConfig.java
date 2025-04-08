@@ -59,9 +59,7 @@ public class DataSourceProxyConfig {
                     try {
                         Object result = method.invoke(dataSourceBean, args);
 
-                        if ("getConnection".equals(method.getName()) && result instanceof Connection) {
-                            Connection connection = (Connection) result;
-
+                        if ("getConnection".equals(method.getName()) && result instanceof Connection connection) {
                             return Proxy.newProxyInstance(
                                     connection.getClass().getClassLoader(),
                                     findInterfaces(connection),
@@ -71,11 +69,11 @@ public class DataSourceProxyConfig {
                         return result;
                     } catch (InvocationTargetException ex) {
                         Throwable cause = ex.getCause();
-                        if (cause instanceof SQLException) {
-                            DataAccessException dae = exceptionTranslator.translate("DataSource operation", null, (SQLException) cause);
-                            throw dae != null ? dae : new UncategorizedSQLException("DataSource operation failed", null, (SQLException) cause);
+                        if (cause instanceof SQLException targetCause) {
+                            DataAccessException dae = exceptionTranslator.translate("DataSource operation", null, targetCause);
+                            throw dae != null ? dae : new UncategorizedSQLException("DataSource operation failed", null, targetCause);
                         }
-                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
+                        throw cause instanceof RuntimeException targetCause ? targetCause : new RuntimeException(cause);
                     }
                 };
             }
@@ -104,23 +102,23 @@ public class DataSourceProxyConfig {
                                 && connResult instanceof PreparedStatement preparedStatement
                                 && connArgs != null && connArgs[0] instanceof String sql
                         ) {
-                            return createPreparedStatementProxy(preparedStatement, (String) connArgs[0], exceptionTranslator);
+                            return createPreparedStatementProxy(preparedStatement, sql, exceptionTranslator);
                         }
                         if ("prepareCall".equals(connMethod.getName())
                                 && connResult instanceof CallableStatement callableStatement
                                 && connArgs != null && connArgs[0] instanceof String sql
                         ) {
-                            return createCallableStatementProxy(callableStatement, (String) connArgs[0], exceptionTranslator);
+                            return createCallableStatementProxy(callableStatement, sql, exceptionTranslator);
                         }
 
                         return connResult;
                     } catch (InvocationTargetException ex) {
                         Throwable cause = ex.getCause();
-                        if (cause instanceof SQLException) {
-                            DataAccessException dae = exceptionTranslator.translate("Connection operation", null, (SQLException) cause);
-                            throw dae != null ? dae : new UncategorizedSQLException("Connection operation failed", null, (SQLException) cause);
+                        if (cause instanceof SQLException targetCause) {
+                            DataAccessException dae = exceptionTranslator.translate("Connection operation", null, targetCause);
+                            throw dae != null ? dae : new UncategorizedSQLException("Connection operation failed", null, targetCause);
                         }
-                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
+                        throw cause instanceof RuntimeException targetCause ? targetCause : new RuntimeException(cause);
                     }
                 };
             }
@@ -150,15 +148,15 @@ public class DataSourceProxyConfig {
                         return method.invoke(stmt, args);
                     } catch (InvocationTargetException ex) {
                         Throwable cause = ex.getCause();
-                        if (cause instanceof SQLException) {
+                        if (cause instanceof SQLException targetCause) {
                             String querySql = sql;
                             if (args != null && args.length > 0 && args[0] instanceof String argSql) {
                                 querySql = argSql;
                             }
-                            DataAccessException dae = exceptionTranslator.translate("Statement execution", querySql, (SQLException) cause);
-                            throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", querySql, (SQLException) cause);
+                            DataAccessException dae = exceptionTranslator.translate("Statement execution", querySql, targetCause);
+                            throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", querySql, targetCause);
                         }
-                        throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
+                        throw cause instanceof RuntimeException targetCause ? targetCause : new RuntimeException(cause);
                     }
                 }
         );
@@ -194,11 +192,11 @@ public class DataSourceProxyConfig {
                 return method.invoke(stmt, args);
             } catch (InvocationTargetException ex) {
                 Throwable cause = ex.getCause();
-                if (cause instanceof SQLException) {
-                    DataAccessException dae = exceptionTranslator.translate("Statement execution", sql, (SQLException) cause);
-                    throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", sql, (SQLException) cause);
+                if (cause instanceof SQLException targetCause) {
+                    DataAccessException dae = exceptionTranslator.translate("Statement execution", sql, targetCause);
+                    throw dae != null ? dae : new UncategorizedSQLException("Statement execution failed", sql, targetCause);
                 }
-                throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
+                throw cause instanceof RuntimeException targetCause ? targetCause : new RuntimeException(cause);
             }
         };
     }
