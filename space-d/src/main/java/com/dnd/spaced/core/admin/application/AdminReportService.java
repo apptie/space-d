@@ -8,7 +8,6 @@ import com.dnd.spaced.core.admin.application.event.dto.ProcessedReportEvent;
 import com.dnd.spaced.core.admin.application.exception.ReportNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.ReportStatusNotFoundException;
 import com.dnd.spaced.core.report.domain.Report;
-import com.dnd.spaced.core.report.domain.dto.ReportInfo;
 import com.dnd.spaced.core.report.domain.enums.ReportStatus;
 import com.dnd.spaced.core.report.domain.repository.ReportRepository;
 import java.util.List;
@@ -36,7 +35,7 @@ public class AdminReportService {
 
     public ReportCollectionResponse readReports(ReadAllReportSearchRequest request, Pageable pageable) {
         ReportStatus reportStatus = findReportStatus(request);
-        List<ReportInfo> reports = findAllReportsBy(request, reportStatus, pageable);
+        List<Report> reports = findAllReportsBy(request, reportStatus, pageable);
 
         return ReportInfoMapper.toDto(reports);
     }
@@ -64,7 +63,7 @@ public class AdminReportService {
         eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
     }
 
-    private List<ReportInfo> findAllReportsBy(
+    private List<Report> findAllReportsBy(
             ReadAllReportSearchRequest request,
             ReportStatus reportStatus,
             Pageable pageable
