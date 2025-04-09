@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -61,6 +62,7 @@ public class AsyncThreadPoolTestConfig {
         Map<Class<? extends Throwable>, Boolean> targetException = new HashMap<>();
         targetException.put(BaseServerException.class, true);
         targetException.put(BaseClientException.class, true);
+        targetException.put(DataAccessException.class, true);
 
         RetryPolicy retryPolicy = new SimpleRetryPolicy(3, targetException);
         retryTemplate.setRetryPolicy(retryPolicy);
