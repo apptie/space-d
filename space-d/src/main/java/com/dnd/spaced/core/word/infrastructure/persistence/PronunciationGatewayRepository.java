@@ -75,11 +75,4 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
         Long result = namedParameterJdbcTemplate.queryForObject(sql, parameters, Long.class);
         return result != null ? result : 0L;
     }
-
-    @Override
-    public long deleteBy(Long pronunciationId) {
-        return queryFactory.delete(pronunciation)
-                           .where(pronunciation.id.eq(pronunciationId))
-                           .execute();
-    }
 }

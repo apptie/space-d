@@ -11,6 +11,4 @@ public interface PronunciationRepository {
     void saveAll(List<Pronunciation> pronunciations);
 
     long countBy(Long wordId);
-
-    long deleteBy(Long pronunciationId);
 }
