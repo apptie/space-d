@@ -88,7 +88,7 @@ public class AdminExceptionController extends CommonExceptionController {
         processWordException(
                 deletePronunciationException,
                 WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION
+                WordErrorCode.PRONUNCIATION_NOT_FOUND_EXCEPTION
         );
 
         return deletePronunciationException;
