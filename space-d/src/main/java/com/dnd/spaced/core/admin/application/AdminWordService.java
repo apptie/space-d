@@ -64,7 +64,6 @@ public class AdminWordService {
         Pronunciation pronunciation = findPronunciation(pronunciationId);
 
         validatePronunciationCount(wordId);
-
         pronunciation.deleted();
     }
 
