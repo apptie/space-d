@@ -5,8 +5,8 @@ import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.Creat
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
-import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
+import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
@@ -49,9 +49,12 @@ public class AdminWordService {
 
     @Transactional
     public void updateWordExample(Long wordExampleId, String example) {
-        long updateCount = wordExampleRepository.update(wordExampleId, example);
+        WordExample wordExample = wordExampleRepository.findBy(wordExampleId)
+                                                       .orElseThrow(() -> new WordExampleNotFoundException(
+                                                               "지정한 용어 예문을 찾을 수 없습니다.")
+                                                       );
 
-        validateUpdateCount(updateCount);
+        wordExample.changeExample(example);
     }
 
     @Transactional
@@ -84,7 +87,7 @@ public class AdminWordService {
         List<WordExample> wordExamples = new ArrayList<>();
 
         for (String example : request.examples()) {
-            WordExample wordExample = new WordExample(example);
+            WordExample wordExample = WordExample.from(example);
 
             wordExample.initWord(word);
             wordExamples.add(wordExample);
@@ -107,12 +110,6 @@ public class AdminWordService {
         }
 
         pronunciationRepository.saveAll(pronunciations);
-    }
-
-    private void validateUpdateCount(long updateCount) {
-        if (updateCount != SUCCESS_UPDATE_COUNT) {
-            throw new UnexpectedUpdateWordExampleCountException("용어 예문이 정상적으로 변경되지 않았습니다.");
-        }
     }
 
     private void validateExampleCount(Long wordId) {

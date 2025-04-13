@@ -2,6 +2,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
+import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
@@ -103,8 +104,8 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
 
     private Map<Long, Word> fetchWordsWithExamples(List<Long> wordIds) {
         return queryFactory.selectFrom(word)
-                           .leftJoin(word.wordExamples).fetchJoin()
-                           .where(word.id.in(wordIds))
+                           .innerJoin(word.wordExamples, wordExample).fetchJoin()
+                           .where(word.id.in(wordIds), wordExample.deleted.isFalse())
                            .fetch()
                            .stream()
                            .collect(Collectors.toMap(Word::getId, Function.identity()));
@@ -113,7 +114,7 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
     private Map<Long, List<Pronunciation>> fetchPronunciations(List<Long> wordIds) {
         return queryFactory
                 .selectFrom(pronunciation)
-                .where(pronunciation.word.id.in(wordIds))
+                .where(pronunciation.word.id.in(wordIds), pronunciation.deleted.isFalse())
                 .fetch()
                 .stream()
                 .collect(Collectors.groupingBy(
@@ -161,7 +162,8 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
                              .from(pronunciation)
                              .where(
                                      pronunciation.word.id.eq(word.id),
-                                     pronunciation.content.startsWith(content)
+                                     pronunciation.content.startsWith(content),
+                                     pronunciation.deleted.isFalse()
                              )
                              .exists();
     }

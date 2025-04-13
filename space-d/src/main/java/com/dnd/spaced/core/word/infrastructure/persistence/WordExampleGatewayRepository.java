@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,6 +23,15 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final Clock clock;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Optional<WordExample> findBy(Long wordExampleId) {
+        WordExample result = queryFactory.selectFrom(wordExample)
+                                         .where(wordExample.id.eq(wordExampleId))
+                                         .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
     public WordExampleGatewayRepository(Clock clock, JdbcTemplate jdbcTemplate, JPAQueryFactory queryFactory) {
         this.clock = clock;
@@ -43,7 +53,7 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     @Override
     public long update(Long wordExampleId, String example) {
         return queryFactory.update(wordExample)
-                           .set(wordExample.example, example)
+                           .set(wordExample.content, example)
                            .where(wordExample.id.eq(wordExampleId))
                            .execute();
     }
@@ -58,8 +68,8 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     @Override
     public void saveAll(List<WordExample> wordExamples) {
         String sql = """
-                INSERT INTO word_examples(created_at, updated_at, example, word_id)
-                VALUES(:createdAt, :updatedAt, :example, :wordId)
+                INSERT INTO word_examples(created_at, updated_at, content, word_id, deleted)
+                VALUES(:createdAt, :updatedAt, :example, :wordId, false)
                 """;
         List<SqlParameterSource> parameterSources = new ArrayList<>();
 
@@ -68,7 +78,7 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
                     new MapSqlParameterSource()
                             .addValue("createdAt", Timestamp.valueOf(LocalDateTime.now(clock)))
                             .addValue("updatedAt", Timestamp.valueOf(LocalDateTime.now(clock)))
-                            .addValue("example", wordExample.getExample())
+                            .addValue("example", wordExample.getContent())
                             .addValue("wordId", wordExample.getWord().getId())
             );
         }

@@ -39,7 +39,7 @@ public final class WordInfoMapper {
         return new WordExampleInfo(
                 wordExample.getId(),
                 wordExample.getWord().getId(),
-                wordExample.getExample()
+                wordExample.getContent()
         );
     }
 
@@ -48,7 +48,7 @@ public final class WordInfoMapper {
                 pronunciation.getId(),
                 pronunciation.getWord().getId(),
                 pronunciation.getContent(),
-                pronunciation.getType()
+                pronunciation.getPronunciationType()
         );
     }
 }

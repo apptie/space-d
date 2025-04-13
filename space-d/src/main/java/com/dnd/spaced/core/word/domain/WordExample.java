@@ -28,16 +28,33 @@ public class WordExample extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String example;
+    private String content;
+
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "word_id")
     private Word word;
 
-    public WordExample(String example) {
-        validateContent(example);
+    public static WordExample from(String content) {
+        validateContent(content);
 
-        this.example = example;
+        return new WordExample(content);
+    }
+
+    private static void validateContent(String content) {
+        if (isInvalidContent(content)) {
+            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
+        }
+    }
+
+    private static boolean isInvalidContent(String content) {
+        return content == null || content.isBlank()
+                || MIN_EXAMPLE_LENGTH > content.length() || MAX_EXAMPLE_LENGTH < content.length();
+    }
+
+    private WordExample(String content) {
+        this.content = content;
     }
 
     public void initWord(Word word) {
@@ -47,21 +64,10 @@ public class WordExample extends BaseTimeEntity {
     public void changeExample(String changedExample) {
         validateContent(changedExample);
 
-        this.example = changedExample;
+        this.content = changedExample;
     }
 
     public boolean isEqualTo(Long id) {
         return this.id.equals(id);
-    }
-
-    private void validateContent(String content) {
-        if (isInvalidContent(content)) {
-            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
-        }
-    }
-
-    private boolean isInvalidContent(String content) {
-        return content == null || content.isBlank()
-                || MIN_EXAMPLE_LENGTH > content.length() || MAX_EXAMPLE_LENGTH < content.length();
     }
 }
