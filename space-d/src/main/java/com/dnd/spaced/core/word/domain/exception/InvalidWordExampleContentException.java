@@ -6,6 +6,6 @@ import com.dnd.spaced.global.exception.code.WordErrorCode;
 public class InvalidWordExampleContentException extends WordClientException {
 
     public InvalidWordExampleContentException(String message) {
-        super(WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT, message);
+        super(WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION, message);
     }
 }

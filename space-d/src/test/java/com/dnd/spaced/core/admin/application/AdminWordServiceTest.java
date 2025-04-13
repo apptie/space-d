@@ -9,12 +9,15 @@ import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.Creat
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
-import com.dnd.spaced.core.admin.application.exception.UnexpectedUpdateWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
+import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
+import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -72,8 +75,25 @@ class AdminWordServiceTest {
                         -999L,
                         "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
                 )
-        ).isInstanceOf(UnexpectedUpdateWordExampleCountException.class)
-         .hasMessage("용어 예문이 정상적으로 변경되지 않았습니다.");
+        ).isInstanceOf(WordExampleNotFoundException.class)
+         .hasMessage("지정한 용어 예문을 찾을 수 없습니다.");
+    }
+
+    @ParameterizedTest(name = "변경하고자 하는 예문이 {0}일 때 예문을 변경할 수 없다")
+    @NullAndEmptySource
+    @Sql(scripts = {
+            "classpath:sql/admin/word/word_metadata.sql",
+            "classpath:sql/admin/word/word.sql"
+    })
+    void 유효하지_않은_길이의_예문으로_용어_예문을_변경할_수_없다(String invalidContent) {
+        // when & then
+        assertThatThrownBy(
+                () -> adminWordService.updateWordExample(
+                        1L,
+                        invalidContent
+                )
+        ).isInstanceOf(InvalidWordExampleContentException.class)
+         .hasMessage("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
     }
 
     @Test

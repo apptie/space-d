@@ -35,7 +35,7 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             "발음은 null이거나 비어 있을 수 없습니다."
     ),
     INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION(
-            WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
+            WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION,
             HttpStatus.BAD_REQUEST,
             "예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다."
     ),
@@ -44,10 +44,10 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             HttpStatus.NOT_FOUND,
             "지정한 용어가 없습니다."
     ),
-    UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT(
-            WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION,
-            HttpStatus.BAD_REQUEST,
-            "용어 예문이 정상적으로 변경되지 않았습니다."
+    WORD_EXAMPLE_NOT_FOUND_EXCEPTION(
+            WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION,
+            HttpStatus.NOT_FOUND,
+            "지정한 용어 예문을 찾을 수 없습니다."
     ),
     WORD_EXAMPLE_DELETION_NOT_ALLOWED(
             WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,

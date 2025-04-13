@@ -59,8 +59,8 @@ public class AdminExceptionController extends CommonExceptionController {
         putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
         processWordException(
                 updateWordExampleException,
-                WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT,
-                WordErrorCode.UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION
+                WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION,
+                WordErrorCode.INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION
         );
 
         return updateWordExampleException;
