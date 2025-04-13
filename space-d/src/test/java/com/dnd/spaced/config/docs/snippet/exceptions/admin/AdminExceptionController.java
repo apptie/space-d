@@ -56,7 +56,7 @@ public class AdminExceptionController extends CommonExceptionController {
 
         putUnauthorizedExceptionContent(updateWordExampleException);
         putForbiddenExceptionContent(updateWordExampleException);
-        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
+        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "content");
         processWordException(
                 updateWordExampleException,
                 WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION,
