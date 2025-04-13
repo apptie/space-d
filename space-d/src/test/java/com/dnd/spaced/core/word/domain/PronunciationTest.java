@@ -56,4 +56,16 @@ class PronunciationTest {
         // then
         assertThat(pronunciation.getWord()).isNotNull();
     }
+
+    @Test
+    void 발음_정보를_삭제한다() {
+        // given
+        Pronunciation pronunciation = Pronunciation.of("어써라이제이션", "한글 발음");
+
+        // when
+        pronunciation.deleted();
+
+        // then
+        assertThat(pronunciation.isDeleted()).isTrue();
+    }
 }

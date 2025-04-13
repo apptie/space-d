@@ -64,4 +64,8 @@ public class Pronunciation extends BaseTimeEntity {
     public void initWord(Word word) {
         this.word = word;
     }
+
+    public void deleted() {
+        this.deleted = true;
+    }
 }
