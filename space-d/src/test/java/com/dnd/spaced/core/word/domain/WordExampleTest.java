@@ -22,7 +22,7 @@ class WordExampleTest {
         WordExample wordExample = WordExample.from(example);
 
         // then
-        assertThat(wordExample.getExample()).isEqualTo(example);
+        assertThat(wordExample.getContent()).isEqualTo(example);
     }
 
     @ParameterizedTest
@@ -61,7 +61,7 @@ class WordExampleTest {
         wordExample.changeExample(changedExample);
 
         // then
-        assertThat(wordExample.getExample()).isEqualTo(changedExample);
+        assertThat(wordExample.getContent()).isEqualTo(changedExample);
     }
 
     @Test

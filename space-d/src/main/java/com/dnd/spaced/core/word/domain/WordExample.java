@@ -28,7 +28,9 @@ public class WordExample extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String example;
+    private String content;
+
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "word_id")
@@ -51,8 +53,8 @@ public class WordExample extends BaseTimeEntity {
                 || MIN_EXAMPLE_LENGTH > content.length() || MAX_EXAMPLE_LENGTH < content.length();
     }
 
-    private WordExample(String example) {
-        this.example = example;
+    private WordExample(String content) {
+        this.content = content;
     }
 
     public void initWord(Word word) {
@@ -62,7 +64,7 @@ public class WordExample extends BaseTimeEntity {
     public void changeExample(String changedExample) {
         validateContent(changedExample);
 
-        this.example = changedExample;
+        this.content = changedExample;
     }
 
     public boolean isEqualTo(Long id) {

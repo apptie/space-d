@@ -49,7 +49,10 @@ class BookmarkServiceTest {
     }
 
     @Test
-    @Sql(value = {"classpath:sql/bookmark/word.sql", "classpath:sql/bookmark/bookmark.sql"})
+    @Sql(scripts = {
+            "classpath:sql/bookmark/word.sql",
+            "classpath:sql/bookmark/bookmark.sql"
+    })
     void 이미_북마크에_추가된_용어를_북마에_추가할_수_없다() {
         // given
         CreateBookmarkRequest request = new CreateBookmarkRequest(1L);

@@ -39,7 +39,7 @@ public final class WordInfoMapper {
         return new WordExampleInfo(
                 wordExample.getId(),
                 wordExample.getWord().getId(),
-                wordExample.getExample()
+                wordExample.getContent()
         );
     }
 

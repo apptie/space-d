@@ -2,6 +2,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 
 import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 import static com.dnd.spaced.core.word.domain.QWord.word;
+import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
@@ -103,8 +104,8 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
 
     private Map<Long, Word> fetchWordsWithExamples(List<Long> wordIds) {
         return queryFactory.selectFrom(word)
-                           .leftJoin(word.wordExamples).fetchJoin()
-                           .where(word.id.in(wordIds))
+                           .leftJoin(word.wordExamples, wordExample).fetchJoin()
+                           .where(word.id.in(wordIds), wordExample.deleted.isFalse())
                            .fetch()
                            .stream()
                            .collect(Collectors.toMap(Word::getId, Function.identity()));
