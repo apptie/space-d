@@ -4,7 +4,6 @@ import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
-import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
@@ -27,7 +26,6 @@ public class AdminWordService {
 
     private static final long WORD_EXAMPLE_MIN_COUNT = 1L;
     private static final long PRONUNCIATION_MIN_COUNT = 1L;
-    private static final long SUCCESS_UPDATE_COUNT = 1L;
     private static final long SUCCESS_DELETE_COUNT = 1L;
 
     private final WordRepository wordRepository;
@@ -49,21 +47,17 @@ public class AdminWordService {
 
     @Transactional
     public void updateWordExample(Long wordExampleId, String example) {
-        WordExample wordExample = wordExampleRepository.findBy(wordExampleId)
-                                                       .orElseThrow(() -> new WordExampleNotFoundException(
-                                                               "지정한 용어 예문을 찾을 수 없습니다.")
-                                                       );
+        WordExample wordExample = findWordExample(wordExampleId);
 
         wordExample.changeExample(example);
     }
 
     @Transactional
     public void deleteWordExample(Long wordId, Long wordExampleId) {
+        WordExample wordExample = findWordExample(wordExampleId);
+
         validateExampleCount(wordId);
-
-        long deleteCount = wordExampleRepository.deleteBy(wordExampleId);
-
-        validateWordExampleDeleteCount(deleteCount);
+        wordExample.deleted();
     }
 
     @Transactional
@@ -112,6 +106,13 @@ public class AdminWordService {
         pronunciationRepository.saveAll(pronunciations);
     }
 
+    private WordExample findWordExample(Long wordExampleId) {
+        return wordExampleRepository.findBy(wordExampleId)
+                                    .orElseThrow(() -> new WordExampleNotFoundException(
+                                            "지정한 용어 예문을 찾을 수 없습니다.")
+                                    );
+    }
+
     private void validateExampleCount(Long wordId) {
         if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
             throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
@@ -121,12 +122,6 @@ public class AdminWordService {
     private void validatePronunciationCount(Long wordId) {
         if (pronunciationRepository.countBy(wordId) <= PRONUNCIATION_MIN_COUNT) {
             throw new PronunciationDeletionNotAllowedException("해당 용어의 발음 정보 개수가 최소치입니다.");
-        }
-    }
-
-    private void validateWordExampleDeleteCount(long deleteCount) {
-        if (deleteCount != SUCCESS_DELETE_COUNT) {
-            throw new UnexpectedDeleteWordExampleCountException("용어 예문이 정상적으로 삭제되지 않았습니다.");
         }
     }
 
