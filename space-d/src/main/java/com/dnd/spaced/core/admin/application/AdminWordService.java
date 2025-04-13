@@ -87,7 +87,7 @@ public class AdminWordService {
         List<WordExample> wordExamples = new ArrayList<>();
 
         for (String example : request.examples()) {
-            WordExample wordExample = new WordExample(example);
+            WordExample wordExample = WordExample.from(example);
 
             wordExample.initWord(word);
             wordExamples.add(wordExample);

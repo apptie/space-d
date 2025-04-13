@@ -34,9 +34,24 @@ public class WordExample extends BaseTimeEntity {
     @JoinColumn(name = "word_id")
     private Word word;
 
-    public WordExample(String example) {
-        validateContent(example);
+    public static WordExample from(String content) {
+        validateContent(content);
 
+        return new WordExample(content);
+    }
+
+    private static void validateContent(String content) {
+        if (isInvalidContent(content)) {
+            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
+        }
+    }
+
+    private static boolean isInvalidContent(String content) {
+        return content == null || content.isBlank()
+                || MIN_EXAMPLE_LENGTH > content.length() || MAX_EXAMPLE_LENGTH < content.length();
+    }
+
+    private WordExample(String example) {
         this.example = example;
     }
 
@@ -52,16 +67,5 @@ public class WordExample extends BaseTimeEntity {
 
     public boolean isEqualTo(Long id) {
         return this.id.equals(id);
-    }
-
-    private void validateContent(String content) {
-        if (isInvalidContent(content)) {
-            throw new InvalidWordExampleContentException("예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.");
-        }
-    }
-
-    private boolean isInvalidContent(String content) {
-        return content == null || content.isBlank()
-                || MIN_EXAMPLE_LENGTH > content.length() || MAX_EXAMPLE_LENGTH < content.length();
     }
 }

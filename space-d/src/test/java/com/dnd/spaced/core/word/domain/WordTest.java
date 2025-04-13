@@ -99,7 +99,7 @@ class WordTest {
     @Test
     void 용어에_용어_예문을_추가한다() {
         // given
-        WordExample wordExample = new WordExample("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
+        WordExample wordExample = WordExample.from("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
         Word word = Word.builder()
                         .name("Authorization")
                         .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")

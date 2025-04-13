@@ -38,6 +38,8 @@ public class Pronunciation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private PronunciationType type;
 
+
+
     public Pronunciation(String content, String typeName) {
         validateContent(content);
 
