@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,6 +23,15 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final Clock clock;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Optional<WordExample> findBy(Long wordExampleId) {
+        WordExample result = queryFactory.selectFrom(wordExample)
+                                         .where(wordExample.id.eq(wordExampleId))
+                                         .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
     public WordExampleGatewayRepository(Clock clock, JdbcTemplate jdbcTemplate, JPAQueryFactory queryFactory) {
         this.clock = clock;
