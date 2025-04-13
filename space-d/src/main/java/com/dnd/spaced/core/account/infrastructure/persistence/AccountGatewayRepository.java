@@ -78,7 +78,7 @@ public class AccountGatewayRepository implements AccountRepository {
 
     private BooleanExpression isNullCareerInfo() {
         return account.careerInfo.company.isNull()
-                                         .or(account.careerInfo.experience.isNull())
-                                         .or(account.careerInfo.jobGroup.isNull());
+                                         .and(account.careerInfo.experience.isNull())
+                                         .and(account.careerInfo.jobGroup.isNull());
     }
 }
