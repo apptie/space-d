@@ -59,13 +59,6 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     }
 
     @Override
-    public long deleteBy(Long wordExampleId) {
-        return queryFactory.delete(wordExample)
-                           .where(wordExample.id.eq(wordExampleId))
-                           .execute();
-    }
-
-    @Override
     public void saveAll(List<WordExample> wordExamples) {
         String sql = """
                 INSERT INTO word_examples(created_at, updated_at, content, word_id, deleted)
