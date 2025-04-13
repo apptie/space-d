@@ -94,7 +94,7 @@ public class AdminWordService {
         List<Pronunciation> pronunciations = new ArrayList<>();
 
         for (CreatePronunciationRequest pronunciationInfo : request.pronunciations()) {
-            Pronunciation pronunciation = new Pronunciation(
+            Pronunciation pronunciation = Pronunciation.of(
                     pronunciationInfo.pronunciation(),
                     pronunciationInfo.typeName()
             );

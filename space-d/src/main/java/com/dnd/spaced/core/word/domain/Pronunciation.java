@@ -40,24 +40,28 @@ public class Pronunciation extends BaseTimeEntity {
 
     private boolean deleted = false;
 
-    public Pronunciation(String content, String typeName) {
+    public static Pronunciation of(String content, String typeName) {
         validateContent(content);
 
+        return new Pronunciation(content, typeName);
+    }
+
+    private static void validateContent(String content) {
+        if (isInvalidContent(content)) {
+            throw new InvalidPronunciationContentException("발음은 null이거나 비어 있을 수 없습니다.");
+        }
+    }
+
+    private static boolean isInvalidContent(String content) {
+        return content == null || content.isBlank();
+    }
+
+    private Pronunciation(String content, String typeName) {
         this.content = content;
         this.pronunciationType = PronunciationType.findBy(typeName);
     }
 
     public void initWord(Word word) {
         this.word = word;
-    }
-
-    private void validateContent(String content) {
-        if (isInvalidContent(content)) {
-            throw new InvalidPronunciationContentException("발음은 null이거나 비어 있을 수 없습니다.");
-        }
-    }
-
-    private boolean isInvalidContent(String content) {
-        return content == null || content.isBlank();
     }
 }
