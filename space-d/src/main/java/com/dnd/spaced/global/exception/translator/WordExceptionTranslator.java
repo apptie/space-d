@@ -69,11 +69,6 @@ public enum WordExceptionTranslator implements ExceptionTranslator {
             HttpStatus.INTERNAL_SERVER_ERROR,
             "용어 생성 이벤트 리스너에 문제가 발생했습니다."
     ),
-    UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT(
-            WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION,
-            HttpStatus.BAD_REQUEST,
-            "용어 예문이 정상적으로 삭제되지 않았습니다."
-    ),
     UNEXPECTED_DELETE_PRONUNCIATION_COUNT(
             WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION,
             HttpStatus.BAD_REQUEST,

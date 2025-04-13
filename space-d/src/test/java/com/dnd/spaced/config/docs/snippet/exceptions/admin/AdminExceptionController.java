@@ -74,7 +74,7 @@ public class AdminExceptionController extends CommonExceptionController {
         processWordException(
                 deleteWordExampleException,
                 WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION
+                WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION
         );
 
         return deleteWordExampleException;
