@@ -104,7 +104,7 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
 
     private Map<Long, Word> fetchWordsWithExamples(List<Long> wordIds) {
         return queryFactory.selectFrom(word)
-                           .leftJoin(word.wordExamples, wordExample).fetchJoin()
+                           .innerJoin(word.wordExamples, wordExample).fetchJoin()
                            .where(word.id.in(wordIds), wordExample.deleted.isFalse())
                            .fetch()
                            .stream()
@@ -114,7 +114,7 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
     private Map<Long, List<Pronunciation>> fetchPronunciations(List<Long> wordIds) {
         return queryFactory
                 .selectFrom(pronunciation)
-                .where(pronunciation.word.id.in(wordIds))
+                .where(pronunciation.word.id.in(wordIds), pronunciation.deleted.isFalse())
                 .fetch()
                 .stream()
                 .collect(Collectors.groupingBy(
@@ -162,7 +162,8 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
                              .from(pronunciation)
                              .where(
                                      pronunciation.word.id.eq(word.id),
-                                     pronunciation.content.startsWith(content)
+                                     pronunciation.content.startsWith(content),
+                                     pronunciation.deleted.isFalse()
                              )
                              .exists();
     }

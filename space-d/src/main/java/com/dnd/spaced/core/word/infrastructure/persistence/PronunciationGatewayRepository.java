@@ -32,8 +32,8 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
     @Override
     public void saveAll(List<Pronunciation> pronunciations) {
         String sql = """
-                INSERT INTO pronunciations(created_at, updated_at, content, type, word_id)
-                VALUES(:createdAt, :updatedAt, :content, :type, :wordId);
+                INSERT INTO pronunciations(created_at, updated_at, content, pronunciation_type, word_id, deleted)
+                VALUES(:createdAt, :updatedAt, :content, :type, :wordId, false);
                 """;
         List<SqlParameterSource> parameterSources = new ArrayList<>();
 
@@ -43,7 +43,7 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
                             .addValue("createdAt", Timestamp.valueOf(LocalDateTime.now(clock)))
                             .addValue("updatedAt", Timestamp.valueOf(LocalDateTime.now(clock)))
                             .addValue("content", pronunciation.getContent())
-                            .addValue("type", pronunciation.getType().name())
+                            .addValue("type", pronunciation.getPronunciationType().name())
                             .addValue("wordId", pronunciation.getWord().getId())
             );
         }

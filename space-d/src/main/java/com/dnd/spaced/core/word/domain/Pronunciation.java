@@ -36,13 +36,15 @@ public class Pronunciation extends BaseTimeEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private PronunciationType type;
+    private PronunciationType pronunciationType;
+
+    private boolean deleted = false;
 
     public Pronunciation(String content, String typeName) {
         validateContent(content);
 
         this.content = content;
-        this.type = PronunciationType.findBy(typeName);
+        this.pronunciationType = PronunciationType.findBy(typeName);
     }
 
     public void initWord(Word word) {

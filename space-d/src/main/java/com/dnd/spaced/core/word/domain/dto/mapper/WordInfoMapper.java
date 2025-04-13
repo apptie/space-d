@@ -48,7 +48,7 @@ public final class WordInfoMapper {
                 pronunciation.getId(),
                 pronunciation.getWord().getId(),
                 pronunciation.getContent(),
-                pronunciation.getType()
+                pronunciation.getPronunciationType()
         );
     }
 }
