@@ -1,8 +1,9 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
-import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
+import static com.dnd.spaced.core.word.domain.QPronunciation.*;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
+import com.dnd.spaced.core.word.domain.QPronunciation;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
@@ -74,5 +75,13 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
 
         Long result = namedParameterJdbcTemplate.queryForObject(sql, parameters, Long.class);
         return result != null ? result : 0L;
+    }
+
+    @Override
+    public void deleteAllBy(Long wordId) {
+        queryFactory.update(pronunciation)
+                    .set(pronunciation.deleted, true)
+                    .where(pronunciation.word.id.eq(wordId))
+                    .execute();
     }
 }
