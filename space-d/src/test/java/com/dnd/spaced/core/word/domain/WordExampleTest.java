@@ -76,4 +76,16 @@ class WordExampleTest {
         // then
         assertThat(actual).isTrue();
     }
+
+    @Test
+    void 용어_예문을_삭제한다() {
+        // given
+        WordExample wordExample = WordExample.from("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
+
+        // when
+        wordExample.deleted();
+
+        // then
+        assertThat(wordExample.isDeleted()).isTrue();
+    }
 }

@@ -3,6 +3,7 @@ package com.dnd.spaced.core.word.domain;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class WordExample extends BaseTimeEntity {
 
     private boolean deleted = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id")
     private Word word;
 
@@ -65,6 +66,10 @@ public class WordExample extends BaseTimeEntity {
         validateContent(changedExample);
 
         this.content = changedExample;
+    }
+
+    public void deleted() {
+        this.deleted = true;
     }
 
     public boolean isEqualTo(Long id) {

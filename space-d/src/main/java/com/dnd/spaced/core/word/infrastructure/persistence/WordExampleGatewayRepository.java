@@ -59,17 +59,10 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     }
 
     @Override
-    public long deleteBy(Long wordExampleId) {
-        return queryFactory.delete(wordExample)
-                           .where(wordExample.id.eq(wordExampleId))
-                           .execute();
-    }
-
-    @Override
     public void saveAll(List<WordExample> wordExamples) {
         String sql = """
                 INSERT INTO word_examples(created_at, updated_at, content, word_id, deleted)
-                VALUES(:createdAt, :updatedAt, :example, :wordId, false)
+                VALUES(:createdAt, :updatedAt, :content, :wordId, false)
                 """;
         List<SqlParameterSource> parameterSources = new ArrayList<>();
 
@@ -78,7 +71,7 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
                     new MapSqlParameterSource()
                             .addValue("createdAt", Timestamp.valueOf(LocalDateTime.now(clock)))
                             .addValue("updatedAt", Timestamp.valueOf(LocalDateTime.now(clock)))
-                            .addValue("example", wordExample.getContent())
+                            .addValue("content", wordExample.getContent())
                             .addValue("wordId", wordExample.getWord().getId())
             );
         }

@@ -7,8 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
-import com.dnd.spaced.core.admin.application.exception.UnexpectedDeletePronunciationCountException;
-import com.dnd.spaced.core.admin.application.exception.UnexpectedDeleteWordExampleCountException;
+import com.dnd.spaced.core.admin.application.exception.PronunciationNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
@@ -103,9 +102,9 @@ class AdminWordServiceTest {
     })
     void 용어_예문을_삭제한다() {
         // when & then
-        assertThatThrownBy(() -> adminWordService.deleteWordExample(1L, -999L))
-                .isInstanceOf(UnexpectedDeleteWordExampleCountException.class)
-                .hasMessage("용어 예문이 정상적으로 삭제되지 않았습니다.");
+        assertDoesNotThrow(
+                () -> adminWordService.deleteWordExample(1L, 1L)
+        );
     }
 
     @Test
@@ -115,9 +114,9 @@ class AdminWordServiceTest {
     })
     void 잘못된_용어_예문_ID로_용어_예문을_삭제할_수_없다() {
         // when & then
-        assertDoesNotThrow(
-                () -> adminWordService.deleteWordExample(1L, 1L)
-        );
+        assertThatThrownBy(() -> adminWordService.deleteWordExample(1L, -999L))
+                .isInstanceOf(WordExampleNotFoundException.class)
+                .hasMessage("지정한 용어 예문을 찾을 수 없습니다.");
     }
 
     @Test
@@ -141,8 +140,8 @@ class AdminWordServiceTest {
     void 잘못된_용어_발음_ID로_용어_발음을_삭제할_수_없다() {
         // when & then
         assertThatThrownBy(() -> adminWordService.deletePronunciation(1L, -999L))
-                .isInstanceOf(UnexpectedDeletePronunciationCountException.class)
-                .hasMessage("용어 발음이 정상적으로 삭제되지 않았습니다.");
+                .isInstanceOf(PronunciationNotFoundException.class)
+                .hasMessage("지정한 발음을 찾지 못했습니다.");
     }
 
     @Test

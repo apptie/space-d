@@ -40,7 +40,7 @@ public class AdminWordController {
             @PathVariable Long wordExampleId,
             @Valid @RequestBody UpdateWordExampleRequest request
     ) {
-        adminWordService.updateWordExample(wordExampleId, request.example());
+        adminWordService.updateWordExample(wordExampleId, request.content());
 
         return ResponseEntityConst.NO_CONTENT;
     }

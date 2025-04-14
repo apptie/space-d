@@ -132,7 +132,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                                 parameterWithName("id").description("변경하고자 하는 용어 예문 ID")
                         ),
                         requestFields(
-                                fieldWithPath("example").description("변경할 용어 예문")
+                                fieldWithPath("content").description("변경할 용어 예문")
                         )
                 )
         );

@@ -56,7 +56,7 @@ public class AdminExceptionController extends CommonExceptionController {
 
         putUnauthorizedExceptionContent(updateWordExampleException);
         putForbiddenExceptionContent(updateWordExampleException);
-        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "example");
+        putMethodArgumentNotValidExceptionContent(updateWordExampleException, "content");
         processWordException(
                 updateWordExampleException,
                 WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION,
@@ -74,7 +74,7 @@ public class AdminExceptionController extends CommonExceptionController {
         processWordException(
                 deleteWordExampleException,
                 WordErrorCode.WORD_EXAMPLE_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION
+                WordErrorCode.WORD_EXAMPLE_NOT_FOUND_EXCEPTION
         );
 
         return deleteWordExampleException;
@@ -88,7 +88,7 @@ public class AdminExceptionController extends CommonExceptionController {
         processWordException(
                 deletePronunciationException,
                 WordErrorCode.PRONUNCIATION_DELETION_NOT_ALLOWED,
-                WordErrorCode.UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION
+                WordErrorCode.PRONUNCIATION_NOT_FOUND_EXCEPTION
         );
 
         return deletePronunciationException;
