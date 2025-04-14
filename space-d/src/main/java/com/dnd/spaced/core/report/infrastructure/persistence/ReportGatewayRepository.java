@@ -37,18 +37,18 @@ public class ReportGatewayRepository implements ReportRepository {
     @Override
     public List<Report> findAllBy(ReportStatus reportStatus, Long lastReportId, Pageable pageable) {
         return queryFactory.selectFrom(report)
-                           .where(eqReportStatus(reportStatus), gtLastReportId(lastReportId))
+                           .where(eqReportStatus(reportStatus), ltLastReportId(lastReportId))
                            .orderBy(report.id.desc())
                            .limit(pageable.getPageSize())
                            .fetch();
     }
 
-    private BooleanExpression gtLastReportId(Long lastReportId) {
+    private BooleanExpression ltLastReportId(Long lastReportId) {
         if (lastReportId == null) {
             return null;
         }
 
-        return report.id.gt(lastReportId);
+        return report.id.lt(lastReportId);
     }
 
     private BooleanExpression eqReportStatus(ReportStatus reportStatus) {
