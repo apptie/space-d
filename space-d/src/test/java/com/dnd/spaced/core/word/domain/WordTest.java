@@ -162,4 +162,20 @@ class WordTest {
                 .isInstanceOf(InvalidWordMeaningException.class)
                 .hasMessage("용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.");
     }
+
+    @Test
+    void 용어를_삭제한다() {
+        // given
+        Word word = Word.builder()
+                        .name("Authorization")
+                        .meaning("Authorization(권한 부여)은 인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
+                        .categoryName("개발")
+                        .build();
+
+        // when
+        word.delete();
+
+        // then
+        assertThat(word.isDeleted()).isTrue();
+    }
 }
