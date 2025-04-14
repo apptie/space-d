@@ -61,6 +61,12 @@ class AdminExceptionControllerTest extends CommonExceptionControllerTest {
                                         beneathPath("data.createTodayQuizException").withSubsectionId("createTodayQuizException"),
                                         attributes(key("title").value("`POST /admin/today-quizzes` 예외 상황")),
                                         exceptionConvertFieldDescriptor(data.createTodayQuizException())
+                                ),
+                                customResponseFields(
+                                        "exception-response",
+                                        beneathPath("data.deleteWordException").withSubsectionId("deleteWordException"),
+                                        attributes(key("title").value("`DELETED /admin/words/{wordId}` 예외 상황")),
+                                        exceptionConvertFieldDescriptor(data.deleteWordException())
                                 )
                         )
                 );

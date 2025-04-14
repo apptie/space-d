@@ -12,6 +12,7 @@ public record AdminExceptionDocs(
         Map<String, ExceptionContent> deleteWordExampleException,
         Map<String, ExceptionContent> deletePronunciationException,
         Map<String, ExceptionContent> processReportException,
-        Map<String, ExceptionContent> createTodayQuizException
+        Map<String, ExceptionContent> createTodayQuizException,
+        Map<String, ExceptionContent> deleteWordException
 ) {
 }
