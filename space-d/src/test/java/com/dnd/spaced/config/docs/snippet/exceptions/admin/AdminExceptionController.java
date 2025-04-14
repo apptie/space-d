@@ -26,6 +26,7 @@ public class AdminExceptionController extends CommonExceptionController {
                                   .deletePronunciationException(calculateDeletePronunciationException())
                                   .processReportException(calculateProcessReportException())
                                   .createTodayQuizException(calculateCreateTodayQuizException())
+                                  .deleteWordException(calculateDeleteWordException())
                                   .build();
 
         return ResponseEntity.ok(new CommonDocsResponse<>(adminExceptionDocs));
@@ -113,5 +114,18 @@ public class AdminExceptionController extends CommonExceptionController {
         );
 
         return exceptionContent;
+    }
+
+    private Map<String, ExceptionContent> calculateDeleteWordException() {
+        Map<String, ExceptionContent> deleteWordException = new LinkedHashMap<>();
+
+        putUnauthorizedExceptionContent(deleteWordException);
+        putForbiddenExceptionContent(deleteWordException);
+        processWordException(
+                deleteWordException,
+                WordErrorCode.WORD_NOT_FOUND
+        );
+
+        return deleteWordException;
     }
 }

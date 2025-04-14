@@ -53,6 +53,8 @@ public class Word extends BaseTimeEntity {
 
     private long bookmarkCount = 0L;
 
+    private boolean deleted = false;
+
     @Builder
     private Word(String name, String meaning, String categoryName) {
         validateContent(name);
@@ -79,6 +81,10 @@ public class Word extends BaseTimeEntity {
 
     public void changeMeaning(String meaning) {
         this.wordMeaning.changeMeaning(meaning);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     private void validateContent(String name) {

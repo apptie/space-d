@@ -15,30 +15,38 @@ operation::admin-word-controller-test/용어_등록_요청_성공_테스트[snip
 
 include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createWordException.adoc[]
 
+[[Delete-Word]]
+=== 용어 삭제 API
+
+operation::admin-word-controller-test/용어_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
+
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createWordException.adoc[]
+
+
 [[Update-Word-Example]]
 === 용어 예문 변경 API
 
-operation::admin-word-controller-test/용어_예문_변경_요청_성공_테스트[snippets='http-request,request-headers,request-fields,http-response']
+operation::admin-word-controller-test/용어_예문_변경_요청_성공_테스트[snippets='http-request,request-headers,request-fields,path-parameters,http-response']
 
 include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-updateWordExampleException.adoc[]
 
 [[Delete-Word-Example]]
 === 용어 예문 삭제 API
 
-operation::admin-word-controller-test/용어_예문_삭제_요청_성공_테스트[snippets='http-request,request-headers,http-response']
+operation::admin-word-controller-test/용어_예문_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
 
 include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-deleteWordExampleException.adoc[]
 
-[[Delete-Pronunciation]]
 === 용어 발음 정보 삭제 API
 
-operation::admin-word-controller-test/용어_발음_정보_삭제_요청_성공_테스트[snippets='http-request,request-headers,http-response']
+operation::admin-word-controller-test/용어_발음_정보_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
 
 include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-deletePronunciationException.adoc[]
 
 [[Create-Today-Quiz]]
 === 오늘의 퀴즈 수동 생성 API
 
+[[Delete-Pronunciation]]
 operation::admin-today-quiz-controller-test/오늘의_퀴즈_수동_생성_요청_성공_테스트[snippets='http-request,request-headers,response-headers']
 
 include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createTodayQuizException.adoc[]

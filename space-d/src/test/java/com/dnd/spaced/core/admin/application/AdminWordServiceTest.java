@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
+import com.dnd.spaced.core.admin.application.event.dto.DeletedWordEvent;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.PronunciationNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
+import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -20,15 +22,21 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
+@RecordApplicationEvents
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AdminWordServiceTest {
 
     @Autowired
     AdminWordService adminWordService;
+
+    @Autowired
+    ApplicationEvents events;
 
     @Test
     @Sql("classpath:sql/admin/word/word_metadata.sql")
@@ -167,5 +175,24 @@ class AdminWordServiceTest {
                 () -> adminWordService.deletePronunciation(2L, 1L)
         ).isInstanceOf(PronunciationDeletionNotAllowedException.class)
          .hasMessage("해당 용어의 발음 정보 개수가 최소치입니다.");
+    }
+
+    @Test
+    void 유효하지_않은_용어_ID로_용어를_삭제할_수_없다() {
+        // when & then
+        assertThatThrownBy(() -> adminWordService.deleteWord(-999L))
+                .isInstanceOf(WordNotFoundException.class)
+                .hasMessage("지정한 용어를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @Sql(scripts = {
+            "classpath:sql/admin/word/word_metadata.sql",
+            "classpath:sql/admin/word/word.sql"
+    })
+    void 용어를_삭제한다() {
+        // when & then
+        assertDoesNotThrow(() -> adminWordService.deleteWord(1L));
+        assertThat(events.stream(DeletedWordEvent.class).count()).isOne();
     }
 }

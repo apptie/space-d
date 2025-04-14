@@ -29,7 +29,6 @@ import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleReques
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -193,6 +192,33 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                         pathParameters(
                                 parameterWithName("wordId").description("삭제하고자 하는 용어 발음 정보를 가진 용어 ID"),
                                 parameterWithName("pronunciationId").description("삭제하고자 하는 용어 발음 정보 ID")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @WithMockUser(value = "1", roles = "ADMIN")
+    void 용어_삭제_요청_성공_테스트() throws Exception {
+        // when & then
+        ResultActions resultAction = mockMvc.perform(
+                delete("/admin/words/{wordId}", 1L, 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+        ).andExpectAll(status().isNoContent());
+
+        verify(adminWordService).deleteWord(anyLong());
+
+        용어_삭제_요청_문서화(resultAction);
+    }
+
+    private void 용어_삭제_요청_문서화(ResultActions resultActions) throws Exception {
+        resultActions.andDo(
+                restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer 타입의 관리자 Access Token")
+                        ),
+                        pathParameters(
+                                parameterWithName("wordId").description("삭제하고자 하는 용어 ID")
                         )
                 )
         );

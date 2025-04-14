@@ -1318,6 +1318,188 @@ Location: /words/1</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="Delete-Word"><a class="link" href="#Delete-Word">용어 삭제 API</a></h3>
+<div class="sect3">
+<h4 id="Delete-Word_http_request"><a class="link" href="#Delete-Word_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1 HTTP/1.1
+Authorization: Bearer AccessToken</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Delete-Word_request_headers"><a class="link" href="#Delete-Word_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">필수여부</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer 타입의 관리자 Access Token</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Delete-Word_path_parameters"><a class="link" href="#Delete-Word_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 용어 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Delete-Word_http_response"><a class="link" href="#Delete-Word_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>POST /admin/words</code> 예외 상황</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">에러 코드</th>
+<th class="tableblock halign-left valign-top">HTTP Status 이름</th>
+<th class="tableblock halign-left valign-top">HTTP Status 값</th>
+<th class="tableblock halign-left valign-top">메시지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNAUTHORIZED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNAUTHORIZED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인이 필요한 기능입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FORBIDDEN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FORBIDDEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (name, meaning, categoryName, pronunciations, pronunciation, typeName, examples)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_CATEGORY_NAME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 용어 카테고리 이름이 아닙니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_PRONUNCIATION_CONTENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발음은 null이거나 비어 있을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_PRONUNCIATION_TYPE_NAME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 용어 발음 타입이 아닙니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_MEANING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 뜻은 최소 10글자 이상, 최대 150글자 이하여야 합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_NAME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 이름은 null이거나 비어 있을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_NOT_FOUND</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어가 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_DELETION_NOT_ALLOWED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_METADATA_COUNTER_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 메타데이터에 변경사항을 반영하지 못했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_NOT_FOUND_IN_LISTENER_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INTERNAL_SERVER_ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">용어 생성 이벤트 리스너에 문제가 발생했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어 예문을 찾을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 발음을 찾을 수 없습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="Update-Word-Example"><a class="link" href="#Update-Word-Example">용어 예문 변경 API</a></h3>
 <div class="sect3">
 <h4 id="Update-Word-Example_http_request"><a class="link" href="#Update-Word-Example_http_request">HTTP request</a></h4>
@@ -1383,6 +1565,27 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">변경할 용어 예문</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Update-Word-Example_path_parameters"><a class="link" href="#Update-Word-Example_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경하고자 하는 용어 예문 ID</p></td>
 </tr>
 </tbody>
 </table>
@@ -1483,6 +1686,31 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
+<h4 id="Delete-Word-Example_path_parameters"><a class="link" href="#Delete-Word-Example_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 용어 예문을 가진 용어 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exampleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 용어 예문 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
 <h4 id="Delete-Word-Example_http_response"><a class="link" href="#Delete-Word-Example_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
@@ -1537,9 +1765,9 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="Delete-Pronunciation"><a class="link" href="#Delete-Pronunciation">용어 발음 정보 삭제 API</a></h3>
+<h3 id="_용어_발음_정보_삭제_api"><a class="link" href="#_용어_발음_정보_삭제_api">용어 발음 정보 삭제 API</a></h3>
 <div class="sect3">
-<h4 id="Delete-Pronunciation_http_request"><a class="link" href="#Delete-Pronunciation_http_request">HTTP request</a></h4>
+<h4 id="_용어_발음_정보_삭제_api_http_request"><a class="link" href="#_용어_발음_정보_삭제_api_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /admin/words/1/pronunciations/1 HTTP/1.1
@@ -1548,7 +1776,7 @@ Authorization: Bearer AccessToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Delete-Pronunciation_request_headers"><a class="link" href="#Delete-Pronunciation_request_headers">Request headers</a></h4>
+<h4 id="_용어_발음_정보_삭제_api_request_headers"><a class="link" href="#_용어_발음_정보_삭제_api_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1572,7 +1800,32 @@ Authorization: Bearer AccessToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Delete-Pronunciation_http_response"><a class="link" href="#Delete-Pronunciation_http_response">HTTP response</a></h4>
+<h4 id="_용어_발음_정보_삭제_api_path_parameters"><a class="link" href="#_용어_발음_정보_삭제_api_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">이름</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wordId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 용어 발음 정보를 가진 용어 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pronunciationId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 용어 발음 정보 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_용어_발음_정보_삭제_api_http_response"><a class="link" href="#_용어_발음_정보_삭제_api_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
@@ -3302,7 +3555,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-04-14T14:46:51.345733",
+    "createdAt" : "2025-04-14T23:29:09.920144",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4337,7 +4590,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-04-14T14:46:51.504959"
+  "createdAt" : "2025-04-14T23:29:10.07646"
 }</code></pre>
 </div>
 </div>
@@ -5462,7 +5715,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-04-14T14:46:50.525863"
+    "createdAt" : "2025-04-14T23:29:09.173743"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class ReportEventListener {
+public class AdminReportEventListener {
 
     private final CommentRepository commentRepository;
 

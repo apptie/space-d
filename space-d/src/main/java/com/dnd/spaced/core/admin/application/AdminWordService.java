@@ -2,11 +2,13 @@ package com.dnd.spaced.core.admin.application;
 
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
+import com.dnd.spaced.core.admin.application.event.dto.DeletedWordEvent;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.PronunciationNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
 import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
+import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordExample;
@@ -65,6 +67,19 @@ public class AdminWordService {
 
         validatePronunciationCount(wordId);
         pronunciation.deleted();
+    }
+
+    @Transactional
+    public void deleteWord(Long wordId) {
+        Word word = findWord(wordId);
+
+        word.delete();
+        publishDeletedWordEvent(wordId);
+    }
+
+    private Word findWord(Long wordId) {
+        return wordRepository.findBy(wordId)
+                             .orElseThrow(() -> new WordNotFoundException("지정한 용어를 찾을 수 없습니다."));
     }
 
     private Word buildWordFromRequest(CreateWordRequest request) {
@@ -128,6 +143,10 @@ public class AdminWordService {
         if (pronunciationRepository.countBy(wordId) <= PRONUNCIATION_MIN_COUNT) {
             throw new PronunciationDeletionNotAllowedException("해당 용어의 발음 정보 개수가 최소치입니다.");
         }
+    }
+
+    private void publishDeletedWordEvent(Long wordId) {
+        eventPublisher.publishEvent(new DeletedWordEvent(wordId));
     }
 
     private void publishPersistedEvent(Word word) {
