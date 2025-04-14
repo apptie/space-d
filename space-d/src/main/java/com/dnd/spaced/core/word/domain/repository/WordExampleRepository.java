@@ -13,4 +13,6 @@ public interface WordExampleRepository {
     long countBy(Long wordId);
 
     long update(Long wordExampleId, String example);
+
+    void deleteAllBy(Long wordId);
 }
