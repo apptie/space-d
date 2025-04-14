@@ -1255,7 +1255,7 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유효한 용어 발음 타입이 아닙니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
@@ -1277,12 +1277,6 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어가 없습니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_DELETION_NOT_ALLOWED</code></p></td>
@@ -1309,16 +1303,16 @@ Location: /words/1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">용어 생성 이벤트 리스너에 문제가 발생했습니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 삭제되지 않았습니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어 예문을 찾을 수 없습니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 발음이 정상적으로 삭제되지 않았습니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 발음을 찾을 수 없습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1334,7 +1328,7 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer AccessToken
 
 {
-  "example" : "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
+  "content" : "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
 }</code></pre>
 </div>
 </div>
@@ -1384,7 +1378,7 @@ Authorization: Bearer AccessToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>example</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1436,19 +1430,19 @@ Authorization: Bearer AccessToken
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_DATA</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (example)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효한 입력 값이 아닙니다. (content)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어 예문을 찾을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INVALID_WORD_EXAMPLE_CONTENT_EXCEPTION</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">예문의 길이는 최소 1글자 이상, 최대 150글자 이하여야 합니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_UPDATE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 변경되지 않았습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1534,10 +1528,10 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 예문 개수가 최소치입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_WORD_EXAMPLE_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 예문이 정상적으로 삭제되지 않았습니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORD_EXAMPLE_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 용어 예문을 찾을 수 없습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1623,10 +1617,10 @@ Authorization: Bearer AccessToken</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 용어의 발음 정보 개수가 최소치입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNEXPECTED_DELETE_PRONUNCIATION_COUNT_EXCEPTION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BAD_REQUEST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">용어 발음이 정상적으로 삭제되지 않았습니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PRONUNCIATION_NOT_FOUND_EXCEPTION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NOT_FOUND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지정한 발음을 찾을 수 없습니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3308,7 +3302,7 @@ Content-Type: application/json;charset=UTF-8
     "id" : 1,
     "accountId" : 1,
     "solved" : false,
-    "createdAt" : "2025-04-02T21:19:19.330035",
+    "createdAt" : "2025-04-14T14:46:51.345733",
     "quizQuestions" : [ {
       "quizCategory" : "개발",
       "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
@@ -4343,7 +4337,7 @@ Content-Type: application/json;charset=UTF-8
     "question" : "다음 예문을 보고 예문에 맞는 용어를 선택해주세요.",
     "passage" : "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘"
   },
-  "createdAt" : "2025-04-02T21:19:19.477935"
+  "createdAt" : "2025-04-14T14:46:51.504959"
 }</code></pre>
 </div>
 </div>
@@ -5468,7 +5462,7 @@ Content-Type: application/json;charset=UTF-8
     "bookmarkId" : 1,
     "accountId" : 1,
     "wordId" : 1,
-    "createdAt" : "2025-04-02T21:19:18.616458"
+    "createdAt" : "2025-04-14T14:46:50.525863"
   } ],
   "lastBookmarkId" : 1
 }</code></pre>
@@ -5748,7 +5742,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-04-02 12:21:28 +0900
+Last updated 2025-04-08 19:42:09 +0900
 </div>
 </div>
 </body>
