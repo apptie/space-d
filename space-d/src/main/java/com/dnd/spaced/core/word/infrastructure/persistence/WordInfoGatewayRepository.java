@@ -74,13 +74,13 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
     private Word findWord(Long wordId) {
         return queryFactory.selectFrom(word)
                            .leftJoin(word.wordExamples).fetchJoin()
-                           .where(word.id.eq(wordId))
+                           .where(word.id.eq(wordId), word.deleted.isFalse())
                            .fetchOne();
     }
 
     private List<Pronunciation> findPronunciations(Word result) {
         return queryFactory.selectFrom(pronunciation)
-                           .where(pronunciation.word.id.eq(result.getId()))
+                           .where(pronunciation.word.id.eq(result.getId()), pronunciation.deleted.isFalse())
                            .fetch();
     }
 

@@ -27,7 +27,7 @@ public class WordGatewayRepository implements WordRepository {
     public boolean existsBy(Long wordId) {
         Long result = queryFactory.select(word.id)
                                   .from(word)
-                                  .where(word.id.eq(wordId))
+                                  .where(word.id.eq(wordId), word.deleted.isFalse())
                                   .fetchOne();
 
         return result != null;
@@ -71,12 +71,16 @@ public class WordGatewayRepository implements WordRepository {
     public List<String> findNameAllBy(Long[] wordIds) {
         return queryFactory.select(word.name)
                            .from(word)
-                           .where(word.id.in(wordIds))
+                           .where(word.id.in(wordIds), word.deleted.isFalse())
                            .fetch();
     }
 
     @Override
     public Optional<Word> findBy(Long wordId) {
-        return wordCrudRepository.findById(wordId);
+        Word result = queryFactory.selectFrom(word)
+                                  .where(word.id.eq(wordId), word.deleted.isFalse())
+                                  .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }
