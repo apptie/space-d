@@ -197,4 +197,18 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 )
         );
     }
+
+    @Test
+    @WithMockUser(value = "1", roles = "ADMIN")
+    void 용어_삭제_요청_성공_테스트() throws Exception {
+        // when & then
+        mockMvc.perform(
+                delete("/admin/words/{wordId}", 1L, 1L).header(
+                        HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
+        ).andExpectAll(
+                status().isNoContent()
+        );
+
+        verify(adminWordService).deleteWord(anyLong());
+    }
 }
