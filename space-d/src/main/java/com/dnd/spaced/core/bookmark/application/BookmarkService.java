@@ -54,15 +54,23 @@ public class BookmarkService {
     }
 
     private void validateWordId(CreateBookmarkRequest request) {
-        if (!wordRepository.existsBy(request.wordId())) {
+        if (isExistsWord(request.wordId())) {
             throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
         }
     }
 
+    private boolean isExistsWord(Long wordId) {
+        return !wordRepository.existsBy(wordId);
+    }
+
     private void validateExistsBookmark(Long accountId, CreateBookmarkRequest request) {
-        if (bookmarkRepository.existsBy(accountId, request.wordId())) {
+        if (isExistsBookmark(accountId, request.wordId())) {
             throw new AlreadyExistsBookmarkException("이미 북마크에 추가된 용어입니다.");
         }
+    }
+
+    private boolean isExistsBookmark(Long accountId, Long wordId) {
+        return bookmarkRepository.existsBy(accountId, wordId);
     }
 
     private void publishAddedBookmarkEvent(Bookmark bookmark) {
