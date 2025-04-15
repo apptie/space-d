@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -70,6 +71,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
     public void delete(Long accountId, Long wordId) {
         queryFactory.delete(bookmark)
                     .where(bookmark.accountId.eq(accountId), bookmark.wordId.eq(wordId))
+                    .execute();
+    }
+
+    @Override
+    public void deleteAllBy(Set<Long> wordId) {
+        queryFactory.delete(bookmark)
+                    .where(bookmark.wordId.in(wordId))
                     .execute();
     }
 

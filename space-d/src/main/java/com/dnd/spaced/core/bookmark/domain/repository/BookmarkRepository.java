@@ -3,6 +3,7 @@ package com.dnd.spaced.core.bookmark.domain.repository;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
 public interface BookmarkRepository {
@@ -16,4 +17,6 @@ public interface BookmarkRepository {
     List<Bookmark> findAllBy(Long accountId, Long lastBookmarkId, Pageable pageable);
 
     void delete(Long accountId, Long wordId);
+
+    void deleteAllBy(Set<Long> wordId);
 }
