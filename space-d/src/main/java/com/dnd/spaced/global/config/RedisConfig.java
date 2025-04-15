@@ -38,8 +38,8 @@ public class RedisConfig {
         RedisTemplate<String, PopularWord> popularWordInfoRedisTemplate = new RedisTemplate<>();
 
         popularWordInfoRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        popularWordInfoRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        popularWordInfoRedisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        popularWordInfoRedisTemplate.setKeySerializer(stringRedisSerializer());
+        popularWordInfoRedisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer());
 
         return popularWordInfoRedisTemplate;
     }
@@ -49,9 +49,10 @@ public class RedisConfig {
         RedisTemplate<String, Long> popularWordIdRedisTemplate = new RedisTemplate<>();
 
         popularWordIdRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        popularWordIdRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        popularWordIdRedisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        
+        popularWordIdRedisTemplate.setKeySerializer(stringRedisSerializer());
+        popularWordIdRedisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer());
+        popularWordIdRedisTemplate.setHashValueSerializer(genericJackson2JsonRedisSerializer());
+
         return popularWordIdRedisTemplate;
     }
 
@@ -61,7 +62,7 @@ public class RedisConfig {
 
         likeCountRedisTemplate.setConnectionFactory(redisConnectionFactory);
         likeCountRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        likeCountRedisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Long.class));
+        likeCountRedisTemplate.setHashKeySerializer(longGenericToStringSerializer());
         likeCountRedisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Integer.class));
 
         return likeCountRedisTemplate;
@@ -72,7 +73,7 @@ public class RedisConfig {
         RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate = new RedisTemplate<>();
 
         wordPersistFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        wordPersistFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        wordPersistFailedRedisTemplate.setKeySerializer(stringRedisSerializer());
         wordPersistFailedRedisTemplate.setValueSerializer(
                 new Jackson2JsonRedisSerializer<>(FailedWordPersistedEvent.class)
         );
@@ -85,7 +86,7 @@ public class RedisConfig {
                 new RedisTemplate<>();
 
         gradedQuizEventFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        gradedQuizEventFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        gradedQuizEventFailedRedisTemplate.setKeySerializer(stringRedisSerializer());
         gradedQuizEventFailedRedisTemplate.setValueSerializer(
                 new Jackson2JsonRedisSerializer<>(FailedGradedQuizSkillEvent.class)
         );
@@ -98,10 +99,35 @@ public class RedisConfig {
                 new RedisTemplate<>();
 
         calculateTodayQuizSkillFailedRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        calculateTodayQuizSkillFailedRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        calculateTodayQuizSkillFailedRedisTemplate.setKeySerializer(stringRedisSerializer());
         calculateTodayQuizSkillFailedRedisTemplate.setValueSerializer(
                 new Jackson2JsonRedisSerializer<>(FailedGradedTodayQuizSkillEvent.class)
         );
         return calculateTodayQuizSkillFailedRedisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, Long> deletedWordIdRedisTemplate() {
+        RedisTemplate<String, Long> deletedWordIdRedisTemplate = new RedisTemplate<>();
+
+        deletedWordIdRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        deletedWordIdRedisTemplate.setKeySerializer(stringRedisSerializer());
+        deletedWordIdRedisTemplate.setValueSerializer(longGenericToStringSerializer());
+        return deletedWordIdRedisTemplate;
+    }
+
+    @Bean
+    public StringRedisSerializer stringRedisSerializer() {
+        return new StringRedisSerializer();
+    }
+
+    @Bean
+    public GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
+    }
+
+    @Bean
+    public GenericToStringSerializer<Long> longGenericToStringSerializer() {
+        return new GenericToStringSerializer<>(Long.class);
     }
 }
