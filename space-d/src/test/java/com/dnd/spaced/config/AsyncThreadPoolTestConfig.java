@@ -1,18 +1,10 @@
 package com.dnd.spaced.config;
 
-import com.dnd.spaced.global.exception.base.BaseClientException;
-import com.dnd.spaced.global.exception.base.BaseServerException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.DataAccessException;
-import org.springframework.retry.RetryPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 
 @Profile("test")
 @Configuration
@@ -52,20 +44,5 @@ public class AsyncThreadPoolTestConfig {
     @Primary
     public Executor asyncPersistedWordEventListenerExecutor() {
         return Runnable::run;
-    }
-
-    @Bean(name = "wordPersistEventRetryTemplate")
-    @Primary
-    public RetryTemplate wordPersistEventRetryTemplate() {
-        RetryTemplate retryTemplate = new RetryTemplate();
-
-        Map<Class<? extends Throwable>, Boolean> targetException = new HashMap<>();
-        targetException.put(BaseServerException.class, true);
-        targetException.put(BaseClientException.class, true);
-        targetException.put(DataAccessException.class, true);
-
-        RetryPolicy retryPolicy = new SimpleRetryPolicy(3, targetException);
-        retryTemplate.setRetryPolicy(retryPolicy);
-        return retryTemplate;
     }
 }

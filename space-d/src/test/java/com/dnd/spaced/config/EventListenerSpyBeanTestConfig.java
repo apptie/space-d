@@ -1,5 +1,6 @@
 package com.dnd.spaced.config;
 
+import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedQuizSkillEvent;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedTodayQuizSkillEvent;
 import com.dnd.spaced.core.skill.domain.repository.SkillRepository;
@@ -48,4 +49,7 @@ public class EventListenerSpyBeanTestConfig {
 
     @SpyBean
     DeletedWordIdRepository deletedWordIdRepository;
+
+    @SpyBean
+    BookmarkRepository bookmarkRepository;
 }
