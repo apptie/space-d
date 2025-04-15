@@ -20,7 +20,7 @@ include::{snippets}/admin-exception-controller-test/exceptions/exception-respons
 
 operation::admin-word-controller-test/용어_삭제_요청_성공_테스트[snippets='http-request,request-headers,path-parameters,http-response']
 
-include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-createWordException.adoc[]
+include::{snippets}/admin-exception-controller-test/exceptions/exception-response-fields-deleteWordException.adoc[]
 
 
 [[Update-Word-Example]]
