@@ -31,7 +31,7 @@ public class GradedQuizEventListener {
 
     private final Clock clock;
     private final SkillRepository skillRepository;
-    private final RetryTemplate gradedQuizRetryTemplate;
+    private final RetryTemplate repositoryRetryTemplate;
     private final RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate;
     private final RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
 
@@ -42,7 +42,7 @@ public class GradedQuizEventListener {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         try {
-            gradedQuizRetryTemplate.execute(
+            repositoryRetryTemplate.execute(
                     retryContext -> {
                         Skill skill = findSkill(event.accountId());
 
@@ -73,7 +73,7 @@ public class GradedQuizEventListener {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         try {
-            gradedQuizRetryTemplate.execute(
+            repositoryRetryTemplate.execute(
                     retryContext -> {
                         Skill skill = findSkill(event.accountId());
 

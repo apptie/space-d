@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeleteBookmarkScheduler {
 
     private final Clock clock;
-    @Qualifier("repositoryRetryTemplate")
     private final RetryTemplate repositoryRetryTemplate;
     private final BookmarkRepository bookmarkRepository;
     private final DeletedWordIdRepository deletedWordIdRepository;

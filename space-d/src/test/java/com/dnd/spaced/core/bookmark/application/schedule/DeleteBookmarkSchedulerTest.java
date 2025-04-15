@@ -59,7 +59,7 @@ class DeleteBookmarkSchedulerTest {
         // then
         assertAll(
                 () -> verify(deletedWordIdRepository).findAllBy(any(LocalDateTime.class)),
-                () -> verify(bookmarkRepository).deleteAllBy(any(Set.class))
+                () -> verify(bookmarkRepository).deleteAllBy(any())
         );
     }
 
@@ -76,7 +76,7 @@ class DeleteBookmarkSchedulerTest {
         // then
         assertAll(
                 () -> verify(deletedWordIdRepository, times(2)).findAllBy(any(LocalDateTime.class)),
-                () -> verify(bookmarkRepository).deleteAllBy(any(Set.class))
+                () -> verify(bookmarkRepository).deleteAllBy(any())
         );
     }
 
