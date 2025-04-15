@@ -47,7 +47,6 @@ public class AdminExceptionController extends CommonExceptionController {
                 "typeName",
                 "examples"
         );
-        processWordException(saveWordException, WordErrorCode.values());
 
         return saveWordException;
     }

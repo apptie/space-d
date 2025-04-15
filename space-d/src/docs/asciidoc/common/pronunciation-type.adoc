@@ -2,4 +2,4 @@
 :icons: font
 
 [[profile-image-name]]
-include::{snippets}/docs-controller-test/enums/enum-response-fields-pronunciationType.adoc[]
+include::{snippets}/enum-docs-controller-test/enums/enum-response-fields-pronunciationType.adoc[]

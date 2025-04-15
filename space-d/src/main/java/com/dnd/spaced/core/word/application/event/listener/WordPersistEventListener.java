@@ -31,8 +31,8 @@ public class WordPersistEventListener {
 
     private final Clock clock;
     private final WordRepository wordRepository;
+    private final RetryTemplate repositoryRetryTemplate;
     private final WordRandomRepository wordRandomRepository;
-    private final RetryTemplate wordPersistEventRetryTemplate;
     private final WordMetadataRepository wordMetadataRepository;
     private final RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
 
@@ -43,7 +43,7 @@ public class WordPersistEventListener {
         String requestId = MDC.get(LogConst.REQUEST_ID);
 
         try {
-            wordPersistEventRetryTemplate.execute(
+            repositoryRetryTemplate.execute(
                     retryContext -> {
                         persistWordRandom(event.wordId(), event.category());
                         updateWordMetadata(event.category());

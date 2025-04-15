@@ -2,4 +2,4 @@
 :icons: font
 
 [[experience]]
-include::{snippets}/docs-controller-test/enums/enum-response-fields-experience.adoc[]
+include::{snippets}/enum-docs-controller-test/enums/enum-response-fields-experience.adoc[]

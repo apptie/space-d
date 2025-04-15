@@ -1,8 +1,10 @@
 package com.dnd.spaced.config;
 
+import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedQuizSkillEvent;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedTodayQuizSkillEvent;
 import com.dnd.spaced.core.skill.domain.repository.SkillRepository;
+import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
@@ -19,29 +21,35 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class EventListenerSpyBeanTestConfig {
 
     @SpyBean
-    public SkillRepository skillRepository;
+    SkillRepository skillRepository;
 
     @SpyBean
-    public RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate;
+    RedisTemplate<String, FailedGradedQuizSkillEvent> gradedQuizEventFailedRedisTemplate;
 
     @SpyBean
-    public RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
+    RedisTemplate<String, FailedGradedTodayQuizSkillEvent> gradedTodayQuizEventFailedRedisTemplate;
 
     @SpyBean
-    public WordRepository wordRepository;
+    WordRepository wordRepository;
 
     @SpyBean
-    public WordExampleRepository wordExampleRepository;
+    WordExampleRepository wordExampleRepository;
 
     @SpyBean
-    public PronunciationRepository pronunciationRepository;
+    PronunciationRepository pronunciationRepository;
 
     @SpyBean
-    public WordRandomRepository wordRandomRepository;
+    WordRandomRepository wordRandomRepository;
 
     @SpyBean
-    public WordMetadataRepository wordMetadataRepository;
+    WordMetadataRepository wordMetadataRepository;
 
     @SpyBean
-    public RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
+    RedisTemplate<String, FailedWordPersistedEvent> wordPersistFailedRedisTemplate;
+
+    @SpyBean
+    DeletedWordIdRepository deletedWordIdRepository;
+
+    @SpyBean
+    BookmarkRepository bookmarkRepository;
 }
