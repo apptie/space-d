@@ -2,19 +2,19 @@ package com.dnd.spaced.config.clean;
 
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisServerCommands;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 @Slf4j
-public class CleanUpExecutionListener extends AbstractTestExecutionListener implements Ordered {
+public class CleanupExecutionListener extends AbstractTestExecutionListener implements Ordered {
 
     @Override
     public void beforeTestMethod(TestContext testContext) {
@@ -44,15 +44,15 @@ public class CleanUpExecutionListener extends AbstractTestExecutionListener impl
     }
 
     private void cleanUpWithRedis(TestContext testContext) {
-        LettuceConnectionFactory lettuceConnectionFactory = findLettuceConnectionFactory(testContext);
+        RedissonConnectionFactory lettuceConnectionFactory = findLettuceConnectionFactory(testContext);
         RedisConnection redisConnection = lettuceConnectionFactory.getConnection();
         RedisServerCommands redisServerCommands = redisConnection.serverCommands();
 
         redisServerCommands.flushAll();
     }
 
-    private LettuceConnectionFactory findLettuceConnectionFactory(TestContext testContext) {
+    private RedissonConnectionFactory findLettuceConnectionFactory(TestContext testContext) {
         return testContext.getApplicationContext()
-                          .getBean(LettuceConnectionFactory.class);
+                          .getBean(RedissonConnectionFactory.class);
     }
 }

@@ -6,6 +6,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
+import com.dnd.spaced.core.bookmark.application.exception.BookmarkLockException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
@@ -13,28 +14,55 @@ import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountDecrement
 import com.dnd.spaced.core.word.application.event.dto.WordBookmarkCountIncrementedEvent;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class BookmarkService {
 
+    private final RedissonClient redissonClient;
     private final WordRepository wordRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final TransactionTemplate transactionTemplate;
     private final ApplicationEventPublisher eventPublisher;
 
     public void createBookmark(Long accountId, CreateBookmarkRequest request) {
         validateWordId(request);
-        validateExistsBookmark(accountId, request);
 
-        Bookmark bookmark = new Bookmark(accountId, request.wordId());
+        transactionTemplate.executeWithoutResult(
+                transactionStatus -> {
+                    RLock lock = redissonClient.getLock(calculateLockName(accountId, request));
 
-        bookmarkRepository.save(bookmark);
-        publishAddedBookmarkEvent(bookmark);
+                    try {
+                        boolean acquireLock = lock.tryLock(1, 1, TimeUnit.SECONDS);
+
+                        if (!acquireLock) {
+                            return;
+                        }
+
+                        validateExistsBookmark(accountId, request);
+
+                        Bookmark bookmark = new Bookmark(accountId, request.wordId());
+
+                        bookmarkRepository.save(bookmark);
+                        publishAddedBookmarkEvent(bookmark);
+                    } catch (InterruptedException e) {
+                        throw new BookmarkLockException("북마크 생성 중 인터럽트 발생", e);
+                    } finally {
+                        if (lock.isHeldByCurrentThread()) {
+                            lock.unlock();
+                        }
+                    }
+                }
+        );
     }
 
     @Transactional
@@ -57,6 +85,10 @@ public class BookmarkService {
         if (isExistsWord(request.wordId())) {
             throw new WordNotFoundException("지정한 식별자의 용어를 찾지 못했습니다.");
         }
+    }
+
+    private String calculateLockName(Long accountId, CreateBookmarkRequest request) {
+        return accountId + ":" + request.wordId();
     }
 
     private boolean isExistsWord(Long wordId) {

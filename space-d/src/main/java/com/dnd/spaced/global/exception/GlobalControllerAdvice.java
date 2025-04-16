@@ -5,6 +5,7 @@ import com.dnd.spaced.global.exception.base.AccountServerException;
 import com.dnd.spaced.global.exception.base.AuthClientException;
 import com.dnd.spaced.global.exception.base.AuthServerException;
 import com.dnd.spaced.global.exception.base.BookmarkClientException;
+import com.dnd.spaced.global.exception.base.BookmarkServerException;
 import com.dnd.spaced.global.exception.base.CommentClientException;
 import com.dnd.spaced.global.exception.base.ImageServerException;
 import com.dnd.spaced.global.exception.base.LikeClientException;
@@ -151,6 +152,16 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BookmarkClientException.class)
     private ResponseEntity<ExceptionDto> handleBookmarkClientException(BookmarkClientException ex) {
+        logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
+
+        ExceptionTranslator translator = BookmarkExceptionTranslator.findBy(ex.getErrorCode());
+
+        return ResponseEntity.status(translator.getHttpStatus())
+                             .body(translator.translate());
+    }
+
+    @ExceptionHandler(BookmarkServerException.class)
+    private ResponseEntity<ExceptionDto> handleBookmarkServerException(BookmarkServerException ex) {
         logger.warn(String.format(LOG_FORMAT, ex.getClass().getSimpleName()), ex);
 
         ExceptionTranslator translator = BookmarkExceptionTranslator.findBy(ex.getErrorCode());
