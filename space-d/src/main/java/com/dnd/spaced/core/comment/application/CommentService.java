@@ -38,7 +38,7 @@ public class CommentService {
         Comment comment = findComment(commentId);
 
         validateDeleteAuthority(comment, accountId);
-        commentRepository.delete(comment);
+        comment.delete();
     }
 
     @Transactional
