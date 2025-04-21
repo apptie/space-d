@@ -22,6 +22,11 @@ spring:
     open-in-view: false
 
   security:
+    user:
+      name: prometheus
+      password: prometheus_secret_password
+      roles: prometheus
+
     oauth2:
       client:
         registration:
