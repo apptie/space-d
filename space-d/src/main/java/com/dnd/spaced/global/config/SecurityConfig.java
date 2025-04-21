@@ -22,12 +22,15 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -61,6 +64,9 @@ public class SecurityConfig {
     @Value("${management.endpoints.web.base-path}")
     private String actuatorPath;
 
+    @Value("${spring.security.user.roles}")
+    private String actuatorRole;
+
     private final ObjectMapper objectMapper;
     private final TokenDecoder tokenDecoder;
     private final CorsProperties corsProperties;
@@ -80,6 +86,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher(actuatorPath + "/**")
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
+                                EndpointRequest.to("health", "info", "metrics", "prometheus")
+                            )
+                            .hasRole(actuatorRole)
+                            .anyRequest().denyAll()
+                )
+                .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
@@ -93,7 +117,6 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/today-quizzes/{todayQuizId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/images/{imageName}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/words/{wordId}/comments").permitAll()
-                    .requestMatchers(HttpMethod.GET, actuatorPath + "/**").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
