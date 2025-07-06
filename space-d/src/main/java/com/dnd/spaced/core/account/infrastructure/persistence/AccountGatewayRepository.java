@@ -61,7 +61,7 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     private BooleanExpression eqSocial(Social social) {
-        return account.social.socialIdentifier.eq(social.getSocialIdentifier())
+        return account.social.socialId.eq(social.getSocialId())
                 .and(account.deleted.isFalse())
                 .and(account.social.registrationId.eq(social.getRegistrationId()));
     }

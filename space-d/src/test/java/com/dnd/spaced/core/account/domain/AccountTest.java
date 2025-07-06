@@ -45,7 +45,7 @@ class AccountTest {
 
         assertAll(
                 () -> assertThat(actual.getSocial().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
-                () -> assertThat(actual.getSocial().getSocialIdentifier()).isEqualTo("12345"),
+                () -> assertThat(actual.getSocial().getSocialId()).isEqualTo("12345"),
                 () -> assertThat(actual.getProfile().getNickname()).isEqualTo("재빠른지구001"),
                 () -> assertThat(actual.getProfile().getProfileImage()).isEqualTo("earth.png"),
                 () -> assertThat(actual.getRole()).isEqualTo(Role.ROLE_USER)

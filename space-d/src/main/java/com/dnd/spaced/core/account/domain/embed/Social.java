@@ -16,10 +16,10 @@ public class Social {
     @Enumerated(EnumType.STRING)
     private RegistrationId registrationId;
 
-    private String socialIdentifier;
+    private String socialId;
 
-    public Social(RegistrationId registrationId, String socialIdentifier) {
+    public Social(RegistrationId registrationId, String socialId) {
         this.registrationId = registrationId;
-        this.socialIdentifier = socialIdentifier;
+        this.socialId = socialId;
     }
 }

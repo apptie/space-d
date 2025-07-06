@@ -22,7 +22,7 @@ class SocialTest {
 
         // then
         assertAll(
-                () -> assertThat(social.getSocialIdentifier()).isEqualTo("41258"),
+                () -> assertThat(social.getSocialId()).isEqualTo("41258"),
                 () -> assertThat(social.getRegistrationId()).isEqualTo(registrationId)
         );
     }

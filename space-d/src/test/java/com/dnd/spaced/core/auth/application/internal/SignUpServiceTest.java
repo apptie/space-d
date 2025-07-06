@@ -42,7 +42,7 @@ class SignUpServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(1L),
-                () -> assertThat(actual.getSocial().getSocialIdentifier()).isEqualTo("12345"),
+                () -> assertThat(actual.getSocial().getSocialId()).isEqualTo("12345"),
                 () -> assertThat(actual.getSocial().getRegistrationId()).isEqualTo(RegistrationId.KAKAO)
         );
     }
