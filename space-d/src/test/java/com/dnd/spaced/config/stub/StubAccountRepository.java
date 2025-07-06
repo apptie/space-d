@@ -1,7 +1,7 @@
 package com.dnd.spaced.config.stub;
 
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.embed.SocialInfo;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public class StubAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier) {
+    public Optional<Account> findBy(SocialInfo socialInfo) {
         throw new UnsupportedOperationException("지원하지 않는 기능입니다.");
     }
 
