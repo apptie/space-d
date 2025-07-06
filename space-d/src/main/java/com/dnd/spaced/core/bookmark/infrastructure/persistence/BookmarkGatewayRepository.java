@@ -29,11 +29,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public Optional<Bookmark> findBy(Long accountId, Long wordId) {
-        BookmarkWithWord result = queryFactory.select(Projections.constructor(
-                                                      BookmarkWithWord.class,
-                                                      bookmark,
-                                                      word.deleted
-                                              ))
+        BookmarkWithWord result = queryFactory.select(
+                                                    Projections.constructor(
+                                                            BookmarkWithWord.class,
+                                                            bookmark,
+                                                            word.deleted
+                                                    )
+                                              )
                                               .from(bookmark)
                                               .leftJoin(word).on(bookmark.wordId.eq(word.id))
                                               .where(
@@ -51,11 +53,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public boolean existsBy(Long accountId, Long wordId) {
-        BookmarkWithWord result = queryFactory.select(Projections.constructor(
-                                                      BookmarkWithWord.class,
-                                                      bookmark,
-                                                      word.deleted
-                                              ))
+        BookmarkWithWord result = queryFactory.select(
+                                                    Projections.constructor(
+                                                            BookmarkWithWord.class,
+                                                            bookmark,
+                                                            word.deleted
+                                                    )
+                                              )
                                               .from(bookmark)
                                               .leftJoin(word).on(bookmark.wordId.eq(word.id))
                                               .where(
@@ -83,11 +87,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public List<Bookmark> findAllBy(Long accountId, Long lastBookmarkId, Pageable pageable) {
-        return queryFactory.select(Projections.constructor(
-                                   BookmarkWithWord.class,
-                                   bookmark,
-                                   word.deleted
-                           ))
+        return queryFactory.select(
+                                Projections.constructor(
+                                        BookmarkWithWord.class,
+                                        bookmark,
+                                        word.deleted
+                                )
+                           )
                            .from(bookmark)
                            .leftJoin(word).on(word.id.eq(bookmark.wordId))
                            .where(bookmark.accountId.eq(accountId), ltLastBookmarkId(lastBookmarkId))
