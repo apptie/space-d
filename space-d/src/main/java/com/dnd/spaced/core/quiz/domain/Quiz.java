@@ -41,12 +41,9 @@ public class Quiz extends CreateTimeEntity {
         this.accountId = accountId;
     }
 
-    public void solve() {
-        this.solved = true;
-    }
-
     public List<QuizGradedAnswer> grade(Long accountId, List<SubmitAnswer> submitAnswers) {
         validateAnswers(submitAnswers);
+        solve();
 
         return gradeQuestions(accountId, submitAnswers);
     }
@@ -55,6 +52,10 @@ public class Quiz extends CreateTimeEntity {
         if (submitAnswers.size() != DEFAULT_QUESTION_SIZE) {
             throw new InvalidSubmittedAnswersCountException("문제 개수와 제출한 정답 개수가 다릅니다.");
         }
+    }
+
+    private void solve() {
+        this.solved = true;
     }
 
     private List<QuizGradedAnswer> gradeQuestions(Long accountId, List<SubmitAnswer> submitAnswers) {
