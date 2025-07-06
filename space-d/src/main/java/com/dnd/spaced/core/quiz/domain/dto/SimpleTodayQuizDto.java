@@ -4,7 +4,7 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import java.time.LocalDateTime;
 
-public record SimpleTodayQuizInfo(
+public record SimpleTodayQuizDto(
         Long id,
         QuizCategory quizCategory,
         String question,

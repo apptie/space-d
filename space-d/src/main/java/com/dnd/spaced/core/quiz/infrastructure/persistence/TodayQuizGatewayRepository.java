@@ -3,7 +3,7 @@ package com.dnd.spaced.core.quiz.infrastructure.persistence;
 import static com.dnd.spaced.core.quiz.domain.QTodayQuiz.todayQuiz;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
-import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizDto;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TodayQuizGatewayRepository implements TodayQuizRepository {
 
-    private static final RowMapper<SimpleTodayQuizInfo> simpleTodayQuizInfoRowMapper =
+    private static final RowMapper<SimpleTodayQuizDto> simpleTodayQuizInfoRowMapper =
             (rs, ignoreRowNum) -> TodayQuizInfoMapper.toDto(
                     rs.getLong(1),
                     rs.getTimestamp(2).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
@@ -48,7 +48,7 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
             key = "'" + CacheConst.TODAY_QUIZ_CACHE_NAME + "'",
             cacheManager = "memoryCacheManager"
     )
-    public Optional<SimpleTodayQuizInfo> findLatest() {
+    public Optional<SimpleTodayQuizDto> findLatest() {
         String sql = """
                 SELECT
                     tq.id,
@@ -66,9 +66,9 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
                 ) t left join today_quizzes tq ON t.id = tq.id;
                 """;
         try {
-            SimpleTodayQuizInfo simpleTodayQuizInfo = jdbcTemplate.queryForObject(sql, simpleTodayQuizInfoRowMapper);
+            SimpleTodayQuizDto simpleTodayQuizDto = jdbcTemplate.queryForObject(sql, simpleTodayQuizInfoRowMapper);
 
-            return Optional.of(simpleTodayQuizInfo);
+            return Optional.of(simpleTodayQuizDto);
         } catch (IncorrectResultSizeDataAccessException ignored) {
             return Optional.empty();
         }

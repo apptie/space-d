@@ -2,7 +2,7 @@ package com.dnd.spaced.core.quiz.domain.dto.mapper;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
-import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizDto;
 import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
 import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo.TodayQuizOptionInfo;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TodayQuizInfoMapper {
 
-    public static SimpleTodayQuizInfo toDto(TodayQuiz todayQuiz) {
+    public static SimpleTodayQuizDto toDto(TodayQuiz todayQuiz) {
         TodayQuizQuestion todayQuizQuestion = todayQuiz.getTodayQuizQuestion();
 
-        return new SimpleTodayQuizInfo(
+        return new SimpleTodayQuizDto(
                 todayQuiz.getId(),
                 todayQuizQuestion.getQuizCategory(),
                 todayQuizQuestion.getQuestion(),
@@ -29,7 +29,7 @@ public final class TodayQuizInfoMapper {
         );
     }
 
-    public static SimpleTodayQuizInfo toDto(
+    public static SimpleTodayQuizDto toDto(
             Long id,
             LocalDateTime createdAt,
             String question,
@@ -40,7 +40,7 @@ public final class TodayQuizInfoMapper {
     ) {
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(answerWordId, answerContent);
 
-        return new SimpleTodayQuizInfo(id, quizCategory, question, questionContent, todayQuizAnswerOption, createdAt);
+        return new SimpleTodayQuizDto(id, quizCategory, question, questionContent, todayQuizAnswerOption, createdAt);
     }
 
     public static TodayQuizInfo toDto(TodayQuiz todayQuiz, List<TodayQuizOption> todayQuizOptions) {

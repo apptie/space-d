@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.quiz.application.TodayQuizService;
+import com.dnd.spaced.core.quiz.application.TodayQuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
@@ -38,7 +38,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -50,7 +49,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class TodayQuizControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    TodayQuizService todayQuizService;
+    TodayQuizServiceFacade todayQuizServiceFacade;
 
     @Test
     void 최신_오늘의_퀴즈_요청_성공_테스트() throws Exception {
@@ -66,7 +65,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 LocalDateTime.now()
         );
 
-        given(todayQuizService.readLatestTodayQuiz()).willReturn(todayQuizResponse);
+        given(todayQuizServiceFacade.readLatestTodayQuiz()).willReturn(todayQuizResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -81,7 +80,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                         "인증된 사용자가 특정 리소스나 기능에 접근할 수 있는 권한이 있는지를 확인하고 제어하는 보안 메커니즘")
         );
 
-        verify(todayQuizService).readLatestTodayQuiz();
+        verify(todayQuizServiceFacade).readLatestTodayQuiz();
 
         최신_오늘의_퀴즈_요청_문서화(resultActions);
     }
@@ -128,7 +127,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 TodayQuizStatus.NOT_SOLVED
         );
 
-        given(todayQuizService.readTodayQuiz(anyLong(), anyLong())).willReturn(todayQuizResponse);
+        given(todayQuizServiceFacade.readTodayQuiz(anyLong(), anyLong())).willReturn(todayQuizResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -146,7 +145,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("todayQuizQuestion.todayQuizOptions[*].content").exists()
         );
 
-        verify(todayQuizService).readTodayQuiz(anyLong(), anyLong());
+        verify(todayQuizServiceFacade).readTodayQuiz(anyLong(), anyLong());
 
         오늘의_퀴즈_조회_요청_문서화(resultActions);
     }
@@ -195,7 +194,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 오늘의_퀴즈_채점_요청_성공_테스트() throws Exception {
         // given
-        willDoNothing().given(todayQuizService).grade(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
+        willDoNothing().given(todayQuizServiceFacade).gradeTodayQuiz(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
 
         // when & then
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
@@ -211,7 +210,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/today-quizzes/1/graded-answers")
         );
 
-        verify(todayQuizService).grade(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
+        verify(todayQuizServiceFacade).gradeTodayQuiz(anyLong(), anyLong(), any(GradeTodayQuizRequest.class));
 
         오늘의_퀴즈_채점_요청_문서화(resultActions);
     }
@@ -258,7 +257,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
         );
 
         given(
-                todayQuizService.readTodayQuizGradedAnswers(
+                todayQuizServiceFacade.readTodayQuizGradedAnswers(
                         anyLong(),
                         any(ReadTodayQuizGradedAnswerSearchRequest.class),
                         any(Pageable.class)
@@ -289,7 +288,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[0].answerQuizOptionContent").value("Authorization")
         );
 
-        verify(todayQuizService).readTodayQuizGradedAnswers(
+        verify(todayQuizServiceFacade).readTodayQuizGradedAnswers(
                 anyLong(),
                 any(ReadTodayQuizGradedAnswerSearchRequest.class),
                 any(Pageable.class)
@@ -353,7 +352,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 true
         );
 
-        given(todayQuizService.readTargetTodayQuizGradedAnswers(anyLong(), anyLong())).willReturn(
+        given(todayQuizServiceFacade.readTargetTodayQuizGradedAnswers(anyLong(), anyLong())).willReturn(
                 todayQuizGradedAnswerResponse);
 
         // when & then
@@ -374,7 +373,7 @@ class TodayQuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answerQuizOptionContent").value("Authorization")
         );
 
-        verify(todayQuizService).readTargetTodayQuizGradedAnswers(anyLong(), anyLong());
+        verify(todayQuizServiceFacade).readTargetTodayQuizGradedAnswers(anyLong(), anyLong());
 
         특정_오늘의_퀴즈에_대한_채점_결과_조회_요청_문서화(resultActions);
     }

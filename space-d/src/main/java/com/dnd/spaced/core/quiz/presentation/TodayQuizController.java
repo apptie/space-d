@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import com.dnd.spaced.core.quiz.application.TodayQuizService;
+import com.dnd.spaced.core.quiz.application.TodayQuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadTodayQuizGradedAnswerSearchRequest;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
@@ -29,11 +29,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class TodayQuizController {
 
-    private final TodayQuizService todayQuizService;
+    private final TodayQuizServiceFacade todayQuizServiceFacade;
 
     @GetMapping("/latest")
     public ResponseEntity<SimpleTodayQuizResponse> readLatestTodayQuiz() {
-        return ResponseEntity.ok(todayQuizService.readLatestTodayQuiz());
+        return ResponseEntity.ok(todayQuizServiceFacade.readLatestTodayQuiz());
     }
 
     @GetMapping("/{todayQuizId}")
@@ -42,7 +42,7 @@ public class TodayQuizController {
             @PathVariable Long todayQuizId
     ) {
         return ResponseEntity.ok(
-                todayQuizService.readTodayQuiz(accountId.id(), todayQuizId)
+                todayQuizServiceFacade.readTodayQuiz(accountId.id(), todayQuizId)
         );
     }
 
@@ -52,7 +52,7 @@ public class TodayQuizController {
             @PathVariable Long todayQuizId,
             @Valid @RequestBody GradeTodayQuizRequest request
     ) {
-        todayQuizService.grade(accountId.id(), todayQuizId, request);
+        todayQuizServiceFacade.gradeTodayQuiz(accountId.id(), todayQuizId, request);
         URI location = UriComponentsBuilder.fromPath("/today-quizzes/{id}/graded-answers")
                                            .buildAndExpand(todayQuizId)
                                            .toUri();
@@ -66,7 +66,7 @@ public class TodayQuizController {
             @CurrentAccount AuthAccountId accountId,
             @PathVariable Long todayQuizId
     ) {
-        return ResponseEntity.ok(todayQuizService.readTargetTodayQuizGradedAnswers(accountId.id(), todayQuizId));
+        return ResponseEntity.ok(todayQuizServiceFacade.readTargetTodayQuizGradedAnswers(accountId.id(), todayQuizId));
     }
 
     @GetMapping("/graded-answers")
@@ -76,7 +76,7 @@ public class TodayQuizController {
             @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
-                todayQuizService.readTodayQuizGradedAnswers(accountId.id(), request, pageable)
+                todayQuizServiceFacade.readTodayQuizGradedAnswers(accountId.id(), request, pageable)
         );
     }
 }
