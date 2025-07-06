@@ -13,7 +13,7 @@ import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.dnd.spaced.core.word.domain.WordMetadata;
-import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
+import com.dnd.spaced.core.word.domain.dto.SimpleWord;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import com.dnd.spaced.global.config.properties.QuizQuestionProperties;
@@ -71,13 +71,13 @@ public class AdminTodayQuizService {
     }
 
     private void validateQuizWordCount(QuizCategory quizCategory, WordMetadata wordMetadata) {
-        if (QuizWordCountValidator.isInvalidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        if (QuizWordCountValidator.isBlocked(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidTodayQuizWordCountException("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }
 
     private TodayQuiz createTodayQuiz(QuizCategory quizCategory) {
-        List<SimpleWordInfo> randomWords = findRandomWords(quizCategory);
+        List<SimpleWord> randomWords = findRandomWords(quizCategory);
         TodayQuiz todayQuiz = initTodayQuiz(quizCategory, randomWords);
         TodayQuiz savedTodayQuiz = todayQuizRepository.save(todayQuiz);
 
@@ -86,12 +86,12 @@ public class AdminTodayQuizService {
         return savedTodayQuiz;
     }
 
-    private List<SimpleWordInfo> findRandomWords(QuizCategory quizCategory) {
+    private List<SimpleWord> findRandomWords(QuizCategory quizCategory) {
         return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_QUIZ_WORD_COUNT);
     }
 
-    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<SimpleWordInfo> randomWords) {
-        SimpleWordInfo answerWord = randomWords.get(ANSWER_OPTION_INDEX);
+    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<SimpleWord> randomWords) {
+        SimpleWord answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
                 answerWord.id(),
                 answerWord.name()
@@ -106,12 +106,12 @@ public class AdminTodayQuizService {
         return new TodayQuiz(todayQuizQuestion);
     }
 
-    private void persistTodayQuizOptions(List<SimpleWordInfo> randomWords, TodayQuiz todayQuiz) {
+    private void persistTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
         Collections.shuffle(randomWords);
 
         List<TodayQuizOption> todayQuizOptions = new ArrayList<>();
         for (int i = 0; i < randomWords.size(); i++) {
-            SimpleWordInfo word = randomWords.get(i);
+            SimpleWord word = randomWords.get(i);
 
             TodayQuizOption todayQuizOption = TodayQuizOption.of(word.id(), word.name(), i, todayQuiz);
             todayQuizOptions.add(todayQuizOption);

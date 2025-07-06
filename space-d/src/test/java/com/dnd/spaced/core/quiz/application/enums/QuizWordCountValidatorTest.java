@@ -34,7 +34,7 @@ class QuizWordCountValidatorTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        boolean actual = QuizWordCountValidator.isInvalidate(QuizCategory.DESIGN, wordMetadata, 5);
+        boolean actual = QuizWordCountValidator.isBlocked(QuizCategory.DESIGN, wordMetadata, 5);
 
         // then
         assertThat(actual).isTrue();
@@ -58,7 +58,7 @@ class QuizWordCountValidatorTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        boolean actual = QuizWordCountValidator.isInvalidate(QuizCategory.BUSINESS, wordMetadata, 5);
+        boolean actual = QuizWordCountValidator.isBlocked(QuizCategory.BUSINESS, wordMetadata, 5);
 
         // then
         assertThat(actual).isTrue();
@@ -82,7 +82,7 @@ class QuizWordCountValidatorTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        boolean actual = QuizWordCountValidator.isInvalidate(QuizCategory.DEVELOP, wordMetadata, 5);
+        boolean actual = QuizWordCountValidator.isBlocked(QuizCategory.DEVELOP, wordMetadata, 5);
 
         // then
         assertThat(actual).isTrue();
@@ -106,7 +106,7 @@ class QuizWordCountValidatorTest {
         WordMetadata wordMetadata = new WordMetadata();
 
         // when
-        boolean actual = QuizWordCountValidator.isInvalidate(QuizCategory.TOTAL, wordMetadata, 5);
+        boolean actual = QuizWordCountValidator.isBlocked(QuizCategory.TOTAL, wordMetadata, 5);
 
         // then
         assertThat(actual).isTrue();

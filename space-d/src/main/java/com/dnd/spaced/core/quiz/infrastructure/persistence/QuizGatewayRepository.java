@@ -6,9 +6,9 @@ import static com.dnd.spaced.core.quiz.domain.QQuizOption.quizOption;
 import com.dnd.spaced.core.quiz.domain.Quiz;
 import com.dnd.spaced.core.quiz.domain.QuizOption;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
-import com.dnd.spaced.core.quiz.domain.dto.QuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizInfo.QuizQuestionInfo;
+import com.dnd.spaced.core.quiz.domain.dto.QuizDto;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizDto;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizDto.QuizQuestionDto;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.QuizInfoMapper;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
@@ -77,7 +77,7 @@ public class QuizGatewayRepository implements QuizRepository {
     }
 
     @Override
-    public Optional<QuizInfo> findBy(Long quizId, Long accountId) {
+    public Optional<QuizDto> findBy(Long quizId, Long accountId) {
         Quiz result = findQuizFetchJoinWithQuizQuestions(quizId, accountId);
 
         if (result == null) {
@@ -86,13 +86,13 @@ public class QuizGatewayRepository implements QuizRepository {
 
         List<Long> quizQuestionId = findQuizQuestionIds(result);
         Map<Long, List<QuizOption>> quizOptionMap = findQuizOptions(quizQuestionId);
-        QuizInfo quizInfo = QuizInfoMapper.toDto(result, quizOptionMap);
+        QuizDto quizDto = QuizInfoMapper.toDto(result, quizOptionMap);
 
-        return Optional.of(quizInfo);
+        return Optional.of(quizDto);
     }
 
     @Override
-    public List<SimpleQuizInfo> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
+    public List<SimpleQuizDto> findAllBy(Long accountId, Long lastQuizId, Pageable pageable) {
         String sql = calculateFindAllSql(lastQuizId);
         MapSqlParameterSource sqlParameters = calculateSqlParameters(accountId, lastQuizId, pageable);
 
@@ -106,7 +106,7 @@ public class QuizGatewayRepository implements QuizRepository {
                                                          simpleQuizValue.createdAt
                                                  ),
                                                  Collectors.mapping(
-                                                         simpleQuizValue -> new QuizQuestionInfo(
+                                                         simpleQuizValue -> new QuizQuestionDto(
                                                                  simpleQuizValue.quizCategory,
                                                                  simpleQuizValue.questionContent
                                                          ),
@@ -115,7 +115,7 @@ public class QuizGatewayRepository implements QuizRepository {
                                          ))
                                          .entrySet()
                                          .stream()
-                                         .map(entry -> new SimpleQuizInfo(
+                                         .map(entry -> new SimpleQuizDto(
                                                  entry.getKey().id,
                                                  entry.getKey().accountId,
                                                  entry.getKey().solved,

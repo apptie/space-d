@@ -30,7 +30,7 @@ public enum QuizWordCountValidator {
                      .test(wordMetadata, requiredWordCount);
     }
 
-    public static boolean isInvalidate(QuizCategory category, WordMetadata wordMetadata, int requiredWordCount) {
+    public static boolean isBlocked(QuizCategory category, WordMetadata wordMetadata, int requiredWordCount) {
         return !isValidate(category, wordMetadata, requiredWordCount);
     }
 }

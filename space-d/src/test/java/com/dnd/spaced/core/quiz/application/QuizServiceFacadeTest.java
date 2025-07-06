@@ -34,13 +34,13 @@ import org.springframework.test.context.jdbc.Sql;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class QuizServiceTest {
+class QuizServiceFacadeTest {
 
     @Autowired
     ApplicationEvents events;
 
     @Autowired
-    QuizService quizService;
+    QuizServiceFacade quizServiceFacade;
 
     @Test
     void 용어_메타데이터가_정상적으로_설정되지_않다면_퀴즈를_생성할_수_없다() {
@@ -48,7 +48,7 @@ class QuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> quizService.createQuiz(1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.createQuiz(1L, request))
                 .isInstanceOf(WordMetadataNotFoundException.class)
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -60,7 +60,7 @@ class QuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> quizService.createQuiz(1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.createQuiz(1L, request))
                 .isInstanceOf(InvalidQuizWordCountException.class)
                 .hasMessage("퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
     }
@@ -73,7 +73,7 @@ class QuizServiceTest {
     })
     void 퀴즈를_조회한다() {
         // when
-        QuizResponse actual = quizService.readQuiz(1L, 1L);
+        QuizResponse actual = quizServiceFacade.readQuiz(1L, 1L);
 
         // then
         assertAll(
@@ -89,13 +89,16 @@ class QuizServiceTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/word.sql"})
+    @Sql(scripts = {
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/word.sql"
+    })
     void 퀴즈를_생성한다() {
         // given
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when
-        Long actual = quizService.createQuiz(1L, request);
+        Long actual = quizServiceFacade.createQuiz(1L, request);
 
         // then
         assertAll(
@@ -107,16 +110,19 @@ class QuizServiceTest {
     @Test
     void 유효하지_않는_퀴즈_id로_퀴즈를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> quizService.readQuiz(1L, -999L))
+        assertThatThrownBy(() -> quizServiceFacade.readQuiz(1L, -999L))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
+    @Sql(scripts = {
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/quiz.sql"
+    })
     void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> quizService.readQuiz(5L, 1L))
+        assertThatThrownBy(() -> quizServiceFacade.readQuiz(5L, 1L))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -134,7 +140,7 @@ class QuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> quizService.grade(1L, -999L, request))
+        assertThatThrownBy(() -> quizServiceFacade.grade(1L, -999L, request))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -157,7 +163,7 @@ class QuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertDoesNotThrow(() -> quizService.grade(1L, 1L, request));
+        assertDoesNotThrow(() -> quizServiceFacade.grade(1L, 1L, request));
     }
 
     @Test
@@ -178,7 +184,7 @@ class QuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> quizService.grade(1L, 1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.grade(1L, 1L, request))
                 .isInstanceOf(AlreadyGradeQuizException.class)
                 .hasMessage("이미 풀었던 퀴즈입니다.");
     }
@@ -195,7 +201,7 @@ class QuizServiceTest {
         ReadQuizGradedAnswerSearchRequest request = new ReadQuizGradedAnswerSearchRequest(null);
 
         // when
-        QuizGradedAnswerCollectionResponse actual = quizService.readGradedAnswers(
+        QuizGradedAnswerCollectionResponse actual = quizServiceFacade.readGradedAnswers(
                 1L, request, PageRequest.of(0, 10)
         );
 
@@ -219,7 +225,7 @@ class QuizServiceTest {
     })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
         // when
-        QuizGradedAnswerCollectionResponse actual = quizService.readGradedAnswers(1L, 1L);
+        QuizGradedAnswerCollectionResponse actual = quizServiceFacade.readGradedAnswers(1L, 1L);
 
         // then
         assertAll(
@@ -243,7 +249,7 @@ class QuizServiceTest {
         ReadAllQuizRequest request = new ReadAllQuizRequest(null);
 
         // when
-        QuizCollectionResponse actual = quizService.readQuizzes(1L, request, Pageable.ofSize(10));
+        QuizCollectionResponse actual = quizServiceFacade.readQuizzes(1L, request, Pageable.ofSize(10));
 
         // then
         assertAll(

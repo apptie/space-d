@@ -4,14 +4,14 @@ import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record SimpleQuizInfo(
+public record SimpleQuizDto(
         Long id,
         Long accountId,
         boolean solved,
         LocalDateTime createdAt,
-        List<QuizQuestionInfo> quizQuestions
+        List<QuizQuestionDto> quizQuestions
 ) {
 
-    public record QuizQuestionInfo(QuizCategory quizCategory, String questionExample) {
+    public record QuizQuestionDto(QuizCategory quizCategory, String questionExample) {
     }
 }

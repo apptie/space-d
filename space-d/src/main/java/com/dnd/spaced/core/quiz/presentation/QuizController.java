@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import com.dnd.spaced.core.quiz.application.QuizService;
+import com.dnd.spaced.core.quiz.application.QuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
@@ -30,14 +30,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class QuizController {
 
-    private final QuizService quizService;
+    private final QuizServiceFacade quizServiceFacade;
 
     @PostMapping
     public ResponseEntity<Void> createQuiz(
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody CreateQuizRequest request
     ) {
-        Long savedQuizId = quizService.createQuiz(accountId.id(), request);
+        Long savedQuizId = quizServiceFacade.createQuiz(accountId.id(), request);
         URI location = UriComponentsBuilder.fromPath("/quizzes/{quizId}")
                                            .buildAndExpand(savedQuizId)
                                            .toUri();
@@ -52,7 +52,7 @@ public class QuizController {
             @PathVariable Long quizId,
             @Valid @RequestBody GradeQuizRequest request
     ) {
-        quizService.grade(accountId.id(), quizId, request);
+        quizServiceFacade.grade(accountId.id(), quizId, request);
         URI location = UriComponentsBuilder.fromPath("/quizzes/{id}/graded-answer")
                                            .buildAndExpand(quizId)
                                            .toUri();
@@ -67,7 +67,7 @@ public class QuizController {
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
-        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(
+        QuizGradedAnswerCollectionResponse response = quizServiceFacade.readGradedAnswers(
                 accountId.id(),
                 request,
                 pageable
@@ -81,7 +81,7 @@ public class QuizController {
             @CurrentAccount AuthAccountId accountId,
             @PathVariable Long quizId
     ) {
-        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountId.id(), quizId);
+        QuizGradedAnswerCollectionResponse response = quizServiceFacade.readGradedAnswers(accountId.id(), quizId);
 
         return ResponseEntity.ok(response);
     }
@@ -91,7 +91,7 @@ public class QuizController {
             @CurrentAccount AuthAccountId accountId,
             @PathVariable Long quizId
     ) {
-        QuizResponse response = quizService.readQuiz(accountId.id(), quizId);
+        QuizResponse response = quizServiceFacade.readQuiz(accountId.id(), quizId);
 
         return ResponseEntity.ok(response);
     }
@@ -102,7 +102,7 @@ public class QuizController {
             ReadAllQuizRequest request,
             @QuizPageable Pageable pageable
     ) {
-        QuizCollectionResponse response = quizService.readQuizzes(accountId.id(), request, pageable);
+        QuizCollectionResponse response = quizServiceFacade.readQuizzes(accountId.id(), request, pageable);
 
         return ResponseEntity.ok(response);
     }

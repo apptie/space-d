@@ -3,7 +3,7 @@ package com.dnd.spaced.core.word.infrastructure.persistence;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.word.domain.Word;
 import com.dnd.spaced.core.word.domain.WordRandom;
-import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
+import com.dnd.spaced.core.word.domain.dto.SimpleWord;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.WordRandomRepository;
 import java.util.List;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 public class WordRandomGatewayRepository implements WordRandomRepository {
 
     private static final int RANDOM_BOUND = 1_000_000;
-    private static final RowMapper<SimpleWordInfo> simpleWordInfoRowMapper = (rs, ignoreRowNum) -> new SimpleWordInfo(
+    private static final RowMapper<SimpleWord> simpleWordInfoRowMapper = (rs, ignoreRowNum) -> new SimpleWord(
             rs.getLong(1),
             rs.getString(2),
             rs.getString(3),
@@ -45,10 +45,10 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
     }
 
     @Override
-    public List<SimpleWordInfo> findRandomAllBy(QuizCategory quizCategory, long limit) {
+    public List<SimpleWord> findRandomAllBy(QuizCategory quizCategory, long limit) {
         int random = ThreadLocalRandom.current().nextInt(RANDOM_BOUND);
 
-        List<SimpleWordInfo> result = findGoe(random, quizCategory, limit);
+        List<SimpleWord> result = findGoe(random, quizCategory, limit);
 
         if (result.size() < limit) {
             result.addAll(findLoe(random, quizCategory, limit));
@@ -57,7 +57,7 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
         return result.subList(0, (int) (limit));
     }
 
-    private List<SimpleWordInfo> findGoe(int random, QuizCategory quizCategory, long limit) {
+    private List<SimpleWord> findGoe(int random, QuizCategory quizCategory, long limit) {
         String sql = """
                 SELECT
                     w.id,
@@ -90,7 +90,7 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
         return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleWordInfoRowMapper);
     }
 
-    private List<SimpleWordInfo> findLoe(int random, QuizCategory quizCategory, long limit) {
+    private List<SimpleWord> findLoe(int random, QuizCategory quizCategory, long limit) {
         String sql = """
                 SELECT
                     w.id,
