@@ -1,7 +1,7 @@
 package com.dnd.spaced.global.auth.resolver;
 
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.AccountId;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +14,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthAccountArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final AuthStore store;
     private final AccountRepository accountRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentAccountInfo.class) && parameter.getParameterType()
-                                                                                      .equals(AuthAccountInfo.class);
+        return parameter.hasParameterAnnotation(CurrentAccount.class) && parameter.getParameterType()
+                                                                                  .equals(AuthAccountId.class);
     }
 
     @Override
@@ -32,26 +32,34 @@ public class AuthAccountInfoArgumentResolver implements HandlerMethodArgumentRes
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
-        AccountInfo accountInfo = store.get();
+        AccountId accountId = store.get();
 
-        validateAccountPrincipal(accountInfo);
+        validateAccountPrincipal(accountId);
 
-        Long accountId = accountInfo.accountId();
+        Long id = accountId.id();
 
-        validateExistsAccountId(accountId);
+        validateExistsAccountId(id);
 
-        return new AuthAccountInfo(accountInfo.accountId());
+        return new AuthAccountId(accountId.id());
     }
 
-    private void validateAccountPrincipal(AccountInfo accountInfo) {
-        if (accountInfo == null || accountInfo.accountId() == null) {
+    private void validateAccountPrincipal(AccountId accountId) {
+        if (isEmptyAccountId(accountId)) {
             throw new UnauthorizedException();
         }
+    }
+
+    private boolean isEmptyAccountId(AccountId accountId) {
+        return accountId == null || accountId.id() == null;
     }
 
     private void validateExistsAccountId(Long accountId) {
-        if (!accountRepository.existsBy(accountId)) {
+        if (isBrokenAccount(accountId)) {
             throw new UnauthorizedException();
         }
+    }
+
+    private boolean isBrokenAccount(Long accountId) {
+        return !accountRepository.existsBy(accountId);
     }
 }

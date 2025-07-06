@@ -1,7 +1,7 @@
 package com.dnd.spaced.global.auth.resolver;
 
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.AccountId;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +14,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class GuestAccountInfoArgumentResolver implements HandlerMethodArgumentResolver {
+public class GuestAccountArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final AuthStore store;
     private final AccountRepository accountRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentAccountInfo.class) && parameter.getParameterType()
-                                                                                      .equals(GuestAccountInfo.class);
+        return parameter.hasParameterAnnotation(CurrentAccount.class) && parameter.getParameterType()
+                                                                                  .equals(GuestAccountId.class);
     }
 
     @Override
@@ -32,24 +32,28 @@ public class GuestAccountInfoArgumentResolver implements HandlerMethodArgumentRe
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
-        AccountInfo accountInfo = store.get();
+        AccountId accountId = store.get();
 
-        if (isInvalidAccountPrincipal(accountInfo)) {
-            return new GuestAccountInfo();
+        if (isEmptyAccountPrincipal(accountId)) {
+            return new GuestAccountId();
         }
 
-        validateExistsAccountId(accountInfo.accountId());
+        validateExistsAccountId(accountId.id());
 
-        return new GuestAccountInfo(accountInfo.accountId());
+        return new GuestAccountId(accountId.id());
     }
 
-    private boolean isInvalidAccountPrincipal(AccountInfo accountInfo) {
-        return accountInfo == null || accountInfo.accountId() == null;
+    private boolean isEmptyAccountPrincipal(AccountId accountId) {
+        return accountId == null || accountId.id() == null;
     }
 
     private void validateExistsAccountId(Long accountId) {
-        if (!accountRepository.existsBy(accountId)) {
+        if (isBrokenAccount(accountId)) {
             throw new UnauthorizedException();
         }
+    }
+
+    private boolean isBrokenAccount(Long accountId) {
+        return !accountRepository.existsBy(accountId);
     }
 }

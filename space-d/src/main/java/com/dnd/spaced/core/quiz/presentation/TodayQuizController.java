@@ -7,9 +7,9 @@ import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
-import com.dnd.spaced.global.auth.resolver.GuestAccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountId;
+import com.dnd.spaced.global.auth.resolver.CurrentAccount;
+import com.dnd.spaced.global.auth.resolver.GuestAccountId;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -38,21 +38,21 @@ public class TodayQuizController {
 
     @GetMapping("/{todayQuizId}")
     public ResponseEntity<TodayQuizResponse> readTodayQuiz(
-            @CurrentAccountInfo GuestAccountInfo accountInfo,
+            @CurrentAccount GuestAccountId accountId,
             @PathVariable Long todayQuizId
     ) {
         return ResponseEntity.ok(
-                todayQuizService.readTodayQuiz(accountInfo.accountId(), todayQuizId)
+                todayQuizService.readTodayQuiz(accountId.id(), todayQuizId)
         );
     }
 
     @PostMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<Void> gradeTodayQuiz(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long todayQuizId,
             @Valid @RequestBody GradeTodayQuizRequest request
     ) {
-        todayQuizService.grade(accountInfo.accountId(), todayQuizId, request);
+        todayQuizService.grade(accountId.id(), todayQuizId, request);
         URI location = UriComponentsBuilder.fromPath("/today-quizzes/{id}/graded-answers")
                                            .buildAndExpand(todayQuizId)
                                            .toUri();
@@ -63,20 +63,20 @@ public class TodayQuizController {
 
     @GetMapping("/{todayQuizId}/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerResponse> readTargetTodayQuizGradedAnswers(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long todayQuizId
     ) {
-        return ResponseEntity.ok(todayQuizService.readTargetTodayQuizGradedAnswers(accountInfo.accountId(), todayQuizId));
+        return ResponseEntity.ok(todayQuizService.readTargetTodayQuizGradedAnswers(accountId.id(), todayQuizId));
     }
 
     @GetMapping("/graded-answers")
     public ResponseEntity<TodayQuizGradedAnswerCollectionResponse> readTodayQuizGradedAnswers(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             ReadTodayQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
         return ResponseEntity.ok(
-                todayQuizService.readTodayQuizGradedAnswers(accountInfo.accountId(), request, pageable)
+                todayQuizService.readTodayQuizGradedAnswers(accountId.id(), request, pageable)
         );
     }
 }

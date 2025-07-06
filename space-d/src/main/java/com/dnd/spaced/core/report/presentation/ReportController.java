@@ -2,8 +2,8 @@ package com.dnd.spaced.core.report.presentation;
 
 import com.dnd.spaced.core.report.application.ReportService;
 import com.dnd.spaced.core.report.application.dto.request.ReportRequest;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccount;
+import com.dnd.spaced.global.auth.resolver.AuthAccountId;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<Void> report(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody ReportRequest request
     ) {
-        reportService.report(accountInfo.accountId(), request);
+        reportService.report(accountId.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -1,8 +1,8 @@
 package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
-import com.dnd.spaced.global.auth.resolver.GuestAccountInfoArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.AuthAccountArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.GuestAccountArgumentResolver;
 import com.dnd.spaced.global.log.QueryTraceInterceptor;
 import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
@@ -38,8 +38,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
     private final QueryTraceInterceptor queryTraceInterceptor;
-    private final AuthAccountInfoArgumentResolver authAccountInfoArgumentResolver;
-    private final GuestAccountInfoArgumentResolver guestAccountInfoArgumentResolver;
+    private final AuthAccountArgumentResolver authAccountArgumentResolver;
+    private final GuestAccountArgumentResolver guestAccountArgumentResolver;
     private final ReportPageableArgumentResolver reportPageableArgumentResolver;
     private final BookmarkPageableArgumentResolver bookmarkPageableArgumentResolver;
     private final CommentPageableArgumentResolver commentPageableArgumentResolver;
@@ -73,8 +73,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authAccountInfoArgumentResolver);
-        resolvers.add(guestAccountInfoArgumentResolver);
+        resolvers.add(authAccountArgumentResolver);
+        resolvers.add(guestAccountArgumentResolver);
         resolvers.add(wordPageableArgumentResolver);
         resolvers.add(commentPageableArgumentResolver);
         resolvers.add(reportPageableArgumentResolver);
