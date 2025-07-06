@@ -42,7 +42,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                                               )
                                               .fetchOne();
 
-        if (result == null || result.wordDeleted()) {
+        if (isDeletedWord(result)) {
             return Optional.empty();
         }
 
@@ -64,7 +64,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                                               )
                                               .fetchOne();
 
-        return result != null && !result.wordDeleted;
+        return isExistBookmark(result);
     }
 
     @Override
@@ -95,9 +95,17 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                            .limit(pageable.getPageSize())
                            .fetch()
                            .stream()
-                           .filter(BookmarkWithWord::isNotWordDeleted)
+                           .filter(BookmarkWithWord::isValidWord)
                            .map(BookmarkWithWord::bookmark)
                            .toList();
+    }
+
+    private boolean isDeletedWord(BookmarkWithWord result) {
+        return result == null || result.wordDeleted();
+    }
+
+    private boolean isExistBookmark(BookmarkWithWord result) {
+        return result != null && !result.wordDeleted;
     }
 
     private BooleanExpression ltLastBookmarkId(Long lastBookmarkId) {
@@ -110,7 +118,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     public record BookmarkWithWord(Bookmark bookmark, boolean wordDeleted) {
 
-        public boolean isNotWordDeleted() {
+        boolean isValidWord() {
             return !wordDeleted();
         }
     }
