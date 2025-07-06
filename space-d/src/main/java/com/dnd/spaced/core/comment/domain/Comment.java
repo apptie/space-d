@@ -68,11 +68,11 @@ public class Comment extends BaseTimeEntity {
         return account.isEqualTo(this.writerId);
     }
 
-    public boolean isNotWriter(Account account) {
+    public boolean isReader(Account account) {
         return !isWriter(account);
     }
 
-    public boolean isNotWriter(Long accountId) {
+    public boolean isReader(Long accountId) {
         return !isWriter(accountId);
     }
 

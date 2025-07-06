@@ -67,13 +67,13 @@ public class CommentService {
     }
 
     private void validateDeleteAuthority(Comment comment, Long accountId) {
-        if (comment.isNotWriter(accountId)) {
+        if (comment.isReader(accountId)) {
             throw new ForbiddenCommentException("댓글을 삭제할 권한이 없습니다.");
         }
     }
 
     private void validateUpdateAuthority(Comment comment, Long accountId) {
-        if (comment.isNotWriter(accountId)) {
+        if (comment.isReader(accountId)) {
             throw new ForbiddenCommentException("댓글을 수정할 권한이 없습니다.");
         }
     }

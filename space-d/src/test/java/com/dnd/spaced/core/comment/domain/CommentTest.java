@@ -57,7 +57,7 @@ class CommentTest {
         Comment comment = new Comment(2L, 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(account);
+        boolean actual = comment.isReader(account);
 
         // then
         assertThat(actual).isTrue();
@@ -77,7 +77,7 @@ class CommentTest {
         Comment comment = new Comment(writer.getId(), 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(writer);
+        boolean actual = comment.isReader(writer);
 
         // then
         assertThat(actual).isFalse();
@@ -101,7 +101,7 @@ class CommentTest {
         Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(1L);
+        boolean actual = comment.isReader(1L);
 
         // then
         assertThat(actual).isFalse();
