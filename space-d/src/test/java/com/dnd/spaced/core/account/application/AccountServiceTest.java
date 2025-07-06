@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
-import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
@@ -55,7 +55,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 회원_경력_정보를_변경한다() {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 "1~2년 차"
@@ -79,7 +79,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 invalidJobGroupName,
                 "비공개",
                 "1~2년 차"
@@ -96,7 +96,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 invalidCompanyName,
                 "1~2년 차"
@@ -113,7 +113,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 invalidExperienceName
@@ -128,7 +128,7 @@ class AccountServiceTest {
     @Test
     void 없거나_탈퇴한_회원의_ID라면_경력_정보를_변경할_수_없다() {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 "1~2년 차"
@@ -150,7 +150,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 회원_프로필_정보를_변경한다(ProfileImageName profileImageName) {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "행복한지구001",
                 profileImageName.getKorean()
         );
@@ -172,7 +172,7 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "재빠른지구001",
                 invalidProfileImageKoreanName
         );
@@ -186,7 +186,7 @@ class AccountServiceTest {
     @Test
     void 없거나_탈퇴한_회원의_ID라면_프로필_정보를_변경할_수_없다() {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "재빠른지구001",
                 "earth.png"
         );

@@ -10,15 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class InitAccountCareerInfoService {
+public class InitAccountCareerService {
 
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void initCareerInfo(Long accountId, InitAccountCareerInfoRequest request) {
+    public void initCareer(Long accountId, InitAccountCareerInfoRequest request) {
         Account account = findPreInitializationAccount(accountId);
 
-        account.changeCareerInfo(request.jobGroupName(), request.companyName(), request.experienceName());
+        account.changeCareer(request.jobGroupName(), request.companyName(), request.experienceName());
     }
 
     private Account findPreInitializationAccount(Long accountId) {

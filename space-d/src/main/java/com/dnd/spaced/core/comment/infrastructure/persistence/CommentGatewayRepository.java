@@ -120,8 +120,8 @@ public class CommentGatewayRepository implements CommentRepository {
                 LikedCommentInfo.class,
                 comment,
                 like.id.isNotNull(),
-                account.profileInfo.nickname,
-                account.profileInfo.profileImage
+                account.profile.nickname,
+                account.profile.profileImage
         );
     }
 
@@ -129,8 +129,8 @@ public class CommentGatewayRepository implements CommentRepository {
         return Projections.constructor(
                 LikedCommentInfo.class,
                 comment,
-                account.profileInfo.nickname,
-                account.profileInfo.profileImage
+                account.profile.nickname,
+                account.profile.profileImage
         );
     }
 }

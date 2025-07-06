@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class SocialInfoTest {
+class SocialTest {
 
     @Test
     void 회원의_소셜_정보를_초기화한다() {
@@ -18,12 +18,12 @@ class SocialInfoTest {
         RegistrationId registrationId = RegistrationId.findBy("kakao");
 
         // when
-        SocialInfo socialInfo = new SocialInfo(registrationId, "41258");
+        Social social = new Social(registrationId, "41258");
 
         // then
         assertAll(
-                () -> assertThat(socialInfo.getSocialIdentifier()).isEqualTo("41258"),
-                () -> assertThat(socialInfo.getRegistrationId()).isEqualTo(registrationId)
+                () -> assertThat(social.getSocialIdentifier()).isEqualTo("41258"),
+                () -> assertThat(social.getRegistrationId()).isEqualTo(registrationId)
         );
     }
 }

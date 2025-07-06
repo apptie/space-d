@@ -3,7 +3,7 @@ package com.dnd.spaced.core.account.infrastructure.persistence;
 import static com.dnd.spaced.core.account.domain.QAccount.account;
 
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.embed.SocialInfo;
+import com.dnd.spaced.core.account.domain.embed.Social;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -43,9 +43,9 @@ public class AccountGatewayRepository implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> findBy(SocialInfo socialInfo) {
+    public Optional<Account> findBy(Social social) {
         Account result = queryFactory.selectFrom(account)
-                                     .where(eqSocialInfo(socialInfo))
+                                     .where(eqSocial(social))
                                      .fetchOne();
 
         return Optional.ofNullable(result);
@@ -54,22 +54,22 @@ public class AccountGatewayRepository implements AccountRepository {
     @Override
     public Optional<Account> findPreInitializationAccountBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
-                                     .where(eqAccountId(accountId), isNullCareerInfo())
+                                     .where(eqAccountId(accountId), isNullCareer())
                                      .fetchOne();
 
         return Optional.ofNullable(result);
     }
 
-    private BooleanExpression eqSocialInfo(SocialInfo socialInfo) {
-        return account.socialInfo.socialIdentifier.eq(socialInfo.getSocialIdentifier())
+    private BooleanExpression eqSocial(Social social) {
+        return account.social.socialIdentifier.eq(social.getSocialIdentifier())
                 .and(account.deleted.isFalse())
-                .and(account.socialInfo.registrationId.eq(socialInfo.getRegistrationId()));
+                .and(account.social.registrationId.eq(social.getRegistrationId()));
     }
 
-    private BooleanExpression isNullCareerInfo() {
-        return account.careerInfo.company.isNull()
-                                         .and(account.careerInfo.experience.isNull())
-                                         .and(account.careerInfo.jobGroup.isNull());
+    private BooleanExpression isNullCareer() {
+        return account.career.company.isNull()
+                                         .and(account.career.experience.isNull())
+                                         .and(account.career.jobGroup.isNull());
     }
 
     private BooleanExpression eqAccountId(Long accountId) {

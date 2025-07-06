@@ -1,8 +1,8 @@
 package com.dnd.spaced.core.account.domain;
 
-import com.dnd.spaced.core.account.domain.embed.CareerInfo;
-import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
-import com.dnd.spaced.core.account.domain.embed.SocialInfo;
+import com.dnd.spaced.core.account.domain.embed.Career;
+import com.dnd.spaced.core.account.domain.embed.Profile;
+import com.dnd.spaced.core.account.domain.embed.Social;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
@@ -37,13 +37,13 @@ public class Account extends BaseTimeEntity {
     private boolean deleted = false;
 
     @Embedded
-    private SocialInfo socialInfo;
+    private Social social;
 
     @Embedded
-    private ProfileInfo profileInfo;
+    private Profile profile;
 
     @Embedded
-    private CareerInfo careerInfo;
+    private Career career;
 
     @Builder
     private Account(
@@ -53,28 +53,28 @@ public class Account extends BaseTimeEntity {
             RegistrationId registrationId,
             String socialIdentifier
     ) {
-        this.profileInfo = ProfileInfo.of(nickname, profileImage);
+        this.profile = Profile.of(nickname, profileImage);
         this.role = role;
-        this.socialInfo = new SocialInfo(registrationId, socialIdentifier);
+        this.social = new Social(registrationId, socialIdentifier);
     }
 
     public void withdrawal() {
         this.deleted = true;
     }
 
-    public void changeCareerInfo(
+    public void changeCareer(
             String changedJobGroupName,
             String changedCompanyName,
             String changedExperienceName) {
-        this.careerInfo = CareerInfo.builder()
-                                    .jobGroupName(changedJobGroupName)
-                                    .companyName(changedCompanyName)
-                                    .experienceName(changedExperienceName)
-                                    .build();
+        this.career = Career.builder()
+                            .jobGroupName(changedJobGroupName)
+                            .companyName(changedCompanyName)
+                            .experienceName(changedExperienceName)
+                            .build();
     }
 
     public void changeProfileInfo(String changedNickname, String changedProfileImage) {
-        this.profileInfo = ProfileInfo.of(changedNickname, changedProfileImage);
+        this.profile = Profile.of(changedNickname, changedProfileImage);
     }
 
     public boolean isEqualTo(Long id) {

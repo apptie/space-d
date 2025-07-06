@@ -1,7 +1,7 @@
 package com.dnd.spaced.core.auth.application.internal;
 
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.embed.SocialInfo;
+import com.dnd.spaced.core.account.domain.embed.Social;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
@@ -17,9 +17,9 @@ public class LoginService {
 
     public LoggedInAccountInfoDto login(String registrationIdName, String socialIdentifier) {
         RegistrationId registrationId = RegistrationId.findBy(registrationIdName);
-        SocialInfo socialInfo = new SocialInfo(registrationId, socialIdentifier);
+        Social social = new Social(registrationId, socialIdentifier);
 
-        return accountRepository.findBy(socialInfo)
+        return accountRepository.findBy(social)
                                 .map(account ->
                                         new LoggedInAccountInfoDto(
                                                 account.getId(),

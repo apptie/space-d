@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileInfo {
+public class Profile {
 
     private static final int NICKNAME_MIN_LENGTH = 5;
     private static final int NICKNAME_MAX_LENGTH = 10;
@@ -23,10 +23,10 @@ public class ProfileInfo {
     private String nickname;
     private String profileImage;
 
-    public static ProfileInfo of(String nickname, String profileImage) {
+    public static Profile of(String nickname, String profileImage) {
         validateContent(nickname, profileImage);
 
-        return new ProfileInfo(nickname, profileImage);
+        return new Profile(nickname, profileImage);
     }
 
     private static void validateContent(String nickname, String profileImage) {
@@ -47,7 +47,7 @@ public class ProfileInfo {
         return profileImage == null || profileImage.isBlank();
     }
 
-    private ProfileInfo(String nickname, String profileImage) {
+    private Profile(String nickname, String profileImage) {
         this.nickname = nickname;
         this.profileImage = profileImage;
     }

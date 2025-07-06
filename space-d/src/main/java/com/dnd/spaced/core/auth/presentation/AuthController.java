@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.auth.presentation;
 
-import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
+import com.dnd.spaced.core.auth.application.InitAccountCareerService;
 import com.dnd.spaced.core.auth.application.RefreshTokenService;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
@@ -35,14 +35,14 @@ public class AuthController {
 
     private final TokenProperties tokenProperties;
     private final RefreshTokenService refreshTokenService;
-    private final InitAccountCareerInfoService initAccountCareerInfoService;
+    private final InitAccountCareerService initAccountCareerService;
 
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountCareerInfo(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
             @Valid @RequestBody InitAccountCareerInfoRequest request
     ) {
-        initAccountCareerInfoService.initCareerInfo(accountInfo.accountId(), request);
+        initAccountCareerService.initCareer(accountInfo.accountId(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -14,17 +14,17 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class CareerInfoTest {
+class CareerTest {
 
     @Test
     void 경력_정보를_초기화한다() {
         // when & then
         assertDoesNotThrow(
-                () -> CareerInfo.builder()
-                                .jobGroupName("개발자")
-                                .experienceName("1~2년 차")
-                                .companyName("비공개")
-                                .build()
+                () -> Career.builder()
+                            .jobGroupName("개발자")
+                            .experienceName("1~2년 차")
+                            .companyName("비공개")
+                            .build()
         );
     }
 
@@ -33,11 +33,11 @@ class CareerInfoTest {
     void 유효한_경력이_아니라면_경력_정보를_초기화할_수_없다(String invalidExperienceName) {
         // when & then
         assertThatThrownBy(
-                () -> CareerInfo.builder()
-                                .jobGroupName("개발자")
-                                .experienceName(invalidExperienceName)
-                                .companyName("비공개")
-                                .build()
+                () -> Career.builder()
+                            .jobGroupName("개발자")
+                            .experienceName(invalidExperienceName)
+                            .companyName("비공개")
+                            .build()
         ).isInstanceOf(InvalidExperienceException.class)
          .hasMessageContaining("잘못된 경력");
     }
@@ -47,11 +47,11 @@ class CareerInfoTest {
     void 유효한_회사명이_아니라면_경력_정보를_초기화할_수_없다(String invalidCompanyName) {
         // when & then
         assertThatThrownBy(
-                () -> CareerInfo.builder()
-                                .jobGroupName("개발자")
-                                .experienceName("1~2년 차")
-                                .companyName(invalidCompanyName)
-                                .build()
+                () -> Career.builder()
+                            .jobGroupName("개발자")
+                            .experienceName("1~2년 차")
+                            .companyName(invalidCompanyName)
+                            .build()
         ).isInstanceOf(InvalidCompanyException.class)
          .hasMessageContaining("잘못된 회사 이름");
     }
@@ -61,11 +61,11 @@ class CareerInfoTest {
     void 유효한_직군_이름이_아니라면_경력_정보를_초기화할_수_없다(String invalidJobGroupName) {
         // when & then
         assertThatThrownBy(
-                () -> CareerInfo.builder()
-                                .jobGroupName(invalidJobGroupName)
-                                .experienceName("1~2년 차")
-                                .companyName("비공개")
-                                .build()
+                () -> Career.builder()
+                            .jobGroupName(invalidJobGroupName)
+                            .experienceName("1~2년 차")
+                            .companyName("비공개")
+                            .build()
         ).isInstanceOf(InvalidJobGroupException.class)
          .hasMessageContaining("잘못된 직군 이름");
     }

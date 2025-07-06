@@ -1,8 +1,8 @@
 package com.dnd.spaced.core.account.presentation;
 
 import com.dnd.spaced.core.account.application.AccountService;
-import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
-import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
 import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
@@ -34,7 +34,7 @@ public class AccountController {
     @PutMapping("/career-info")
     public ResponseEntity<Void> changeCareerInfo(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
-            @Valid @RequestBody ChangeCareerInfoRequest request
+            @Valid @RequestBody ChangeCareerRequest request
     ) {
         accountService.changeCareerInfo(accountInfo.accountId(), request);
 
@@ -44,7 +44,7 @@ public class AccountController {
     @PutMapping("/profile-info")
     public ResponseEntity<Void> changeProfileInfo(
             @CurrentAccountInfo AuthAccountInfo accountInfo,
-            @Valid @RequestBody ChangeProfileInfoRequest request
+            @Valid @RequestBody ChangeProfileRequest request
     ) {
         accountService.changeProfileInfo(accountInfo.accountId(), request);
 

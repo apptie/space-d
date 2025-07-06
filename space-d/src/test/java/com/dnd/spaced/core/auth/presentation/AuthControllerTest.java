@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.auth.application.InitAccountCareerInfoService;
+import com.dnd.spaced.core.auth.application.InitAccountCareerService;
 import com.dnd.spaced.core.auth.application.RefreshTokenService;
 import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
@@ -40,7 +40,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class AuthControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    InitAccountCareerInfoService initAccountCareerInfoService;
+    InitAccountCareerService initAccountCareerService;
 
     @Autowired
     RefreshTokenService refreshTokenService;
@@ -49,8 +49,8 @@ class AuthControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원_프로필_초기화_요청_성공_테스트() throws Exception {
         // given
-        willDoNothing().given(initAccountCareerInfoService)
-                       .initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
+        willDoNothing().given(initAccountCareerService)
+                       .initCareer(anyLong(), any(InitAccountCareerInfoRequest.class));
         InitAccountCareerInfoRequest request = new InitAccountCareerInfoRequest(
                 "개발자",
                 "중소기업",
@@ -66,7 +66,7 @@ class AuthControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(initAccountCareerInfoService).initCareerInfo(anyLong(), any(InitAccountCareerInfoRequest.class));
+        verify(initAccountCareerService).initCareer(anyLong(), any(InitAccountCareerInfoRequest.class));
 
         회원_프로필_초기화_요청_문서화(resultActions);
     }

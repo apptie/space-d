@@ -1,8 +1,8 @@
 package com.dnd.spaced.core.account.application;
 
 import com.dnd.spaced.core.account.application.dto.mapper.AccountResponseMapper;
-import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
-import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.Account;
@@ -26,10 +26,10 @@ public class AccountService {
     }
 
     @Transactional
-    public void changeCareerInfo(Long accountId, ChangeCareerInfoRequest request) {
+    public void changeCareerInfo(Long accountId, ChangeCareerRequest request) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
 
-        authorizedAccount.changeCareerInfo(
+        authorizedAccount.changeCareer(
                 request.changedJobGroupName(),
                 request.changedCompanyName(),
                 request.changedExperienceName()
@@ -37,7 +37,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void changeProfileInfo(Long accountId, ChangeProfileInfoRequest request) {
+    public void changeProfileInfo(Long accountId, ChangeProfileRequest request) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
         ProfileImageName changedProfileImageName = ProfileImageName.findBy(request.changedProfileImageKoreanName());
 

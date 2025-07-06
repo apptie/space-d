@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.domain.embed.CareerInfo;
+import com.dnd.spaced.core.account.domain.embed.Career;
 import com.dnd.spaced.core.account.domain.embed.exception.InvalidNicknameException;
 import com.dnd.spaced.core.account.domain.embed.exception.InvalidProfileImageException;
 import com.dnd.spaced.core.account.domain.enums.Company;
@@ -44,10 +44,10 @@ class AccountTest {
         );
 
         assertAll(
-                () -> assertThat(actual.getSocialInfo().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
-                () -> assertThat(actual.getSocialInfo().getSocialIdentifier()).isEqualTo("12345"),
-                () -> assertThat(actual.getProfileInfo().getNickname()).isEqualTo("재빠른지구001"),
-                () -> assertThat(actual.getProfileInfo().getProfileImage()).isEqualTo("earth.png"),
+                () -> assertThat(actual.getSocial().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
+                () -> assertThat(actual.getSocial().getSocialIdentifier()).isEqualTo("12345"),
+                () -> assertThat(actual.getProfile().getNickname()).isEqualTo("재빠른지구001"),
+                () -> assertThat(actual.getProfile().getProfileImage()).isEqualTo("earth.png"),
                 () -> assertThat(actual.getRole()).isEqualTo(Role.ROLE_USER)
         );
     }
@@ -106,15 +106,15 @@ class AccountTest {
                                  .build();
 
         // when
-        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
+        account.changeCareer("개발자", "비공개", "1~2년 차");
 
         // then
-        CareerInfo careerInfo = account.getCareerInfo();
+        Career career = account.getCareer();
 
         assertAll(
-                () -> assertThat(careerInfo.getCompany()).isEqualTo(Company.BLIND),
-                () -> assertThat(careerInfo.getJobGroup()).isEqualTo(JobGroup.DEVELOP),
-                () -> assertThat(careerInfo.getExperience()).isEqualTo(Experience.BETWEEN_FIRST_SECOND)
+                () -> assertThat(career.getCompany()).isEqualTo(Company.BLIND),
+                () -> assertThat(career.getJobGroup()).isEqualTo(JobGroup.DEVELOP),
+                () -> assertThat(career.getExperience()).isEqualTo(Experience.BETWEEN_FIRST_SECOND)
         );
     }
 
@@ -132,7 +132,7 @@ class AccountTest {
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         "개발자",
                         invalidCompanyName,
                         "1~2년 차"
@@ -156,7 +156,7 @@ class AccountTest {
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         invalidJobGroupName,
                         "비공개",
                         "1~2년 차"
@@ -180,7 +180,7 @@ class AccountTest {
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         "개발자",
                         "비공개",
                         invalidExperienceName
@@ -209,8 +209,8 @@ class AccountTest {
 
         // then
         assertAll(
-                () -> assertThat(account.getProfileInfo().getNickname()).isEqualTo(changedNickname),
-                () -> assertThat(account.getProfileInfo().getProfileImage()).isEqualTo(changedProfileImage)
+                () -> assertThat(account.getProfile().getNickname()).isEqualTo(changedNickname),
+                () -> assertThat(account.getProfile().getProfileImage()).isEqualTo(changedProfileImage)
         );
     }
 

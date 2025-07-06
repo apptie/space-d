@@ -21,10 +21,10 @@ import org.springframework.test.context.jdbc.Sql;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class InitAccountCareerInfoServiceTest {
+class InitAccountCareerServiceTest {
 
     @Autowired
-    InitAccountCareerInfoService initAccountCareerInfoService;
+    InitAccountCareerService initAccountCareerService;
 
     @Test
     @Sql("classpath:sql/auth/account.sql")
@@ -37,7 +37,7 @@ class InitAccountCareerInfoServiceTest {
         );
 
         // when & then
-        assertDoesNotThrow(() -> initAccountCareerInfoService.initCareerInfo(1L, request));
+        assertDoesNotThrow(() -> initAccountCareerService.initCareer(1L, request));
     }
 
     @ParameterizedTest(name = "회사명이 {0}일 때 경력 정보를 초기화할 수 없다")
@@ -52,7 +52,7 @@ class InitAccountCareerInfoServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(1L, request))
+        assertThatThrownBy(() -> initAccountCareerService.initCareer(1L, request))
                 .isInstanceOf(InvalidCompanyException.class)
                 .hasMessageContaining("잘못된 회사 이름");
     }
@@ -69,7 +69,7 @@ class InitAccountCareerInfoServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(1L, request))
+        assertThatThrownBy(() -> initAccountCareerService.initCareer(1L, request))
                 .isInstanceOf(InvalidJobGroupException.class)
                 .hasMessageContaining("잘못된 직군 이름");
     }
@@ -86,7 +86,7 @@ class InitAccountCareerInfoServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(1L, request))
+        assertThatThrownBy(() -> initAccountCareerService.initCareer(1L, request))
                 .isInstanceOf(InvalidExperienceException.class)
                 .hasMessageContaining("잘못된 경력");
     }
@@ -101,7 +101,7 @@ class InitAccountCareerInfoServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> initAccountCareerInfoService.initCareerInfo(-999L, request))
+        assertThatThrownBy(() -> initAccountCareerService.initCareer(-999L, request))
                 .isInstanceOf(ForbiddenInitCareerInfoException.class)
                 .hasMessage("최초로 가입한 회원이 아닙니다.");
     }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CareerInfo {
+public class Career {
 
     @Enumerated(EnumType.STRING)
     private JobGroup jobGroup;
@@ -26,7 +26,7 @@ public class CareerInfo {
     private Experience experience;
 
     @Builder
-    private CareerInfo(String jobGroupName, String companyName, String experienceName) {
+    private Career(String jobGroupName, String companyName, String experienceName) {
         this.jobGroup = JobGroup.findBy(jobGroupName);
         this.company = Company.findBy(companyName);
         this.experience = Experience.findBy(experienceName);

@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SocialInfo {
+public class Social {
 
     @Enumerated(EnumType.STRING)
     private RegistrationId registrationId;
 
     private String socialIdentifier;
 
-    public SocialInfo(RegistrationId registrationId, String socialIdentifier) {
+    public Social(RegistrationId registrationId, String socialIdentifier) {
         this.registrationId = registrationId;
         this.socialIdentifier = socialIdentifier;
     }
