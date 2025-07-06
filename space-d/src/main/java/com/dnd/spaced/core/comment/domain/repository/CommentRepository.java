@@ -14,8 +14,6 @@ public interface CommentRepository {
 
     List<LikedCommentInfo> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable);
 
-    void delete(Comment comment);
-
     void increaseLikeCount(Long commentId);
 
     void decreaseLikeCount(Long commentId);

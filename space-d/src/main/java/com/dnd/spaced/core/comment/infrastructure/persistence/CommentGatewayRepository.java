@@ -32,7 +32,11 @@ public class CommentGatewayRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findBy(Long commentId) {
-        return commentCrudRepository.findById(commentId);
+        Comment result = queryFactory.selectFrom(comment)
+                                     .where(comment.id.eq(commentId), comment.deleted.isFalse())
+                                     .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -45,15 +49,10 @@ public class CommentGatewayRepository implements CommentRepository {
     }
 
     @Override
-    public void delete(Comment comment) {
-        commentCrudRepository.delete(comment);
-    }
-
-    @Override
     public void increaseLikeCount(Long commentId) {
         queryFactory.update(comment)
                     .set(comment.likeCount, comment.likeCount.add(1))
-                    .where(comment.id.eq(commentId))
+                    .where(comment.id.eq(commentId), comment.deleted.isFalse())
                     .execute();
     }
 
@@ -61,7 +60,7 @@ public class CommentGatewayRepository implements CommentRepository {
     public void decreaseLikeCount(Long commentId) {
         queryFactory.update(comment)
                     .set(comment.likeCount, comment.likeCount.subtract(1))
-                    .where(comment.id.eq(commentId))
+                    .where(comment.id.eq(commentId), comment.deleted.isFalse())
                     .execute();
     }
 
@@ -78,7 +77,7 @@ public class CommentGatewayRepository implements CommentRepository {
                            .where(
                                    comment.wordId.eq(wordId),
                                    comment.deleted.isFalse(),
-                                   calculateLastIdExpression(lastCommentId)
+                                   gtLastCommentId(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
                            .limit(pageable.getPageSize())
@@ -92,19 +91,11 @@ public class CommentGatewayRepository implements CommentRepository {
                            .where(
                                    comment.wordId.eq(wordId),
                                    comment.deleted.isFalse(),
-                                   calculateLastIdExpression(lastCommentId)
+                                   gtLastCommentId(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
                            .limit(pageable.getPageSize())
                            .fetch();
-    }
-
-    private BooleanExpression calculateLastIdExpression(Long lastCommentId) {
-        if (lastCommentId == null) {
-            return null;
-        }
-
-        return gtLastCommentId(lastCommentId);
     }
 
     private BooleanExpression gtLastCommentId(Long commentId) {
