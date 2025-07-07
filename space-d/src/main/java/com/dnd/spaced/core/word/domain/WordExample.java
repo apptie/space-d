@@ -71,8 +71,4 @@ public class WordExample extends BaseTimeEntity {
     public void deleted() {
         this.deleted = true;
     }
-
-    public boolean isEqualTo(Long id) {
-        return this.id.equals(id);
-    }
 }

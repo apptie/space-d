@@ -57,12 +57,12 @@ public class Word extends BaseTimeEntity {
 
     @Builder
     private Word(String name, String meaning, String categoryName) {
-        validateContent(name);
+        validateName(name);
 
         this.name = name;
         this.wordMeaning = new WordMeaning(meaning);
         this.category = Category.findBy(categoryName)
-                                .orElseThrow(() -> new InvalidCategoryNameException(String.format(EXCEPTION_FORMAT, name)));;
+                                .orElseThrow(() -> new InvalidCategoryNameException(String.format(EXCEPTION_FORMAT, name)));
     }
 
     public void addPronunciation(Pronunciation pronunciation) {
@@ -87,7 +87,7 @@ public class Word extends BaseTimeEntity {
         this.deleted = true;
     }
 
-    private void validateContent(String name) {
+    private void validateName(String name) {
         if (isInvalidName(name)) {
             throw new InvalidWordNameException("용어 이름은 null이거나 비어 있을 수 없습니다.");
         }
