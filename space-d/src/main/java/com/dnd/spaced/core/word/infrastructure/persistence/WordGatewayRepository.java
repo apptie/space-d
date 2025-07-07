@@ -34,7 +34,7 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public void updateViewCount(Long wordId) {
+    public void addViewCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.viewCount, word.viewCount.add(1))
                     .where(word.id.eq(wordId), word.deleted.isFalse())
@@ -42,7 +42,7 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos) {
+    public void addViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos) {
         for (WordViewCountStatisticsDto dto : wordViewCountStatisticsDtos) {
             queryFactory.update(word)
                         .set(word.viewCount, word.viewCount.add(dto.viewCount()))
@@ -60,7 +60,7 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public void updateSubtractBookmarkCount(Long wordId) {
+    public void subtractBookmarkCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.bookmarkCount, word.bookmarkCount.subtract(1))
                     .where(word.id.eq(wordId), word.deleted.isFalse())

@@ -26,6 +26,6 @@ public class WordBookmarkCountListener {
     @EventListener
     @Transactional
     public void listen(WordBookmarkCountDecrementedEvent event) {
-        wordRepository.updateSubtractBookmarkCount(event.wordId());
+        wordRepository.subtractBookmarkCount(event.wordId());
     }
 }

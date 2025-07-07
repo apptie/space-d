@@ -54,7 +54,7 @@ public class PopularWordScheduler {
                                               .toList();
         List<WordViewCountStatisticsDto> dtos = wordViewCountStatisticsRepository.findAllBy(ids, yesterday);
 
-        wordRepository.updateViewCount(dtos);
+        wordRepository.addViewCount(dtos);
     }
 
     private List<PopularWord> calculatePopularWordInfo(List<ViewCountStatisticsRank> ranking, List<String> names) {
