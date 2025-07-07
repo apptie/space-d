@@ -50,7 +50,7 @@ class ReportStatusTest {
         ReportStatus reportStatus = ReportStatus.PROCESSED;
 
         // when
-        boolean actual = reportStatus.isProcess();
+        boolean actual = reportStatus.isProcessed();
 
         // then
         assertThat(actual).isTrue();

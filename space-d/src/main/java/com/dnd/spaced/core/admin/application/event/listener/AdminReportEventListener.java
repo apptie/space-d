@@ -31,7 +31,7 @@ public class AdminReportEventListener {
     }
 
     private void postProcessReportBy(ReportStatus reportStatus, Comment comment) {
-        if (reportStatus.isProcess()) {
+        if (reportStatus.isProcessed()) {
             comment.delete();
             return;
         }
