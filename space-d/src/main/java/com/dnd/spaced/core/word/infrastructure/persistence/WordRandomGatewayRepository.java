@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 public class WordRandomGatewayRepository implements WordRandomRepository {
 
     private static final int RANDOM_BOUND = 1_000_000;
-    private static final RowMapper<SimpleWord> simpleWordInfoRowMapper = (rs, ignoreRowNum) -> new SimpleWord(
+    private static final RowMapper<SimpleWord> simpleWordRowMapper = (rs, ignoreRowNum) -> new SimpleWord(
             rs.getLong(1),
             rs.getString(2),
             rs.getString(3),
@@ -28,10 +28,7 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
     private final WordRandomCrudRepository wordRandomCrudRepository;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public WordRandomGatewayRepository(
-            WordRandomCrudRepository wordRandomCrudRepository,
-            JdbcTemplate jdbcTemplate
-    ) {
+    public WordRandomGatewayRepository(WordRandomCrudRepository wordRandomCrudRepository, JdbcTemplate jdbcTemplate) {
         this.wordRandomCrudRepository = wordRandomCrudRepository;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
@@ -87,7 +84,7 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
             sqlParameters.addValue("category", quizCategory.name());
         }
 
-        return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleWordInfoRowMapper);
+        return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleWordRowMapper);
     }
 
     private List<SimpleWord> findLoe(int random, QuizCategory quizCategory, long limit) {
@@ -120,6 +117,6 @@ public class WordRandomGatewayRepository implements WordRandomRepository {
             sqlParameters.addValue("category", quizCategory.name());
         }
 
-        return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleWordInfoRowMapper);
+        return namedParameterJdbcTemplate.query(sql, sqlParameters, simpleWordRowMapper);
     }
 }
