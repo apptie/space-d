@@ -1,7 +1,6 @@
 package com.dnd.spaced.core.admin.application;
 
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
-import com.dnd.spaced.core.quiz.application.enums.QuizWordCountValidator;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
@@ -12,6 +11,7 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizOptionRepository;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
+import com.dnd.spaced.core.quiz.domain.service.QuizWordCountValidator;
 import com.dnd.spaced.core.word.domain.WordMetadata;
 import com.dnd.spaced.core.word.domain.dto.SimpleWord;
 import com.dnd.spaced.core.word.domain.repository.WordMetadataRepository;
@@ -71,7 +71,9 @@ public class AdminTodayQuizService {
     }
 
     private void validateQuizWordCount(QuizCategory quizCategory, WordMetadata wordMetadata) {
-        if (QuizWordCountValidator.isBlocked(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
+        QuizWordCountValidator validator = QuizWordCountValidator.create();
+
+        if (validator.isInvalidate(quizCategory, wordMetadata, REQUIRED_QUIZ_WORD_COUNT)) {
             throw new InvalidTodayQuizWordCountException("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
         }
     }
