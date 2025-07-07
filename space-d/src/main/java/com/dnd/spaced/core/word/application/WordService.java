@@ -9,10 +9,10 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountIncrementEvent;
 import com.dnd.spaced.core.word.application.event.dto.WordViewCountStatisticsEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
-import com.dnd.spaced.core.word.domain.dto.WordInfo;
+import com.dnd.spaced.core.word.domain.dto.WordView;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.repository.PopularWordRepository;
-import com.dnd.spaced.core.word.domain.repository.WordInfoRepository;
+import com.dnd.spaced.core.word.domain.repository.WordViewRepository;
 import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
@@ -29,12 +29,12 @@ import org.springframework.stereotype.Service;
 public class WordService {
 
     private final Clock clock;
-    private final WordInfoRepository wordInfoRepository;
+    private final WordViewRepository wordViewRepository;
     private final PopularWordRepository popularWordRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public WordResponse readWord(Long wordId) {
-        WordInfo word = findWord(wordId);
+        WordView word = findWord(wordId);
 
         publishWordViewCountIncrementedEvent(word);
         return WordApplicationMapper.toPronunciationInfoDto(word);
@@ -45,7 +45,7 @@ public class WordService {
                                     .orElse(null);
         Category lastCategory = Category.findBy(request.lastCategoryName())
                                         .orElse(null);
-        List<WordInfo> words = wordInfoRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
+        List<WordView> words = wordViewRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -64,7 +64,7 @@ public class WordService {
                 pageable,
                 request.lastWordName(),
                 lastCategory);
-        List<WordInfo> words = wordInfoRepository.search(wordSearchCondition, wordSearchPageRequest);
+        List<WordView> words = wordViewRepository.search(wordSearchCondition, wordSearchPageRequest);
 
         return WordApplicationMapper.toWordCollectionDto(words);
     }
@@ -75,12 +75,12 @@ public class WordService {
         return WordApplicationMapper.toPopularWordCollectionDto(popularWords);
     }
 
-    private WordInfo findWord(Long wordId) {
-        return wordInfoRepository.findBy(wordId)
+    private WordView findWord(Long wordId) {
+        return wordViewRepository.findBy(wordId)
                                  .orElseThrow(() -> new WordNotFoundException("지정한 ID에 해당하는 용어를 찾을 수 없습니다."));
     }
 
-    private void publishWordViewCountIncrementedEvent(WordInfo word) {
+    private void publishWordViewCountIncrementedEvent(WordView word) {
         eventPublisher.publishEvent(new WordViewCountIncrementEvent(word.id(), LocalDateTime.now(clock)));
         eventPublisher.publishEvent(new WordViewCountStatisticsEvent(word.id(), LocalDateTime.now(clock)));
     }

@@ -5,20 +5,20 @@ import com.dnd.spaced.core.word.domain.enums.Category;
 import com.dnd.spaced.core.word.domain.enums.PronunciationType;
 import java.util.List;
 
-public record WordInfo(
+public record WordView(
         Long id,
         String name,
         Category category,
         WordMeaning wordMeaning,
-        List<PronunciationInfo> pronunciations,
-        List<WordExampleInfo> wordExamples,
+        List<PronunciationView> pronunciations,
+        List<WordExampleView> wordExamples,
         long viewCount,
         long bookmarkCount
 ) {
 
-    public record PronunciationInfo(Long id, Long wordId, String content, PronunciationType type) {
+    public record PronunciationView(Long id, Long wordId, String content, PronunciationType type) {
     }
 
-    public record WordExampleInfo(Long id, Long wordId, String example) {
+    public record WordExampleView(Long id, Long wordId, String example) {
     }
 }

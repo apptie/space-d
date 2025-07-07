@@ -5,9 +5,9 @@ import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionRe
 import com.dnd.spaced.core.word.application.dto.response.WordCollectionResponse;
 import com.dnd.spaced.core.word.application.dto.response.WordResponse;
 import com.dnd.spaced.core.word.application.dto.response.WordResponse.PronunciationResponse;
-import com.dnd.spaced.core.word.domain.dto.WordInfo;
-import com.dnd.spaced.core.word.domain.dto.WordInfo.PronunciationInfo;
-import com.dnd.spaced.core.word.domain.dto.WordInfo.WordExampleInfo;
+import com.dnd.spaced.core.word.domain.dto.WordView;
+import com.dnd.spaced.core.word.domain.dto.WordView.PronunciationView;
+import com.dnd.spaced.core.word.domain.dto.WordView.WordExampleView;
 import com.dnd.spaced.core.word.domain.dto.PopularWord;
 import java.util.List;
 import lombok.AccessLevel;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class WordApplicationMapper {
 
-    public static WordCollectionResponse toWordCollectionDto(List<WordInfo> words) {
+    public static WordCollectionResponse toWordCollectionDto(List<WordView> words) {
         if (words.isEmpty()) {
             return new WordCollectionResponse(List.of(), null);
         }
@@ -28,11 +28,11 @@ public final class WordApplicationMapper {
         return new WordCollectionResponse(wordResponses, wordResponses.get(wordResponses.size() - 1).name());
     }
 
-    public static WordResponse toPronunciationInfoDto(WordInfo word) {
+    public static WordResponse toPronunciationInfoDto(WordView word) {
         List<PronunciationResponse> pronunciations = toPronunciationInfoDto(word.pronunciations());
         List<String> examples = word.wordExamples()
                                     .stream()
-                                    .map(WordExampleInfo::example)
+                                    .map(WordExampleView::example)
                                     .toList();
 
         return new WordResponse(
@@ -61,7 +61,7 @@ public final class WordApplicationMapper {
         return new PopularWordCollectionResponse(responses);
     }
 
-    private static List<PronunciationResponse> toPronunciationInfoDto(List<PronunciationInfo> pronunciations) {
+    private static List<PronunciationResponse> toPronunciationInfoDto(List<PronunciationView> pronunciations) {
         return pronunciations.stream()
                              .map(
                                      pronunciation -> new PronunciationResponse(

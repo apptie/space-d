@@ -6,10 +6,10 @@ import static com.dnd.spaced.core.word.domain.QWordExample.wordExample;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.dto.WordInfo;
-import com.dnd.spaced.core.word.domain.dto.mapper.WordInfoMapper;
+import com.dnd.spaced.core.word.domain.dto.WordView;
+import com.dnd.spaced.core.word.domain.dto.mapper.WordViewMapper;
 import com.dnd.spaced.core.word.domain.enums.Category;
-import com.dnd.spaced.core.word.domain.repository.WordInfoRepository;
+import com.dnd.spaced.core.word.domain.repository.WordViewRepository;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchCondition;
 import com.dnd.spaced.core.word.domain.repository.dto.request.WordSearchPageRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -27,12 +27,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class WordInfoGatewayRepository implements WordInfoRepository {
+public class WordViewGatewayRepository implements WordViewRepository {
 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<WordInfo> findBy(Long wordId) {
+    public Optional<WordView> findBy(Long wordId) {
         Word result = findWord(wordId);
 
         if (result == null) {
@@ -41,14 +41,17 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
 
         List<Pronunciation> pronunciations = findPronunciations(result);
 
-        return Optional.of(WordInfoMapper.toDto(result, pronunciations));
+        return Optional.of(WordViewMapper.toDto(result, pronunciations));
     }
 
     @Override
-    public List<WordInfo> findAllBy(Category category, String lastWordName, Category lastCategory, Pageable pageable) {
+    public List<WordView> findAllBy(Category category, String lastWordName, Category lastCategory, Pageable pageable) {
         List<Long> wordIds = queryFactory.select(word.id)
                                          .from(word)
-                                         .where(buildWordPaginationCondition(category, lastWordName, lastCategory))
+                                         .where(
+                                                 buildWordPaginationCondition(category, lastWordName, lastCategory),
+                                                 word.deleted.isFalse()
+                                         )
                                          .orderBy(word.name.asc(), word.category.asc(), word.id.desc())
                                          .limit(pageable.getPageSize())
                                          .fetch();
@@ -57,18 +60,18 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
             return Collections.emptyList();
         }
 
-        return mapToWordInfos(wordIds);
+        return mapToWordViews(wordIds);
     }
 
     @Override
-    public List<WordInfo> search(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
+    public List<WordView> search(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
         List<Long> wordIds = fetchFilteredWordIds(condition, pageRequest);
 
         if (wordIds.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return mapToWordInfos(wordIds);
+        return mapToWordViews(wordIds);
     }
 
     private Word findWord(Long wordId) {
@@ -100,27 +103,6 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
         }
 
         return null;
-    }
-
-    private Map<Long, Word> fetchWordsWithExamples(List<Long> wordIds) {
-        return queryFactory.selectFrom(word)
-                           .innerJoin(word.wordExamples, wordExample).fetchJoin()
-                           .where(word.id.in(wordIds), wordExample.deleted.isFalse())
-                           .fetch()
-                           .stream()
-                           .collect(Collectors.toMap(Word::getId, Function.identity()));
-    }
-
-    private Map<Long, List<Pronunciation>> fetchPronunciations(List<Long> wordIds) {
-        return queryFactory
-                .selectFrom(pronunciation)
-                .where(pronunciation.word.id.in(wordIds), pronunciation.deleted.isFalse())
-                .fetch()
-                .stream()
-                .collect(Collectors.groupingBy(
-                        pronunciation -> pronunciation.getWord().getId(),
-                        Collectors.mapping(Function.identity(), Collectors.toList())
-                ));
     }
 
     private List<Long> fetchFilteredWordIds(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
@@ -168,12 +150,32 @@ public class WordInfoGatewayRepository implements WordInfoRepository {
                              .exists();
     }
 
-    private List<WordInfo> mapToWordInfos(List<Long> wordIds) {
+    private List<WordView> mapToWordViews(List<Long> wordIds) {
         Map<Long, Word> wordMap = fetchWordsWithExamples(wordIds);
         Map<Long, List<Pronunciation>> pronunciationMap = fetchPronunciations(wordIds);
 
         return wordIds.stream()
-                      .map(id -> WordInfoMapper.toDto(wordMap.get(id), pronunciationMap.get(id)))
+                      .map(id -> WordViewMapper.toDto(wordMap.get(id), pronunciationMap.get(id)))
                       .toList();
+    }
+
+    private Map<Long, Word> fetchWordsWithExamples(List<Long> wordIds) {
+        return queryFactory.selectFrom(word)
+                           .innerJoin(word.wordExamples, wordExample).fetchJoin()
+                           .where(word.id.in(wordIds), wordExample.deleted.isFalse())
+                           .fetch()
+                           .stream()
+                           .collect(Collectors.toMap(Word::getId, Function.identity()));
+    }
+
+    private Map<Long, List<Pronunciation>> fetchPronunciations(List<Long> wordIds) {
+        return queryFactory.selectFrom(pronunciation)
+                           .where(pronunciation.word.id.in(wordIds), pronunciation.deleted.isFalse())
+                           .fetch()
+                           .stream()
+                           .collect(Collectors.groupingBy(
+                                   pronunciation -> pronunciation.getWord().getId(),
+                                   Collectors.mapping(Function.identity(), Collectors.toList())
+                           ));
     }
 }
