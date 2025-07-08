@@ -22,6 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class PronunciationGatewayRepositoryTest {
 
+    private static final long PRONUNCIATION_ID = 1L;
+    private static final long DELETED_PRONUNCIATION_ID = 2L;
+    private static final long WORD_ID = 1L;
+
     @Autowired
     PronunciationGatewayRepository pronunciationRepository;
 
@@ -30,22 +34,22 @@ class PronunciationGatewayRepositoryTest {
 
     @Test
     @Sql("classpath:sql/word/pronunciation.sql")
-    void 삭제하지_않은_용어_발음을_조회한다() {
+    void 삭제하지_않은_용어_발음을_id로_조회한다() {
         // when
-        Optional<Pronunciation> actual = pronunciationRepository.findBy(1L);
+        Optional<Pronunciation> actual = pronunciationRepository.findBy(PRONUNCIATION_ID);
 
         // then
         assertAll(
                 () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get().getId()).isEqualTo(1L)
+                () -> assertThat(actual.get().getId()).isEqualTo(PRONUNCIATION_ID)
         );
     }
 
     @Test
     @Sql("classpath:sql/word/pronunciation.sql")
-    void 삭제한_용어_발음은_조회할_수_없다() {
+    void 삭제한_용어_발음은_id로_조회할_수_없다() {
         // when
-        Optional<Pronunciation> actual = pronunciationRepository.findBy(2L);
+        Optional<Pronunciation> actual = pronunciationRepository.findBy(DELETED_PRONUNCIATION_ID);
 
         // then
         assertThat(actual).isEmpty();
@@ -90,7 +94,7 @@ class PronunciationGatewayRepositoryTest {
     @Sql("classpath:sql/word/pronunciation.sql")
     void 삭제되지_않은_발음_개수를_조회한다() {
         // when
-        long actual = pronunciationRepository.countBy(1L);
+        long actual = pronunciationRepository.countBy(WORD_ID);
 
         // then
         assertThat(actual).isEqualTo(1L);
@@ -104,7 +108,7 @@ class PronunciationGatewayRepositoryTest {
         pronunciationRepository.deleteAllBy(1L);
 
         // then
-        long actual = pronunciationRepository.countBy(1L);
+        long actual = pronunciationRepository.countBy(WORD_ID);
 
         assertThat(actual).isZero();
     }
