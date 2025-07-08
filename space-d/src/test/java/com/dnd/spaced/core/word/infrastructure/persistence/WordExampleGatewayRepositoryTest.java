@@ -22,6 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class WordExampleGatewayRepositoryTest {
 
+    private static final long WORD_EXAMPLE_ID = 1L;
+    private static final long DELETED_WORD_EXAMPLE_ID = 2L;
+    private static final long WORD_ID = 1L;
+
     @Autowired
     WordExampleGatewayRepository wordExampleRepository;
 
@@ -30,22 +34,22 @@ class WordExampleGatewayRepositoryTest {
 
     @Test
     @Sql("classpath:sql/word/word_example.sql")
-    void 삭제하지_않은_용어_예문을_조회한다() {
+    void 삭제하지_않은_용어_예문을_id로_조회한다() {
         // when
-        Optional<WordExample> actual = wordExampleRepository.findBy(1L);
+        Optional<WordExample> actual = wordExampleRepository.findBy(WORD_EXAMPLE_ID);
 
         // then
         assertAll(
                 () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get().getId()).isEqualTo(1L)
+                () -> assertThat(actual.get().getId()).isEqualTo(WORD_EXAMPLE_ID)
         );
     }
 
     @Test
     @Sql("classpath:sql/word/word_example.sql")
-    void 삭제한_용어_예문은_조회할_수_없다() {
+    void 삭제한_용어_예문은_id로_조회할_수_없다() {
         // when
-        Optional<WordExample> actual = wordExampleRepository.findBy(2L);
+        Optional<WordExample> actual = wordExampleRepository.findBy(DELETED_WORD_EXAMPLE_ID);
 
         // then
         assertThat(actual).isEmpty();
@@ -55,7 +59,7 @@ class WordExampleGatewayRepositoryTest {
     @Sql("classpath:sql/word/word_example.sql")
     void 삭제하지_않은_용어_예문_개수를_조회한다() {
         // when
-        long actual = wordExampleRepository.countBy(1L);
+        long actual = wordExampleRepository.countBy(WORD_ID);
 
         // then
         assertThat(actual).isEqualTo(1L);
@@ -66,10 +70,10 @@ class WordExampleGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_용어_예문을_수정한다() {
         // when
-        wordExampleRepository.update(1L, "웹 API 요청 시 사용자 인증을 위해서는 HTTP 헤더에 Authorization 토큰을 포함해야 합니다. 서버는 이 토큰을 검증하여 접근 권한을 확인한 후 요청된 데이터를 반환합니다.");
+        wordExampleRepository.update(WORD_EXAMPLE_ID, "웹 API 요청 시 사용자 인증을 위해서는 HTTP 헤더에 Authorization 토큰을 포함해야 합니다. 서버는 이 토큰을 검증하여 접근 권한을 확인한 후 요청된 데이터를 반환합니다.");
 
         // then
-        WordExample actual = wordExampleRepository.findBy(1L).get();
+        WordExample actual = wordExampleRepository.findBy(WORD_EXAMPLE_ID).get();
 
         assertThat(actual.getContent()).isEqualTo("웹 API 요청 시 사용자 인증을 위해서는 HTTP 헤더에 Authorization 토큰을 포함해야 합니다. 서버는 이 토큰을 검증하여 접근 권한을 확인한 후 요청된 데이터를 반환합니다.");
     }
@@ -79,10 +83,10 @@ class WordExampleGatewayRepositoryTest {
     @Transactional
     void 특정_용어의_모든_용어_예문을_삭제한다() {
         // when
-        wordExampleRepository.deleteAllBy(1L);
+        wordExampleRepository.deleteAllBy(WORD_ID);
 
         // then
-        long actual = wordExampleRepository.countBy(1L);
+        long actual = wordExampleRepository.countBy(WORD_ID);
 
         assertThat(actual).isZero();
     }
