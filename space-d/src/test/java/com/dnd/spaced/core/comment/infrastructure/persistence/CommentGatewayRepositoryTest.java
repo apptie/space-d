@@ -112,7 +112,7 @@ class CommentGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_댓글에_좋아요_카운트를_1_증가시킨다() {
         // when
-        commentRepository.increaseLikeCount(1L);
+        commentRepository.addLikeCount(1L);
 
         // then
         Optional<Comment> actual = commentRepository.findBy(1L);
@@ -128,7 +128,7 @@ class CommentGatewayRepositoryTest {
     @Transactional
     void 삭제한_댓글에_좋아요_카운트를_증가시킬_수_없다() {
         // when
-        commentRepository.increaseLikeCount(2L);
+        commentRepository.addLikeCount(2L);
 
         // then
         Optional<Comment> actual = commentCrudRepository.findById(2L);
@@ -145,7 +145,7 @@ class CommentGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_댓글에_좋아요_카운트를_1_감소시킨다() {
         // when
-        commentRepository.decreaseLikeCount(1L);
+        commentRepository.subtractLikeCount(1L);
 
         // then
         Optional<Comment> actual = commentRepository.findBy(1L);
@@ -161,7 +161,7 @@ class CommentGatewayRepositoryTest {
     @Transactional
     void 삭제한_댓글에_좋아요_카운트를_감소시킬_수_없다() {
         // when
-        commentRepository.decreaseLikeCount(2L);
+        commentRepository.subtractLikeCount(2L);
 
         // then
         Optional<Comment> actual = commentCrudRepository.findById(2L);

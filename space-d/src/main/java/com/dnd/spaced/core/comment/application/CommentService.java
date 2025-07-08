@@ -8,7 +8,7 @@ import com.dnd.spaced.core.comment.application.exception.CommentNotFoundExceptio
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
 import java.util.List;
@@ -50,7 +50,7 @@ public class CommentService {
     }
 
     public CommentCollectionResponse readComments(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        List<LikedCommentInfo> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
+        List<LikedComment> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
 
         return CommentResponseCollectionMapper.toCollectionDto(comments);
     }

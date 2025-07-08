@@ -5,7 +5,7 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommentResponseCollectionMapper {
 
-    public static CommentCollectionResponse toCollectionDto(List<LikedCommentInfo> comments) {
+    public static CommentCollectionResponse toCollectionDto(List<LikedComment> comments) {
         if (comments.isEmpty()) {
             return new CommentCollectionResponse(List.of(), null);
         }
@@ -25,15 +25,15 @@ public final class CommentResponseCollectionMapper {
         return new CommentCollectionResponse(responses, comments.get(comments.size() - 1).comment().getId());
     }
 
-    private static CommentResponse toCommentResponse(LikedCommentInfo likedCommentInfo) {
+    private static CommentResponse toCommentResponse(LikedComment likedComment) {
         return new CommentResponse(
-                toCommentContentResponse(likedCommentInfo.comment()),
+                toCommentContentResponse(likedComment.comment()),
                 toCommentWriterResponse(
-                        likedCommentInfo.writerNickname(),
-                        likedCommentInfo.writerProfileImage(),
-                        likedCommentInfo.comment().getWriterId()
+                        likedComment.writerNickname(),
+                        likedComment.writerProfileImage(),
+                        likedComment.comment().getWriterId()
                 ),
-                likedCommentInfo.isLiked()
+                likedComment.isLiked()
         );
     }
 
