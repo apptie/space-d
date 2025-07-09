@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class WordGatewayRepositoryTest {
 
+    private static final long WORD_ID = 1L;
+    private static final long DELETED_WORD_ID = 2L;
+
     @Autowired
     WordGatewayRepository wordGatewayRepository;
 
@@ -50,7 +53,7 @@ class WordGatewayRepositoryTest {
     @Sql("classpath:sql/word/word.sql")
     void 삭제하지_않은_용어의_영속화_여부를_확인한다() {
         // when
-        boolean actual = wordGatewayRepository.existsBy(1L);
+        boolean actual = wordGatewayRepository.existsBy(WORD_ID);
 
         // then
         assertThat(actual).isTrue();
@@ -60,7 +63,7 @@ class WordGatewayRepositoryTest {
     @Sql("classpath:sql/word/word.sql")
     void 삭제한_용어의_영속화_여부를_확인한다() {
         // when
-        boolean actual = wordGatewayRepository.existsBy(2L);
+        boolean actual = wordGatewayRepository.existsBy(DELETED_WORD_ID);
 
         // then
         assertThat(actual).isFalse();
@@ -70,12 +73,12 @@ class WordGatewayRepositoryTest {
     @Sql("classpath:sql/word/word.sql")
     void 삭제하지_않은_용어를_조회한다() {
         // when
-        Optional<Word> actual = wordGatewayRepository.findBy(1L);
+        Optional<Word> actual = wordGatewayRepository.findBy(WORD_ID);
 
         // then
         assertAll(
                 () -> assertThat(actual).isPresent(),
-                () -> assertThat(actual.get().getId()).isEqualTo(1L)
+                () -> assertThat(actual.get().getId()).isEqualTo(WORD_ID)
         );
     }
 
@@ -83,7 +86,7 @@ class WordGatewayRepositoryTest {
     @Sql("classpath:sql/word/word.sql")
     void 삭제한_용어는_조회할_수_없다() {
         // when
-        Optional<Word> actual = wordGatewayRepository.findBy(2L);
+        Optional<Word> actual = wordGatewayRepository.findBy(DELETED_WORD_ID);
 
         // then
         assertThat(actual).isEmpty();
@@ -94,17 +97,17 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_용어의_조회_수를_1_증가시킨다() {
         // given
-        Word before = wordGatewayRepository.findBy(1L).get();
+        Word word = wordGatewayRepository.findBy(WORD_ID).get();
 
-        assertThat(before.getViewCount()).isZero();
+        assertThat(word.getViewCount()).isZero();
 
-        // when
-        wordGatewayRepository.addViewCount(1L);
-
-        // then
         em.clear();
 
-        Word actual = wordGatewayRepository.findBy(1L).get();
+        // when
+        wordGatewayRepository.addViewCount(WORD_ID);
+
+        // then
+        Word actual = wordGatewayRepository.findBy(WORD_ID).get();
 
         assertThat(actual.getViewCount()).isEqualTo(1L);
     }
@@ -114,17 +117,17 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제한_용어의_조회_수는_증가되지_않는다() {
         // given
-        Word before = wordCrudRepository.findById(2L).get();
+        Word deletedWord = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
-        assertThat(before.getViewCount()).isZero();
+        assertThat(deletedWord.getViewCount()).isZero();
 
-        // when
-        wordGatewayRepository.addViewCount(2L);
-
-        // then
         em.clear();
 
-        Word actual = wordGatewayRepository.findBy(1L).get();
+        // when
+        wordGatewayRepository.addViewCount(DELETED_WORD_ID);
+
+        // then
+        Word actual = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
         assertThat(actual.getViewCount()).isZero();
     }
@@ -134,17 +137,17 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_용어의_북마크_수를_1_증가시킨다() {
         // given
-        Word before = wordGatewayRepository.findBy(1L).get();
+        Word word = wordGatewayRepository.findBy(WORD_ID).get();
 
-        assertThat(before.getBookmarkCount()).isZero();
+        assertThat(word.getBookmarkCount()).isZero();
 
-        // when
-        wordGatewayRepository.addBookmarkCount(1L);
-
-        // then
         em.clear();
 
-        Word actual = wordGatewayRepository.findBy(1L).get();
+        // when
+        wordGatewayRepository.addBookmarkCount(WORD_ID);
+
+        // then
+        Word actual = wordGatewayRepository.findBy(WORD_ID).get();
 
         assertThat(actual.getBookmarkCount()).isEqualTo(1L);
     }
@@ -154,17 +157,17 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제한_용어의_북마크_수는_증가되지_않는다() {
         // given
-        Word before = wordCrudRepository.findById(2L).get();
+        Word deletedWord = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
-        assertThat(before.getBookmarkCount()).isEqualTo(1L);
+        assertThat(deletedWord.getBookmarkCount()).isEqualTo(1L);
 
-        // when
-        wordGatewayRepository.addBookmarkCount(2L);
-
-        // then
         em.clear();
 
-        Word actual = wordCrudRepository.findById(2L).get();
+        // when
+        wordGatewayRepository.addBookmarkCount(DELETED_WORD_ID);
+
+        // then
+        Word actual = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
         assertThat(actual.getBookmarkCount()).isEqualTo(1L);
     }
@@ -174,19 +177,19 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제하지_않은_용어의_북마크_수를_1_감소시킨다() {
         // given
-        wordGatewayRepository.addBookmarkCount(1L);
+        wordGatewayRepository.addBookmarkCount(WORD_ID);
 
-        Word before = wordGatewayRepository.findBy(1L).get();
+        Word word = wordGatewayRepository.findBy(WORD_ID).get();
 
-        assertThat(before.getBookmarkCount()).isEqualTo(1L);
+        assertThat(word.getBookmarkCount()).isEqualTo(1L);
 
-        // when
-        wordGatewayRepository.subtractBookmarkCount(1L);
-
-        // then
         em.clear();
 
-        Word actual = wordGatewayRepository.findBy(1L).get();
+        // when
+        wordGatewayRepository.subtractBookmarkCount(WORD_ID);
+
+        // then
+        Word actual = wordGatewayRepository.findBy(WORD_ID).get();
 
         assertThat(actual.getBookmarkCount()).isZero();
     }
@@ -196,17 +199,17 @@ class WordGatewayRepositoryTest {
     @Transactional
     void 삭제한_용어의_북마크_수는_감소되지_않는다() {
         // given
-        Word before = wordCrudRepository.findById(2L).get();
+        Word deletedWord = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
-        assertThat(before.getBookmarkCount()).isEqualTo(1L);
+        assertThat(deletedWord.getBookmarkCount()).isEqualTo(1L);
 
-        // when
-        wordGatewayRepository.subtractBookmarkCount(2L);
-
-        // then
         em.clear();
 
-        Word actual = wordCrudRepository.findById(2L).get();
+        // when
+        wordGatewayRepository.subtractBookmarkCount(DELETED_WORD_ID);
+
+        // then
+        Word actual = wordCrudRepository.findById(DELETED_WORD_ID).get();
 
         assertThat(actual.getBookmarkCount()).isEqualTo(1L);
     }
@@ -215,7 +218,7 @@ class WordGatewayRepositoryTest {
     @Sql("classpath:sql/word/word.sql")
     void 삭제하지_않은_모든_용어의_이름을_조회한다() {
         // when
-        List<String> actual = wordGatewayRepository.findNameAllBy(new Long[]{1L, 2L});
+        List<String> actual = wordGatewayRepository.findNameAllBy(new Long[]{WORD_ID, DELETED_WORD_ID});
 
         // then
         assertAll(
