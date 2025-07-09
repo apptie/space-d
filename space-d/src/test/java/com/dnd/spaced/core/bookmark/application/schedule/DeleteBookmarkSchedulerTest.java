@@ -10,14 +10,12 @@ import ch.qos.logback.core.read.ListAppender;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
 import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.MockUtil;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -46,7 +44,7 @@ class DeleteBookmarkSchedulerTest {
 
     @Test
     @Sql(scripts = {
-            "classpath:sql/bookmark/deleted_word.sql",
+            "classpath:sql/bookmark/word.sql",
             "classpath:sql/bookmark/bookmark.sql"
     })
     void 삭제한_용어에_등록된_북마크를_삭제한다() {

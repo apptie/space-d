@@ -89,7 +89,10 @@ class BookmarkServiceTest {
     }
 
     @Test
-    @Sql("classpath:sql/bookmark/bookmark.sql")
+    @Sql(value = {
+            "classpath:sql/bookmark/word.sql",
+            "classpath:sql/bookmark/bookmark.sql"
+    })
     void 회원이_생성한_북마크를_모두_조회한다() {
         // given
         ReadAllBookmarkRequest request = new ReadAllBookmarkRequest(null);
