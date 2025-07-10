@@ -106,21 +106,21 @@ public class WordViewGatewayRepository implements WordViewRepository {
     }
 
     private List<Long> fetchFilteredWordIds(WordSearchCondition condition, WordSearchPageRequest pageRequest) {
-        return queryFactory
-                .select(word.id)
-                .from(word)
-                .where(
-                        buildWordPaginationCondition(
-                                condition.category(),
-                                pageRequest.lastWordName(),
-                                pageRequest.lastCategory()
-                        ),
-                        startsWithWordName(condition.name()),
-                        buildPronunciationContentCondition(condition)
-                )
-                .orderBy(word.name.asc(), word.category.asc(), word.id.desc())
-                .limit(pageRequest.pageable().getPageSize())
-                .fetch();
+        return queryFactory.select(word.id)
+                           .from(word)
+                           .where(
+                                   buildWordPaginationCondition(
+                                           condition.category(),
+                                           pageRequest.lastWordName(),
+                                           pageRequest.lastCategory()
+                                   ),
+                                   startsWithWordName(condition.name()),
+                                   buildPronunciationContentCondition(condition),
+                                   word.deleted.isFalse()
+                           )
+                           .orderBy(word.name.asc(), word.category.asc(), word.id.desc())
+                           .limit(pageRequest.pageable().getPageSize())
+                           .fetch();
     }
 
     private BooleanExpression startsWithWordName(String name) {
