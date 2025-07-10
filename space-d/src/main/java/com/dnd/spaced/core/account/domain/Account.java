@@ -3,6 +3,7 @@ package com.dnd.spaced.core.account.domain;
 import com.dnd.spaced.core.account.domain.embed.Career;
 import com.dnd.spaced.core.account.domain.embed.Profile;
 import com.dnd.spaced.core.account.domain.embed.Social;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.global.audit.BaseTimeEntity;
@@ -48,12 +49,12 @@ public class Account extends BaseTimeEntity {
     @Builder
     private Account(
             String nickname,
-            String profileImage,
+            ProfileImageName profileImageName,
             Role role,
             RegistrationId registrationId,
             String socialIdentifier
     ) {
-        this.profile = Profile.of(nickname, profileImage);
+        this.profile = Profile.of(nickname, profileImageName);
         this.role = role;
         this.social = new Social(registrationId, socialIdentifier);
     }
@@ -73,8 +74,8 @@ public class Account extends BaseTimeEntity {
                             .build();
     }
 
-    public void changeProfileInfo(String changedNickname, String changedProfileImage) {
-        this.profile = Profile.of(changedNickname, changedProfileImage);
+    public void changeProfileInfo(String changedNickname, ProfileImageName changedProfileImageName) {
+        this.profile = Profile.of(changedNickname, changedProfileImageName);
     }
 
     public boolean isEqualTo(Long id) {

@@ -32,10 +32,17 @@ public enum ProfileImageName {
                      .orElse(EARTH);
     }
 
-    public static ProfileImageName findBy(String korean) {
+    public static ProfileImageName findByKorean(String korean) {
         return Arrays.stream(ProfileImageName.values())
                      .filter(profileImageName -> profileImageName.korean.equals(korean))
                      .findAny()
                      .orElseThrow(() -> new InvalidProfileImageNameException(String.format(EXCEPTION_MESSAGE, korean)));
+    }
+
+    public static ProfileImageName findByImageName(String imageName) {
+        return Arrays.stream(ProfileImageName.values())
+                     .filter(profileImageName -> profileImageName.imageName.equals(imageName))
+                     .findAny()
+                     .orElseThrow(() -> new InvalidProfileImageNameException(String.format(EXCEPTION_MESSAGE, imageName)));
     }
 }

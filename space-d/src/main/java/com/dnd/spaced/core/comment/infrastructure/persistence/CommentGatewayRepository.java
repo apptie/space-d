@@ -112,7 +112,7 @@ public class CommentGatewayRepository implements CommentRepository {
                 comment,
                 like.id.isNotNull(),
                 account.profile.nickname,
-                account.profile.profileImage
+                account.profile.profileImageName
         );
     }
 
@@ -121,7 +121,7 @@ public class CommentGatewayRepository implements CommentRepository {
                 LikedComment.class,
                 comment,
                 account.profile.nickname,
-                account.profile.profileImage
+                account.profile.profileImageName
         );
     }
 }

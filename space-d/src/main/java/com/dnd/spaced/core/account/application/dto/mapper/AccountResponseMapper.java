@@ -16,7 +16,7 @@ public final class AccountResponseMapper {
 
         return new AccountResponse(
                 profile.getNickname(),
-                profile.getProfileImage(),
+                profile.getProfileImageName(),
                 career.getJobGroup().getName(),
                 career.getCompany().getName(),
                 career.getExperience().getName()

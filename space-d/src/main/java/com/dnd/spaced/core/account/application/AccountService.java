@@ -39,9 +39,9 @@ public class AccountService {
     @Transactional
     public void changeProfileInfo(Long accountId, ChangeProfileRequest request) {
         Account authorizedAccount = findAuthorizedAccount(accountId);
-        ProfileImageName changedProfileImageName = ProfileImageName.findBy(request.changedProfileImageKoreanName());
+        ProfileImageName changedProfileImageName = ProfileImageName.findByKorean(request.changedProfileImageKoreanName());
 
-        authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName.getImageName());
+        authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName);
     }
 
     public AccountResponse readAccount(Long accountId) {

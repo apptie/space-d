@@ -24,7 +24,7 @@ class ProfileImageNameTest {
         assertDoesNotThrow(ProfileImageName::findRandom);
     }
 
-    private static Stream<Arguments> findByTestWithProfileImageKoreanName() {
+    private static Stream<Arguments> findByKoreanTestWithKoreanName() {
         return Stream.of(
                 Arguments.of("수성", ProfileImageName.MERCURY),
                 Arguments.of("금성", ProfileImageName.VENUS),
@@ -37,11 +37,11 @@ class ProfileImageNameTest {
         );
     }
 
-    @ParameterizedTest(name = "프로필 이미지 이름이 {0}일 때 {1}을 반환한다")
-    @MethodSource("findByTestWithProfileImageKoreanName")
-    void 프로필_이미지를_찾는다(String korean, ProfileImageName expected) {
+    @ParameterizedTest(name = "프로필 이미지의 한글 이름이 {0}일 때 {1}을 반환한다")
+    @MethodSource("findByKoreanTestWithKoreanName")
+    void 한글_이름으로_프로필_이미지를_찾는다(String korean, ProfileImageName expected) {
         // when
-        ProfileImageName actual = ProfileImageName.findBy(korean);
+        ProfileImageName actual = ProfileImageName.findByKorean(korean);
 
         // then
         assertThat(actual).isEqualTo(expected);
@@ -49,9 +49,41 @@ class ProfileImageNameTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 유효한_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidKoreanName) {
+    void 유효한_한글_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidKoreanName) {
         // when & then
-        assertThatThrownBy(() -> ProfileImageName.findBy(invalidKoreanName))
+        assertThatThrownBy(() -> ProfileImageName.findByKorean(invalidKoreanName))
+                .isInstanceOf(InvalidProfileImageNameException.class)
+                .hasMessageContaining("잘못된 프로필 이미지 이름");
+    }
+
+    private static Stream<Arguments> findByImageNameTestWithImageName() {
+        return Stream.of(
+                Arguments.of("mercury.png", ProfileImageName.MERCURY),
+                Arguments.of("venus.png", ProfileImageName.VENUS),
+                Arguments.of("earth.png", ProfileImageName.EARTH),
+                Arguments.of("mars.png", ProfileImageName.MARS),
+                Arguments.of("jupiter.png", ProfileImageName.JUPITER),
+                Arguments.of("saturn.png", ProfileImageName.SATURN),
+                Arguments.of("uranus.png", ProfileImageName.URANUS),
+                Arguments.of("neptune.png", ProfileImageName.NEPTUNE)
+        );
+    }
+
+    @ParameterizedTest(name = "프로필 이미지의 이미지 이름이 {0}일 때 {1}을 반환한다")
+    @MethodSource("findByImageNameTestWithImageName")
+    void 이미지_이름으로_프로필_이미지를_찾는다(String korean, ProfileImageName expected) {
+        // when
+        ProfileImageName actual = ProfileImageName.findByImageName(korean);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void 유효한_이미지_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidImageName) {
+        // when & then
+        assertThatThrownBy(() -> ProfileImageName.findByKorean(invalidImageName))
                 .isInstanceOf(InvalidProfileImageNameException.class)
                 .hasMessageContaining("잘못된 프로필 이미지 이름");
     }

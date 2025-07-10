@@ -69,7 +69,7 @@ public class SignUpService {
                                     .socialIdentifier(socialIdentifier)
                                     .nickname(formattedNickname)
                                     .role(DEFAULT_ROLE)
-                                    .profileImage(profileImageName)
+                                    .profileImageName(ProfileImageName.findByImageName(profileImageName))
                                     .build();
 
         return accountRepository.save(newAccount);

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.embed.Social;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
@@ -83,7 +84,7 @@ class AccountGatewayRepositoryTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 

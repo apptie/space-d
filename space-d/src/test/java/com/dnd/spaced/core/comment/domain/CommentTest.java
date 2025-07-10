@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
@@ -50,7 +51,7 @@ class CommentTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
         ReflectionTestUtils.setField(account, "id", 1L);
@@ -70,7 +71,7 @@ class CommentTest {
                                 .registrationId(RegistrationId.KAKAO)
                                 .socialIdentifier("12345")
                                 .nickname("재빠른지구001")
-                                .profileImage("earth.png")
+                                .profileImageName(ProfileImageName.EARTH)
                                 .role(Role.ROLE_USER)
                                 .build();
         ReflectionTestUtils.setField(writer, "id", 1L);
