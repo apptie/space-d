@@ -13,17 +13,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class QuizInfoMapper {
-
-    public static QuizDto toDto(Quiz quiz) {
-        return new QuizDto(
-                quiz.getId(),
-                quiz.getAccountId(),
-                quiz.isSolved(),
-                quiz.getCreatedAt(),
-                Collections.emptyList()
-        );
-    }
+public final class QuizDtoMapper {
 
     public static QuizDto toDto(Quiz quiz, Map<Long, List<QuizOption>> quizOptionMap) {
         List<QuizQuestionDto> quizQuestions = quiz.getQuizQuestions()
@@ -52,7 +42,7 @@ public final class QuizInfoMapper {
             );
         }
         List<QuizOptionDto> quizOptionDtos = quizOptions.stream()
-                                                        .map(QuizInfoMapper::toQuizOptionDto)
+                                                        .map(QuizDtoMapper::toQuizOptionDto)
                                                         .toList();
 
         return new QuizQuestionDto(

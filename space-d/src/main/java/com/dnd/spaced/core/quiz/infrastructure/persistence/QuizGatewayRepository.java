@@ -9,7 +9,7 @@ import com.dnd.spaced.core.quiz.domain.QuizQuestion;
 import com.dnd.spaced.core.quiz.domain.dto.QuizDto;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizDto;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleQuizDto.QuizQuestionDto;
-import com.dnd.spaced.core.quiz.domain.dto.mapper.QuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.QuizDtoMapper;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.QuizRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -86,7 +86,7 @@ public class QuizGatewayRepository implements QuizRepository {
 
         List<Long> quizQuestionId = findQuizQuestionIds(result);
         Map<Long, List<QuizOption>> quizOptionMap = findQuizOptions(quizQuestionId);
-        QuizDto quizDto = QuizInfoMapper.toDto(result, quizOptionMap);
+        QuizDto quizDto = QuizDtoMapper.toDto(result, quizOptionMap);
 
         return Optional.of(quizDto);
     }
