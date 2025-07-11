@@ -2,7 +2,7 @@ package com.dnd.spaced.core.auth.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record InitAccountCareerInfoRequest(
+public record InitAccountCareerRequest(
         @NotBlank
         String jobGroupName,
 

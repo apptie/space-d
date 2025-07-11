@@ -2,7 +2,7 @@ package com.dnd.spaced.core.auth.presentation;
 
 import com.dnd.spaced.core.auth.application.InitAccountCareerService;
 import com.dnd.spaced.core.auth.application.RefreshTokenService;
-import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerInfoRequest;
+import com.dnd.spaced.core.auth.application.dto.request.InitAccountCareerRequest;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.presentation.dto.response.AccessTokenResponse;
 import com.dnd.spaced.core.auth.presentation.exception.RefreshTokenNotFoundException;
@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/profile")
     public ResponseEntity<Void> initAccountCareerInfo(
             @CurrentAccount AuthAccountId accountId,
-            @Valid @RequestBody InitAccountCareerInfoRequest request
+            @Valid @RequestBody InitAccountCareerRequest request
     ) {
         initAccountCareerService.initCareer(accountId.id(), request);
 

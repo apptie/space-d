@@ -4,7 +4,7 @@ import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.embed.Social;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
-import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
+import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +15,13 @@ public class LoginService {
     private final AccountRepository accountRepository;
     private final SignUpService signUpService;
 
-    public LoggedInAccountInfoDto login(String registrationIdName, String socialIdentifier) {
+    public LoggedInAccountDto login(String registrationIdName, String socialIdentifier) {
         RegistrationId registrationId = RegistrationId.findBy(registrationIdName);
         Social social = new Social(registrationId, socialIdentifier);
 
         return accountRepository.findBy(social)
                                 .map(account ->
-                                        new LoggedInAccountInfoDto(
+                                        new LoggedInAccountDto(
                                                 account.getId(),
                                                 account.getRole().name(),
                                         false)
@@ -29,7 +29,7 @@ public class LoginService {
                                 .orElseGet(() -> {
                                     Account signedUpAccount = signUpService.signUp(registrationId, socialIdentifier);
 
-                                    return new LoggedInAccountInfoDto(
+                                    return new LoggedInAccountDto(
                                             signedUpAccount.getId(),
                                             signedUpAccount.getRole().name(),
                                             true

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
+import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountDto;
 import com.dnd.spaced.core.auth.application.exception.NicknameMetadataNotFoundException;
 import com.dnd.spaced.core.skill.application.event.dto.InitializedAccountEvent;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -33,7 +33,7 @@ class LoginServiceTest {
     @Sql("classpath:sql/auth/nickname_metadata.sql")
     void 회원가입하지_않은_회원이_로그인하면_회원_가입과_로그인_절차를_진행한다() {
         // when
-        LoggedInAccountInfoDto actual = loginService.login("kakao", "12345");
+        LoggedInAccountDto actual = loginService.login("kakao", "12345");
 
         // then
         assertAll(
@@ -52,7 +52,7 @@ class LoginServiceTest {
     void 회원가입한_회원이_로그인하면_로그인_절차를_진행한다() {
         // given
         // when
-        LoggedInAccountInfoDto actual = loginService.login("kakao", "12345");
+        LoggedInAccountDto actual = loginService.login("kakao", "12345");
 
         // then
         assertAll(
