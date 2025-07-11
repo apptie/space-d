@@ -36,7 +36,7 @@ public class AccountController {
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody ChangeCareerRequest request
     ) {
-        accountService.changeCareerInfo(accountId.id(), request);
+        accountService.changeCareer(accountId.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -46,7 +46,7 @@ public class AccountController {
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody ChangeProfileRequest request
     ) {
-        accountService.changeProfileInfo(accountId.id(), request);
+        accountService.changeProfile(accountId.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

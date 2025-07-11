@@ -77,7 +77,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService).changeCareerInfo(anyLong(), any(ChangeCareerRequest.class));
+        verify(accountService).changeCareer(anyLong(), any(ChangeCareerRequest.class));
 
         회원_경력_정보_변경_요청_문서화(resultActions);
     }
@@ -113,7 +113,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService).changeProfileInfo(anyLong(), any(ChangeProfileRequest.class));
+        verify(accountService).changeProfile(anyLong(), any(ChangeProfileRequest.class));
 
         회원_프로필_정보_변경_요청_문서화(resultActions);
     }

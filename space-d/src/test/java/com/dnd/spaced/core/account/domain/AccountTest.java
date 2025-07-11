@@ -202,7 +202,7 @@ class AccountTest {
                                  .build();
 
         // when
-        account.changeProfileInfo("행복한화성001", ProfileImageName.MARS);
+        account.changeProfile("행복한화성001", ProfileImageName.MARS);
 
         // then
         assertAll(
@@ -223,7 +223,7 @@ class AccountTest {
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo("행복한화성001", null))
+        assertThatThrownBy(() -> account.changeProfile("행복한화성001", null))
                 .isInstanceOf(InvalidProfileImageException.class)
                 .hasMessage("프로필 이미지 정보는 null일 수 없습니다.");
     }
@@ -251,7 +251,7 @@ class AccountTest {
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo(invalidNickname, ProfileImageName.MARS))
+        assertThatThrownBy(() -> account.changeProfile(invalidNickname, ProfileImageName.MARS))
                 .isInstanceOf(InvalidNicknameException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }

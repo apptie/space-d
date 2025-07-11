@@ -74,7 +74,7 @@ public class Account extends BaseTimeEntity {
                             .build();
     }
 
-    public void changeProfileInfo(String changedNickname, ProfileImageName changedProfileImageName) {
+    public void changeProfile(String changedNickname, ProfileImageName changedProfileImageName) {
         this.profile = Profile.of(changedNickname, changedProfileImageName);
     }
 

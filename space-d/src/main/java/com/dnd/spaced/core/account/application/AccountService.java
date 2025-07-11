@@ -20,37 +20,61 @@ public class AccountService {
 
     @Transactional
     public void withdrawal(Long accountId) {
-        Account authorizedAccount = findAuthorizedAccount(accountId);
+        Account account = findAccount(accountId);
 
-        authorizedAccount.withdrawal();
+        withdrawAccount(account);
     }
 
     @Transactional
-    public void changeCareerInfo(Long accountId, ChangeCareerRequest request) {
-        Account authorizedAccount = findAuthorizedAccount(accountId);
+    public void changeCareer(Long accountId, ChangeCareerRequest request) {
+        Account account = findAccount(accountId);
 
-        authorizedAccount.changeCareer(
+        updateAccountCareer(account, request);
+    }
+
+    @Transactional
+    public void changeProfile(Long accountId, ChangeProfileRequest request) {
+        Account account = findAccount(accountId);
+        ProfileImageName changedProfileImageName = findProfileImageName(request);
+
+        updateAccountProfile(account, request, changedProfileImageName);
+    }
+
+    public AccountResponse readAccount(Long accountId) {
+        Account account = findAccount(accountId);
+
+        return convertAccountResponse(account);
+    }
+
+    private void withdrawAccount(Account account) {
+        account.withdrawal();
+    }
+
+    private ProfileImageName findProfileImageName(ChangeProfileRequest request) {
+        return ProfileImageName.findByKorean(request.changedProfileImageKoreanName());
+    }
+
+    private void updateAccountProfile(
+            Account account,
+            ChangeProfileRequest request,
+            ProfileImageName changedProfileImageName
+    ) {
+        account.changeProfile(request.changedNickname(), changedProfileImageName);
+    }
+
+    private void updateAccountCareer(Account account, ChangeCareerRequest request) {
+        account.changeCareer(
                 request.changedJobGroupName(),
                 request.changedCompanyName(),
                 request.changedExperienceName()
         );
     }
 
-    @Transactional
-    public void changeProfileInfo(Long accountId, ChangeProfileRequest request) {
-        Account authorizedAccount = findAuthorizedAccount(accountId);
-        ProfileImageName changedProfileImageName = ProfileImageName.findByKorean(request.changedProfileImageKoreanName());
-
-        authorizedAccount.changeProfileInfo(request.changedNickname(), changedProfileImageName);
+    private AccountResponse convertAccountResponse(Account account) {
+        return AccountResponseMapper.toDto(account);
     }
 
-    public AccountResponse readAccount(Long accountId) {
-        Account authorizedAccount = findAuthorizedAccount(accountId);
-
-        return AccountResponseMapper.toDto(authorizedAccount);
-    }
-
-    private Account findAuthorizedAccount(Long accountId) {
+    private Account findAccount(Long accountId) {
         return accountRepository.findBy(accountId)
                                 .orElseThrow(() -> new ForbiddenAccountException("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다."));
     }

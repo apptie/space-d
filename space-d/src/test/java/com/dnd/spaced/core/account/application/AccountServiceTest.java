@@ -62,7 +62,7 @@ class AccountServiceTest {
         );
 
         // when
-        accountService.changeCareerInfo(1L, request);
+        accountService.changeCareer(1L, request);
 
         // then
         AccountResponse actual = accountService.readAccount(1L);
@@ -86,7 +86,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidJobGroupException.class)
                 .hasMessageContaining("잘못된 직군 이름");
     }
@@ -103,7 +103,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidCompanyException.class)
                 .hasMessageContaining("잘못된 회사 이름");
     }
@@ -120,7 +120,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidExperienceException.class)
                 .hasMessageContaining("잘못된 경력");
     }
@@ -135,7 +135,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(-999L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(-999L, request))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
@@ -156,7 +156,7 @@ class AccountServiceTest {
         );
 
         // when
-        accountService.changeProfileInfo(1L, request);
+        accountService.changeProfile(1L, request);
 
         // then
         AccountResponse actual = accountService.readAccount(1L);
@@ -178,7 +178,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeProfileInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeProfile(1L, request))
                 .isInstanceOf(InvalidProfileImageNameException.class)
                 .hasMessageContaining("잘못된 프로필 이미지 이름");
     }
@@ -192,7 +192,7 @@ class AccountServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeProfileInfo(-999L, request))
+        assertThatThrownBy(() -> accountService.changeProfile(-999L, request))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
