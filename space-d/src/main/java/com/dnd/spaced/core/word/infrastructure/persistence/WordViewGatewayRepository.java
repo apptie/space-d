@@ -115,8 +115,8 @@ public class WordViewGatewayRepository implements WordViewRepository {
                                            pageRequest.lastCategory()
                                    ),
                                    startsWithWordName(condition.name()),
-                                   buildPronunciationContentCondition(condition),
-                                   word.deleted.isFalse()
+                                   word.deleted.isFalse(),
+                                   buildPronunciationContentCondition(condition)
                            )
                            .orderBy(word.name.asc(), word.category.asc(), word.id.desc())
                            .limit(pageRequest.pageable().getPageSize())
