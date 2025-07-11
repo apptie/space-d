@@ -2,15 +2,19 @@ package com.dnd.spaced.core.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
+import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
+import com.dnd.spaced.global.consts.CacheConst;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.jdbc.Sql;
@@ -26,6 +30,9 @@ class AdminTodayQuizServiceTest {
 
     @Autowired
     AdminTodayQuizService adminTodayQuizService;
+
+    @Autowired
+    CacheManager memoryCacheManager;
 
     @Test
     void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
@@ -58,6 +65,10 @@ class AdminTodayQuizServiceTest {
         Long savedTodayQuizId = adminTodayQuizService.createTodayQuiz();
 
         // then
-        assertThat(savedTodayQuizId).isPositive();
+        assertAll(
+                () -> assertThat(savedTodayQuizId).isPositive(),
+                () -> assertThat(events.stream(AddedTodayQuizQuestionEvent.class).count()).isOne(),
+                () -> assertThat(memoryCacheManager.getCache(CacheConst.TODAY_QUIZ_CACHE_NAME)).isNotNull()
+        );
     }
 }
