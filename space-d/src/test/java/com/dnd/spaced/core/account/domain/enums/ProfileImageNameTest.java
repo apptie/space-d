@@ -83,7 +83,7 @@ class ProfileImageNameTest {
     @NullAndEmptySource
     void 유효한_이미지_이름이_아니라면_프로필_이미지를_찾을_수_없다(String invalidImageName) {
         // when & then
-        assertThatThrownBy(() -> ProfileImageName.findByKorean(invalidImageName))
+        assertThatThrownBy(() -> ProfileImageName.findByImageName(invalidImageName))
                 .isInstanceOf(InvalidProfileImageNameException.class)
                 .hasMessageContaining("잘못된 프로필 이미지 이름");
     }
