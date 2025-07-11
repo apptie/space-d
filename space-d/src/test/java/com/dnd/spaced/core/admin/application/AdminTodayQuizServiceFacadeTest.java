@@ -29,7 +29,7 @@ class AdminTodayQuizServiceTest {
     ApplicationEvents events;
 
     @Autowired
-    AdminTodayQuizService adminTodayQuizService;
+    AdminTodayQuizServiceFacade adminTodayQuizServiceFacade;
 
     @Autowired
     CacheManager memoryCacheManager;
@@ -37,7 +37,7 @@ class AdminTodayQuizServiceTest {
     @Test
     void 용어_메타데이터가_정상적으로_설정되지_않다면_오늘의_퀴즈를_생성할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
+        assertThatThrownBy(() -> adminTodayQuizServiceFacade.createTodayQuiz())
                 .isInstanceOf(WordMetadataNotFoundException.class)
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -49,7 +49,7 @@ class AdminTodayQuizServiceTest {
     })
     void 등록된_용어_수가_퀴즈_생성_시_필요한_용어_수보다_적으면_퀴즈를_생성할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> adminTodayQuizService.createTodayQuiz())
+        assertThatThrownBy(() -> adminTodayQuizServiceFacade.createTodayQuiz())
                 .isInstanceOf(InvalidTodayQuizWordCountException.class)
                 .hasMessage("오늘의 퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
     }
@@ -62,7 +62,7 @@ class AdminTodayQuizServiceTest {
     })
     void 오늘의_퀴즈를_생성한다() {
         // when
-        Long savedTodayQuizId = adminTodayQuizService.createTodayQuiz();
+        Long savedTodayQuizId = adminTodayQuizServiceFacade.createTodayQuiz();
 
         // then
         assertAll(

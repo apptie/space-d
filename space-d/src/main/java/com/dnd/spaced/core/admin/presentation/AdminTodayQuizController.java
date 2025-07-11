@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.admin.presentation;
 
-import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
+import com.dnd.spaced.core.admin.application.AdminTodayQuizServiceFacade;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +14,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class AdminTodayQuizController {
 
-    private final AdminTodayQuizService adminTodayQuizService;
+    private final AdminTodayQuizServiceFacade adminTodayQuizServiceFacade;
 
     @PostMapping
     public ResponseEntity<Void> createTodayQuiz() {
-        Long todayQuizId = adminTodayQuizService.createTodayQuiz();
+        Long todayQuizId = adminTodayQuizServiceFacade.createTodayQuiz();
         URI location = UriComponentsBuilder.fromPath("/today-quizzes/{todayQuizId}")
                                            .buildAndExpand(todayQuizId)
                                            .toUri();
