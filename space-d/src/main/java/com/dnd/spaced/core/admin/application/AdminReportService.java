@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.admin.application.dto.mapper.ReportInfoMapper;
+import com.dnd.spaced.core.admin.application.dto.mapper.ReportResponseMapper;
 import com.dnd.spaced.core.admin.application.dto.request.ProcessReportRequest;
 import com.dnd.spaced.core.admin.application.dto.request.ReadAllReportSearchRequest;
 import com.dnd.spaced.core.admin.application.dto.resposne.ReportCollectionResponse;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminReportService {
 
     private final ReportRepository reportRepository;
+    private final ReportResponseMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -76,6 +77,6 @@ public class AdminReportService {
     }
 
     private ReportCollectionResponse convertReportCollectionResponse(List<Report> reports) {
-        return ReportInfoMapper.toDto(reports);
+        return mapper.toDto(reports);
     }
 }
