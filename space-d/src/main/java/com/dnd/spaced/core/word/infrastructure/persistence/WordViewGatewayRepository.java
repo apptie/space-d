@@ -109,12 +109,12 @@ public class WordViewGatewayRepository implements WordViewRepository {
         return queryFactory.select(word.id)
                            .from(word)
                            .where(
+                                   startsWithWordName(condition.name()),
                                    buildWordPaginationCondition(
                                            condition.category(),
                                            pageRequest.lastWordName(),
                                            pageRequest.lastCategory()
-                                   ),
-                                   startsWithWordName(condition.name()),
+                                           ),
                                    word.deleted.isFalse(),
                                    buildPronunciationContentCondition(condition)
                            )
