@@ -32,7 +32,7 @@ public class AccountController {
     }
 
     @PutMapping("/career-info")
-    public ResponseEntity<Void> changeCareerInfo(
+    public ResponseEntity<Void> changeCareer(
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody ChangeCareerRequest request
     ) {
@@ -42,7 +42,7 @@ public class AccountController {
     }
 
     @PutMapping("/profile-info")
-    public ResponseEntity<Void> changeProfileInfo(
+    public ResponseEntity<Void> changeProfile(
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody ChangeProfileRequest request
     ) {
