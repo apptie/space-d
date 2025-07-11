@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final AccountResponseMapper mapper;
 
     @Transactional
     public void withdrawal(Long accountId) {
@@ -71,7 +72,7 @@ public class AccountService {
     }
 
     private AccountResponse convertAccountResponse(Account account) {
-        return AccountResponseMapper.toDto(account);
+        return mapper.toDto(account);
     }
 
     private Account findAccount(Long accountId) {

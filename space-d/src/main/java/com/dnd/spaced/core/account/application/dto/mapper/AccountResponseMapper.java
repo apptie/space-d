@@ -4,13 +4,12 @@ import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.embed.Career;
 import com.dnd.spaced.core.account.domain.embed.Profile;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dnd.spaced.global.mapper.Mapper;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AccountResponseMapper {
+@Mapper
+public class AccountResponseMapper {
 
-    public static AccountResponse toDto(Account account) {
+    public AccountResponse toDto(Account account) {
         Profile profile = account.getProfile();
         Career career = account.getCareer();
 
