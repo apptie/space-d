@@ -29,7 +29,7 @@ public class AdminReportService {
         Report report = findReport(reportId);
         ReportStatus reportStatus = findReportStatus(request);
 
-        report.process(reportStatus);
+        processReport(report, reportStatus);
         publishProcessedReportEvent(reportStatus, report);
     }
 
@@ -37,7 +37,7 @@ public class AdminReportService {
         ReportStatus reportStatus = findReportStatus(request);
         List<Report> reports = findAllReportsBy(request, reportStatus, pageable);
 
-        return ReportInfoMapper.toDto(reports);
+        return convertReportCollectionResponse(reports);
     }
 
     private Report findReport(Long reportId) {
@@ -59,6 +59,10 @@ public class AdminReportService {
                            .orElse(null);
     }
 
+    private void processReport(Report report, ReportStatus reportStatus) {
+        report.process(reportStatus);
+    }
+
     private void publishProcessedReportEvent(ReportStatus reportStatus, Report report) {
         eventPublisher.publishEvent(new ProcessedReportEvent(reportStatus, report.getCommentId()));
     }
@@ -69,5 +73,9 @@ public class AdminReportService {
             Pageable pageable
     ) {
         return reportRepository.findAllBy(reportStatus, request.lastReportId(), pageable);
+    }
+
+    private ReportCollectionResponse convertReportCollectionResponse(List<Report> reports) {
+        return ReportInfoMapper.toDto(reports);
     }
 }
