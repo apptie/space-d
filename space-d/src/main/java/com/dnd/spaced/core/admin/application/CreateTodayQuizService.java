@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateTodayQuizService {
+class CreateTodayQuizService {
 
     private static final Long DEFAULT_WORD_METADATA_ID = 1L;
     private static final int REQUIRED_TODAY_QUIZ_WORD_COUNT = 4;
