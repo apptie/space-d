@@ -23,7 +23,7 @@ import org.springframework.test.context.jdbc.Sql;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AdminTodayQuizServiceTest {
+class AdminTodayQuizServiceFacadeTest {
 
     @Autowired
     ApplicationEvents events;
