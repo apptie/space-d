@@ -116,12 +116,14 @@ class CreateTodayQuizService {
 
     private List<TodayQuizOption> initTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
         return IntStream.range(0, randomWords.size())
-                        .mapToObj(i -> {
-                            SimpleWord simpleWord = randomWords.get(i);
-
-                            return TodayQuizOption.of(simpleWord.id(), simpleWord.name(), i, todayQuiz);
-                        })
+                        .mapToObj(i -> initTodayQuizOption(randomWords, todayQuiz, i))
                         .toList();
+    }
+
+    private TodayQuizOption initTodayQuizOption(List<SimpleWord> randomWords, TodayQuiz todayQuiz, int index) {
+        SimpleWord simpleWord = randomWords.get(index);
+
+        return TodayQuizOption.of(simpleWord.id(), simpleWord.name(), index, todayQuiz);
     }
 
     private void saveAllTodayQuizOptions(List<TodayQuizOption> todayQuizOptions) {
