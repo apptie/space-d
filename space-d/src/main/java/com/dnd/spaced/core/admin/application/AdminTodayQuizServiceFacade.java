@@ -21,7 +21,7 @@ public class AdminTodayQuizServiceFacade {
 
     @Transactional
     public Long createTodayQuiz() {
-        TodayQuiz todayQuiz = createTodayQuizService.createTodayQuiz();
+        TodayQuiz todayQuiz = createTodayQuizService.assembleTodayQuiz();
 
         publishAddedTodayQuizQuestionEvent();
         persistMemoryCache(todayQuiz);

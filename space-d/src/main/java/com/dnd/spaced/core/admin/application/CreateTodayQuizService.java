@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +36,13 @@ class CreateTodayQuizService {
     private final TodayQuizOptionRepository todayQuizOptionRepository;
     private final QuizQuestionProperties quizQuestionProperties;
 
-    public TodayQuiz createTodayQuiz() {
+    @Transactional
+    public TodayQuiz assembleTodayQuiz() {
         QuizCategory quizCategory = findRandomQuizCategory();
 
         validateQuizCreationRequirements(quizCategory);
 
-        return createTodayQuiz(quizCategory);
+        return assembleTodayQuiz(quizCategory);
     }
 
     private QuizCategory findRandomQuizCategory() {
@@ -68,12 +70,12 @@ class CreateTodayQuizService {
         }
     }
 
-    private TodayQuiz createTodayQuiz(QuizCategory quizCategory) {
+    private TodayQuiz assembleTodayQuiz(QuizCategory quizCategory) {
         List<SimpleWord> randomWords = findRandomWords(quizCategory);
-        TodayQuiz todayQuiz = initTodayQuiz(quizCategory, randomWords);
+        TodayQuiz todayQuiz = buildTodayQuiz(quizCategory, randomWords);
         TodayQuiz persistedTodayQuiz = persistTodayQuiz(todayQuiz);
 
-        persistTodayQuizOptions(randomWords, todayQuiz);
+        setupTodayQuizOptions(randomWords, todayQuiz);
         return persistedTodayQuiz;
     }
 
@@ -81,7 +83,7 @@ class CreateTodayQuizService {
         return wordRandomRepository.findRandomAllBy(quizCategory, REQUIRED_TODAY_QUIZ_WORD_COUNT);
     }
 
-    private TodayQuiz initTodayQuiz(QuizCategory quizCategory, List<SimpleWord> randomWords) {
+    private TodayQuiz buildTodayQuiz(QuizCategory quizCategory, List<SimpleWord> randomWords) {
         SimpleWord answerWord = randomWords.get(ANSWER_OPTION_INDEX);
         TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(
                 answerWord.id(),
@@ -101,11 +103,11 @@ class CreateTodayQuizService {
         return todayQuizRepository.save(todayQuiz);
     }
 
-    private void persistTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
+    private void setupTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
         List<SimpleWord> shuffledWords = shuffleRandomWords(randomWords);
-        List<TodayQuizOption> todayQuizOptions = initTodayQuizOptions(shuffledWords, todayQuiz);
+        List<TodayQuizOption> todayQuizOptions = buildTodayQuizOptions(shuffledWords, todayQuiz);
 
-        saveAllTodayQuizOptions(todayQuizOptions);
+        setupTodayQuizOptions(todayQuizOptions);
     }
 
     private List<SimpleWord> shuffleRandomWords(List<SimpleWord> randomWords) {
@@ -114,19 +116,19 @@ class CreateTodayQuizService {
         return randomWords;
     }
 
-    private List<TodayQuizOption> initTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
+    private List<TodayQuizOption> buildTodayQuizOptions(List<SimpleWord> randomWords, TodayQuiz todayQuiz) {
         return IntStream.range(0, randomWords.size())
-                        .mapToObj(i -> initTodayQuizOption(randomWords, todayQuiz, i))
+                        .mapToObj(i -> buildTodayQuizOption(randomWords, todayQuiz, i))
                         .toList();
     }
 
-    private TodayQuizOption initTodayQuizOption(List<SimpleWord> randomWords, TodayQuiz todayQuiz, int index) {
+    private TodayQuizOption buildTodayQuizOption(List<SimpleWord> randomWords, TodayQuiz todayQuiz, int index) {
         SimpleWord simpleWord = randomWords.get(index);
 
         return TodayQuizOption.of(simpleWord.id(), simpleWord.name(), index, todayQuiz);
     }
 
-    private void saveAllTodayQuizOptions(List<TodayQuizOption> todayQuizOptions) {
+    private void setupTodayQuizOptions(List<TodayQuizOption> todayQuizOptions) {
         todayQuizOptionRepository.saveAll(todayQuizOptions);
     }
 }
