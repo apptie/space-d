@@ -12,28 +12,25 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final AccountRepository accountRepository;
     private final SignUpService signUpService;
+    private final AccountRepository accountRepository;
 
     public LoggedInAccountDto login(String registrationIdName, String socialIdentifier) {
         RegistrationId registrationId = RegistrationId.findBy(registrationIdName);
         Social social = new Social(registrationId, socialIdentifier);
 
         return accountRepository.findBy(social)
-                                .map(account ->
-                                        new LoggedInAccountDto(
-                                                account.getId(),
-                                                account.getRole().name(),
-                                        false)
-                                )
-                                .orElseGet(() -> {
-                                    Account signedUpAccount = signUpService.signUp(registrationId, socialIdentifier);
+                                .map(this::buildLoggedInAccount)
+                                .orElseGet(() -> buildSignUpAccount(registrationId, socialIdentifier));
+    }
 
-                                    return new LoggedInAccountDto(
-                                            signedUpAccount.getId(),
-                                            signedUpAccount.getRole().name(),
-                                            true
-                                    );
-                                });
+    private LoggedInAccountDto buildLoggedInAccount(Account account) {
+        return new LoggedInAccountDto(account.getId(), account.getRole().name(), false);
+    }
+
+    private LoggedInAccountDto buildSignUpAccount(RegistrationId registrationId, String socialIdentifier) {
+        Account signedUpAccount = signUpService.signUp(registrationId, socialIdentifier);
+
+        return new LoggedInAccountDto(signedUpAccount.getId(), signedUpAccount.getRole().name(), true);
     }
 }
