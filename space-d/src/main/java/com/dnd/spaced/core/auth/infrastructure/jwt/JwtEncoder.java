@@ -37,18 +37,22 @@ public class JwtEncoder implements TokenEncoder {
     @Override
     public String encode(LocalDateTime publishTime, TokenType tokenType, Long accountId, String roleName) {
         try {
-            JWEHeader header = createJweHeader();
-            JWTClaimsSet claims = createJwtPayload(tokenType, accountId, roleName, publishTime);
-            SignedJWT signedJwt = createSignedJwt(claims, tokenType);
-            JWEObject jweObject = createJweObject(header, signedJwt);
-
-            jweObject.encrypt(jweEncrypter);
-            return jweObject.serialize();
+            return serializeToken(publishTime, tokenType, accountId, roleName);
         } catch (KeyLengthException e) {
             throw new FailedEncodeTokenException("키 길이를 지원하지 않는 환경입니다.", e);
         } catch (JOSEException e) {
             throw new FailedEncodeTokenException("토큰 인코딩 작업 중 문제가 발생했습니다.", e);
         }
+    }
+
+    private String serializeToken(LocalDateTime publishTime, TokenType tokenType, Long accountId, String roleName)
+            throws JOSEException {
+        JWEHeader header = createJweHeader();
+        JWTClaimsSet claims = createJwtPayload(tokenType, accountId, roleName, publishTime);
+        SignedJWT signedJwt = setupSignedJwt(claims, tokenType);
+        JWEObject jweObject = setupJweObject(header, signedJwt);
+
+        return jweObject.serialize();
     }
 
     private JWEHeader createJweHeader() {
@@ -74,7 +78,7 @@ public class JwtEncoder implements TokenEncoder {
                 .build();
     }
 
-    private SignedJWT createSignedJwt(JWTClaimsSet claims, TokenType tokenType) throws JOSEException {
+    private SignedJWT setupSignedJwt(JWTClaimsSet claims, TokenType tokenType) throws JOSEException {
         JWSHeader jwsHeader = new Builder(JWSAlgorithm.HS256).build();
         SignedJWT signedJwt = new SignedJWT(jwsHeader, claims);
 
@@ -82,8 +86,12 @@ public class JwtEncoder implements TokenEncoder {
         return signedJwt;
     }
 
-    private JWEObject createJweObject(JWEHeader header, SignedJWT signedJwt) {
-        return new JWEObject(header, new Payload(signedJwt));
+    private JWEObject setupJweObject(JWEHeader header, SignedJWT signedJwt) throws JOSEException {
+        Payload payload = new Payload(signedJwt);
+        JWEObject jweObject = new JWEObject(header, payload);
+
+        jweObject.encrypt(jweEncrypter);
+        return jweObject;
     }
 
     private Date convertDate(LocalDateTime target) {
