@@ -2,6 +2,7 @@ package com.dnd.spaced.core.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
@@ -11,6 +12,7 @@ import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotA
 import com.dnd.spaced.core.admin.application.exception.PronunciationNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
+import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.exception.InvalidWordExampleContentException;
 import java.util.List;
@@ -58,7 +60,10 @@ class AdminWordServiceTest {
         Long actual = adminWordService.createWord(request);
 
         // then
-        assertThat(actual).isPositive();
+        assertAll(
+                () -> assertThat(actual).isPositive(),
+                () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne()
+        );
     }
 
     @Test
