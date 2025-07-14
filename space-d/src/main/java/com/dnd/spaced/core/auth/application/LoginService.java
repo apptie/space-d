@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application.internal;
+package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.embed.Social;

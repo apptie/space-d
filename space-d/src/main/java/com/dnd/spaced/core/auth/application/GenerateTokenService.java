@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application.internal;
+package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.core.auth.domain.enums.TokenScheme;

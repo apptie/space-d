@@ -1,8 +1,8 @@
 package com.dnd.spaced.global.config;
 
 import com.dnd.spaced.core.auth.application.BlacklistTokenService;
-import com.dnd.spaced.core.auth.application.internal.GenerateTokenService;
-import com.dnd.spaced.core.auth.application.internal.LoginService;
+import com.dnd.spaced.core.auth.application.GenerateTokenService;
+import com.dnd.spaced.core.auth.application.LoginService;
 import com.dnd.spaced.core.auth.domain.TokenDecoder;
 import com.dnd.spaced.global.auth.security.core.OAuth2UserDetailsService;
 import com.dnd.spaced.global.auth.security.filter.OAuth2AuthenticationFilter;

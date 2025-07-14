@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.auth.application.internal;
+package com.dnd.spaced.core.auth.application;
 
 import com.dnd.spaced.core.account.domain.Account;
 import com.dnd.spaced.core.account.domain.NicknameMetadata;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class SignUpService {
+class SignUpService {
 
     private static final Role DEFAULT_ROLE = Role.ROLE_USER;
 
