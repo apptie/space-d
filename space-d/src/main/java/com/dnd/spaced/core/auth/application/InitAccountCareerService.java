@@ -16,17 +16,21 @@ public class InitAccountCareerService {
 
     @Transactional
     public void initCareer(Long accountId, InitAccountCareerRequest request) {
-        Account account = findPreInitializationAccount(accountId);
+        Account account = findPreInitAccount(accountId);
 
-        account.changeCareer(request.jobGroupName(), request.companyName(), request.experienceName());
+        executeCareerInit(request, account);
     }
 
-    private Account findPreInitializationAccount(Long accountId) {
+    private Account findPreInitAccount(Long accountId) {
         return accountRepository.findPreInitializationAccountBy(accountId)
                                 .orElseThrow(
                                         () -> new ForbiddenInitCareerInfoException(
                                                 "최초로 가입한 회원이 아닙니다."
                                         )
                                 );
+    }
+
+    private void executeCareerInit(InitAccountCareerRequest request, Account account) {
+        account.changeCareer(request.jobGroupName(), request.companyName(), request.experienceName());
     }
 }
