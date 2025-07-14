@@ -27,18 +27,18 @@ class SignUpService {
     private final NicknameMetadataRepository nicknameMetadataRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    Account signUp(RegistrationId registrationId, String socialIdentifier) {
+    public Account signUp(RegistrationId registrationId, String socialIdentifier) {
         String profileImageName = findRandomProfileImage();
         String formattedNickname = formatNickname();
-        Account persistedAccount = persistAccount(
+        Account account = setupAccount(
                 registrationId,
                 socialIdentifier,
                 formattedNickname,
                 profileImageName
         );
 
-        eventPublisher.publishEvent(new InitializedAccountEvent(persistedAccount.getId()));
-        return persistedAccount;
+        publishSignedUpAccountEvent(account);
+        return account;
     }
 
     private String findRandomProfileImage() {
@@ -49,7 +49,8 @@ class SignUpService {
     private String formatNickname() {
         String nickname = nicknameProperties.generate();
         NicknameMetadata metadata = nicknameMetadataRepository.findBy(nickname)
-                                                              .orElseThrow(() -> new NicknameMetadataNotFoundException("닉네임 메타데이터가 정상적으로 초기화되지 않았습니다."));
+                                                              .orElseThrow(() -> new NicknameMetadataNotFoundException(
+                                                                      "닉네임 메타데이터가 정상적으로 초기화되지 않았습니다."));
 
         metadata.addCount();
         return nicknameProperties.format(
@@ -58,20 +59,34 @@ class SignUpService {
         );
     }
 
-    private Account persistAccount(
+    private Account setupAccount(
             RegistrationId registrationId,
             String socialIdentifier,
             String formattedNickname,
             String profileImageName
     ) {
-        Account newAccount = Account.builder()
-                                    .registrationId(registrationId)
-                                    .socialIdentifier(socialIdentifier)
-                                    .nickname(formattedNickname)
-                                    .role(DEFAULT_ROLE)
-                                    .profileImageName(ProfileImageName.findByImageName(profileImageName))
-                                    .build();
+        Account newAccount = buildAccount(registrationId, socialIdentifier, formattedNickname,
+                profileImageName);
 
+        return persistAccount(newAccount);
+    }
+
+    private Account buildAccount(RegistrationId registrationId, String socialIdentifier, String formattedNickname,
+            String profileImageName) {
+        return Account.builder()
+                      .registrationId(registrationId)
+                      .socialIdentifier(socialIdentifier)
+                      .nickname(formattedNickname)
+                      .role(DEFAULT_ROLE)
+                      .profileImageName(ProfileImageName.findByImageName(profileImageName))
+                      .build();
+    }
+
+    private Account persistAccount(Account newAccount) {
         return accountRepository.save(newAccount);
+    }
+
+    private void publishSignedUpAccountEvent(Account account) {
+        eventPublisher.publishEvent(new InitializedAccountEvent(account.getId()));
     }
 }
