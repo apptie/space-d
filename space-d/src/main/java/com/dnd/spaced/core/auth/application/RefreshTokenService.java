@@ -10,7 +10,6 @@ import com.dnd.spaced.core.auth.domain.enums.TokenType;
 import com.dnd.spaced.core.auth.domain.repository.RefreshTokenRotationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,18 +20,13 @@ public class RefreshTokenService {
     private final BlacklistTokenService blacklistTokenService;
     private final RefreshTokenRotationRepository refreshTokenRotationRepository;
 
-    @Transactional
     public TokenDto refreshToken(String refreshToken) {
         PrivateClaims privateClaims = convertTokenPrivateClaims(refreshToken);
 
         validateBlacklistToken(privateClaims);
         validateRotationRefreshToken(refreshToken, privateClaims);
 
-        TokenDto tokenDto = generateTokenService.generate(privateClaims.accountId(), privateClaims.roleName());
-
-        refreshTokenRotationRepository.save(privateClaims.accountId(), tokenDto.refreshToken());
-
-        return tokenDto;
+        return generateRefreshToken(privateClaims);
     }
 
     private PrivateClaims convertTokenPrivateClaims(String refreshToken) {
@@ -66,5 +60,12 @@ public class RefreshTokenService {
 
             throw new RotationRefreshTokenMismatchException("기존 Refresh Token과 일치하지 않습니다.");
         }
+    }
+
+    private TokenDto generateRefreshToken(PrivateClaims privateClaims) {
+        TokenDto tokenDto = generateTokenService.generate(privateClaims.accountId(), privateClaims.roleName());
+
+        refreshTokenRotationRepository.save(privateClaims.accountId(), tokenDto.refreshToken());
+        return tokenDto;
     }
 }
