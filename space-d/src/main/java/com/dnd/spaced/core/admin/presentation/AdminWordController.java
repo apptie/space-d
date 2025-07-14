@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.admin.presentation;
 
-import com.dnd.spaced.core.admin.application.AdminWordService;
+import com.dnd.spaced.core.admin.application.AdminWordServiceFacade;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleRequest;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
@@ -22,11 +22,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class AdminWordController {
 
-    private final AdminWordService adminWordService;
+    private final AdminWordServiceFacade adminWordServiceFacade;
 
     @PostMapping
     public ResponseEntity<Void> createWord(@Valid @RequestBody CreateWordRequest request) {
-        Long wordId = adminWordService.createWord(request);
+        Long wordId = adminWordServiceFacade.createWord(request);
         URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
                                            .buildAndExpand(wordId)
                                            .toUri();
@@ -40,28 +40,28 @@ public class AdminWordController {
             @PathVariable Long wordExampleId,
             @Valid @RequestBody UpdateWordExampleRequest request
     ) {
-        adminWordService.updateWordExample(wordExampleId, request.content());
+        adminWordServiceFacade.updateWordExample(wordExampleId, request.content());
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("/{wordId}")
     public ResponseEntity<Void> deleteWord(@PathVariable Long wordId) {
-        adminWordService.deleteWord(wordId);
+        adminWordServiceFacade.deleteWord(wordId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("/{wordId}/examples/{wordExampleId}")
     public ResponseEntity<Void> deleteWordExample(@PathVariable Long wordId, @PathVariable Long wordExampleId) {
-        adminWordService.deleteWordExample(wordId, wordExampleId);
+        adminWordServiceFacade.deleteWordExample(wordId, wordExampleId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
 
     @DeleteMapping("/{wordId}/pronunciations/{pronunciationId}")
     public ResponseEntity<Void> deletePronunciation(@PathVariable Long wordId, @PathVariable Long pronunciationId) {
-        adminWordService.deletePronunciation(wordId, pronunciationId);
+        adminWordServiceFacade.deletePronunciation(wordId, pronunciationId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.admin.application.AdminWordService;
+import com.dnd.spaced.core.admin.application.AdminWordServiceFacade;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.admin.application.dto.request.UpdateWordExampleRequest;
@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class AdminWordControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    AdminWordService adminWordService;
+    AdminWordServiceFacade adminWordServiceFacade;
 
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")
@@ -56,7 +56,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 example
         );
 
-        given(adminWordService.createWord(any(CreateWordRequest.class))).willReturn(1L);
+        given(adminWordServiceFacade.createWord(any(CreateWordRequest.class))).willReturn(1L);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -68,7 +68,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 header().stringValues("Location", "/words/1")
         );
 
-        verify(adminWordService).createWord(any(CreateWordRequest.class));
+        verify(adminWordServiceFacade).createWord(any(CreateWordRequest.class));
 
         용어_등록_요청_문서화(resultActions);
     }
@@ -116,7 +116,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).updateWordExample(anyLong(), anyString());
+        verify(adminWordServiceFacade).updateWordExample(anyLong(), anyString());
 
         용어_예문_변경_요청_문서화(resultActions);
     }
@@ -148,7 +148,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deleteWordExample(anyLong(), anyLong());
+        verify(adminWordServiceFacade).deleteWordExample(anyLong(), anyLong());
 
         용어_예문_삭제_요청_문서화(resultActions);
     }
@@ -178,7 +178,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(adminWordService).deletePronunciation(anyLong(), anyLong());
+        verify(adminWordServiceFacade).deletePronunciation(anyLong(), anyLong());
 
         용어_발음_정보_삭제_요청_문서화(resultAction);
     }
@@ -206,7 +206,7 @@ class AdminWordControllerTest extends CommonControllerSliceTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer AccessToken")
         ).andExpectAll(status().isNoContent());
 
-        verify(adminWordService).deleteWord(anyLong());
+        verify(adminWordServiceFacade).deleteWord(anyLong());
 
         용어_삭제_요청_문서화(resultAction);
     }

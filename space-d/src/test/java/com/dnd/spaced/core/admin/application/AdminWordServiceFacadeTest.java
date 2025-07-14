@@ -32,10 +32,10 @@ import org.springframework.test.context.jdbc.Sql;
 @SuppressWarnings("NonAsciiCharacters")
 @RecordApplicationEvents
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AdminWordServiceTest {
+class AdminWordServiceFacadeTest {
 
     @Autowired
-    AdminWordService adminWordService;
+    AdminWordServiceFacade adminWordServiceFacade;
 
     @Autowired
     ApplicationEvents events;
@@ -57,7 +57,7 @@ class AdminWordServiceTest {
         );
 
         // when
-        Long actual = adminWordService.createWord(request);
+        Long actual = adminWordServiceFacade.createWord(request);
 
         // then
         assertAll(
@@ -73,7 +73,7 @@ class AdminWordServiceTest {
     })
     void 용어_예문을_변경한다() {
         // when & then
-        assertDoesNotThrow(() -> adminWordService.updateWordExample(
+        assertDoesNotThrow(() -> adminWordServiceFacade.updateWordExample(
                         1L,
                 "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다.")
         );
@@ -83,7 +83,7 @@ class AdminWordServiceTest {
     void 잘못된_용어_예문_ID라면_용어_예문을_변경할_수_없다() {
         // when & then
         assertThatThrownBy(
-                () -> adminWordService.updateWordExample(
+                () -> adminWordServiceFacade.updateWordExample(
                         -999L,
                         "이 기능은 일반 사용자의 Authorization 범위를 벗어나므로, 관리자 권한이 필요합니다."
                 )
@@ -100,7 +100,7 @@ class AdminWordServiceTest {
     void 유효하지_않은_길이의_예문으로_용어_예문을_변경할_수_없다(String invalidContent) {
         // when & then
         assertThatThrownBy(
-                () -> adminWordService.updateWordExample(
+                () -> adminWordServiceFacade.updateWordExample(
                         1L,
                         invalidContent
                 )
@@ -116,7 +116,7 @@ class AdminWordServiceTest {
     void 용어_예문을_삭제한다() {
         // when & then
         assertDoesNotThrow(
-                () -> adminWordService.deleteWordExample(1L, 1L)
+                () -> adminWordServiceFacade.deleteWordExample(1L, 1L)
         );
     }
 
@@ -127,7 +127,7 @@ class AdminWordServiceTest {
     })
     void 잘못된_용어_예문_ID로_용어_예문을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> adminWordService.deleteWordExample(1L, -999L))
+        assertThatThrownBy(() -> adminWordServiceFacade.deleteWordExample(1L, -999L))
                 .isInstanceOf(WordExampleNotFoundException.class)
                 .hasMessage("지정한 용어 예문을 찾을 수 없습니다.");
     }
@@ -140,7 +140,7 @@ class AdminWordServiceTest {
     void 용어_예문의_개수가_최소치라면_용어_예문을_삭제할_수_없다() {
         // when & then
         assertThatThrownBy(
-                () -> adminWordService.deleteWordExample(2L, 3L)
+                () -> adminWordServiceFacade.deleteWordExample(2L, 3L)
         ).isInstanceOf(WordExampleDeletionNotAllowedException.class)
          .hasMessage("해당 용어의 예문 개수가 최소치입니다.");
     }
@@ -152,7 +152,7 @@ class AdminWordServiceTest {
     })
     void 잘못된_용어_발음_ID로_용어_발음을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> adminWordService.deletePronunciation(1L, -999L))
+        assertThatThrownBy(() -> adminWordServiceFacade.deletePronunciation(1L, -999L))
                 .isInstanceOf(PronunciationNotFoundException.class)
                 .hasMessage("지정한 발음을 찾지 못했습니다.");
     }
@@ -165,7 +165,7 @@ class AdminWordServiceTest {
     void 용어_발음_정보를_삭제한다() {
         // when & then
         assertDoesNotThrow(
-                () -> adminWordService.deletePronunciation(1L, 1L)
+                () -> adminWordServiceFacade.deletePronunciation(1L, 1L)
         );
     }
 
@@ -177,7 +177,7 @@ class AdminWordServiceTest {
     void 용어_발음_정보의_개수가_최소치라면_용어_발음_정보를_삭제할_수_없다() {
         // when & then
         assertThatThrownBy(
-                () -> adminWordService.deletePronunciation(2L, 1L)
+                () -> adminWordServiceFacade.deletePronunciation(2L, 1L)
         ).isInstanceOf(PronunciationDeletionNotAllowedException.class)
          .hasMessage("해당 용어의 발음 정보 개수가 최소치입니다.");
     }
@@ -185,7 +185,7 @@ class AdminWordServiceTest {
     @Test
     void 유효하지_않은_용어_ID로_용어를_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> adminWordService.deleteWord(-999L))
+        assertThatThrownBy(() -> adminWordServiceFacade.deleteWord(-999L))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 용어를 찾을 수 없습니다.");
     }
@@ -197,7 +197,7 @@ class AdminWordServiceTest {
     })
     void 용어를_삭제한다() {
         // when & then
-        assertDoesNotThrow(() -> adminWordService.deleteWord(1L));
+        assertDoesNotThrow(() -> adminWordServiceFacade.deleteWord(1L));
         assertThat(events.stream(DeletedWordEvent.class).count()).isOne();
     }
 }
