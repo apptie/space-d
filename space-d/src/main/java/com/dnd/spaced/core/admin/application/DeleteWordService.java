@@ -1,13 +1,9 @@
 package com.dnd.spaced.core.admin.application;
 
-import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
-import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
-import com.dnd.spaced.core.admin.application.event.dto.DeletedWordEvent;
 import com.dnd.spaced.core.admin.application.exception.PronunciationDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.PronunciationNotFoundException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleDeletionNotAllowedException;
 import com.dnd.spaced.core.admin.application.exception.WordExampleNotFoundException;
-import com.dnd.spaced.core.word.application.event.dto.PersistedWordEvent;
 import com.dnd.spaced.core.word.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.word.domain.Pronunciation;
 import com.dnd.spaced.core.word.domain.Word;
@@ -15,16 +11,13 @@ import com.dnd.spaced.core.word.domain.WordExample;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
 import com.dnd.spaced.core.word.domain.repository.WordRepository;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AdminWordService {
+class DeleteWordService {
 
     private static final long WORD_EXAMPLE_MIN_COUNT = 1L;
     private static final long PRONUNCIATION_MIN_COUNT = 1L;
@@ -32,33 +25,20 @@ public class AdminWordService {
     private final WordRepository wordRepository;
     private final WordExampleRepository wordExampleRepository;
     private final PronunciationRepository pronunciationRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long createWord(CreateWordRequest createWordRequest) {
-        Word word = buildWordFromRequest(createWordRequest);
-        Word savedWord = wordRepository.save(word);
+    public void deleteWord(Long wordId) {
+        Word word = findWord(wordId);
 
-        persistExamples(savedWord, createWordRequest);
-        persistPronunciations(savedWord, createWordRequest);
-        publishPersistedEvent(savedWord);
-
-        return savedWord.getId();
-    }
-
-    @Transactional
-    public void updateWordExample(Long wordExampleId, String example) {
-        WordExample wordExample = findWordExample(wordExampleId);
-
-        wordExample.changeExample(example);
+        executeWordDeletion(word);
     }
 
     @Transactional
     public void deleteWordExample(Long wordId, Long wordExampleId) {
         WordExample wordExample = findWordExample(wordExampleId);
 
-        validateExampleCount(wordId);
-        wordExample.deleted();
+        validateWordExampleCount(wordId);
+        executeWordExampleDeletion(wordExample);
     }
 
     @Transactional
@@ -66,57 +46,12 @@ public class AdminWordService {
         Pronunciation pronunciation = findPronunciation(pronunciationId);
 
         validatePronunciationCount(wordId);
-        pronunciation.deleted();
-    }
-
-    @Transactional
-    public void deleteWord(Long wordId) {
-        Word word = findWord(wordId);
-
-        word.delete();
-        publishDeletedWordEvent(wordId);
+        executePronunciationDeletion(pronunciation);
     }
 
     private Word findWord(Long wordId) {
         return wordRepository.findBy(wordId)
                              .orElseThrow(() -> new WordNotFoundException("지정한 용어를 찾을 수 없습니다."));
-    }
-
-    private Word buildWordFromRequest(CreateWordRequest request) {
-        return Word.builder()
-                   .name(request.name())
-                   .meaning(request.meaning())
-                   .categoryName(request.categoryName())
-                   .build();
-    }
-
-    private void persistExamples(Word word, CreateWordRequest request) {
-        List<WordExample> wordExamples = new ArrayList<>();
-
-        for (String example : request.examples()) {
-            WordExample wordExample = WordExample.from(example);
-
-            wordExample.initWord(word);
-            wordExamples.add(wordExample);
-        }
-
-        wordExampleRepository.saveAll(wordExamples);
-    }
-
-    private void persistPronunciations(Word word, CreateWordRequest request) {
-        List<Pronunciation> pronunciations = new ArrayList<>();
-
-        for (CreatePronunciationRequest pronunciationInfo : request.pronunciations()) {
-            Pronunciation pronunciation = Pronunciation.of(
-                    pronunciationInfo.pronunciation(),
-                    pronunciationInfo.typeName()
-            );
-
-            pronunciation.initWord(word);
-            pronunciations.add(pronunciation);
-        }
-
-        pronunciationRepository.saveAll(pronunciations);
     }
 
     private WordExample findWordExample(Long wordExampleId) {
@@ -133,7 +68,7 @@ public class AdminWordService {
                                       );
     }
 
-    private void validateExampleCount(Long wordId) {
+    private void validateWordExampleCount(Long wordId) {
         if (wordExampleRepository.countBy(wordId) <= WORD_EXAMPLE_MIN_COUNT) {
             throw new WordExampleDeletionNotAllowedException("해당 용어의 예문 개수가 최소치입니다.");
         }
@@ -145,11 +80,15 @@ public class AdminWordService {
         }
     }
 
-    private void publishDeletedWordEvent(Long wordId) {
-        eventPublisher.publishEvent(new DeletedWordEvent(wordId));
+    private void executeWordDeletion(Word word) {
+        word.delete();
     }
 
-    private void publishPersistedEvent(Word word) {
-        eventPublisher.publishEvent(new PersistedWordEvent(word.getId(), word.getCategory()));
+    private void executeWordExampleDeletion(WordExample wordExample) {
+        wordExample.deleted();
+    }
+
+    private void executePronunciationDeletion(Pronunciation pronunciation) {
+        pronunciation.deleted();
     }
 }
