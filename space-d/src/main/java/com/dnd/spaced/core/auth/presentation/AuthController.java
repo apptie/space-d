@@ -38,7 +38,7 @@ public class AuthController {
     private final InitAccountCareerService initAccountCareerService;
 
     @PostMapping("/profile")
-    public ResponseEntity<Void> initAccountCareerInfo(
+    public ResponseEntity<Void> initAccountCareer(
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody InitAccountCareerRequest request
     ) {
