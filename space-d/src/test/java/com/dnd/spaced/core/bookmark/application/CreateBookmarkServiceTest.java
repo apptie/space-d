@@ -2,11 +2,12 @@ package com.dnd.spaced.core.bookmark.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
-import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
+import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -27,9 +28,6 @@ class CreateBookmarkServiceTest {
     @Autowired
     CreateBookmarkService createBookmarkService;
 
-    @Autowired
-    BookmarkRepository bookmarkRepository;
-
     @Test
     @Sql("classpath:sql/bookmark/word.sql")
     void 북마크를_추가한다() {
@@ -37,12 +35,14 @@ class CreateBookmarkServiceTest {
         CreateBookmarkRequest request = new CreateBookmarkRequest(WORD_ID);
 
         // when
-        createBookmarkService.createBookmark(ACCOUNT_ID, request);
+        Bookmark actual = createBookmarkService.createBookmark(ACCOUNT_ID, request);
 
         // then
-        boolean actual = bookmarkRepository.existsBy(ACCOUNT_ID, WORD_ID);
-
-        assertThat(actual).isTrue();
+        assertAll(
+                () -> assertThat(actual.getId()).isPositive(),
+                () -> assertThat(actual.getAccountId()).isEqualTo(ACCOUNT_ID),
+                () -> assertThat(actual.getWordId()).isEqualTo(WORD_ID)
+        );
     }
 
     @Test

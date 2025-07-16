@@ -30,12 +30,12 @@ class CreateBookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final TransactionTemplate transactionTemplate;
     
-    public void createBookmark(Long accountId, CreateBookmarkRequest request) {
+    public Bookmark createBookmark(Long accountId, CreateBookmarkRequest request) {
         validateWordId(request);
-        executeBookmarkCreationWithTransaction(accountId, request);
+        return executeBookmarkCreationWithTransaction(accountId, request);
     }
 
-    private void executeBookmarkCreationWithTransaction(Long accountId, CreateBookmarkRequest request) {
+    private Bookmark executeBookmarkCreationWithTransaction(Long accountId, CreateBookmarkRequest request) {
         RLock lock = redissonClient.getLock(calculateLockName(accountId, request));
 
         if (!tryLock(lock)) {
@@ -43,7 +43,7 @@ class CreateBookmarkService {
         }
 
         try {
-            transactionTemplate.executeWithoutResult(action -> doBookmarkCreation(accountId, request));
+            return transactionTemplate.execute(action -> doBookmarkCreation(accountId, request));
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
@@ -66,9 +66,9 @@ class CreateBookmarkService {
         }
     }
 
-    private void doBookmarkCreation(Long accountId, CreateBookmarkRequest request) {
+    private Bookmark doBookmarkCreation(Long accountId, CreateBookmarkRequest request) {
         validateExistsBookmark(accountId, request);
-        persistBookmark(accountId, request);
+        return persistBookmark(accountId, request);
     }
 
     private String calculateLockName(Long accountId, CreateBookmarkRequest request) {
@@ -81,10 +81,11 @@ class CreateBookmarkService {
         }
     }
 
-    private void persistBookmark(Long accountId, CreateBookmarkRequest request) {
+    private Bookmark persistBookmark(Long accountId, CreateBookmarkRequest request) {
         Bookmark bookmark = new Bookmark(accountId, request.wordId());
 
         bookmarkRepository.save(bookmark);
+        return bookmark;
     }
 
     private void validateWordId(CreateBookmarkRequest request) {
