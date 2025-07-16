@@ -3,25 +3,24 @@ package com.dnd.spaced.core.bookmark.application.dto.mapper;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse.BookmarkResponse;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BookmarkApplicationMapper {
+@Mapper
+public class BookmarkMapper {
 
-    public static BookmarkCollectionResponse toDto(List<Bookmark> bookmarks) {
+    public BookmarkCollectionResponse toDto(List<Bookmark> bookmarks) {
         if (bookmarks.isEmpty()) {
             return new BookmarkCollectionResponse(List.of(), null);
         }
 
         List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
-                                                            .map(BookmarkApplicationMapper::toBookmarkResponse)
+                                                            .map(this::toBookmarkResponse)
                                                             .toList();
         return new BookmarkCollectionResponse(bookmarkResponses, bookmarks.get(bookmarks.size() - 1).getId());
     }
 
-    private static BookmarkResponse toBookmarkResponse(Bookmark bookmark) {
+    private BookmarkResponse toBookmarkResponse(Bookmark bookmark) {
         return new BookmarkResponse(
                 bookmark.getId(),
                 bookmark.getAccountId(),

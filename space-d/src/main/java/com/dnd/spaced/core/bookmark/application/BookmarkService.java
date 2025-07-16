@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.bookmark.application;
 
-import com.dnd.spaced.core.bookmark.application.dto.mapper.BookmarkApplicationMapper;
+import com.dnd.spaced.core.bookmark.application.dto.mapper.BookmarkMapper;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
@@ -28,6 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 @RequiredArgsConstructor
 public class BookmarkService {
 
+    private final BookmarkMapper mapper;
     private final RedissonClient redissonClient;
     private final WordRepository wordRepository;
     private final BookmarkRepository bookmarkRepository;
@@ -79,7 +80,7 @@ public class BookmarkService {
     ) {
         List<Bookmark> bookmarks = bookmarkRepository.findAllBy(accountId, request.lastBookmarkId(), pageable);
 
-        return BookmarkApplicationMapper.toDto(bookmarks);
+        return mapper.toDto(bookmarks);
     }
 
     private void validateWordId(CreateBookmarkRequest request) {
