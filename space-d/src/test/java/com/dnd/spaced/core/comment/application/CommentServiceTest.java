@@ -12,8 +12,6 @@ import com.dnd.spaced.core.comment.application.exception.CommentNotFoundExceptio
 import com.dnd.spaced.core.comment.application.exception.ForbiddenCommentException;
 import com.dnd.spaced.core.comment.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
-import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.like.domain.repository.LikeRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -32,12 +30,6 @@ class CommentServiceTest {
 
     @Autowired
     CommentService commentService;
-
-    @Autowired
-    CommentRepository commentRepository;
-
-    @Autowired
-    LikeRepository likeRepository;
 
     @Test
     void 댓글을_작성할_용어가_없는_경우_댓글을_작성할_수_없다() {
