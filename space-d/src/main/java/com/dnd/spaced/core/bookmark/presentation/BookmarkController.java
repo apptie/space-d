@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.bookmark.presentation;
 
-import com.dnd.spaced.core.bookmark.application.BookmarkService;
+import com.dnd.spaced.core.bookmark.application.BookmarkServiceFacade;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookmarkController {
 
-    private final BookmarkService bookmarkService;
+    private final BookmarkServiceFacade bookmarkServiceFacade;
 
     @GetMapping
     public ResponseEntity<BookmarkCollectionResponse> readBookmarks(
@@ -33,7 +33,7 @@ public class BookmarkController {
             ReadAllBookmarkRequest request,
             @BookmarkPageable Pageable pageable
     ) {
-        BookmarkCollectionResponse response = bookmarkService.readBookmarks(accountId.id(), request, pageable);
+        BookmarkCollectionResponse response = bookmarkServiceFacade.readBookmarks(accountId.id(), request, pageable);
 
         return ResponseEntity.ok(response);
     }
@@ -43,7 +43,7 @@ public class BookmarkController {
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody CreateBookmarkRequest request
     ) {
-        bookmarkService.createBookmark(accountId.id(), request);
+        bookmarkServiceFacade.createBookmark(accountId.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -53,7 +53,7 @@ public class BookmarkController {
             @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody DeleteBookmarkRequest request
     ) {
-        bookmarkService.deleteBookmark(accountId.id(), request);
+        bookmarkServiceFacade.deleteBookmark(accountId.id(), request);
 
         return ResponseEntityConst.NO_CONTENT;
     }

@@ -25,13 +25,13 @@ import org.springframework.test.context.jdbc.Sql;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class ConcurrencyBookmarkServiceTest {
+class ConcurrencyBookmarkServiceFacadeTest {
 
     private static final Long WORD_ID = 1L;
     private static final Long ACCOUNT_ID = 1L;
 
     @Autowired
-    BookmarkService bookmarkService;
+    BookmarkServiceFacade bookmarkServiceFacade;
 
     @Autowired
     BookmarkRepository bookmarkRepository;
@@ -51,7 +51,7 @@ class ConcurrencyBookmarkServiceTest {
                     startLatch.countDown();
                     startLatch.await();
 
-                    bookmarkService.createBookmark(ACCOUNT_ID, request);
+                    bookmarkServiceFacade.createBookmark(ACCOUNT_ID, request);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {

@@ -27,22 +27,28 @@ import org.springframework.test.context.jdbc.Sql;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BookmarkServiceTest {
+class BookmarkServiceFacadeTest {
+
+    private static final Long ACCOUNT_ID = 1L;
+    private static final Long NOT_FOUND_WORD_ID = -999L;
+    private static final Long WORD_ID = 1L;
+    private static final Long BOOKMARK_ID = 1L;
+    private static final Long LAST_BOOKMARK_ID = 1L;
 
     @Autowired
     ApplicationEvents events;
 
     @Autowired
-    BookmarkService bookmarkService;
+    BookmarkServiceFacade bookmarkServiceFacade;
 
     @Test
     @Sql("classpath:sql/bookmark/word.sql")
     void 북마크를_추가한다() {
         // given
-        CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(WORD_ID);
 
         // when
-        bookmarkService.createBookmark(1L, request);
+        bookmarkServiceFacade.createBookmark(ACCOUNT_ID, request);
 
         // then
         assertThat(events.stream(WordBookmarkCountIncrementedEvent.class).count()).isOne();
@@ -55,10 +61,10 @@ class BookmarkServiceTest {
     })
     void 이미_북마크에_추가된_용어를_북마에_추가할_수_없다() {
         // given
-        CreateBookmarkRequest request = new CreateBookmarkRequest(1L);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(WORD_ID);
 
         // when & then
-        assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
+        assertThatThrownBy(() -> bookmarkServiceFacade.createBookmark(ACCOUNT_ID, request))
                 .isInstanceOf(AlreadyExistsBookmarkException.class)
                 .hasMessage("이미 북마크에 추가된 용어입니다.");
     }
@@ -66,10 +72,10 @@ class BookmarkServiceTest {
     @Test
     void 지정한_용어_식별자로_용어를_찾지_못하면_북마크를_추가할_수_없다() {
         // given
-        CreateBookmarkRequest request = new CreateBookmarkRequest(-999L);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(NOT_FOUND_WORD_ID);
 
         // when & then
-        assertThatThrownBy(() -> bookmarkService.createBookmark(1L, request))
+        assertThatThrownBy(() -> bookmarkServiceFacade.createBookmark(ACCOUNT_ID, request))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 식별자의 용어를 찾지 못했습니다.");
 
@@ -79,10 +85,10 @@ class BookmarkServiceTest {
     @Sql("classpath:sql/bookmark/bookmark.sql")
     void 북마크를_삭제한다() {
         // given
-        DeleteBookmarkRequest request = new DeleteBookmarkRequest(1L);
+        DeleteBookmarkRequest request = new DeleteBookmarkRequest(WORD_ID);
 
         // when
-        bookmarkService.deleteBookmark(1L, request);
+        bookmarkServiceFacade.deleteBookmark(ACCOUNT_ID, request);
 
         // then
         assertThat(events.stream(WordBookmarkCountDecrementedEvent.class).count()).isOne();
@@ -98,15 +104,15 @@ class BookmarkServiceTest {
         ReadAllBookmarkRequest request = new ReadAllBookmarkRequest(null);
 
         // when
-        BookmarkCollectionResponse actual = bookmarkService.readBookmarks(1L, request, PageRequest.of(0, 10));
+        BookmarkCollectionResponse actual = bookmarkServiceFacade.readBookmarks(ACCOUNT_ID, request, PageRequest.of(0, 10));
 
         // then
         assertAll(
                 () -> assertThat(actual.bookmarks()).hasSize(1),
-                () -> assertThat(actual.lastBookmarkId()).isEqualTo(1L),
-                () -> assertThat(actual.bookmarks().get(0).bookmarkId()).isEqualTo(1L),
-                () -> assertThat(actual.bookmarks().get(0).accountId()).isEqualTo(1L),
-                () -> assertThat(actual.bookmarks().get(0).wordId()).isEqualTo(1L)
+                () -> assertThat(actual.lastBookmarkId()).isEqualTo(LAST_BOOKMARK_ID),
+                () -> assertThat(actual.bookmarks().get(0).bookmarkId()).isEqualTo(BOOKMARK_ID),
+                () -> assertThat(actual.bookmarks().get(0).accountId()).isEqualTo(ACCOUNT_ID),
+                () -> assertThat(actual.bookmarks().get(0).wordId()).isEqualTo(WORD_ID)
         );
     }
 }

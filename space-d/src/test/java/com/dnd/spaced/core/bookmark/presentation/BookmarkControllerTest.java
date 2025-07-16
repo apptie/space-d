@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
-import com.dnd.spaced.core.bookmark.application.BookmarkService;
+import com.dnd.spaced.core.bookmark.application.BookmarkServiceFacade;
 import com.dnd.spaced.core.bookmark.application.dto.request.CreateBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,7 +38,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class BookmarkControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    BookmarkService bookmarkService;
+    BookmarkServiceFacade bookmarkServiceFacade;
 
     @Test
     @WithMockUser("1")
@@ -55,7 +54,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                                   .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
 
-        verify(bookmarkService).createBookmark(anyLong(), any(CreateBookmarkRequest.class));
+        verify(bookmarkServiceFacade).createBookmark(anyLong(), any(CreateBookmarkRequest.class));
 
         북마크_생성_요청_문서화(resultActions);
     }
@@ -86,7 +85,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                         .content(objectMapper.writeValueAsString(request))
         ).andExpectAll(status().isNoContent());
 
-        verify(bookmarkService).deleteBookmark(anyLong(), any(DeleteBookmarkRequest.class));
+        verify(bookmarkServiceFacade).deleteBookmark(anyLong(), any(DeleteBookmarkRequest.class));
 
         북마크_삭제_요청_문서화(resultActions);
     }
@@ -111,7 +110,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
         BookmarkResponse bookmarkResponse = new BookmarkResponse(1L, 1L, 1L, LocalDateTime.now());
         BookmarkCollectionResponse response = new BookmarkCollectionResponse(List.of(bookmarkResponse), 1L);
 
-        given(bookmarkService.readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class)))
+        given(bookmarkServiceFacade.readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class)))
                 .willReturn(response);
 
         // when & then
@@ -127,7 +126,7 @@ class BookmarkControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastBookmarkId", is(1L), Long.class)
         );
 
-        verify(bookmarkService).readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class));
+        verify(bookmarkServiceFacade).readBookmarks(anyLong(), any(ReadAllBookmarkRequest.class), any(Pageable.class));
 
         북마크_목록_조회_요청_문서화(resultActions);
     }
