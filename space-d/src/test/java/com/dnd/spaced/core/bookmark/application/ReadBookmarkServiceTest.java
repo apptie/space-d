@@ -19,10 +19,10 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ReadBookmarkServiceTest {
 
-    private static final long WORD_ID = 1L;
-    private static final long ACCOUNT_ID = 1L;
-    private static final long BOOKMARK_ID = 1L;
-    private static final long LAST_BOOKMARK_ID = 1L;
+    private static final Long WORD_ID = 1L;
+    private static final Long ACCOUNT_ID = 1L;
+    private static final Long BOOKMARK_ID = 1L;
+    private static final Long LAST_BOOKMARK_ID = 1L;
 
     @Autowired
     ReadBookmarkService readBookmarkService;
