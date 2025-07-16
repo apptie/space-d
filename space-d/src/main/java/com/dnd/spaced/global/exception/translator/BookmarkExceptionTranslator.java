@@ -28,6 +28,11 @@ public enum BookmarkExceptionTranslator implements ExceptionTranslator {
             BookmarkErrorCode.BOOKMARK_LOCK_EXCEPTION,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "북마크 생성 도중 서버에 문제가 발생했습니다."
+    ),
+    BOOKMARK_INTERRUPTED_EXCEPTION(
+            BookmarkErrorCode.BOOKMARK_INTERRUPTED_EXCEPTION,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "북마크 생성 도중 서버에 문제가 발생했습니다."
     );
 
     private final ErrorCode errorCode;

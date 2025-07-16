@@ -6,7 +6,7 @@ import com.dnd.spaced.core.bookmark.application.dto.request.DeleteBookmarkReques
 import com.dnd.spaced.core.bookmark.application.dto.request.ReadAllBookmarkRequest;
 import com.dnd.spaced.core.bookmark.application.dto.response.BookmarkCollectionResponse;
 import com.dnd.spaced.core.bookmark.application.exception.AlreadyExistsBookmarkException;
-import com.dnd.spaced.core.bookmark.application.exception.BookmarkLockException;
+import com.dnd.spaced.core.bookmark.application.exception.BookmarkInterruptedException;
 import com.dnd.spaced.core.bookmark.application.exception.WordNotFoundException;
 import com.dnd.spaced.core.bookmark.domain.Bookmark;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
@@ -55,7 +55,8 @@ public class BookmarkService {
                         bookmarkRepository.save(bookmark);
                         publishAddedBookmarkEvent(bookmark);
                     } catch (InterruptedException e) {
-                        throw new BookmarkLockException("북마크 생성 중 인터럽트 발생", e);
+                        Thread.currentThread().interrupt();
+                        throw new BookmarkInterruptedException("북마크 생성 중 인터럽트 발생", e);
                     } finally {
                         if (lock.isHeldByCurrentThread()) {
                             lock.unlock();
