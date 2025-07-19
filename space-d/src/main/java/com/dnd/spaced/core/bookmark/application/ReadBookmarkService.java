@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReadBookmarkService {
+class ReadBookmarkService {
 
     private final BookmarkMapper mapper;
     private final BookmarkRepository bookmarkRepository;
