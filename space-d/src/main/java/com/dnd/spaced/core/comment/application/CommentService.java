@@ -23,6 +23,7 @@ public class CommentService {
 
     private final WordRepository wordRepository;
     private final CommentRepository commentRepository;
+    private final CommentResponseCollectionMapper mapper;
 
     @Transactional
     public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
@@ -52,7 +53,7 @@ public class CommentService {
     public CommentCollectionResponse readComments(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         List<LikedComment> comments = commentRepository.findAllBy(accountId, wordId, lastCommentId, pageable);
 
-        return CommentResponseCollectionMapper.toCollectionDto(comments);
+        return mapper.toDto(comments);
     }
 
     private void validateWordId(Long wordId) {

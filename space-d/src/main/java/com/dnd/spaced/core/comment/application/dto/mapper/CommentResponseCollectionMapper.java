@@ -6,26 +6,25 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.dto.LikedComment;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CommentResponseCollectionMapper {
+@Mapper
+public class CommentResponseCollectionMapper {
 
-    public static CommentCollectionResponse toCollectionDto(List<LikedComment> comments) {
+    public CommentCollectionResponse toDto(List<LikedComment> comments) {
         if (comments.isEmpty()) {
             return new CommentCollectionResponse(List.of(), null);
         }
 
         List<CommentResponse> responses = comments.stream()
-                                                  .map(CommentResponseCollectionMapper::toCommentResponse)
+                                                  .map(this::toCommentResponse)
                                                   .toList();
 
         return new CommentCollectionResponse(responses, comments.get(comments.size() - 1).comment().getId());
     }
 
-    private static CommentResponse toCommentResponse(LikedComment likedComment) {
+    private CommentResponse toCommentResponse(LikedComment likedComment) {
         return new CommentResponse(
                 toCommentContentResponse(likedComment.comment()),
                 toCommentWriterResponse(
@@ -37,7 +36,7 @@ public final class CommentResponseCollectionMapper {
         );
     }
 
-    private static CommentContentResponse toCommentContentResponse(Comment comment) {
+    private CommentContentResponse toCommentContentResponse(Comment comment) {
         return new CommentContentResponse(
                 comment.getId(),
                 comment.getWordId(),
@@ -46,7 +45,7 @@ public final class CommentResponseCollectionMapper {
         );
     }
 
-    private static CommentWriterResponse toCommentWriterResponse(
+    private CommentWriterResponse toCommentWriterResponse(
             String writerNickname,
             String writerProfileImage,
             Long writerId
