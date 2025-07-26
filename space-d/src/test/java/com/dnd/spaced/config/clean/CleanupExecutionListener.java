@@ -1,9 +1,12 @@
 package com.dnd.spaced.config.clean;
 
+import jakarta.persistence.EntityManager;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
@@ -22,20 +25,21 @@ public class CleanupExecutionListener extends AbstractTestExecutionListener impl
             return;
         }
 
-        cleanUpWithSql(testContext);
-        cleanUpWithRedis(testContext);
+        cleanupWithSql(testContext);
+        cleanupWithRedis(testContext);
+        cleanupWithMemoryCache(testContext);
     }
 
     @Override
     public int getOrder() {
-        return 4999;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
     private boolean isNotIntegrationTest(TestContext testContext) {
         return AnnotationUtils.findAnnotation(testContext.getTestClass(), SpringBootTest.class) == null;
     }
 
-    private void cleanUpWithSql(TestContext testContext) {
+    private void cleanupWithSql(TestContext testContext) {
         DataSource dataSource = testContext.getApplicationContext().getBean(DataSource.class);
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
 
@@ -43,12 +47,26 @@ public class CleanupExecutionListener extends AbstractTestExecutionListener impl
         populator.execute(dataSource);
     }
 
-    private void cleanUpWithRedis(TestContext testContext) {
+    private void cleanupWithRedis(TestContext testContext) {
         RedissonConnectionFactory lettuceConnectionFactory = findLettuceConnectionFactory(testContext);
         RedisConnection redisConnection = lettuceConnectionFactory.getConnection();
         RedisServerCommands redisServerCommands = redisConnection.serverCommands();
 
         redisServerCommands.flushAll();
+    }
+
+    private void cleanupWithMemoryCache(TestContext testContext) {
+        try {
+            CacheManager cacheManager = testContext.getApplicationContext().getBean(CacheManager.class);
+            cacheManager.getCacheNames().forEach(cacheName -> {
+                Cache cache = cacheManager.getCache(cacheName);
+                if (cache != null) {
+                    cache.clear();
+                }
+            });
+        } catch (Exception e) {
+            log.warn("캐시 정리 중 오류 발생", e);
+        }
     }
 
     private RedissonConnectionFactory findLettuceConnectionFactory(TestContext testContext) {
