@@ -23,16 +23,17 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ReadWordViewServiceTest {
 
+    private static final Long WORD_ID = 1L;
     private static final Long NOT_FOUND_WORD_ID = -999L;
 
     @Autowired
-    ReadWordViewService wordService;
+    ReadWordViewService readWordViewService;
 
     @Test
     @Sql("classpath:sql/word/word.sql")
     void 용어를_조회한다() {
         // when
-        WordView actual = wordService.readWord(1L);
+        WordView actual = readWordViewService.readWord(WORD_ID);
 
         // then
         assertAll(
@@ -45,7 +46,7 @@ class ReadWordViewServiceTest {
     @Test
     void 용어_ID로_용어를_찾지_못하면_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> wordService.readWord(NOT_FOUND_WORD_ID))
+        assertThatThrownBy(() -> readWordViewService.readWord(NOT_FOUND_WORD_ID))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 용어를 찾을 수 없습니다.");
     }
@@ -61,7 +62,7 @@ class ReadWordViewServiceTest {
         );
 
         // when
-        List<WordView> actual = wordService.readWords(request, Pageable.ofSize(10));
+        List<WordView> actual = readWordViewService.readWords(request, Pageable.ofSize(10));
 
         // then
         assertAll(
