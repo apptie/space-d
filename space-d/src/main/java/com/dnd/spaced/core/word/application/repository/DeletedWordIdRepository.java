@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.word.application;
+package com.dnd.spaced.core.word.application.repository;
 
 import java.time.LocalDateTime;
 import java.util.Set;

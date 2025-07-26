@@ -4,7 +4,7 @@ import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedQuizSkillEvent;
 import com.dnd.spaced.core.skill.application.event.dto.FailedGradedTodayQuizSkillEvent;
 import com.dnd.spaced.core.skill.domain.repository.SkillRepository;
-import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
+import com.dnd.spaced.core.word.application.repository.DeletedWordIdRepository;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;

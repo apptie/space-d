@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.*;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
-import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
+import com.dnd.spaced.core.word.application.repository.DeletedWordIdRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;

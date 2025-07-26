@@ -1,13 +1,12 @@
 package com.dnd.spaced.core.bookmark.application.schedule;
 
 import com.dnd.spaced.core.bookmark.domain.repository.BookmarkRepository;
-import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
+import com.dnd.spaced.core.word.application.repository.DeletedWordIdRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

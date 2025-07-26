@@ -10,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.dnd.spaced.core.admin.application.event.dto.DeletedWordEvent;
-import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
+import com.dnd.spaced.core.word.application.repository.DeletedWordIdRepository;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.dnd.spaced.core.word.domain.repository.WordExampleRepository;
 import java.time.LocalDateTime;
