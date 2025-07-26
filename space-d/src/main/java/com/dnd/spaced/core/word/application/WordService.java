@@ -31,13 +31,14 @@ public class WordService {
     private final Clock clock;
     private final WordViewRepository wordViewRepository;
     private final PopularWordRepository popularWordRepository;
+    private final WordApplicationMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     public WordResponse readWord(Long wordId) {
         WordView word = findWord(wordId);
 
         publishWordViewCountIncrementedEvent(word);
-        return WordApplicationMapper.toPronunciationInfoDto(word);
+        return mapper.toPronunciationResponse(word);
     }
 
     public WordCollectionResponse readWords(ReadAllWordRequest request, Pageable pageable) {
@@ -47,7 +48,7 @@ public class WordService {
                                         .orElse(null);
         List<WordView> words = wordViewRepository.findAllBy(category, request.lastWordName(), lastCategory, pageable);
 
-        return WordApplicationMapper.toWordCollectionDto(words);
+        return mapper.toWordCollectionResponse(words);
     }
 
     public WordCollectionResponse searchWord(SearchWordRequest request, Pageable pageable) {
@@ -66,13 +67,13 @@ public class WordService {
                 lastCategory);
         List<WordView> words = wordViewRepository.search(wordSearchCondition, wordSearchPageRequest);
 
-        return WordApplicationMapper.toWordCollectionDto(words);
+        return mapper.toWordCollectionResponse(words);
     }
 
     public PopularWordCollectionResponse readPopularWords() {
         List<PopularWord> popularWords = popularWordRepository.findAllBy(LocalDateTime.now(clock));
 
-        return WordApplicationMapper.toPopularWordCollectionDto(popularWords);
+        return mapper.toPopularWordCollectionResponse(popularWords);
     }
 
     private WordView findWord(Long wordId) {
