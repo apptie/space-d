@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReadWordViewService {
+class ReadWordViewService {
 
     private static final Category NO_CATEGORY_FILTER = null;
     private static final Category NO_LAST_CATEGORY_FILTER = null;
