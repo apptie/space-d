@@ -20,7 +20,7 @@ public class AdminWordServiceFacade {
 
     @Transactional
     public Long createWord(CreateWordRequest createWordRequest) {
-        PersistWordDto wordDto = createWordservice.createWord(createWordRequest);
+        PersistWordDto wordDto = performWordCreation(createWordRequest);
 
         publishPersistedWordEvent(wordDto);
         return wordDto.id();
@@ -43,9 +43,17 @@ public class AdminWordServiceFacade {
 
     @Transactional
     public void deleteWord(Long wordId) {
-        deleteWordService.deleteWord(wordId);
+        performWordDeletion(wordId);
 
         publishDeletedWordEvent(wordId);
+    }
+
+    private PersistWordDto performWordCreation(CreateWordRequest createWordRequest) {
+        return createWordservice.createWord(createWordRequest);
+    }
+
+    private void performWordDeletion(Long wordId) {
+        deleteWordService.deleteWord(wordId);
     }
 
     private void publishDeletedWordEvent(Long wordId) {
