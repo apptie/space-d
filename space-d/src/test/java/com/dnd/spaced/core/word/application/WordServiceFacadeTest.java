@@ -31,10 +31,13 @@ import org.springframework.test.context.jdbc.Sql;
 @RecordApplicationEvents
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class WordServiceTest {
+class WordServiceFacadeTest {
+
+    private static final long WORD_ID = 1L;
+    private static final long NOT_FOUND_WORD = -999L;
 
     @Autowired
-    WordService wordService;
+    WordServiceFacade wordServiceFacade;
 
     @Autowired
     PopularWordRepository popularWordRepository;
@@ -46,7 +49,7 @@ class WordServiceTest {
     @Sql("classpath:sql/word/word.sql")
     void 용어를_조회한다() {
         // when
-        WordResponse actual = wordService.readWord(1L);
+        WordResponse actual = wordServiceFacade.readWord(WORD_ID);
 
         // then
         assertAll(
@@ -61,7 +64,7 @@ class WordServiceTest {
     @Test
     void 용어_식별자로_용어를_찾지_못하면_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> wordService.readWord(-999L))
+        assertThatThrownBy(() -> wordServiceFacade.readWord(NOT_FOUND_WORD))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 용어를 찾을 수 없습니다.");
     }
@@ -77,7 +80,7 @@ class WordServiceTest {
         );
 
         // when
-        WordCollectionResponse actual = wordService.readWords(request, Pageable.ofSize(10));
+        WordCollectionResponse actual = wordServiceFacade.readWords(request, Pageable.ofSize(10));
 
         // then
         assertAll(
@@ -99,7 +102,7 @@ class WordServiceTest {
         );
 
         // when
-        WordCollectionResponse actual = wordService.searchWord(request, Pageable.ofSize(10));
+        WordCollectionResponse actual = wordServiceFacade.searchWord(request, Pageable.ofSize(10));
 
         // then
         assertAll(
@@ -111,11 +114,11 @@ class WordServiceTest {
     @Test
     void 많이_찾아본_용어_목록을_조회한다() {
         // given
-        PopularWord popularWord = new PopularWord(1, 1L, "Authorization");
+        PopularWord popularWord = new PopularWord(1, WORD_ID, "Authorization");
         popularWordRepository.saveAll(List.of(popularWord), LocalDateTime.now());
 
         // when
-        PopularWordCollectionResponse actual = wordService.readPopularWords();
+        PopularWordCollectionResponse actual = wordServiceFacade.readPopularWords();
 
         // then
         assertAll(

@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
-import com.dnd.spaced.core.word.application.WordService;
+import com.dnd.spaced.core.word.application.WordServiceFacade;
 import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
 import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
 import com.dnd.spaced.core.word.application.dto.response.WordCollectionResponse;
@@ -27,7 +27,6 @@ import com.dnd.spaced.core.word.application.dto.response.WordResponse.Pronunciat
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -37,7 +36,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class WordControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    WordService wordService;
+    WordServiceFacade wordServiceFacade;
 
     @Test
     void 용어_조회_요청_성공_테스트() throws Exception {
@@ -53,7 +52,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
 
-        given(wordService.readWord(anyLong())).willReturn(wordResponse);
+        given(wordServiceFacade.readWord(anyLong())).willReturn(wordResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -112,7 +111,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
-        given(wordService.searchWord(any(SearchWordRequest.class), any(Pageable.class))).willReturn(wordCollectionResponse);
+        given(wordServiceFacade.searchWord(any(SearchWordRequest.class), any(Pageable.class))).willReturn(wordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -183,7 +182,7 @@ class WordControllerTest extends CommonControllerSliceTest {
                 1L
         );
         WordCollectionResponse wordCollectionResponse = new WordCollectionResponse(List.of(wordResponse), wordResponse.name());
-        given(wordService.readWords(any(), any())).willReturn(wordCollectionResponse);
+        given(wordServiceFacade.readWords(any(), any())).willReturn(wordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -240,7 +239,7 @@ class WordControllerTest extends CommonControllerSliceTest {
         // given
         PopularWordResponse popularWordResponse = new PopularWordResponse(1, 3L, "Authorization");
         PopularWordCollectionResponse popularWordCollectionResponse = new PopularWordCollectionResponse(List.of(popularWordResponse));
-        given(wordService.readPopularWords()).willReturn(popularWordCollectionResponse);
+        given(wordServiceFacade.readPopularWords()).willReturn(popularWordCollectionResponse);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
