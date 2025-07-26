@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.comment.presentation;
 
-import com.dnd.spaced.core.comment.application.CommentService;
+import com.dnd.spaced.core.comment.application.CommentServiceFacade;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.ReadAllCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
@@ -28,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentServiceFacade commentServiceFacade;
 
     @PostMapping("/words/{wordId}/comments")
     public ResponseEntity<Void> creteComment(
@@ -36,7 +36,7 @@ public class CommentController {
             @Valid @RequestBody CreateCommentRequest request,
             @PathVariable Long wordId
     ) {
-        commentService.createComment(accountId.id(), wordId, request);
+        commentServiceFacade.createComment(accountId.id(), wordId, request);
 
         URI location = UriComponentsBuilder.fromPath("/words/{wordId}")
                                            .buildAndExpand(wordId)
@@ -48,7 +48,7 @@ public class CommentController {
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@CurrentAccount AuthAccountId accountId, @PathVariable Long commentId) {
-        commentService.deleteComment(accountId.id(), commentId);
+        commentServiceFacade.deleteComment(accountId.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -59,7 +59,7 @@ public class CommentController {
             @Valid @RequestBody UpdateCommentRequest request,
             @PathVariable Long commentId
     ) {
-        commentService.updateComment(accountId.id(), commentId, request);
+        commentServiceFacade.updateComment(accountId.id(), commentId, request);
 
         return ResponseEntityConst.NO_CONTENT;
     }
@@ -71,7 +71,7 @@ public class CommentController {
             ReadAllCommentRequest request,
             @CommentPageable Pageable pageable
     ) {
-        CommentCollectionResponse response = commentService.readComments(
+        CommentCollectionResponse response = commentServiceFacade.readComments(
                 accountId.id(),
                 wordId,
                 request.lastCommentId(),

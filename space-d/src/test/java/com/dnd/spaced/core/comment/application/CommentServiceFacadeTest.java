@@ -26,10 +26,10 @@ import org.springframework.test.context.jdbc.Sql;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class CommentServiceTest {
+class CommentServiceFacadeTest {
 
     @Autowired
-    CommentService commentService;
+    CommentServiceFacade commentServiceFacade;
 
     @Test
     void 댓글을_작성할_용어가_없는_경우_댓글을_작성할_수_없다() {
@@ -37,7 +37,7 @@ class CommentServiceTest {
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when & then
-        assertThatThrownBy(() -> commentService.createComment(1L, -1L, request))
+        assertThatThrownBy(() -> commentServiceFacade.createComment(1L, -1L, request))
                 .isInstanceOf(WordNotFoundException.class)
                 .hasMessage("댓글과 관련된 용어를 찾을 수 없습니다.");
     }
@@ -50,7 +50,7 @@ class CommentServiceTest {
         CreateCommentRequest request = new CreateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.createComment(1L, 1L, request))
+        assertThatThrownBy(() -> commentServiceFacade.createComment(1L, 1L, request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -62,13 +62,13 @@ class CommentServiceTest {
         CreateCommentRequest request = new CreateCommentRequest("이 용어는 언제 쓰는건가요?");
 
         // when
-        assertDoesNotThrow(() -> commentService.createComment(1L, 1L, request));
+        assertDoesNotThrow(() -> commentServiceFacade.createComment(1L, 1L, request));
     }
 
     @Test
     void 없는_댓글_식별자를_통해_댓글을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.deleteComment(1L, -999L))
+        assertThatThrownBy(() -> commentServiceFacade.deleteComment(1L, -999L))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
@@ -80,7 +80,7 @@ class CommentServiceTest {
     })
     void 댓글_작성자가_아니라면_댓글을_삭제할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> commentService.deleteComment(2L, 1L))
+        assertThatThrownBy(() -> commentServiceFacade.deleteComment(2L, 1L))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 삭제할 권한이 없습니다.");
     }
@@ -92,7 +92,7 @@ class CommentServiceTest {
     })
     void 댓글을_삭제한다() {
         // when & then
-        assertDoesNotThrow(() -> commentService.deleteComment(1L, 1L));
+        assertDoesNotThrow(() -> commentServiceFacade.deleteComment(1L, 1L));
     }
 
     @Test
@@ -101,7 +101,7 @@ class CommentServiceTest {
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertThatThrownBy(() -> commentService.updateComment(1L, -999L, request))
+        assertThatThrownBy(() -> commentServiceFacade.updateComment(1L, -999L, request))
                 .isInstanceOf(CommentNotFoundException.class)
                 .hasMessage("지정한 ID에 해당하는 댓글이 없습니다.");
     }
@@ -116,7 +116,7 @@ class CommentServiceTest {
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertThatThrownBy(() -> commentService.updateComment(2L, 1L, request))
+        assertThatThrownBy(() -> commentServiceFacade.updateComment(2L, 1L, request))
                 .isInstanceOf(ForbiddenCommentException.class)
                 .hasMessage("댓글을 수정할 권한이 없습니다.");
     }
@@ -132,7 +132,7 @@ class CommentServiceTest {
         UpdateCommentRequest request = new UpdateCommentRequest(invalidContent);
 
         // when & then
-        assertThatThrownBy(() -> commentService.updateComment(1L, 1L, request))
+        assertThatThrownBy(() -> commentServiceFacade.updateComment(1L, 1L, request))
                 .isInstanceOf(InvalidCommentContentException.class)
                 .hasMessage("댓글 내용은 최소 1글자 이상, 최소 100글자 이하여야 합니다");
     }
@@ -147,7 +147,7 @@ class CommentServiceTest {
         UpdateCommentRequest request = new UpdateCommentRequest("처음 보는 용어인데 잘 쓰지는 않나보네요");
 
         // when & then
-        assertDoesNotThrow(() -> commentService.updateComment(1L, 1L, request));
+        assertDoesNotThrow(() -> commentServiceFacade.updateComment(1L, 1L, request));
     }
 
     @Test
@@ -158,7 +158,7 @@ class CommentServiceTest {
     })
     void 로그인_하지_않고_특정_용어의_댓글_목록을_조회한다() {
         // when
-        CommentCollectionResponse actual = commentService.readComments(
+        CommentCollectionResponse actual = commentServiceFacade.readComments(
                 -1L,
                 1L,
                 null,
@@ -181,7 +181,7 @@ class CommentServiceTest {
     })
     void 로그인하고_특정_용어의_댓글_목록을_조회한다() {
         // when
-        CommentCollectionResponse actual = commentService.readComments(
+        CommentCollectionResponse actual = commentServiceFacade.readComments(
                 2L,
                 1L,
                 null,
