@@ -22,35 +22,29 @@ public class LikeService {
 
     @Transactional
     public void processLike(Long accountId, Long commentId) {
-        Comment targetComment = findTargetComment(commentId);
+        Comment comment = findComment(commentId);
 
-        likeRepository.findBy(accountId, targetComment.getId())
+        likeRepository.findBy(accountId, comment.getId())
                       .ifPresentOrElse(
-                              like -> processDeleteLike(like, targetComment),
-                              () -> processAddLike(accountId, targetComment)
+                              like -> deleteLike(like, comment),
+                              () -> addLike(accountId, comment)
                       );
     }
 
-    private Comment findTargetComment(Long commentId) {
+    private Comment findComment(Long commentId) {
         return commentRepository.findBy(commentId)
                                 .orElseThrow(() -> new AssociationCommentNotFoundException("좋아요 대상인 댓글을 찾을 수 없습니다."));
     }
 
-    private void processDeleteLike(Like like, Comment comment) {
+    private void deleteLike(Like like, Comment comment) {
         likeRepository.delete(like);
-        publishDeletedLikeEvent(comment);
-    }
-
-    private void processAddLike(Long accountId, Comment comment) {
-        likeRepository.save(new Like(accountId, comment.getId()));
-        publishAddedLikeEvent(comment);
-    }
-
-    private void publishDeletedLikeEvent(Comment comment) {
         eventPublisher.publishEvent(new UnlikedEvent(comment.getId()));
     }
 
-    private void publishAddedLikeEvent(Comment comment) {
+    private void addLike(Long accountId, Comment comment) {
+        Like like = new Like(accountId, comment.getId());
+
+        likeRepository.save(like);
         eventPublisher.publishEvent(new LikedEvent(comment.getId()));
     }
 }
