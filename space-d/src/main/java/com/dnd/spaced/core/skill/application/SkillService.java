@@ -23,11 +23,11 @@ public class SkillService {
         QuizMetadata quizMetadata = findQuizMetadata();
 
         return skillRepository.findBy(accountId)
-                              .map(skill -> handleFoundSkill(skill, quizMetadata))
+                              .map(skill -> buildSkillResponse(skill, quizMetadata))
                               .orElseGet(() -> SkillApplicationMapper.toDto(accountId));
     }
 
-    private SkillResponse handleFoundSkill(Skill skill, QuizMetadata quizMetadata) {
+    private SkillResponse buildSkillResponse(Skill skill, QuizMetadata quizMetadata) {
         double totalQuizQuestionCorrectPercent = skill.calculateQuizQuestionCorrectPercent(
                 quizMetadata.getTotalQuizQuestionCount()
         );
