@@ -27,6 +27,9 @@ public class TodayQuizServiceFacade {
 
     private final ReadTodayQuizService readTodayQuizService;
     private final GradeTodayQuizService gradeTodayQuizService;
+    private final TodayQuizResponseMapper todayQuizMapper;
+    private final SimpleTodayQuizResponseMapper simpleTodayQuizMapper;
+    private final TodayQuizGradedAnswerCollectionResponseMapper gradedAnswerMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -43,13 +46,13 @@ public class TodayQuizServiceFacade {
     public SimpleTodayQuizResponse readLatestTodayQuiz() {
         SimpleTodayQuizDto simpleTodayQuizDto = readTodayQuizService.readLatestTodayQuiz();
 
-        return SimpleTodayQuizResponseMapper.toDto(simpleTodayQuizDto);
+        return simpleTodayQuizMapper.toResponse(simpleTodayQuizDto);
     }
 
     public TodayQuizResponse readTodayQuiz(Long accountId, Long todayQuizId) {
         ReadTodayQuizDto readTodayQuizDto = readTodayQuizService.readTodayQuiz(accountId, todayQuizId);
 
-        return TodayQuizResponseMapper.toDto(readTodayQuizDto, accountId);
+        return todayQuizMapper.toResponse(readTodayQuizDto, accountId);
     }
 
     public TodayQuizGradedAnswerCollectionResponse readTodayQuizGradedAnswers(
@@ -63,7 +66,7 @@ public class TodayQuizServiceFacade {
                 pageable
         );
 
-        return TodayQuizGradedAnswerCollectionResponseMapper.toDto(todayQuizGradedAnswers);
+        return gradedAnswerMapper.toResponse(todayQuizGradedAnswers);
     }
 
     public TodayQuizGradedAnswerResponse readTargetTodayQuizGradedAnswers(Long accountId, Long todayQuizId) {

@@ -3,13 +3,12 @@ package com.dnd.spaced.core.quiz.application.dto.mapper;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.SimpleTodayQuizResponse.TodayQuizQuestionResponse;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizDto;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dnd.spaced.global.mapper.Mapper;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SimpleTodayQuizResponseMapper {
+@Mapper
+public class SimpleTodayQuizResponseMapper {
 
-    public static SimpleTodayQuizResponse toDto(SimpleTodayQuizDto simpleTodayQuizDto) {
+    public SimpleTodayQuizResponse toResponse(SimpleTodayQuizDto simpleTodayQuizDto) {
         TodayQuizQuestionResponse todayQuizQuestionResponse = new TodayQuizQuestionResponse(
                 simpleTodayQuizDto.quizCategory().getName(),
                 simpleTodayQuizDto.question(),

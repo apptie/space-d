@@ -7,15 +7,14 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.Today
 import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizResponse.TodayQuizStatus;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.global.consts.AuthConst;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TodayQuizResponseMapper {
+@Mapper
+public class TodayQuizResponseMapper {
 
-    public static TodayQuizResponse toDto(ReadTodayQuizDto todayQuizDto, Long accountId) {
-        TodayQuizQuestionResponse todayQuizQuestion = toTodayQuizQuestionDto(
+    public TodayQuizResponse toResponse(ReadTodayQuizDto todayQuizDto, Long accountId) {
+        TodayQuizQuestionResponse todayQuizQuestion = toTodayQuizQuestionResponse(
                 todayQuizDto.todayQuiz().getTodayQuizQuestion()
         );
 
@@ -32,8 +31,8 @@ public final class TodayQuizResponseMapper {
         return new TodayQuizResponse(todayQuizDto.todayQuiz().getId(), todayQuizQuestion, TodayQuizStatus.NOT_SOLVED);
     }
 
-    private static TodayQuizQuestionResponse toTodayQuizQuestionDto(TodayQuizQuestion todayQuizQuestion) {
-        List<TodayQuizOptionResponse> todayQuizOptionResponses = toTodayQuizOptionDto(todayQuizQuestion);
+    private TodayQuizQuestionResponse toTodayQuizQuestionResponse(TodayQuizQuestion todayQuizQuestion) {
+        List<TodayQuizOptionResponse> todayQuizOptionResponses = toTodayQuizOptionResponse(todayQuizQuestion);
 
         return new TodayQuizQuestionResponse(
                 todayQuizQuestion.getQuizCategory().getName(),
@@ -45,7 +44,7 @@ public final class TodayQuizResponseMapper {
         );
     }
 
-    private static List<TodayQuizOptionResponse> toTodayQuizOptionDto(TodayQuizQuestion todayQuizQuestion) {
+    private List<TodayQuizOptionResponse> toTodayQuizOptionResponse(TodayQuizQuestion todayQuizQuestion) {
         return todayQuizQuestion.getTodayQuizOptions()
                                 .stream()
                                 .map(todayQuizOption ->
