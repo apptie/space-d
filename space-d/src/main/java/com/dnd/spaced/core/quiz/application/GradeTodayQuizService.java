@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GradeTodayQuizService {
+class GradeTodayQuizService {
 
     private final TodayQuizRepository todayQuizRepository;
     private final TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
-    void gradeTodayQuiz(Long accountId, Long todayQuizId, GradeTodayQuizRequest request) {
+    public void gradeTodayQuiz(Long accountId, Long todayQuizId, GradeTodayQuizRequest request) {
         TodayQuiz todayQuiz = findTodayQuiz(todayQuizId);
 
         validateTodayQuizGradedAnswer(accountId, todayQuizId);

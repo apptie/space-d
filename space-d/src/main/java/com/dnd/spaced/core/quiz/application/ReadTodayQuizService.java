@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReadTodayQuizService {
+class ReadTodayQuizService {
 
     private final TodayQuizRepository todayQuizRepository;
     private final TodayQuizGradedAnswerRepository todayQuizGradedAnswerRepository;
 
-    SimpleTodayQuizDto readLatestTodayQuiz() {
+    public SimpleTodayQuizDto readLatestTodayQuiz() {
         return todayQuizRepository.findLatest()
                                   .orElseThrow(
                                           () -> new TodayQuizNotFoundException(
@@ -28,7 +28,7 @@ public class ReadTodayQuizService {
                                   );
     }
 
-    ReadTodayQuizDto readTodayQuiz(Long accountId, Long todayQuizId) {
+    public ReadTodayQuizDto readTodayQuiz(Long accountId, Long todayQuizId) {
         TodayQuiz todayQuiz = todayQuizRepository.findWithTodayQuizOptionBy(todayQuizId)
                                                  .orElseThrow(
                                                          () -> new TodayQuizNotFoundException(
@@ -40,7 +40,7 @@ public class ReadTodayQuizService {
         return new ReadTodayQuizDto(todayQuiz, solved);
     }
 
-    List<TodayQuizGradedAnswer> readTodayQuizGradedAnswers(
+    public List<TodayQuizGradedAnswer> readTodayQuizGradedAnswers(
             Long accountId,
             ReadTodayQuizGradedAnswerSearchRequest request,
             Pageable pageable
@@ -52,7 +52,7 @@ public class ReadTodayQuizService {
         );
     }
 
-    TodayQuizGradedAnswer readTargetTodayQuizGradedAnswers(Long accountId, Long todayQuizId) {
+    public TodayQuizGradedAnswer readTargetTodayQuizGradedAnswers(Long accountId, Long todayQuizId) {
         return todayQuizGradedAnswerRepository.findBy(accountId, todayQuizId)
                                               .orElseThrow(
                                                       () -> new TodayQuizNotFoundException(
