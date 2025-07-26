@@ -32,7 +32,7 @@ public class ReadQuizService {
         );
     }
 
-    List<QuizGradedAnswer>readGradedAnswers(Long accountId, Long quizId) {
+    List<QuizGradedAnswer> readGradedAnswers(Long accountId, Long quizId) {
         return quizGradedAnswerRepository.findAllBy(accountId, quizId);
     }
 
