@@ -18,13 +18,14 @@ public class SkillService {
 
     private final SkillRepository skillRepository;
     private final QuizMetadataRepository quizMetadataRepository;
+    private final SkillApplicationMapper mapper;
 
     public SkillResponse readSkill(Long accountId) {
         QuizMetadata quizMetadata = findQuizMetadata();
 
         return skillRepository.findBy(accountId)
                               .map(skill -> buildSkillResponse(skill, quizMetadata))
-                              .orElseGet(() -> SkillApplicationMapper.toDto(accountId));
+                              .orElseGet(() -> mapper.toDefaultDto(accountId));
     }
 
     private SkillResponse buildSkillResponse(Skill skill, QuizMetadata quizMetadata) {
@@ -35,7 +36,7 @@ public class SkillService {
                 quizMetadata.getTotalTodayQuizQuestionCount()
         );
 
-        return SkillApplicationMapper.toDto(
+        return mapper.toDefaultDto(
                 skill,
                 totalQuizQuestionCorrectPercent,
                 totalTodayQuizQuestionCorrectPercent

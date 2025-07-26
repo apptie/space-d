@@ -2,13 +2,12 @@ package com.dnd.spaced.core.skill.application.dto;
 
 import com.dnd.spaced.core.skill.application.dto.response.SkillResponse;
 import com.dnd.spaced.core.skill.domain.Skill;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dnd.spaced.global.mapper.Mapper;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SkillApplicationMapper {
+@Mapper
+public class SkillApplicationMapper {
 
-    public static SkillResponse toDto(
+    public SkillResponse toDefaultDto(
             Skill skill,
             double totalQuizQuestionCorrectPercent,
             double totalTodayQuizQuestionCorrectPercent
@@ -24,7 +23,7 @@ public final class SkillApplicationMapper {
         );
     }
 
-    public static SkillResponse toDto(Long accountId) {
+    public SkillResponse toDefaultDto(Long accountId) {
         return new SkillResponse(
                 accountId,
                 0L,
