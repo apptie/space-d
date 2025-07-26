@@ -22,7 +22,7 @@ class ReadPopularWordServiceTest {
     private static final Long WORD_ID = 1L;
 
     @Autowired
-    ReadPopularWordService wordService;
+    ReadPopularWordService readPopularWordService;
 
     @Autowired
     PopularWordRepository popularWordRepository;
@@ -34,7 +34,7 @@ class ReadPopularWordServiceTest {
         popularWordRepository.saveAll(List.of(popularWord), LocalDateTime.now());
 
         // when
-        List<PopularWord> actual = wordService.readPopularWords();
+        List<PopularWord> actual = readPopularWordService.readPopularWords();
 
         // then
         assertAll(
