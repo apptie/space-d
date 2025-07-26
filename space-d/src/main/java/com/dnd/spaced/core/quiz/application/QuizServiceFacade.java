@@ -29,6 +29,9 @@ public class QuizServiceFacade {
     private final CreateQuizService createQuizService;
     private final GradeQuizService gradeQuizService;
     private final ReadQuizService readQuizService;
+    private final QuizResponseMapper quizMapper;
+    private final QuizCollectionResponseMapper quizCollectionMapper;
+    private final QuizGradedAnswerCollectionResponseMapper gradedAnswerMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -55,24 +58,24 @@ public class QuizServiceFacade {
     ) {
         List<QuizGradedAnswer> quizGradedAnswers = readQuizService.readGradedAnswers(accountId, request, pageable);
 
-        return QuizGradedAnswerCollectionResponseMapper.toCollectionDto(quizGradedAnswers);
+        return gradedAnswerMapper.toCollectionResponse(quizGradedAnswers);
     }
 
     public QuizGradedAnswerCollectionResponse readGradedAnswers(Long accountId, Long quizId) {
         List<QuizGradedAnswer> quizGradedAnswers = readQuizService.readGradedAnswers(accountId, quizId);
 
-        return QuizGradedAnswerCollectionResponseMapper.toCollectionDto(quizGradedAnswers);
+        return gradedAnswerMapper.toCollectionResponse(quizGradedAnswers);
     }
 
     public QuizResponse readQuiz(Long accountId, Long quizId) {
         QuizDto quizDto = readQuizService.readQuiz(quizId, accountId);
 
-        return QuizResponseMapper.toDto(quizDto);
+        return quizMapper.toResponse(quizDto);
     }
 
     public QuizCollectionResponse readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {
         List<SimpleQuizDto> quizzes = readQuizService.readQuizzes(accountId, request, pageable);
 
-        return QuizCollectionResponseMapper.toCollectionResponse(quizzes);
+        return quizCollectionMapper.toCollectionResponse(quizzes);
     }
 }
