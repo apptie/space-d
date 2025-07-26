@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class CreateTodayQuizService {
+public class CreateTodayQuizService {
 
     private static final Long DEFAULT_WORD_METADATA_ID = 1L;
     private static final int REQUIRED_TODAY_QUIZ_WORD_COUNT = 4;
@@ -37,16 +37,10 @@ class CreateTodayQuizService {
     private final QuizQuestionProperties quizQuestionProperties;
 
     @Transactional
-    public TodayQuiz assembleTodayQuiz() {
-        QuizCategory quizCategory = findRandomQuizCategory();
-
+    public TodayQuiz createTodayQuiz(QuizCategory quizCategory) {
         validateQuizCreationRequirements(quizCategory);
 
         return assembleTodayQuiz(quizCategory);
-    }
-
-    private QuizCategory findRandomQuizCategory() {
-        return QuizCategory.findRandom();
     }
 
     private void validateQuizCreationRequirements(QuizCategory quizCategory) {

@@ -3,6 +3,7 @@ package com.dnd.spaced.core.admin.application;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizDtoMapper;
+import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.global.consts.CacheConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
@@ -22,12 +23,21 @@ public class AdminTodayQuizServiceFacade {
 
     @Transactional
     public Long createTodayQuiz() {
-        TodayQuiz todayQuiz = createTodayQuizService.assembleTodayQuiz();
+        TodayQuiz todayQuiz = generateRandomTodayQuiz();
 
         publishAddedTodayQuizQuestionEvent();
         persistMemoryCache(todayQuiz);
-
         return todayQuiz.getId();
+    }
+
+    private TodayQuiz generateRandomTodayQuiz() {
+        QuizCategory quizCategory = findRandomQuizCategory();
+
+        return createTodayQuizService.createTodayQuiz(quizCategory);
+    }
+
+    private QuizCategory findRandomQuizCategory() {
+        return QuizCategory.findRandom();
     }
 
     private void publishAddedTodayQuizQuestionEvent() {
