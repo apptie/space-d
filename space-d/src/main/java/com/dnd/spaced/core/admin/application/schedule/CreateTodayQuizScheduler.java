@@ -1,4 +1,4 @@
-package com.dnd.spaced.core.quiz.application.schedule;
+package com.dnd.spaced.core.admin.application.schedule;
 
 import com.dnd.spaced.core.admin.application.exception.WordMetadataNotFoundException;
 import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
