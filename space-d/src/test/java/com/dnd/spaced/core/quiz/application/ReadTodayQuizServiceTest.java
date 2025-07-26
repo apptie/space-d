@@ -26,6 +26,10 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ReadTodayQuizServiceTest {
 
+    private static final Long ACCOUNT_ID = 1L;
+    private static final Long NOT_FOUND_TODAY_QUIZ_ID = -999L;
+    private static final Long TODAY_QUIZ_ID = 1L;
+
     @Autowired
     ReadTodayQuizService todayQuizService;
 
@@ -78,13 +82,13 @@ class ReadTodayQuizServiceTest {
 
         // when
         List<TodayQuizGradedAnswer> actual = todayQuizService.readTodayQuizGradedAnswers(
-                1L, request, PageRequest.of(0, 10)
+                ACCOUNT_ID, request, PageRequest.of(0, 10)
         );
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).getTodayQuiz().getId()).isEqualTo(1L)
+                () -> assertThat(actual.get(0).getTodayQuiz().getId()).isEqualTo(TODAY_QUIZ_ID)
         );
     }
 
@@ -98,21 +102,21 @@ class ReadTodayQuizServiceTest {
     void 사용자가_제출한_오늘의_퀴즈_채점_결과를_조회한다() {
         // when
         TodayQuizGradedAnswer actual = todayQuizService.readTargetTodayQuizGradedAnswers(
-                1L,
-                1L
+                ACCOUNT_ID,
+                TODAY_QUIZ_ID
         );
 
         // then
         assertAll(
-                () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(1L),
-                () -> assertThat(actual.getAccountId()).isEqualTo(1L)
+                () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(TODAY_QUIZ_ID),
+                () -> assertThat(actual.getAccountId()).isEqualTo(ACCOUNT_ID)
         );
     }
 
     @Test
     void 지정한_오늘의_퀴즈_id가_없다면_사용자가_제출한_오늘의_퀴즈_채점_결과를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(1L, 1L))
+        assertThatThrownBy(() -> todayQuizService.readTargetTodayQuizGradedAnswers(ACCOUNT_ID, TODAY_QUIZ_ID))
                 .isInstanceOf(TodayQuizNotFoundException.class)
                 .hasMessage("지정한 오늘의 퀴즈 답안지를 찾지 못했습니다.");
     }
@@ -125,19 +129,19 @@ class ReadTodayQuizServiceTest {
     })
     void 지정한_id의_오늘의_퀴즈를_조회한다() {
         // when
-        ReadTodayQuizDto actual = todayQuizService.readTodayQuiz(1L, 1L);
+        ReadTodayQuizDto actual = todayQuizService.readTodayQuiz(ACCOUNT_ID, TODAY_QUIZ_ID);
 
         // then
         assertAll(
-                () -> assertThat(actual.todayQuiz().getId()).isEqualTo(1L),
+                () -> assertThat(actual.todayQuiz().getId()).isEqualTo(TODAY_QUIZ_ID),
                 () -> assertThat(actual.todayQuiz().getTodayQuizQuestion()).isNotNull()
         );
     }
 
     @Test
-    void 없는_id의_오늘의_퀴즈를_조회할_수_없다() {
+    void 없는_ID의_오늘의_퀴즈를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> todayQuizService.readTodayQuiz(1L, -999L))
+        assertThatThrownBy(() -> todayQuizService.readTodayQuiz(ACCOUNT_ID, NOT_FOUND_TODAY_QUIZ_ID))
                 .isInstanceOf(TodayQuizNotFoundException.class)
                 .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
     }

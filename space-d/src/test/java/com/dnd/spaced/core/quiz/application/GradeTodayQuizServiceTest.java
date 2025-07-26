@@ -22,6 +22,11 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GradeTodayQuizServiceTest {
 
+    private static final Long SELECTED_WORD_ID = 1L;
+    private static final Long ACCOUNT_ID = 1L;
+    private static final Long NOT_FOUND_TODAY_QUIZ_ID = -999L;
+    private static final Long TODAY_QUIZ_ID = 1L;
+
     @Autowired
     TodayQuizServiceFacade todayQuizServiceFacade;
 
@@ -31,9 +36,9 @@ class GradeTodayQuizServiceTest {
     @Test
     void 지정한_오늘의_퀴즈_id가_없다면_퀴즈_정답을_제출할_수_없다() {
         // when & then
-        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(SELECTED_WORD_ID, "Authorization");
 
-        assertThatThrownBy(() -> todayQuizServiceFacade.gradeTodayQuiz(1L, -999L, request))
+        assertThatThrownBy(() -> todayQuizServiceFacade.gradeTodayQuiz(ACCOUNT_ID, NOT_FOUND_TODAY_QUIZ_ID, request))
                 .isInstanceOf(TodayQuizNotFoundException.class)
                 .hasMessage("지정한 id의 오늘의 퀴즈를 찾지 못했습니다.");
     }
@@ -47,10 +52,10 @@ class GradeTodayQuizServiceTest {
     })
     void 이미_푼_오늘의_퀴즈인_경우_정답을_제출할_수_없다() {
         // given
-        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(SELECTED_WORD_ID, "Authorization");
 
         // when & then
-        assertThatThrownBy(() -> todayQuizServiceFacade.gradeTodayQuiz(1L, 1L, request))
+        assertThatThrownBy(() -> todayQuizServiceFacade.gradeTodayQuiz(ACCOUNT_ID, TODAY_QUIZ_ID, request))
                 .isInstanceOf(AlreadyGradeTodayQuizException.class)
                 .hasMessage("이미 오늘의 퀴즈를 풀었습니다.");
     }
@@ -63,17 +68,17 @@ class GradeTodayQuizServiceTest {
     })
     void 오늘의_퀴즈_정답을_제출한다() {
         // when
-        GradeTodayQuizRequest request = new GradeTodayQuizRequest(1L, "Authorization");
+        GradeTodayQuizRequest request = new GradeTodayQuizRequest(SELECTED_WORD_ID, "Authorization");
 
-        todayQuizServiceFacade.gradeTodayQuiz(1L, 1L, request);
+        todayQuizServiceFacade.gradeTodayQuiz(ACCOUNT_ID, TODAY_QUIZ_ID, request);
 
         // then
-        TodayQuizGradedAnswer actual = todayQuizGradedAnswerRepository.findBy(1L, 1L)
+        TodayQuizGradedAnswer actual = todayQuizGradedAnswerRepository.findBy(ACCOUNT_ID, TODAY_QUIZ_ID)
                                                                       .get();
 
         assertAll(
-                () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(1L),
-                () -> assertThat(actual.getAccountId()).isEqualTo(1L)
+                () -> assertThat(actual.getTodayQuiz().getId()).isEqualTo(TODAY_QUIZ_ID),
+                () -> assertThat(actual.getAccountId()).isEqualTo(ACCOUNT_ID)
         );
     }
 }
