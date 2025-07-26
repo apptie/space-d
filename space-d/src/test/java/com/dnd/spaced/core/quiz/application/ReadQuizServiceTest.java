@@ -26,6 +26,12 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ReadQuizServiceTest {
 
+    private static final Long QUIZ_CREATOR_ID = 1L;
+    private static final Long UNSOLVED_QUIZ_ID = 1L;
+    private static final Long SOLVED_QUIZ_ID = 2L;
+    private static final Long NOT_FOUND_QUIZ_ID = -999L;
+    private static final Long NON_QUIZ_CREATOR_ID = 5L;
+
     @Autowired
     ReadQuizService readQuizService;
 
@@ -37,12 +43,12 @@ class ReadQuizServiceTest {
     })
     void 퀴즈를_조회한다() {
         // when
-        QuizDto actual = readQuizService.readQuiz(1L, 1L);
+        QuizDto actual = readQuizService.readQuiz(QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID);
 
         // then
         assertAll(
-                () -> assertThat(actual.id()).isEqualTo(1L),
-                () -> assertThat(actual.accountId()).isEqualTo(1L),
+                () -> assertThat(actual.id()).isEqualTo(UNSOLVED_QUIZ_ID),
+                () -> assertThat(actual.accountId()).isEqualTo(QUIZ_CREATOR_ID),
                 () -> assertThat(actual.quizQuestions()).hasSize(5),
                 () -> assertThat(actual.quizQuestions().get(0).quizOptions()).hasSize(4),
                 () -> assertThat(actual.quizQuestions().get(1).quizOptions()).hasSize(4),
@@ -53,18 +59,21 @@ class ReadQuizServiceTest {
     }
 
     @Test
-    void 유효하지_않는_퀴즈_id로_퀴즈를_조회할_수_없다() {
+    void 유효하지_않는_퀴즈_ID로_퀴즈를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> readQuizService.readQuiz(1L, -999L))
+        assertThatThrownBy(() -> readQuizService.readQuiz(QUIZ_CREATOR_ID, NOT_FOUND_QUIZ_ID))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
 
     @Test
-    @Sql(scripts = {"classpath:sql/quiz/word_metadata.sql", "classpath:sql/quiz/quiz.sql"})
-    void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
+    @Sql(scripts = {
+            "classpath:sql/quiz/word_metadata.sql",
+            "classpath:sql/quiz/quiz.sql"
+    })
+    void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_ID더라도_퀴즈_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> readQuizService.readQuiz(5L, 1L))
+        assertThatThrownBy(() -> readQuizService.readQuiz(NON_QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -105,7 +114,7 @@ class ReadQuizServiceTest {
     })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
         // when
-        List<QuizGradedAnswer> actual = readQuizService.readGradedAnswers(1L, 1L);
+        List<QuizGradedAnswer> actual = readQuizService.readGradedAnswers(QUIZ_CREATOR_ID, SOLVED_QUIZ_ID);
 
         // then
         assertAll(
@@ -129,12 +138,12 @@ class ReadQuizServiceTest {
         ReadAllQuizRequest request = new ReadAllQuizRequest(null);
 
         // when
-        List<SimpleQuizDto> actual = readQuizService.readQuizzes(1L, request, Pageable.ofSize(10));
+        List<SimpleQuizDto> actual = readQuizService.readQuizzes(QUIZ_CREATOR_ID, request, Pageable.ofSize(10));
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).id()).isEqualTo(1L)
+                () -> assertThat(actual.get(0).id()).isEqualTo(UNSOLVED_QUIZ_ID)
         );
     }
 }

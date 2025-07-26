@@ -20,11 +20,16 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GradeQuizServiceTest {
 
+    private static final Long QUIZ_CREATOR_ID = 1L;
+    private static final Long UNSOLVED_QUIZ_ID = 1L;
+    private static final Long SOLVED_QUIZ_ID = 2L;
+    private static final Long NOT_FOUND_QUIZ_ID = -999L;
+
     @Autowired
     GradeQuizService gradeQuizService;
 
     @Test
-    void 유효하지_않는_퀴즈_id로_퀴즈_답을_제출할_수_없다() {
+    void 유효하지_않는_퀴즈_ID로_퀴즈_답을_제출할_수_없다() {
         // given
         SubmitAnswerRequest[] submitAnswers = {
                 new SubmitAnswerRequest(1L, "Authorization"),
@@ -36,7 +41,7 @@ class GradeQuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> gradeQuizService.gradeQuiz(1L, -999L, request))
+        assertThatThrownBy(() -> gradeQuizService.gradeQuiz(QUIZ_CREATOR_ID, NOT_FOUND_QUIZ_ID, request))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -59,7 +64,7 @@ class GradeQuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertDoesNotThrow(() -> gradeQuizService.gradeQuiz(1L, 1L, request));
+        assertDoesNotThrow(() -> gradeQuizService.gradeQuiz(QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID, request));
     }
 
     @Test
@@ -80,7 +85,7 @@ class GradeQuizServiceTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> gradeQuizService.gradeQuiz(1L, 1L, request))
+        assertThatThrownBy(() -> gradeQuizService.gradeQuiz(QUIZ_CREATOR_ID, SOLVED_QUIZ_ID, request))
                 .isInstanceOf(AlreadyGradeQuizException.class)
                 .hasMessage("이미 풀었던 퀴즈입니다.");
     }

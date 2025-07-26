@@ -19,6 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class CreateQuizServiceTest {
 
+    private static final Long QUIZ_CREATOR_ID = 1L;
+
     @Autowired
     CreateQuizService createQuizService;
 
@@ -28,7 +30,7 @@ class CreateQuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> createQuizService.createQuiz(1L, request))
+        assertThatThrownBy(() -> createQuizService.createQuiz(QUIZ_CREATOR_ID, request))
                 .isInstanceOf(WordMetadataNotFoundException.class)
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -40,7 +42,7 @@ class CreateQuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> createQuizService.createQuiz(1L, request))
+        assertThatThrownBy(() -> createQuizService.createQuiz(QUIZ_CREATOR_ID, request))
                 .isInstanceOf(InvalidQuizWordCountException.class)
                 .hasMessage("퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
     }
@@ -52,7 +54,7 @@ class CreateQuizServiceTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when
-        Long actual = createQuizService.createQuiz(1L, request);
+        Long actual = createQuizService.createQuiz(QUIZ_CREATOR_ID, request);
 
         // then
         assertThat(actual).isPositive();

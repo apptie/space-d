@@ -36,6 +36,12 @@ import org.springframework.test.context.jdbc.Sql;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class QuizServiceFacadeTest {
 
+    private static final Long QUIZ_CREATOR_ID = 1L;
+    private static final Long UNSOLVED_QUIZ_ID = 1L;
+    private static final Long SOLVED_QUIZ_ID = 2L;
+    private static final Long NOT_FOUND_QUIZ_ID = -999L;
+    private static final Long NON_QUIZ_CREATOR_ID = 5L;
+
     @Autowired
     ApplicationEvents events;
 
@@ -48,7 +54,7 @@ class QuizServiceFacadeTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.createQuiz(1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.createQuiz(QUIZ_CREATOR_ID, request))
                 .isInstanceOf(WordMetadataNotFoundException.class)
                 .hasMessage("용어 메타데이터가 정상적으로 설정되지 않았습니다.");
     }
@@ -60,7 +66,7 @@ class QuizServiceFacadeTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.createQuiz(1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.createQuiz(QUIZ_CREATOR_ID, request))
                 .isInstanceOf(InvalidQuizWordCountException.class)
                 .hasMessage("퀴즈를 진행할 수 있는 용어 개수가 부족합니다.");
     }
@@ -73,12 +79,12 @@ class QuizServiceFacadeTest {
     })
     void 퀴즈를_조회한다() {
         // when
-        QuizResponse actual = quizServiceFacade.readQuiz(1L, 1L);
+        QuizResponse actual = quizServiceFacade.readQuiz(QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID);
 
         // then
         assertAll(
-                () -> assertThat(actual.id()).isEqualTo(1L),
-                () -> assertThat(actual.accountId()).isEqualTo(1L),
+                () -> assertThat(actual.id()).isEqualTo(UNSOLVED_QUIZ_ID),
+                () -> assertThat(actual.accountId()).isEqualTo(QUIZ_CREATOR_ID),
                 () -> assertThat(actual.quizQuestions()).hasSize(5),
                 () -> assertThat(actual.quizQuestions().get(0).quizOptions()).hasSize(4),
                 () -> assertThat(actual.quizQuestions().get(1).quizOptions()).hasSize(4),
@@ -98,7 +104,7 @@ class QuizServiceFacadeTest {
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
         // when
-        Long actual = quizServiceFacade.createQuiz(1L, request);
+        Long actual = quizServiceFacade.createQuiz(QUIZ_CREATOR_ID, request);
 
         // then
         assertAll(
@@ -110,7 +116,7 @@ class QuizServiceFacadeTest {
     @Test
     void 유효하지_않는_퀴즈_id로_퀴즈를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.readQuiz(1L, -999L))
+        assertThatThrownBy(() -> quizServiceFacade.readQuiz(QUIZ_CREATOR_ID, NOT_FOUND_QUIZ_ID))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -120,15 +126,15 @@ class QuizServiceFacadeTest {
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/quiz.sql"
     })
-    void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_id더라도_퀴즈_정보를_조회할_수_없다() {
+    void 회원이_생성한_퀴즈가_아니라면_존재하는_퀴즈_ID더라도_퀴즈_정보를_조회할_수_없다() {
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.readQuiz(5L, 1L))
+        assertThatThrownBy(() -> quizServiceFacade.readQuiz(NON_QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
 
     @Test
-    void 유효하지_않는_퀴즈_id로_퀴즈_답을_제출할_수_없다() {
+    void 유효하지_않는_퀴즈_ID로_퀴즈_답을_제출할_수_없다() {
         // given
         SubmitAnswerRequest[] submitAnswers = {
                 new SubmitAnswerRequest(1L, "Authorization"),
@@ -140,7 +146,7 @@ class QuizServiceFacadeTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.grade(1L, -999L, request))
+        assertThatThrownBy(() -> quizServiceFacade.grade(QUIZ_CREATOR_ID, NOT_FOUND_QUIZ_ID, request))
                 .isInstanceOf(QuizNotFoundException.class)
                 .hasMessage("지정한 id의 퀴즈를 찾지 못했습니다.");
     }
@@ -163,7 +169,7 @@ class QuizServiceFacadeTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertDoesNotThrow(() -> quizServiceFacade.grade(1L, 1L, request));
+        assertDoesNotThrow(() -> quizServiceFacade.grade(QUIZ_CREATOR_ID, UNSOLVED_QUIZ_ID, request));
     }
 
     @Test
@@ -184,7 +190,7 @@ class QuizServiceFacadeTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when & then
-        assertThatThrownBy(() -> quizServiceFacade.grade(1L, 1L, request))
+        assertThatThrownBy(() -> quizServiceFacade.grade(QUIZ_CREATOR_ID, SOLVED_QUIZ_ID, request))
                 .isInstanceOf(AlreadyGradeQuizException.class)
                 .hasMessage("이미 풀었던 퀴즈입니다.");
     }
@@ -220,12 +226,12 @@ class QuizServiceFacadeTest {
     @Sql(scripts = {
             "classpath:sql/quiz/word_metadata.sql",
             "classpath:sql/quiz/word.sql",
-            "classpath:sql/quiz/quiz.sql",
+            "classpath:sql/quiz/solved_quiz.sql",
             "classpath:sql/quiz/quiz_graded_answer.sql"
     })
     void 특정_퀴즈의_제출했던_답을_조회한다() {
         // when
-        QuizGradedAnswerCollectionResponse actual = quizServiceFacade.readGradedAnswers(1L, 1L);
+        QuizGradedAnswerCollectionResponse actual = quizServiceFacade.readGradedAnswers(QUIZ_CREATOR_ID, SOLVED_QUIZ_ID);
 
         // then
         assertAll(
@@ -249,12 +255,12 @@ class QuizServiceFacadeTest {
         ReadAllQuizRequest request = new ReadAllQuizRequest(null);
 
         // when
-        QuizCollectionResponse actual = quizServiceFacade.readQuizzes(1L, request, Pageable.ofSize(10));
+        QuizCollectionResponse actual = quizServiceFacade.readQuizzes(QUIZ_CREATOR_ID, request, Pageable.ofSize(10));
 
         // then
         assertAll(
                 () -> assertThat(actual.quizzes()).hasSize(1),
-                () -> assertThat(actual.lastQuizId()).isEqualTo(1L)
+                () -> assertThat(actual.lastQuizId()).isEqualTo(UNSOLVED_QUIZ_ID)
         );
     }
 }
