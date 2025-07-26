@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateQuizService {
+class CreateQuizService {
 
     private static final Long DEFAULT_WORD_METADATA_ID = 1L;
     private static final int QUIZ_QUESTION_WORD_COUNT = 5;
@@ -40,7 +40,7 @@ public class CreateQuizService {
     private final WordMetadataRepository wordMetadataRepository;
     private final QuizQuestionProperties quizQuestionProperties;
 
-    Long createQuiz(Long accountId, CreateQuizRequest request) {
+    public Long createQuiz(Long accountId, CreateQuizRequest request) {
         QuizCategory quizCategory = findQuizCategory(request);
 
         validateQuizCreation(quizCategory);

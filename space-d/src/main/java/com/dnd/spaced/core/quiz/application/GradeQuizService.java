@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GradeQuizService {
+class GradeQuizService {
 
     private final QuizRepository quizRepository;
     private final QuizGradedAnswerRepository quizGradedAnswerRepository;
 
-    void gradeQuiz(Long accountId, Long quizId, GradeQuizRequest request) {
+    public void gradeQuiz(Long accountId, Long quizId, GradeQuizRequest request) {
         Quiz quiz = findQuiz(quizId);
 
         validateQuiz(quiz);

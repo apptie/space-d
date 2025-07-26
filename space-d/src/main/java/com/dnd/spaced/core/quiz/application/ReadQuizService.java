@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReadQuizService {
+class ReadQuizService {
 
     private final QuizRepository quizRepository;
     private final QuizGradedAnswerRepository quizGradedAnswerRepository;
 
-    List<QuizGradedAnswer> readGradedAnswers(
+    public List<QuizGradedAnswer> readGradedAnswers(
             Long accountId,
             ReadQuizGradedAnswerSearchRequest request,
             Pageable pageable
@@ -32,18 +32,18 @@ public class ReadQuizService {
         );
     }
 
-    List<QuizGradedAnswer> readGradedAnswers(Long accountId, Long quizId) {
+    public List<QuizGradedAnswer> readGradedAnswers(Long accountId, Long quizId) {
         return quizGradedAnswerRepository.findAllBy(accountId, quizId);
     }
 
-    QuizDto readQuiz(Long accountId, Long quizId) {
+    public QuizDto readQuiz(Long accountId, Long quizId) {
         return quizRepository.findBy(quizId, accountId)
                                         .orElseThrow(
                                                 () -> new QuizNotFoundException("지정한 id의 퀴즈를 찾지 못했습니다.")
                                         );
     }
 
-    List<SimpleQuizDto> readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {
+    public List<SimpleQuizDto> readQuizzes(Long accountId, ReadAllQuizRequest request, Pageable pageable) {
         return quizRepository.findAllBy(accountId, request.lastQuizId(), pageable);
     }
 }
