@@ -3,20 +3,19 @@ package com.dnd.spaced.core.quiz.domain.dto.mapper;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
 import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizDto;
-import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.TodayQuizInfo.TodayQuizOptionInfo;
+import com.dnd.spaced.core.quiz.domain.dto.TodayQuizDto;
+import com.dnd.spaced.core.quiz.domain.dto.TodayQuizDto.TodayQuizOptionDto;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TodayQuizInfoMapper {
+@Mapper
+public class TodayQuizDtoMapper {
 
-    public static SimpleTodayQuizDto toDto(TodayQuiz todayQuiz) {
+    public SimpleTodayQuizDto toDto(TodayQuiz todayQuiz) {
         TodayQuizQuestion todayQuizQuestion = todayQuiz.getTodayQuizQuestion();
 
         return new SimpleTodayQuizDto(
@@ -29,7 +28,7 @@ public final class TodayQuizInfoMapper {
         );
     }
 
-    public static SimpleTodayQuizDto toDto(
+    public SimpleTodayQuizDto toDto(
             Long id,
             LocalDateTime createdAt,
             String question,
@@ -43,24 +42,26 @@ public final class TodayQuizInfoMapper {
         return new SimpleTodayQuizDto(id, quizCategory, question, questionContent, todayQuizAnswerOption, createdAt);
     }
 
-    public static TodayQuizInfo toDto(TodayQuiz todayQuiz, List<TodayQuizOption> todayQuizOptions) {
+    public TodayQuizDto toDto(TodayQuiz todayQuiz, List<TodayQuizOption> todayQuizOptions) {
         TodayQuizQuestion todayQuizQuestion = todayQuiz.getTodayQuizQuestion();
-        List<TodayQuizOptionInfo> todayQuizOptionInfos = todayQuizOptions.stream()
-                                                         .map(
-                                                                 option -> new TodayQuizOptionInfo(
-                                                                         option.getId(),
-                                                                         option.getWordId(), option.getContent(),
-                                                                         option.getOptionOrder()
-                                                         ))
-                                                         .toList();
+        List<TodayQuizOptionDto> todayQuizOptionDtos = todayQuizOptions.stream()
+                                                                       .map(
+                                                                               option -> new TodayQuizOptionDto(
+                                                                                       option.getId(),
+                                                                                       option.getWordId(),
+                                                                                       option.getContent(),
+                                                                                       option.getOptionOrder()
+                                                                               )
+                                                                       )
+                                                                       .toList();
 
-        return new TodayQuizInfo(
+        return new TodayQuizDto(
                 todayQuiz.getId(),
                 todayQuizQuestion.getQuizCategory(),
                 todayQuizQuestion.getQuestion(),
                 todayQuizQuestion.getPassage(),
                 todayQuizQuestion.getTodayQuizAnswerOption(),
-                todayQuizOptionInfos
+                todayQuizOptionDtos
         );
     }
 }

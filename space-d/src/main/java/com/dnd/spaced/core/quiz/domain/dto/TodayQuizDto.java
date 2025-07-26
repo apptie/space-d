@@ -4,16 +4,16 @@ import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import java.util.List;
 
-public record TodayQuizInfo(
+public record TodayQuizDto(
         Long id,
         QuizCategory quizCategory,
         String question,
         String questionContent,
         TodayQuizAnswerOption todayQuizAnswerOption,
-        List<TodayQuizOptionInfo> todayQuizOptions
+        List<TodayQuizOptionDto> todayQuizOptions
 ) {
 
-    public record TodayQuizOptionInfo(Long id, Long wordId, String content, int optionOrder) {
+    public record TodayQuizOptionDto(Long id, Long wordId, String content, int optionOrder) {
     }
 }
 

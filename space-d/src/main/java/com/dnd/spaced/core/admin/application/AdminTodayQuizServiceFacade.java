@@ -2,7 +2,7 @@ package com.dnd.spaced.core.admin.application;
 
 import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEvent;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
-import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizDtoMapper;
 import com.dnd.spaced.global.consts.CacheConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
@@ -17,6 +17,7 @@ public class AdminTodayQuizServiceFacade {
 
     private final CreateTodayQuizService createTodayQuizService;
     private final CacheManager memoryCacheManager;
+    private final TodayQuizDtoMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -38,7 +39,7 @@ public class AdminTodayQuizServiceFacade {
 
         if (cache != null) {
             cache.clear();
-            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, TodayQuizInfoMapper.toDto(todayQuiz));
+            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, mapper.toDto(todayQuiz));
         }
     }
 }

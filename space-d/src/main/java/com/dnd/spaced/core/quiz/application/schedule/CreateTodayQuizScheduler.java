@@ -5,7 +5,7 @@ import com.dnd.spaced.core.quiz.application.event.dto.AddedTodayQuizQuestionEven
 import com.dnd.spaced.core.quiz.application.exception.InvalidTodayQuizWordCountException;
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizOption;
-import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizDtoMapper;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
@@ -43,6 +43,7 @@ public class CreateTodayQuizScheduler {
     private final TodayQuizOptionRepository todayQuizOptionRepository;
     private final QuizQuestionProperties quizQuestionProperties;
     private final CacheManager memoryCacheManager;
+    private final TodayQuizDtoMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -122,7 +123,7 @@ public class CreateTodayQuizScheduler {
 
         if (cache != null) {
             cache.clear();
-            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, TodayQuizInfoMapper.toDto(todayQuiz));
+            cache.put(CacheConst.TODAY_QUIZ_CACHE_NAME, mapper.toDto(todayQuiz));
         }
     }
 }
