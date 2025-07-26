@@ -1,8 +1,11 @@
 package com.dnd.spaced.core.comment.application;
 
+import com.dnd.spaced.core.comment.application.dto.mapper.CommentResponseCollectionMapper;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ public class CommentServiceFacade {
     private final ReadCommentService readCommentService;
     private final UpdateCommentService updateCommentService;
     private final DeleteCommentService deleteCommentService;
+    private final CommentResponseCollectionMapper mapper;
 
     @Transactional
     public void createComment(Long accountId, Long wordId, CreateCommentRequest request) {
@@ -33,6 +37,8 @@ public class CommentServiceFacade {
     }
 
     public CommentCollectionResponse readComments(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
-        return readCommentService.readComments(accountId, wordId, lastCommentId, pageable);
+        List<LikedComment> comments = readCommentService.readComments(accountId, wordId, lastCommentId, pageable);
+
+        return mapper.toResponse(comments);
     }
 }

@@ -3,7 +3,8 @@ package com.dnd.spaced.core.comment.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
+import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class ReadCommentServiceTest {
     })
     void 로그인_하지_않고_특정_용어의_댓글_목록을_조회한다() {
         // when
-        CommentCollectionResponse actual = readCommentService.readComments(
+        List<LikedComment> actual = readCommentService.readComments(
                 GUEST_ID,
                 WORD_ID,
                 null,
@@ -42,9 +43,9 @@ class ReadCommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.comments()).hasSize(1),
-                () -> assertThat(actual.comments().get(0).commentContent().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
-                () -> assertThat(actual.comments().get(0).liked()).isFalse()
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual.get(0).comment().getContent()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.get(0).isLiked()).isFalse()
         );
     }
 
@@ -56,7 +57,7 @@ class ReadCommentServiceTest {
     })
     void 로그인하고_특정_용어의_댓글_목록을_조회한다() {
         // when
-        CommentCollectionResponse actual = readCommentService.readComments(
+        List<LikedComment> actual = readCommentService.readComments(
                 READER_ID,
                 WORD_ID,
                 null,
@@ -65,9 +66,9 @@ class ReadCommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.comments()).hasSize(1),
-                () -> assertThat(actual.comments().get(0).commentContent().content()).isEqualTo("이 용어는 언제 쓰는건가요?"),
-                () -> assertThat(actual.comments().get(0).liked()).isTrue()
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual.get(0).comment().getContent()).isEqualTo("이 용어는 언제 쓰는건가요?"),
+                () -> assertThat(actual.get(0).isLiked()).isTrue()
         );
     }
 }

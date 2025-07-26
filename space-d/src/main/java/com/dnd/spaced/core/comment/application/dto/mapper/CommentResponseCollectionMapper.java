@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public class CommentResponseCollectionMapper {
 
-    public CommentCollectionResponse toDto(List<LikedComment> comments) {
+    public CommentCollectionResponse toResponse(List<LikedComment> comments) {
         if (comments.isEmpty()) {
             return new CommentCollectionResponse(List.of(), null);
         }
