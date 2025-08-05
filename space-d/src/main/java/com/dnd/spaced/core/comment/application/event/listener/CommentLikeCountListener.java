@@ -17,12 +17,12 @@ public class CommentLikeCountListener {
     @EventListener
     @Transactional
     public void listen(LikedEvent event) {
-        commentRepository.increaseLikeCount(event.commentId());
+        commentRepository.addLikeCount(event.commentId());
     }
 
     @EventListener
     @Transactional
     public void listen(UnlikedEvent event) {
-        commentRepository.decreaseLikeCount(event.commentId());
+        commentRepository.subtractLikeCount(event.commentId());
     }
 }

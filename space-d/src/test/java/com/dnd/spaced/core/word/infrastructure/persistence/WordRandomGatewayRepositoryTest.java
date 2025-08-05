@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.word.domain.Word;
-import com.dnd.spaced.core.word.domain.dto.SimpleWordInfo;
+import com.dnd.spaced.core.word.domain.dto.SimpleWord;
 import com.dnd.spaced.core.word.domain.enums.Category;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ class WordRandomGatewayRepositoryTest {
         wordRandomGatewayRepository.saveWith(savedWord, Category.DEVELOP);
 
         // then
-        List<SimpleWordInfo> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.DEVELOP, 1L);
+        List<SimpleWord> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.DEVELOP, 1L);
 
         assertAll(
                 () -> assertThat(actual).hasSize(1),
@@ -89,7 +89,7 @@ class WordRandomGatewayRepositoryTest {
         wordRandomGatewayRepository.saveWith(tomlWord, Category.DEVELOP);
 
         // when
-        List<SimpleWordInfo> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.DEVELOP, 2L);
+        List<SimpleWord> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.DEVELOP, 2L);
 
         // then
         assertThat(actual).hasSize(2);
@@ -120,7 +120,7 @@ class WordRandomGatewayRepositoryTest {
         wordRandomGatewayRepository.saveWith(kpiWord, Category.BUSINESS);
 
         // when
-        List<SimpleWordInfo> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.TOTAL, 3L);
+        List<SimpleWord> actual = wordRandomGatewayRepository.findRandomAllBy(QuizCategory.TOTAL, 3L);
 
         // then
         assertThat(actual).hasSize(3);

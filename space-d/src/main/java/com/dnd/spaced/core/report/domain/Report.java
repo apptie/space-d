@@ -34,13 +34,12 @@ public class Report extends CreateTimeEntity {
     private Long reporterId;
 
     @Enumerated(EnumType.STRING)
-    private ReportStatus reportStatus;
+    private ReportStatus reportStatus = ReportStatus.PENDING;
 
     public Report(ReportReason reportReason, Long commentId, Long reporterId) {
         this.reportReason = reportReason;
         this.commentId = commentId;
         this.reporterId = reporterId;
-        this.reportStatus = ReportStatus.PENDING;
     }
 
     public void process(ReportStatus reportStatus) {
@@ -48,6 +47,6 @@ public class Report extends CreateTimeEntity {
     }
 
     public boolean isProcessed() {
-        return this.reportStatus == ReportStatus.PROCESSED;
+        return this.reportStatus.isProcessed();
     }
 }

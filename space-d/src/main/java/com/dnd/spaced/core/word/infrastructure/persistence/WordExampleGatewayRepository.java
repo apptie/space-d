@@ -24,24 +24,25 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public Optional<WordExample> findBy(Long wordExampleId) {
-        WordExample result = queryFactory.selectFrom(wordExample)
-                                         .where(wordExample.id.eq(wordExampleId))
-                                         .fetchOne();
-
-        return Optional.ofNullable(result);
-    }
-
     public WordExampleGatewayRepository(Clock clock, JdbcTemplate jdbcTemplate, JPAQueryFactory queryFactory) {
         this.clock = clock;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.queryFactory = queryFactory;
     }
 
+    @Override
+    public Optional<WordExample> findBy(Long wordExampleId) {
+        WordExample result = queryFactory.selectFrom(wordExample)
+                                         .where(wordExample.id.eq(wordExampleId), wordExample.deleted.isFalse())
+                                         .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
     public long countBy(Long wordId) {
         String sql = """
-                SELECT COUNT(id) FROM word_examples WHERE word_id = :wordId
+                SELECT COUNT(id) FROM word_examples WHERE word_id = :wordId AND deleted = false
                 """;
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("wordId", wordId);
@@ -54,7 +55,7 @@ public class WordExampleGatewayRepository implements WordExampleRepository {
     public long update(Long wordExampleId, String example) {
         return queryFactory.update(wordExample)
                            .set(wordExample.content, example)
-                           .where(wordExample.id.eq(wordExampleId))
+                           .where(wordExample.id.eq(wordExampleId), wordExample.deleted.isFalse())
                            .execute();
     }
 

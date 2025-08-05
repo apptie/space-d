@@ -27,32 +27,32 @@ public class Skill {
 
     private Long accountId;
 
-    private long submitQuizQuestionCount = 0;
+    private long submitQuizQuestionCount = 0L;
 
-    private long quizQuestionCorrectCount = 0;
+    private long quizQuestionCorrectCount = 0L;
 
-    private long submitTodayQuizQuestionCount = 0;
+    private long submitTodayQuizQuestionCount = 0L;
 
-    private long todayQuizQuestionCorrectCount = 0;
+    private long todayQuizQuestionCorrectCount = 0L;
 
     public Skill(Long accountId) {
         this.accountId = accountId;
     }
 
     public double calculateQuizQuestionCorrectPercent(long totalQuizQuestionCount) {
-        if (totalQuizQuestionCount == 0L || quizQuestionCorrectCount == 0L) {
+        if (hasNeverAttemptedQuiz(totalQuizQuestionCount)) {
             return 0.0d;
         }
 
-        return ((double) quizQuestionCorrectCount / totalQuizQuestionCount) * PERCENT;
+        return calculateQuizCorrectPercent(totalQuizQuestionCount);
     }
 
     public double calculateTodayQuizQuestionCorrectPercent(long totalTodayQuizQuestionCount) {
-        if (totalTodayQuizQuestionCount == 0L || todayQuizQuestionCorrectCount == 0L) {
+        if (hasNeverAttemptedTodayQuiz(totalTodayQuizQuestionCount)) {
             return 0.0d;
         }
 
-        return ((double) todayQuizQuestionCorrectCount / totalTodayQuizQuestionCount) * PERCENT;
+        return calculateTodayQuizCorrectPercent(totalTodayQuizQuestionCount);
     }
 
     public void addCorrectQuizQuestion(long correctCount) {
@@ -63,5 +63,21 @@ public class Skill {
     public void addCorrectTodayQuizQuestion(long correctCount) {
         this.submitTodayQuizQuestionCount += TODAY_QUIZ_QUESTION_COUNT;
         this.todayQuizQuestionCorrectCount += correctCount;
+    }
+
+    private boolean hasNeverAttemptedQuiz(long totalQuizQuestionCount) {
+        return totalQuizQuestionCount == 0L || quizQuestionCorrectCount == 0L;
+    }
+
+    private double calculateQuizCorrectPercent(long totalQuizQuestionCount) {
+        return ((double) quizQuestionCorrectCount / totalQuizQuestionCount) * PERCENT;
+    }
+
+    private boolean hasNeverAttemptedTodayQuiz(long totalTodayQuizQuestionCount) {
+        return totalTodayQuizQuestionCount == 0L || todayQuizQuestionCorrectCount == 0L;
+    }
+
+    private double calculateTodayQuizCorrectPercent(long totalTodayQuizQuestionCount) {
+        return ((double) todayQuizQuestionCorrectCount / totalTodayQuizQuestionCount) * PERCENT;
     }
 }

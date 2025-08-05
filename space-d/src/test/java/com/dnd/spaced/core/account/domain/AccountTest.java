@@ -5,12 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.domain.embed.CareerInfo;
+import com.dnd.spaced.core.account.domain.embed.Career;
 import com.dnd.spaced.core.account.domain.embed.exception.InvalidNicknameException;
 import com.dnd.spaced.core.account.domain.embed.exception.InvalidProfileImageException;
 import com.dnd.spaced.core.account.domain.enums.Company;
 import com.dnd.spaced.core.account.domain.enums.Experience;
 import com.dnd.spaced.core.account.domain.enums.JobGroup;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.account.domain.enums.exception.InvalidCompanyException;
@@ -38,16 +39,16 @@ class AccountTest {
                              .registrationId(RegistrationId.KAKAO)
                              .socialIdentifier("12345")
                              .nickname("재빠른지구001")
-                             .profileImage("earth.png")
+                             .profileImageName(ProfileImageName.EARTH)
                              .role(Role.ROLE_USER)
                              .build()
         );
 
         assertAll(
-                () -> assertThat(actual.getSocialInfo().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
-                () -> assertThat(actual.getSocialInfo().getSocialIdentifier()).isEqualTo("12345"),
-                () -> assertThat(actual.getProfileInfo().getNickname()).isEqualTo("재빠른지구001"),
-                () -> assertThat(actual.getProfileInfo().getProfileImage()).isEqualTo("earth.png"),
+                () -> assertThat(actual.getSocial().getRegistrationId()).isEqualTo(RegistrationId.KAKAO),
+                () -> assertThat(actual.getSocial().getSocialId()).isEqualTo("12345"),
+                () -> assertThat(actual.getProfile().getNickname()).isEqualTo("재빠른지구001"),
+                () -> assertThat(actual.getProfile().getProfileImageName()).isEqualTo("earth.png"),
                 () -> assertThat(actual.getRole()).isEqualTo(Role.ROLE_USER)
         );
     }
@@ -71,27 +72,26 @@ class AccountTest {
                              .registrationId(RegistrationId.KAKAO)
                              .socialIdentifier("12345")
                              .nickname(invalidNickname)
-                             .profileImage("earth.png")
+                             .profileImageName(ProfileImageName.EARTH)
                              .role(Role.ROLE_USER)
                              .build()
         ).isInstanceOf(InvalidNicknameException.class)
          .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
 
-    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
-    @NullAndEmptySource
-    void 비어_있는_프로필_이미지_경로라면_회원을_초기화할_수_없다(String invalidProfileImage) {
+    @Test
+    void 비어_있는_프로필_이미지_경로라면_회원을_초기화할_수_없다() {
         // when & then
         assertThatThrownBy(
                 () -> Account.builder()
                              .registrationId(RegistrationId.KAKAO)
                              .socialIdentifier("12345")
                              .nickname("재빠른지구001")
-                             .profileImage(invalidProfileImage)
+                             .profileImageName(null)
                              .role(Role.ROLE_USER)
                              .build()
         ).isInstanceOf(InvalidProfileImageException.class)
-         .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
+         .hasMessage("프로필 이미지 정보는 null일 수 없습니다.");
     }
 
     @Test
@@ -101,20 +101,20 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when
-        account.changeCareerInfo("개발자", "비공개", "1~2년 차");
+        account.changeCareer("개발자", "비공개", "1~2년 차");
 
         // then
-        CareerInfo careerInfo = account.getCareerInfo();
+        Career career = account.getCareer();
 
         assertAll(
-                () -> assertThat(careerInfo.getCompany()).isEqualTo(Company.BLIND),
-                () -> assertThat(careerInfo.getJobGroup()).isEqualTo(JobGroup.DEVELOP),
-                () -> assertThat(careerInfo.getExperience()).isEqualTo(Experience.BETWEEN_FIRST_SECOND)
+                () -> assertThat(career.getCompany()).isEqualTo(Company.BLIND),
+                () -> assertThat(career.getJobGroup()).isEqualTo(JobGroup.DEVELOP),
+                () -> assertThat(career.getExperience()).isEqualTo(Experience.BETWEEN_FIRST_SECOND)
         );
     }
 
@@ -126,13 +126,13 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         "개발자",
                         invalidCompanyName,
                         "1~2년 차"
@@ -150,13 +150,13 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         invalidJobGroupName,
                         "비공개",
                         "1~2년 차"
@@ -174,13 +174,13 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
         assertThatThrownBy(
-                () -> account.changeCareerInfo(
+                () -> account.changeCareer(
                         "개발자",
                         "비공개",
                         invalidExperienceName
@@ -197,39 +197,35 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when
-        String changedNickname = "행복한화성001";
-        String changedProfileImage = "mars.png";
-
-        account.changeProfileInfo(changedNickname, changedProfileImage);
+        account.changeProfile("행복한화성001", ProfileImageName.MARS);
 
         // then
         assertAll(
-                () -> assertThat(account.getProfileInfo().getNickname()).isEqualTo(changedNickname),
-                () -> assertThat(account.getProfileInfo().getProfileImage()).isEqualTo(changedProfileImage)
+                () -> assertThat(account.getProfile().getNickname()).isEqualTo("행복한화성001"),
+                () -> assertThat(account.getProfile().getProfileImageName()).isEqualTo(ProfileImageName.MARS.getImageName())
         );
     }
 
-    @ParameterizedTest(name = "프로필 이미지가 {0}일 때 예외가 발생한다")
-    @NullAndEmptySource
-    void 프로필_이미지_경로가_비어_있으면_회원_프로필_정보를_변환할_수_없다(String invalidProfileImage) {
+    @Test
+    void 프로필_이미지_경로가_비어_있으면_회원_프로필_정보를_변환할_수_없다() {
         // given
         Account account = Account.builder()
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo("행복한화성001", invalidProfileImage))
+        assertThatThrownBy(() -> account.changeProfile("행복한화성001", null))
                 .isInstanceOf(InvalidProfileImageException.class)
-                .hasMessage("프로필 이미지 정보는 null이거나 비어 있을 수 없습니다.");
+                .hasMessage("프로필 이미지 정보는 null일 수 없습니다.");
     }
 
     private static Stream<Arguments> changeProfileInfoTestWithInvalidNickname() {
@@ -250,12 +246,12 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
 
         // when & then
-        assertThatThrownBy(() -> account.changeProfileInfo(invalidNickname, "mars.png"))
+        assertThatThrownBy(() -> account.changeProfile(invalidNickname, ProfileImageName.MARS))
                 .isInstanceOf(InvalidNicknameException.class)
                 .hasMessage("닉네임은 최소 5글자 이상, 최대 10글자 이하여야 합니다.");
     }
@@ -275,7 +271,7 @@ class AccountTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
         ReflectionTestUtils.setField(account, "id", 1L);

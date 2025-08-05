@@ -33,12 +33,16 @@ public class ReportService {
     }
 
     private void processReport(Comment comment, Long reporterId, ReportRequest request) {
-        validateReportedComment(comment, reporterId);
+        validateSelfReporting(comment, reporterId);
 
         ReportReason reportReason = findReportReason(request);
-        Report report = new Report(reportReason, request.commentId(), reporterId);
+        persistReport(reporterId, request, reportReason);
+    }
 
-        reportRepository.save(report);
+    private void validateSelfReporting(Comment comment, Long reporterId) {
+        if (comment.isWriter(reporterId)) {
+            throw new CannotReportOwnCommentException("자신이 작성한 댓글은 신고할 수 없습니다.");
+        }
     }
 
     private ReportReason findReportReason(ReportRequest request) {
@@ -50,9 +54,9 @@ public class ReportService {
                            );
     }
 
-    private void validateReportedComment(Comment comment, Long reporterId) {
-        if (comment.isWriter(reporterId)) {
-            throw new CannotReportOwnCommentException("자신이 작성한 댓글은 신고할 수 없습니다.");
-        }
+    private void persistReport(Long reporterId, ReportRequest request, ReportReason reportReason) {
+        Report report = new Report(reportReason, request.commentId(), reporterId);
+
+        reportRepository.save(report);
     }
 }

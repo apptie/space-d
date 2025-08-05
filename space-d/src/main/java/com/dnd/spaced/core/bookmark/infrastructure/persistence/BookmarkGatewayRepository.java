@@ -29,11 +29,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public Optional<Bookmark> findBy(Long accountId, Long wordId) {
-        BookmarkWithWord result = queryFactory.select(Projections.constructor(
-                                                      BookmarkWithWord.class,
-                                                      bookmark,
-                                                      word.deleted
-                                              ))
+        BookmarkWithWord result = queryFactory.select(
+                                                    Projections.constructor(
+                                                            BookmarkWithWord.class,
+                                                            bookmark,
+                                                            word.deleted
+                                                    )
+                                              )
                                               .from(bookmark)
                                               .leftJoin(word).on(bookmark.wordId.eq(word.id))
                                               .where(
@@ -42,7 +44,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                                               )
                                               .fetchOne();
 
-        if (result == null || result.wordDeleted()) {
+        if (isDeletedWord(result)) {
             return Optional.empty();
         }
 
@@ -51,11 +53,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public boolean existsBy(Long accountId, Long wordId) {
-        BookmarkWithWord result = queryFactory.select(Projections.constructor(
-                                                      BookmarkWithWord.class,
-                                                      bookmark,
-                                                      word.deleted
-                                              ))
+        BookmarkWithWord result = queryFactory.select(
+                                                    Projections.constructor(
+                                                            BookmarkWithWord.class,
+                                                            bookmark,
+                                                            word.deleted
+                                                    )
+                                              )
                                               .from(bookmark)
                                               .leftJoin(word).on(bookmark.wordId.eq(word.id))
                                               .where(
@@ -64,7 +68,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                                               )
                                               .fetchOne();
 
-        return result != null && !result.wordDeleted;
+        return isExistBookmark(result);
     }
 
     @Override
@@ -83,11 +87,13 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     @Override
     public List<Bookmark> findAllBy(Long accountId, Long lastBookmarkId, Pageable pageable) {
-        return queryFactory.select(Projections.constructor(
-                                   BookmarkWithWord.class,
-                                   bookmark,
-                                   word.deleted
-                           ))
+        return queryFactory.select(
+                                Projections.constructor(
+                                        BookmarkWithWord.class,
+                                        bookmark,
+                                        word.deleted
+                                )
+                           )
                            .from(bookmark)
                            .leftJoin(word).on(word.id.eq(bookmark.wordId))
                            .where(bookmark.accountId.eq(accountId), ltLastBookmarkId(lastBookmarkId))
@@ -95,9 +101,17 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
                            .limit(pageable.getPageSize())
                            .fetch()
                            .stream()
-                           .filter(BookmarkWithWord::isNotWordDeleted)
+                           .filter(BookmarkWithWord::isValidWord)
                            .map(BookmarkWithWord::bookmark)
                            .toList();
+    }
+
+    private boolean isDeletedWord(BookmarkWithWord result) {
+        return result == null || result.wordDeleted();
+    }
+
+    private boolean isExistBookmark(BookmarkWithWord result) {
+        return result != null && !result.wordDeleted;
     }
 
     private BooleanExpression ltLastBookmarkId(Long lastBookmarkId) {
@@ -110,7 +124,7 @@ public class BookmarkGatewayRepository implements BookmarkRepository {
 
     public record BookmarkWithWord(Bookmark bookmark, boolean wordDeleted) {
 
-        public boolean isNotWordDeleted() {
+        boolean isValidWord() {
             return !wordDeleted();
         }
     }

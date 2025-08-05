@@ -2,8 +2,8 @@ package com.dnd.spaced.core.skill.presentation;
 
 import com.dnd.spaced.core.skill.application.SkillService;
 import com.dnd.spaced.core.skill.application.dto.response.SkillResponse;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccount;
+import com.dnd.spaced.global.auth.resolver.AuthAccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +18,8 @@ public class SkillController {
     private final SkillService skillService;
 
     @GetMapping
-    public ResponseEntity<SkillResponse> readSkill(@CurrentAccountInfo AuthAccountInfo accountInfo) {
-        SkillResponse response = skillService.readSkill(accountInfo.accountId());
+    public ResponseEntity<SkillResponse> readSkill(@CurrentAccount AuthAccountId accountId) {
+        SkillResponse response = skillService.readSkill(accountId.id());
 
         return ResponseEntity.ok(response);
     }

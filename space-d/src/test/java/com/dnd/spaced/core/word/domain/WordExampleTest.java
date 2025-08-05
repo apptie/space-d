@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -62,19 +61,6 @@ class WordExampleTest {
 
         // then
         assertThat(wordExample.getContent()).isEqualTo(changedExample);
-    }
-
-    @Test
-    void 용어_예문의_식별자_여부를_판단한다() {
-        // given
-        WordExample wordExample = WordExample.from("시스템 관리자는 신입 직원들에게 회사 내부 네트워크에 대한 Authorization을 부여했다.");
-        ReflectionTestUtils.setField(wordExample, "id", 1L);
-
-        // when
-        boolean actual = wordExample.isEqualTo(1L);
-
-        // then
-        assertThat(actual).isTrue();
     }
 
     @Test

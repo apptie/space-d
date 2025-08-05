@@ -1,8 +1,8 @@
 package com.dnd.spaced.core.like.presentation;
 
 import com.dnd.spaced.core.like.application.LikeService;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
+import com.dnd.spaced.global.auth.resolver.CurrentAccount;
+import com.dnd.spaced.global.auth.resolver.AuthAccountId;
 import com.dnd.spaced.global.consts.controller.ResponseEntityConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,10 @@ public class LikeController {
 
     @PostMapping
     public ResponseEntity<Void> processLike(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long commentId
     ) {
-        likeService.processLike(accountInfo.accountId(), commentId);
+        likeService.processLike(accountId.id(), commentId);
 
         return ResponseEntityConst.NO_CONTENT;
     }

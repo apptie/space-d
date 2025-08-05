@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
-import com.dnd.spaced.core.quiz.application.QuizService;
+import com.dnd.spaced.core.quiz.application.QuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
@@ -47,13 +47,13 @@ import org.springframework.test.web.servlet.ResultActions;
 class QuizControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    QuizService quizService;
+    QuizServiceFacade quizServiceFacade;
 
     @Test
     @WithMockUser("1")
     void 퀴즈_생성_요청_성공_테스트() throws Exception {
         // given
-        given(quizService.createQuiz(anyLong(), any(CreateQuizRequest.class))).willReturn(1L);
+        given(quizServiceFacade.createQuiz(anyLong(), any(CreateQuizRequest.class))).willReturn(1L);
 
         CreateQuizRequest request = new CreateQuizRequest("전체 실무");
 
@@ -67,7 +67,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/quizzes/1")
         );
 
-        verify(quizService).createQuiz(anyLong(), any(CreateQuizRequest.class));
+        verify(quizServiceFacade).createQuiz(anyLong(), any(CreateQuizRequest.class));
 
         퀴즈_생성_요청_문서화(resultActions);
     }
@@ -86,7 +86,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 퀴즈_채점_요청_성공_테스트() throws Exception {
         // given
-        willDoNothing().given(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
+        willDoNothing().given(quizServiceFacade).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
 
         SubmitAnswerRequest[] submitAnswers = {
                 new SubmitAnswerRequest(1L, "Authorization"),
@@ -107,7 +107,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/quizzes/1/graded-answer")
         );
 
-        verify(quizService).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
+        verify(quizServiceFacade).grade(anyLong(), anyLong(), any(GradeQuizRequest.class));
 
         퀴즈_채점_요청_문서화(resultActions);
     }
@@ -224,7 +224,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 ),
                 quizGradedAnswerResponse5.id()
         );
-        given(quizService.readGradedAnswers(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
+        given(quizServiceFacade.readGradedAnswers(anyLong(), any(ReadQuizGradedAnswerSearchRequest.class), any(Pageable.class))).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -246,7 +246,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].corrected").exists()
         );
 
-        verify(quizService).readGradedAnswers(
+        verify(quizServiceFacade).readGradedAnswers(
                 anyLong(),
                 any(ReadQuizGradedAnswerSearchRequest.class),
                 any(Pageable.class)
@@ -379,7 +379,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 quizGradedAnswerResponse5.id()
         );
 
-        given(quizService.readGradedAnswers(anyLong(), anyLong())).willReturn(response);
+        given(quizServiceFacade.readGradedAnswers(anyLong(), anyLong())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -401,7 +401,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("answers[*].corrected").exists()
         );
 
-        verify(quizService).readGradedAnswers(anyLong(), anyLong());
+        verify(quizServiceFacade).readGradedAnswers(anyLong(), anyLong());
 
         특정_퀴즈에_대한_회원이_제출한_답_목록_조회_요청_문서화(resultActions);
     }
@@ -438,7 +438,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 퀴즈_조회_요청_성공_테스트() throws Exception {
         // given
-        given(quizService.readQuiz(anyLong(), anyLong())).willReturn(createQuizResponse());
+        given(quizServiceFacade.readQuiz(anyLong(), anyLong())).willReturn(createQuizResponse());
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -464,7 +464,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
                 jsonPath("quizQuestions[0].answerOptionWordId", is(1L), Long.class)
         );
 
-        verify(quizService).readQuiz(anyLong(), anyLong());
+        verify(quizServiceFacade).readQuiz(anyLong(), anyLong());
 
         퀴즈_조회_요청_문서화(resultActions);
     }
@@ -514,7 +514,7 @@ class QuizControllerTest extends CommonControllerSliceTest {
         );
         QuizCollectionResponse response = new QuizCollectionResponse(List.of(quizResponse), 1L);
 
-        given(quizService.readQuizzes(anyLong(), any(ReadAllQuizRequest.class), any(Pageable.class))).willReturn(response);
+        given(quizServiceFacade.readQuizzes(anyLong(), any(ReadAllQuizRequest.class), any(Pageable.class))).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(

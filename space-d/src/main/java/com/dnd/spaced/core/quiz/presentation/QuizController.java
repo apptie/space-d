@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.quiz.presentation;
 
-import com.dnd.spaced.core.quiz.application.QuizService;
+import com.dnd.spaced.core.quiz.application.QuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.CreateQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.ReadAllQuizRequest;
@@ -8,8 +8,8 @@ import com.dnd.spaced.core.quiz.application.dto.request.ReadQuizGradedAnswerSear
 import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizCollectionResponse;
 import com.dnd.spaced.core.quiz.application.dto.response.QuizResponse;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfo;
-import com.dnd.spaced.global.auth.resolver.CurrentAccountInfo;
+import com.dnd.spaced.global.auth.resolver.AuthAccountId;
+import com.dnd.spaced.global.auth.resolver.CurrentAccount;
 import com.dnd.spaced.global.resolver.quiz.GradedAnswerPageable;
 import com.dnd.spaced.global.resolver.quiz.QuizPageable;
 import jakarta.validation.Valid;
@@ -30,14 +30,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class QuizController {
 
-    private final QuizService quizService;
+    private final QuizServiceFacade quizServiceFacade;
 
     @PostMapping
     public ResponseEntity<Void> createQuiz(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @Valid @RequestBody CreateQuizRequest request
     ) {
-        Long savedQuizId = quizService.createQuiz(accountInfo.accountId(), request);
+        Long savedQuizId = quizServiceFacade.createQuiz(accountId.id(), request);
         URI location = UriComponentsBuilder.fromPath("/quizzes/{quizId}")
                                            .buildAndExpand(savedQuizId)
                                            .toUri();
@@ -48,11 +48,11 @@ public class QuizController {
 
     @PostMapping("/{quizId}/graded-answers")
     public ResponseEntity<Void> gradeQuiz(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long quizId,
             @Valid @RequestBody GradeQuizRequest request
     ) {
-        quizService.grade(accountInfo.accountId(), quizId, request);
+        quizServiceFacade.grade(accountId.id(), quizId, request);
         URI location = UriComponentsBuilder.fromPath("/quizzes/{id}/graded-answer")
                                            .buildAndExpand(quizId)
                                            .toUri();
@@ -63,12 +63,12 @@ public class QuizController {
 
     @GetMapping("/graded-answers")
     public ResponseEntity<QuizGradedAnswerCollectionResponse> readQuizGradedAnswers(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             ReadQuizGradedAnswerSearchRequest request,
             @GradedAnswerPageable Pageable pageable
     ) {
-        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(
-                accountInfo.accountId(),
+        QuizGradedAnswerCollectionResponse response = quizServiceFacade.readGradedAnswers(
+                accountId.id(),
                 request,
                 pageable
         );
@@ -78,31 +78,31 @@ public class QuizController {
 
     @GetMapping("/{quizId}/graded-answers")
     public ResponseEntity<QuizGradedAnswerCollectionResponse> readTargetQuizGradedAnswers(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long quizId
     ) {
-        QuizGradedAnswerCollectionResponse response = quizService.readGradedAnswers(accountInfo.accountId(), quizId);
+        QuizGradedAnswerCollectionResponse response = quizServiceFacade.readGradedAnswers(accountId.id(), quizId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponse> readQuiz(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             @PathVariable Long quizId
     ) {
-        QuizResponse response = quizService.readQuiz(accountInfo.accountId(), quizId);
+        QuizResponse response = quizServiceFacade.readQuiz(accountId.id(), quizId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<QuizCollectionResponse> readQuizzes(
-            @CurrentAccountInfo AuthAccountInfo accountInfo,
+            @CurrentAccount AuthAccountId accountId,
             ReadAllQuizRequest request,
             @QuizPageable Pageable pageable
     ) {
-        QuizCollectionResponse response = quizService.readQuizzes(accountInfo.accountId(), request, pageable);
+        QuizCollectionResponse response = quizServiceFacade.readQuizzes(accountId.id(), request, pageable);
 
         return ResponseEntity.ok(response);
     }

@@ -5,39 +5,38 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentResponse;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse.CommentWriterResponse;
 import com.dnd.spaced.core.comment.domain.Comment;
-import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CommentResponseCollectionMapper {
+@Mapper
+public class CommentResponseCollectionMapper {
 
-    public static CommentCollectionResponse toCollectionDto(List<LikedCommentInfo> comments) {
+    public CommentCollectionResponse toResponse(List<LikedComment> comments) {
         if (comments.isEmpty()) {
             return new CommentCollectionResponse(List.of(), null);
         }
 
         List<CommentResponse> responses = comments.stream()
-                                                  .map(CommentResponseCollectionMapper::toCommentResponse)
+                                                  .map(this::toCommentResponse)
                                                   .toList();
 
         return new CommentCollectionResponse(responses, comments.get(comments.size() - 1).comment().getId());
     }
 
-    private static CommentResponse toCommentResponse(LikedCommentInfo likedCommentInfo) {
+    private CommentResponse toCommentResponse(LikedComment likedComment) {
         return new CommentResponse(
-                toCommentContentResponse(likedCommentInfo.comment()),
+                toCommentContentResponse(likedComment.comment()),
                 toCommentWriterResponse(
-                        likedCommentInfo.writerNickname(),
-                        likedCommentInfo.writerProfileImage(),
-                        likedCommentInfo.comment().getWriterId()
+                        likedComment.writerNickname(),
+                        likedComment.writerProfileImage(),
+                        likedComment.comment().getWriterId()
                 ),
-                likedCommentInfo.isLiked()
+                likedComment.isLiked()
         );
     }
 
-    private static CommentContentResponse toCommentContentResponse(Comment comment) {
+    private CommentContentResponse toCommentContentResponse(Comment comment) {
         return new CommentContentResponse(
                 comment.getId(),
                 comment.getWordId(),
@@ -46,7 +45,7 @@ public final class CommentResponseCollectionMapper {
         );
     }
 
-    private static CommentWriterResponse toCommentWriterResponse(
+    private CommentWriterResponse toCommentWriterResponse(
             String writerNickname,
             String writerProfileImage,
             Long writerId

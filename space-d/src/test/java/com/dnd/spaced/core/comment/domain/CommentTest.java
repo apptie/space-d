@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.dnd.spaced.core.account.domain.Account;
+import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
 import com.dnd.spaced.core.account.domain.enums.RegistrationId;
 import com.dnd.spaced.core.account.domain.enums.Role;
 import com.dnd.spaced.core.comment.domain.exception.InvalidCommentContentException;
@@ -50,14 +51,14 @@ class CommentTest {
                                  .registrationId(RegistrationId.KAKAO)
                                  .socialIdentifier("12345")
                                  .nickname("재빠른지구001")
-                                 .profileImage("earth.png")
+                                 .profileImageName(ProfileImageName.EARTH)
                                  .role(Role.ROLE_USER)
                                  .build();
         ReflectionTestUtils.setField(account, "id", 1L);
         Comment comment = new Comment(2L, 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(account);
+        boolean actual = comment.isReader(account);
 
         // then
         assertThat(actual).isTrue();
@@ -70,14 +71,14 @@ class CommentTest {
                                 .registrationId(RegistrationId.KAKAO)
                                 .socialIdentifier("12345")
                                 .nickname("재빠른지구001")
-                                .profileImage("earth.png")
+                                .profileImageName(ProfileImageName.EARTH)
                                 .role(Role.ROLE_USER)
                                 .build();
         ReflectionTestUtils.setField(writer, "id", 1L);
         Comment comment = new Comment(writer.getId(), 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(writer);
+        boolean actual = comment.isReader(writer);
 
         // then
         assertThat(actual).isFalse();
@@ -101,7 +102,7 @@ class CommentTest {
         Comment comment = new Comment(1L, 1L, "이 용어 언제 쓰는건가요?");
 
         // when
-        boolean actual = comment.isNotWriter(1L);
+        boolean actual = comment.isReader(1L);
 
         // then
         assertThat(actual).isFalse();

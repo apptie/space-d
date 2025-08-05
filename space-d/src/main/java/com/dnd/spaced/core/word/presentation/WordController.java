@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.word.presentation;
 
-import com.dnd.spaced.core.word.application.WordService;
+import com.dnd.spaced.core.word.application.WordServiceFacade;
 import com.dnd.spaced.core.word.application.dto.request.ReadAllWordRequest;
 import com.dnd.spaced.core.word.application.dto.request.SearchWordRequest;
 import com.dnd.spaced.core.word.application.dto.response.PopularWordCollectionResponse;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class WordController {
 
-    private final WordService wordService;
+    private final WordServiceFacade wordServiceFacade;
 
     @GetMapping("/{wordId}")
     public ResponseEntity<WordResponse> readWord(@PathVariable Long wordId) {
-        WordResponse response = wordService.readWord(wordId);
+        WordResponse response = wordServiceFacade.readWord(wordId);
 
         return ResponseEntity.ok(response);
     }
@@ -34,7 +34,7 @@ public class WordController {
             ReadAllWordRequest request,
             @WordPageable Pageable pageable
     ) {
-        WordCollectionResponse response = wordService.readWords(request, pageable);
+        WordCollectionResponse response = wordServiceFacade.readWords(request, pageable);
 
         return ResponseEntity.ok(response);
     }
@@ -44,14 +44,14 @@ public class WordController {
             SearchWordRequest request,
             @WordPageable Pageable pageable
     ) {
-        WordCollectionResponse response = wordService.searchWord(request, pageable);
+        WordCollectionResponse response = wordServiceFacade.searchWord(request, pageable);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/popular")
     public ResponseEntity<PopularWordCollectionResponse> readPopularWords() {
-        PopularWordCollectionResponse response = wordService.readPopularWords();
+        PopularWordCollectionResponse response = wordServiceFacade.readPopularWords();
 
         return ResponseEntity.ok(response);
     }

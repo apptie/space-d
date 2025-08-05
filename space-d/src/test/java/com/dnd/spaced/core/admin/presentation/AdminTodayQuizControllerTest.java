@@ -10,10 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
-import com.dnd.spaced.core.admin.application.AdminTodayQuizService;
+import com.dnd.spaced.core.admin.application.AdminTodayQuizServiceFacade;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,13 +21,13 @@ import org.springframework.test.web.servlet.ResultActions;
 class AdminTodayQuizControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    AdminTodayQuizService adminTodayQuizService;
+    AdminTodayQuizServiceFacade adminTodayQuizServiceFacade;
 
     @Test
     @WithMockUser(value = "1", roles = "ADMIN")
     void 오늘의_퀴즈_수동_생성_요청_성공_테스트() throws Exception {
         // given
-        given(adminTodayQuizService.createTodayQuiz()).willReturn(1L);
+        given(adminTodayQuizServiceFacade.createTodayQuiz()).willReturn(1L);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -38,7 +37,7 @@ class AdminTodayQuizControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/today-quizzes/1")
         );
 
-        verify(adminTodayQuizService).createTodayQuiz();
+        verify(adminTodayQuizServiceFacade).createTodayQuiz();
 
         오늘의_퀴즈_수동_생성_요청_문서화(resultActions);
     }

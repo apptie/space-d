@@ -10,8 +10,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.dnd.spaced.core.quiz.application.QuizService;
-import com.dnd.spaced.core.quiz.application.TodayQuizService;
+import com.dnd.spaced.core.quiz.application.QuizServiceFacade;
+import com.dnd.spaced.core.quiz.application.TodayQuizServiceFacade;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeQuizRequest.SubmitAnswerRequest;
 import com.dnd.spaced.core.quiz.application.dto.request.GradeTodayQuizRequest;
@@ -44,10 +44,10 @@ class GradedQuizEventListenerTest {
     ApplicationEvents events;
 
     @Autowired
-    QuizService quizService;
+    QuizServiceFacade quizServiceFacade;
 
     @Autowired
-    TodayQuizService todayQuizService;
+    TodayQuizServiceFacade todayQuizServiceFacade;
 
     @Autowired
     SkillRepository skillRepository;
@@ -76,7 +76,7 @@ class GradedQuizEventListenerTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when
-        quizService.grade(1L, 1L, request);
+        quizServiceFacade.grade(1L, 1L, request);
 
         // then
         assertAll(
@@ -109,7 +109,7 @@ class GradedQuizEventListenerTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when
-        quizService.grade(1L, 1L, request);
+        quizServiceFacade.grade(1L, 1L, request);
 
         // then
         assertAll(
@@ -140,7 +140,7 @@ class GradedQuizEventListenerTest {
         GradeQuizRequest request = new GradeQuizRequest(submitAnswers);
 
         // when
-        quizService.grade(1L, 1L, request);
+        quizServiceFacade.grade(1L, 1L, request);
 
         // then
         assertAll(
@@ -162,7 +162,7 @@ class GradedQuizEventListenerTest {
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(2L, "YAML");
 
         // when
-        todayQuizService.grade(1L, 1L, request);
+        todayQuizServiceFacade.gradeTodayQuiz(1L, 1L, request);
 
         // then
         assertAll(
@@ -188,7 +188,7 @@ class GradedQuizEventListenerTest {
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(2L, "YAML");
 
         // when
-        todayQuizService.grade(1L, 1L, request);
+        todayQuizServiceFacade.gradeTodayQuiz(1L, 1L, request);
 
         // then
         assertAll(
@@ -212,7 +212,7 @@ class GradedQuizEventListenerTest {
         GradeTodayQuizRequest request = new GradeTodayQuizRequest(2L, "YAML");
 
         // when
-        todayQuizService.grade(1L, 1L, request);
+        todayQuizServiceFacade.gradeTodayQuiz(1L, 1L, request);
 
         // then
         assertAll(

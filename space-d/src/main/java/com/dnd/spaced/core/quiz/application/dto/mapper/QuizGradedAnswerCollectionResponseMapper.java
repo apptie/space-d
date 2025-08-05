@@ -4,40 +4,39 @@ import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollect
 import com.dnd.spaced.core.quiz.application.dto.response.QuizGradedAnswerCollectionResponse.QuizGradedAnswerResponse;
 import com.dnd.spaced.core.quiz.domain.QuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.QuizQuestion;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class QuizGradedAnswerCollectionResponseMapper {
+@Mapper
+public class QuizGradedAnswerCollectionResponseMapper {
 
-    public static QuizGradedAnswerCollectionResponse toCollectionDto(List<QuizGradedAnswer> quizGradedAnswers) {
+    public QuizGradedAnswerCollectionResponse toCollectionResponse(List<QuizGradedAnswer> quizGradedAnswers) {
         if (quizGradedAnswers.isEmpty()) {
             return new QuizGradedAnswerCollectionResponse(List.of(), null);
         }
 
         List<QuizGradedAnswerResponse> responses = quizGradedAnswers.stream()
-                                                                    .map(QuizGradedAnswerCollectionResponseMapper::toDto)
+                                                                    .map(this::toResponse)
                                                                     .toList();
 
         return new QuizGradedAnswerCollectionResponse(responses, responses.get(responses.size() - 1).id());
     }
 
-    private static QuizGradedAnswerResponse toDto(QuizGradedAnswer quizGradedAnswer) {
+    private QuizGradedAnswerResponse toResponse(QuizGradedAnswer quizGradedAnswer) {
         QuizQuestion question = quizGradedAnswer.getQuizQuestion();
 
         return new QuizGradedAnswerResponse(
                 quizGradedAnswer.getId(),
                 quizGradedAnswer.getAccountId(),
                 quizGradedAnswer.getQuizId(),
-                toDto(question),
+                toResponse(question),
                 question.getQuizAnswerOption().getAnswerContent(),
                 quizGradedAnswer.getSelectedContent(),
                 quizGradedAnswer.isCorrect()
         );
     }
 
-    private static QuizGradedAnswerResponse.QuizQuestionResponse toDto(QuizQuestion quizQuestion) {
+    private QuizGradedAnswerResponse.QuizQuestionResponse toResponse(QuizQuestion quizQuestion) {
         return new QuizGradedAnswerResponse.QuizQuestionResponse(
                 quizQuestion.getId(),
                 quizQuestion.getQuizCategory().getName(),

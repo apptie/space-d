@@ -3,12 +3,15 @@ package com.dnd.spaced.core.quiz.infrastructure.persistence;
 import static com.dnd.spaced.core.quiz.domain.QTodayQuiz.todayQuiz;
 
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
-import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizInfo;
-import com.dnd.spaced.core.quiz.domain.dto.mapper.TodayQuizInfoMapper;
+import com.dnd.spaced.core.quiz.domain.dto.SimpleTodayQuizDto;
+import com.dnd.spaced.core.quiz.domain.embed.TodayQuizAnswerOption;
 import com.dnd.spaced.core.quiz.domain.enums.QuizCategory;
 import com.dnd.spaced.core.quiz.domain.repository.TodayQuizRepository;
 import com.dnd.spaced.global.consts.CacheConst;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +25,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TodayQuizGatewayRepository implements TodayQuizRepository {
 
-    private static final RowMapper<SimpleTodayQuizInfo> simpleTodayQuizInfoRowMapper =
-            (rs, ignoreRowNum) -> TodayQuizInfoMapper.toDto(
-                    rs.getLong(1),
-                    rs.getTimestamp(2).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                    rs.getString(3),
-                    rs.getString(4),
-                    QuizCategory.valueOf(rs.getString(5)),
-                    rs.getString(6),
-                    rs.getLong(7)
-            );
+    private static final RowMapper<SimpleTodayQuizDto> simpleTodayQuizDtoRowMapper = new SimpleTodayQuizDtoMapper();
 
     private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory queryFactory;
@@ -48,7 +42,7 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
             key = "'" + CacheConst.TODAY_QUIZ_CACHE_NAME + "'",
             cacheManager = "memoryCacheManager"
     )
-    public Optional<SimpleTodayQuizInfo> findLatest() {
+    public Optional<SimpleTodayQuizDto> findLatest() {
         String sql = """
                 SELECT
                     tq.id,
@@ -66,9 +60,9 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
                 ) t left join today_quizzes tq ON t.id = tq.id;
                 """;
         try {
-            SimpleTodayQuizInfo simpleTodayQuizInfo = jdbcTemplate.queryForObject(sql, simpleTodayQuizInfoRowMapper);
+            SimpleTodayQuizDto simpleTodayQuizDto = jdbcTemplate.queryForObject(sql, simpleTodayQuizDtoRowMapper);
 
-            return Optional.of(simpleTodayQuizInfo);
+            return Optional.of(simpleTodayQuizDto);
         } catch (IncorrectResultSizeDataAccessException ignored) {
             return Optional.empty();
         }
@@ -91,5 +85,32 @@ public class TodayQuizGatewayRepository implements TodayQuizRepository {
                                        .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    private static class SimpleTodayQuizDtoMapper implements RowMapper<SimpleTodayQuizDto> {
+
+        @Override
+        public SimpleTodayQuizDto mapRow(ResultSet rs, int ignoreRowNum) throws SQLException {
+            Long id = rs.getLong(1);
+            LocalDateTime createdAt = rs.getTimestamp(2)
+                                        .toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDateTime();
+            String question = rs.getString(3);
+            String questionContent = rs.getString(4);
+            QuizCategory quizCategory = QuizCategory.valueOf(rs.getString(5));
+            String answerContent = rs.getString(6);
+            Long answerWordId = rs.getLong(7);
+            TodayQuizAnswerOption todayQuizAnswerOption = new TodayQuizAnswerOption(answerWordId, answerContent);
+
+            return new SimpleTodayQuizDto(
+                    id,
+                    quizCategory,
+                    question,
+                    questionContent,
+                    todayQuizAnswerOption,
+                    createdAt
+            );
+        }
     }
 }

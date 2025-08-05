@@ -3,7 +3,7 @@ package com.dnd.spaced.core.account.infrastructure.persistence;
 import static com.dnd.spaced.core.account.domain.QAccount.account;
 
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.enums.RegistrationId;
+import com.dnd.spaced.core.account.domain.embed.Social;
 import com.dnd.spaced.core.account.domain.repository.AccountRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,9 +21,9 @@ public class AccountGatewayRepository implements AccountRepository {
     @Override
     public boolean existsBy(Long accountId) {
         Integer result = queryFactory.selectOne()
-                                .from(account)
-                                .where(account.id.eq(accountId))
-                                .fetchFirst();
+                                     .from(account)
+                                     .where(eqAccountId(accountId))
+                                     .fetchFirst();
 
         return result != null;
     }
@@ -36,20 +36,16 @@ public class AccountGatewayRepository implements AccountRepository {
     @Override
     public Optional<Account> findBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
-                                       .where(eqAccountId(accountId), account.deleted.isFalse())
-                                       .fetchOne();
+                                     .where(eqAccountId(accountId))
+                                     .fetchOne();
 
         return Optional.ofNullable(result);
     }
 
     @Override
-    public Optional<Account> findBy(RegistrationId registrationId, String socialIdentifier) {
+    public Optional<Account> findBy(Social social) {
         Account result = queryFactory.selectFrom(account)
-                                     .where(
-                                             account.socialInfo.socialIdentifier.eq(socialIdentifier),
-                                             account.deleted.isFalse(),
-                                             account.socialInfo.registrationId.eq(registrationId)
-                                     )
+                                     .where(eqSocial(social))
                                      .fetchOne();
 
         return Optional.ofNullable(result);
@@ -58,14 +54,22 @@ public class AccountGatewayRepository implements AccountRepository {
     @Override
     public Optional<Account> findPreInitializationAccountBy(Long accountId) {
         Account result = queryFactory.selectFrom(account)
-                                     .where(
-                                             account.id.eq(accountId),
-                                             account.deleted.isFalse(),
-                                             isNullCareerInfo()
-                                     )
+                                     .where(eqAccountId(accountId), isNullCareer())
                                      .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    private BooleanExpression eqSocial(Social social) {
+        return account.social.socialId.eq(social.getSocialId())
+                .and(account.deleted.isFalse())
+                .and(account.social.registrationId.eq(social.getRegistrationId()));
+    }
+
+    private BooleanExpression isNullCareer() {
+        return account.career.company.isNull()
+                                         .and(account.career.experience.isNull())
+                                         .and(account.career.jobGroup.isNull());
     }
 
     private BooleanExpression eqAccountId(Long accountId) {
@@ -73,12 +77,6 @@ public class AccountGatewayRepository implements AccountRepository {
             return null;
         }
 
-        return account.id.eq(accountId);
-    }
-
-    private BooleanExpression isNullCareerInfo() {
-        return account.careerInfo.company.isNull()
-                                         .and(account.careerInfo.experience.isNull())
-                                         .and(account.careerInfo.jobGroup.isNull());
+        return account.id.eq(accountId).and(account.deleted.isFalse());
     }
 }

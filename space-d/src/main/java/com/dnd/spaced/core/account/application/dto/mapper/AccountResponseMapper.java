@@ -2,24 +2,23 @@ package com.dnd.spaced.core.account.application.dto.mapper;
 
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.domain.Account;
-import com.dnd.spaced.core.account.domain.embed.CareerInfo;
-import com.dnd.spaced.core.account.domain.embed.ProfileInfo;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dnd.spaced.core.account.domain.embed.Career;
+import com.dnd.spaced.core.account.domain.embed.Profile;
+import com.dnd.spaced.global.mapper.Mapper;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AccountResponseMapper {
+@Mapper
+public class AccountResponseMapper {
 
-    public static AccountResponse toDto(Account account) {
-        ProfileInfo profileInfo = account.getProfileInfo();
-        CareerInfo careerInfo = account.getCareerInfo();
+    public AccountResponse toDto(Account account) {
+        Profile profile = account.getProfile();
+        Career career = account.getCareer();
 
         return new AccountResponse(
-                profileInfo.getNickname(),
-                profileInfo.getProfileImage(),
-                careerInfo.getJobGroup().getName(),
-                careerInfo.getCompany().getName(),
-                careerInfo.getExperience().getName()
+                profile.getNickname(),
+                profile.getProfileImageName(),
+                career.getJobGroup().getName(),
+                career.getCompany().getName(),
+                career.getExperience().getName()
         );
     }
 }

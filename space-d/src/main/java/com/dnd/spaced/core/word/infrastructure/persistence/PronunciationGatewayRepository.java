@@ -1,9 +1,8 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
-import static com.dnd.spaced.core.word.domain.QPronunciation.*;
+import static com.dnd.spaced.core.word.domain.QPronunciation.pronunciation;
 
 import com.dnd.spaced.core.word.domain.Pronunciation;
-import com.dnd.spaced.core.word.domain.QPronunciation;
 import com.dnd.spaced.core.word.domain.repository.PronunciationRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
@@ -24,23 +23,24 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
     private final Clock clock;
     private final JPAQueryFactory queryFactory;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final PronunciationCrudRepository pronunciationCrudRepository;
 
     public PronunciationGatewayRepository(
             Clock clock,
             JdbcTemplate jdbcTemplate,
-            JPAQueryFactory queryFactory,
-            PronunciationCrudRepository pronunciationCrudRepository
+            JPAQueryFactory queryFactory
     ) {
         this.clock = clock;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.queryFactory = queryFactory;
-        this.pronunciationCrudRepository = pronunciationCrudRepository;
     }
 
     @Override
     public Optional<Pronunciation> findBy(Long pronunciationId) {
-        return pronunciationCrudRepository.findById(pronunciationId);
+        Pronunciation result = queryFactory.selectFrom(pronunciation)
+                                           .where(pronunciation.id.eq(pronunciationId), pronunciation.deleted.isFalse())
+                                           .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -68,12 +68,14 @@ public class PronunciationGatewayRepository implements PronunciationRepository {
     @Override
     public long countBy(Long wordId) {
         String sql = """
-                SELECT COUNT(id) FROM pronunciations WHERE word_id = :wordId
+                SELECT COUNT(id) FROM pronunciations WHERE word_id = :wordId AND deleted = false
                 """;
         MapSqlParameterSource parameters = new MapSqlParameterSource();
+
         parameters.addValue("wordId", wordId);
 
         Long result = namedParameterJdbcTemplate.queryForObject(sql, parameters, Long.class);
+
         return result != null ? result : 0L;
     }
 

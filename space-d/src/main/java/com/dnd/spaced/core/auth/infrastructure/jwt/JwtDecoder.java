@@ -47,29 +47,47 @@ public class JwtDecoder implements TokenDecoder {
 
     private Optional<JWTClaimsSet> parse(TokenType tokenType, String token) {
         try {
-            JWEObject jweObject = JWEObject.parse(token);
-
-            jweObject.decrypt(jweDecrypter);
-
-            SignedJWT signedJwt = jweObject.getPayload()
-                                           .toSignedJWT();
-            JWSVerifier jwsVerifier = jwsVerifierFinder.findByTokenType(tokenType);
-
-            validateSign(signedJwt, jwsVerifier);
-
-            JWTClaimsSet claims = signedJwt.getJWTClaimsSet();
-
-            validateIssuer(claims.getIssuer());
-            if (isExpiredToken(claims.getExpirationTime())) {
-                return Optional.empty();
-            }
-
-            return Optional.of(claims);
+            return extractClaimsSet(tokenType, token);
         } catch (JOSEException e) {
             throw new FailedDecodeTokenException("토큰 디코딩에 실패했습니다", e);
         } catch (ParseException e) {
             throw new InvalidTokenException("유효한 토큰이 아닙니다.", e);
         }
+    }
+
+    private Optional<JWTClaimsSet> extractClaimsSet(TokenType tokenType, String token)
+            throws ParseException, JOSEException {
+        JWTClaimsSet claimsSet = findJWTClaimsSet(tokenType, token);
+
+        validateIssuer(claimsSet);
+
+        return findClaimsSet(claimsSet);
+    }
+
+    private JWTClaimsSet findJWTClaimsSet(TokenType tokenType, String token) throws ParseException, JOSEException {
+        JWEObject jweObject = findJWEObject(token);
+        SignedJWT signedJwt = findSignedJWT(jweObject);
+        JWSVerifier jwsVerifier = findJWSVerifier(tokenType);
+
+        validateSign(signedJwt, jwsVerifier);
+
+        return signedJwt.getJWTClaimsSet();
+    }
+
+    private JWEObject findJWEObject(String token) throws ParseException, JOSEException {
+        JWEObject jweObject = JWEObject.parse(token);
+
+        jweObject.decrypt(jweDecrypter);
+        return jweObject;
+    }
+
+    private SignedJWT findSignedJWT(JWEObject jweObject) {
+        return jweObject.getPayload()
+                        .toSignedJWT();
+    }
+
+    private JWSVerifier findJWSVerifier(TokenType tokenType) {
+        return jwsVerifierFinder.findByTokenType(tokenType);
     }
 
     private void validateSign(SignedJWT signedJwt, JWSVerifier jwsVerifier) throws JOSEException {
@@ -85,10 +103,18 @@ public class JwtDecoder implements TokenDecoder {
         return expirationDate.isBefore(now);
     }
 
-    private void validateIssuer(String issuer) {
-        if (!tokenProperties.issuer().equals(issuer)) {
+    private void validateIssuer(JWTClaimsSet claimsSet) {
+        if (!tokenProperties.issuer().equals(claimsSet.getIssuer())) {
             throw new InvalidTokenException("서비스에서 발급한 토큰이 아닙니다.");
         }
+    }
+
+    private Optional<JWTClaimsSet> findClaimsSet(JWTClaimsSet claimsSet) {
+        if (isExpiredToken(claimsSet.getExpirationTime())) {
+            return Optional.empty();
+        }
+
+        return Optional.of(claimsSet);
     }
 
     private PrivateClaims convert(JWTClaimsSet claims) {

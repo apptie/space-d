@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
-import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import com.dnd.spaced.core.account.application.exception.ForbiddenAccountException;
 import com.dnd.spaced.core.account.domain.enums.ProfileImageName;
@@ -55,14 +55,14 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 회원_경력_정보를_변경한다() {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 "1~2년 차"
         );
 
         // when
-        accountService.changeCareerInfo(1L, request);
+        accountService.changeCareer(1L, request);
 
         // then
         AccountResponse actual = accountService.readAccount(1L);
@@ -79,14 +79,14 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_직군_이름이_아니라면_경력_정보를_변경할_수_없다(String invalidJobGroupName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 invalidJobGroupName,
                 "비공개",
                 "1~2년 차"
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidJobGroupException.class)
                 .hasMessageContaining("잘못된 직군 이름");
     }
@@ -96,14 +96,14 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_회사명이_아니라면_경력_정보를_변경할_수_없다(String invalidCompanyName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 invalidCompanyName,
                 "1~2년 차"
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidCompanyException.class)
                 .hasMessageContaining("잘못된 회사 이름");
     }
@@ -113,14 +113,14 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 유효한_경력이_아니라면_경력_정보를_변경할_수_없다(String invalidExperienceName) {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 invalidExperienceName
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(1L, request))
                 .isInstanceOf(InvalidExperienceException.class)
                 .hasMessageContaining("잘못된 경력");
     }
@@ -128,14 +128,14 @@ class AccountServiceTest {
     @Test
     void 없거나_탈퇴한_회원의_ID라면_경력_정보를_변경할_수_없다() {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest(
+        ChangeCareerRequest request = new ChangeCareerRequest(
                 "개발자",
                 "비공개",
                 "1~2년 차"
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeCareerInfo(-999L, request))
+        assertThatThrownBy(() -> accountService.changeCareer(-999L, request))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }
@@ -150,13 +150,13 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 회원_프로필_정보를_변경한다(ProfileImageName profileImageName) {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "행복한지구001",
                 profileImageName.getKorean()
         );
 
         // when
-        accountService.changeProfileInfo(1L, request);
+        accountService.changeProfile(1L, request);
 
         // then
         AccountResponse actual = accountService.readAccount(1L);
@@ -172,13 +172,13 @@ class AccountServiceTest {
     @Sql("classpath:sql/account/account.sql")
     void 프로필_이미지_경로가_비어_있으면_프로필_정보를_변경할_수_없다(String invalidProfileImageKoreanName) {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "재빠른지구001",
                 invalidProfileImageKoreanName
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeProfileInfo(1L, request))
+        assertThatThrownBy(() -> accountService.changeProfile(1L, request))
                 .isInstanceOf(InvalidProfileImageNameException.class)
                 .hasMessageContaining("잘못된 프로필 이미지 이름");
     }
@@ -186,13 +186,13 @@ class AccountServiceTest {
     @Test
     void 없거나_탈퇴한_회원의_ID라면_프로필_정보를_변경할_수_없다() {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest(
+        ChangeProfileRequest request = new ChangeProfileRequest(
                 "재빠른지구001",
                 "earth.png"
         );
 
         // when & then
-        assertThatThrownBy(() -> accountService.changeProfileInfo(-999L, request))
+        assertThatThrownBy(() -> accountService.changeProfile(-999L, request))
                 .isInstanceOf(ForbiddenAccountException.class)
                 .hasMessage("존재하지 않는 회원이거나 이미 탈퇴한 회원입니다.");
     }

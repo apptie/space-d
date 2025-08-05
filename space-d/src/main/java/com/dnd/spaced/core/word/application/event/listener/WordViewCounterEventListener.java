@@ -26,7 +26,7 @@ public class WordViewCounterEventListener {
     @EventListener
     public void listen(WordViewCountIncrementEvent event) {
         if (!popularWordRepository.existsBy(event.wordId(), event.localDateTime())) {
-            transactionTemplate.executeWithoutResult(status -> wordRepository.updateViewCount(event.wordId()));
+            transactionTemplate.executeWithoutResult(status -> wordRepository.addViewCount(event.wordId()));
             String requestId = MDC.get(REQUEST_ID);
             log.info("[{}] wordId : {}, localDateTime : {}", requestId, event.wordId(), event.localDateTime());
         }

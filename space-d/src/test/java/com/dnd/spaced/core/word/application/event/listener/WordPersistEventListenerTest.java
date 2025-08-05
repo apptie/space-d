@@ -12,7 +12,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.dnd.spaced.core.admin.application.AdminWordService;
+import com.dnd.spaced.core.admin.application.AdminWordServiceFacade;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest;
 import com.dnd.spaced.core.admin.application.dto.request.CreateWordRequest.CreatePronunciationRequest;
 import com.dnd.spaced.core.word.application.event.dto.FailedWordPersistedEvent;
@@ -52,7 +52,7 @@ class WordPersistEventListenerTest {
     PronunciationRepository pronunciationRepository;
 
     @Autowired
-    AdminWordService adminWordService;
+    AdminWordServiceFacade adminWordServiceFacade;
 
     @Autowired
     WordRandomRepository wordRandomRepository;
@@ -82,7 +82,7 @@ class WordPersistEventListenerTest {
                 List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.")
         );
 
-        adminWordService.createWord(request);
+        adminWordServiceFacade.createWord(request);
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
@@ -114,7 +114,7 @@ class WordPersistEventListenerTest {
                 List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.")
         );
 
-        adminWordService.createWord(request);
+        adminWordServiceFacade.createWord(request);
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),
@@ -140,7 +140,7 @@ class WordPersistEventListenerTest {
                 List.of("게시글 삭제는 작성자와 관리자만 Authorization이 있도록 구현했습니다.")
         );
 
-        adminWordService.createWord(request);
+        adminWordServiceFacade.createWord(request);
 
         assertAll(
                 () -> assertThat(events.stream(PersistedWordEvent.class).count()).isOne(),

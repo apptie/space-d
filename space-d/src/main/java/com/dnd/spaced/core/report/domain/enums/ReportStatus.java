@@ -22,7 +22,7 @@ public enum ReportStatus {
                      .findAny();
     }
 
-    public boolean isProcess() {
+    public boolean isProcessed() {
         return this == PROCESSED;
     }
 }

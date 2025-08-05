@@ -65,6 +65,7 @@ class QuizTest {
 
         // then
         assertAll(
+                () -> assertThat(quiz.isSolved()).isTrue(),
                 () -> assertThat(actual).hasSize(5),
                 () -> assertThat(actual.get(0).getAccountId()).isEqualTo(1L),
                 () -> assertThat(actual.get(0).getQuizId()).isEqualTo(6L),
@@ -108,17 +109,5 @@ class QuizTest {
 
         // when & then
         assertThatThrownBy(() -> quizQuestions.remove(0)).isInstanceOf(UnsupportedOperationException.class);
-    }
-
-    @Test
-    void 퀴즈를_푼_상태로_변경한다() {
-        // given
-        Quiz quiz = new Quiz(1L);
-
-        // when
-        quiz.solve();
-
-        // then
-        assertThat(quiz.isSolved()).isEqualTo(true);
     }
 }

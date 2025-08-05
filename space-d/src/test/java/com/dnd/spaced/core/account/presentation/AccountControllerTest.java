@@ -20,12 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
 import com.dnd.spaced.config.docs.link.DocumentLinkGenerator.DocsUrl;
 import com.dnd.spaced.core.account.application.AccountService;
-import com.dnd.spaced.core.account.application.dto.request.ChangeCareerInfoRequest;
-import com.dnd.spaced.core.account.application.dto.request.ChangeProfileInfoRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeCareerRequest;
+import com.dnd.spaced.core.account.application.dto.request.ChangeProfileRequest;
 import com.dnd.spaced.core.account.application.dto.response.AccountResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -66,7 +65,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원_경력_정보_변경_요청_성공_테스트() throws Exception {
         // given
-        ChangeCareerInfoRequest request = new ChangeCareerInfoRequest("개발자", "중소기업", "비공개");
+        ChangeCareerRequest request = new ChangeCareerRequest("개발자", "중소기업", "비공개");
 
         // when & then
 
@@ -78,7 +77,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService).changeCareerInfo(anyLong(), any(ChangeCareerInfoRequest.class));
+        verify(accountService).changeCareer(anyLong(), any(ChangeCareerRequest.class));
 
         회원_경력_정보_변경_요청_문서화(resultActions);
     }
@@ -102,7 +101,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
     @WithMockUser("1")
     void 회원_프로필_정보_변경_요청_성공_테스트() throws Exception {
         // given
-        ChangeProfileInfoRequest request = new ChangeProfileInfoRequest("행복한금성001", "금성");
+        ChangeProfileRequest request = new ChangeProfileRequest("행복한금성001", "금성");
 
         // when & then
 
@@ -114,7 +113,7 @@ class AccountControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(accountService).changeProfileInfo(anyLong(), any(ChangeProfileInfoRequest.class));
+        verify(accountService).changeProfile(anyLong(), any(ChangeProfileRequest.class));
 
         회원_프로필_정보_변경_요청_문서화(resultActions);
     }

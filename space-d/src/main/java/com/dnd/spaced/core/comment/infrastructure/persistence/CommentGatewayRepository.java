@@ -6,7 +6,7 @@ import static com.dnd.spaced.core.like.domain.QLike.like;
 
 import com.dnd.spaced.core.comment.domain.Comment;
 import com.dnd.spaced.core.comment.domain.repository.CommentRepository;
-import com.dnd.spaced.core.comment.domain.dto.LikedCommentInfo;
+import com.dnd.spaced.core.comment.domain.dto.LikedComment;
 import com.dnd.spaced.global.consts.AuthConst;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
@@ -32,11 +32,15 @@ public class CommentGatewayRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findBy(Long commentId) {
-        return commentCrudRepository.findById(commentId);
+        Comment result = queryFactory.selectFrom(comment)
+                                     .where(comment.id.eq(commentId), comment.deleted.isFalse())
+                                     .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
-    public List<LikedCommentInfo> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
+    public List<LikedComment> findAllBy(Long accountId, Long wordId, Long lastCommentId, Pageable pageable) {
         if (AuthConst.GUEST_ACCOUNT_ID.equals(accountId)) {
             return findAllWithoutIsLikedBy(wordId, lastCommentId, pageable);
         }
@@ -45,66 +49,53 @@ public class CommentGatewayRepository implements CommentRepository {
     }
 
     @Override
-    public void delete(Comment comment) {
-        commentCrudRepository.delete(comment);
-    }
-
-    @Override
-    public void increaseLikeCount(Long commentId) {
+    public void addLikeCount(Long commentId) {
         queryFactory.update(comment)
                     .set(comment.likeCount, comment.likeCount.add(1))
-                    .where(comment.id.eq(commentId))
+                    .where(comment.id.eq(commentId), comment.deleted.isFalse())
                     .execute();
     }
 
     @Override
-    public void decreaseLikeCount(Long commentId) {
+    public void subtractLikeCount(Long commentId) {
         queryFactory.update(comment)
                     .set(comment.likeCount, comment.likeCount.subtract(1))
-                    .where(comment.id.eq(commentId))
+                    .where(comment.id.eq(commentId), comment.deleted.isFalse())
                     .execute();
     }
 
-    private List<LikedCommentInfo> findAllWithIsLikedBy(
+    private List<LikedComment> findAllWithIsLikedBy(
             Long accountId,
             Long wordId,
             Long lastCommentId,
             Pageable pageable
     ) {
-        return queryFactory.select(getLikedCommentInfoWithLiked())
+        return queryFactory.select(getLikedCommentWithLiked())
                            .from(comment)
                            .leftJoin(account).on(comment.writerId.eq(account.id))
                            .leftJoin(like).on(comment.id.eq(like.commentId), like.accountId.eq(accountId))
                            .where(
                                    comment.wordId.eq(wordId),
                                    comment.deleted.isFalse(),
-                                   calculateLastIdExpression(lastCommentId)
+                                   gtLastCommentId(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
                            .limit(pageable.getPageSize())
                            .fetch();
     }
 
-    private List<LikedCommentInfo> findAllWithoutIsLikedBy(Long wordId, Long lastCommentId, Pageable pageable) {
-        return queryFactory.select(getLikedCommentInfoWithoutLiked())
+    private List<LikedComment> findAllWithoutIsLikedBy(Long wordId, Long lastCommentId, Pageable pageable) {
+        return queryFactory.select(getLikedCommentWithoutLiked())
                            .from(comment)
                            .leftJoin(account).on(comment.writerId.eq(account.id))
                            .where(
                                    comment.wordId.eq(wordId),
                                    comment.deleted.isFalse(),
-                                   calculateLastIdExpression(lastCommentId)
+                                   gtLastCommentId(lastCommentId)
                            )
                            .orderBy(comment.id.asc())
                            .limit(pageable.getPageSize())
                            .fetch();
-    }
-
-    private BooleanExpression calculateLastIdExpression(Long lastCommentId) {
-        if (lastCommentId == null) {
-            return null;
-        }
-
-        return gtLastCommentId(lastCommentId);
     }
 
     private BooleanExpression gtLastCommentId(Long commentId) {
@@ -115,22 +106,22 @@ public class CommentGatewayRepository implements CommentRepository {
         return comment.id.gt(commentId);
     }
 
-    private ConstructorExpression<LikedCommentInfo> getLikedCommentInfoWithLiked() {
+    private ConstructorExpression<LikedComment> getLikedCommentWithLiked() {
         return Projections.constructor(
-                LikedCommentInfo.class,
+                LikedComment.class,
                 comment,
                 like.id.isNotNull(),
-                account.profileInfo.nickname,
-                account.profileInfo.profileImage
+                account.profile.nickname,
+                account.profile.profileImageName
         );
     }
 
-    private ConstructorExpression<LikedCommentInfo> getLikedCommentInfoWithoutLiked() {
+    private ConstructorExpression<LikedComment> getLikedCommentWithoutLiked() {
         return Projections.constructor(
-                LikedCommentInfo.class,
+                LikedComment.class,
                 comment,
-                account.profileInfo.nickname,
-                account.profileInfo.profileImage
+                account.profile.nickname,
+                account.profile.profileImageName
         );
     }
 }

@@ -6,22 +6,21 @@ import com.dnd.spaced.core.quiz.application.dto.response.TodayQuizGradedAnswerCo
 import com.dnd.spaced.core.quiz.domain.TodayQuiz;
 import com.dnd.spaced.core.quiz.domain.TodayQuizGradedAnswer;
 import com.dnd.spaced.core.quiz.domain.embed.TodayQuizQuestion;
+import com.dnd.spaced.global.mapper.Mapper;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TodayQuizGradedAnswerCollectionResponseMapper {
+@Mapper
+public class TodayQuizGradedAnswerCollectionResponseMapper {
 
-    public static TodayQuizGradedAnswerCollectionResponse toDto(List<TodayQuizGradedAnswer> todayQuizGradedAnswers) {
+    public TodayQuizGradedAnswerCollectionResponse toResponse(List<TodayQuizGradedAnswer> todayQuizGradedAnswers) {
         List<TodayQuizGradedAnswerResponse> responses = todayQuizGradedAnswers.stream()
-                                                                              .map(TodayQuizGradedAnswerCollectionResponseMapper::toDto)
+                                                                              .map(this::toResponse)
                                                                               .toList();
 
         return new TodayQuizGradedAnswerCollectionResponse(responses);
     }
 
-    public static TodayQuizGradedAnswerResponse toDto(TodayQuizGradedAnswer todayQuizGradedAnswer) {
+    private TodayQuizGradedAnswerResponse toResponse(TodayQuizGradedAnswer todayQuizGradedAnswer) {
         TodayQuiz quiz = todayQuizGradedAnswer.getTodayQuiz();
         TodayQuizQuestion quizQuestion = quiz.getTodayQuizQuestion();
 
@@ -29,14 +28,14 @@ public final class TodayQuizGradedAnswerCollectionResponseMapper {
                 todayQuizGradedAnswer.getId(),
                 quiz.getId(),
                 todayQuizGradedAnswer.getAccountId(),
-                toGradedAnswerDto(quizQuestion),
+                toTodayQuizQuestionResponse(quizQuestion),
                 todayQuizGradedAnswer.getSelectedContent(),
                 quizQuestion.getTodayQuizAnswerOption().getAnswerContent(),
                 todayQuizGradedAnswer.isCorrect()
         );
     }
 
-    private static TodayQuizQuestionResponse toGradedAnswerDto(TodayQuizQuestion quizQuestion) {
+    private TodayQuizQuestionResponse toTodayQuizQuestionResponse(TodayQuizQuestion quizQuestion) {
         return new TodayQuizQuestionResponse(
                 quizQuestion.getQuizCategory().getName(),
                 quizQuestion.getQuestion(),

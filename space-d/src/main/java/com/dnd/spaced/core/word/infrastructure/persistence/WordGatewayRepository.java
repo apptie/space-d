@@ -34,19 +34,19 @@ public class WordGatewayRepository implements WordRepository {
     }
 
     @Override
-    public void updateViewCount(Long wordId) {
+    public void addViewCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.viewCount, word.viewCount.add(1))
-                    .where(word.id.eq(wordId))
+                    .where(word.id.eq(wordId), word.deleted.isFalse())
                     .execute();
     }
 
     @Override
-    public void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos) {
+    public void addViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos) {
         for (WordViewCountStatisticsDto dto : wordViewCountStatisticsDtos) {
             queryFactory.update(word)
                         .set(word.viewCount, word.viewCount.add(dto.viewCount()))
-                        .where(word.id.eq(dto.id()))
+                        .where(word.id.eq(dto.id()), word.deleted.isFalse())
                         .execute();
         }
     }
@@ -55,15 +55,15 @@ public class WordGatewayRepository implements WordRepository {
     public void addBookmarkCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.bookmarkCount, word.bookmarkCount.add(1))
-                    .where(word.id.eq(wordId))
+                    .where(word.id.eq(wordId), word.deleted.isFalse())
                     .execute();
     }
 
     @Override
-    public void updateSubtractBookmarkCount(Long wordId) {
+    public void subtractBookmarkCount(Long wordId) {
         queryFactory.update(word)
                     .set(word.bookmarkCount, word.bookmarkCount.subtract(1))
-                    .where(word.id.eq(wordId))
+                    .where(word.id.eq(wordId), word.deleted.isFalse())
                     .execute();
     }
 

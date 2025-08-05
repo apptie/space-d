@@ -1,6 +1,6 @@
 package com.dnd.spaced.global.auth.interceptor;
 
-import com.dnd.spaced.global.auth.AccountInfo;
+import com.dnd.spaced.global.auth.AccountId;
 import com.dnd.spaced.global.auth.AuthStore;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,13 +24,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                                                              .getAuthentication();
 
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            store.set(new AccountInfo(null));
+            store.set(new AccountId(null));
             return true;
         }
 
         String id = ((UserDetails) authentication.getPrincipal()).getUsername();
 
-        store.set(new AccountInfo(Long.parseLong(id)));
+        store.set(new AccountId(Long.parseLong(id)));
         return true;
     }
 

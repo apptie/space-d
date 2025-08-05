@@ -8,8 +8,8 @@ import com.dnd.spaced.config.listener.ResetMockTestExecutionListener;
 import com.dnd.spaced.config.stub.StubAccountRepository;
 import com.dnd.spaced.global.auth.AuthStore;
 import com.dnd.spaced.global.auth.interceptor.AuthInterceptor;
-import com.dnd.spaced.global.auth.resolver.AuthAccountInfoArgumentResolver;
-import com.dnd.spaced.global.auth.resolver.GuestAccountInfoArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.AuthAccountArgumentResolver;
+import com.dnd.spaced.global.auth.resolver.GuestAccountArgumentResolver;
 import com.dnd.spaced.global.exception.GlobalControllerAdvice;
 import com.dnd.spaced.global.resolver.admin.report.ReportPageableArgumentResolver;
 import com.dnd.spaced.global.resolver.bookmark.BookmarkPageableArgumentResolver;
@@ -113,8 +113,8 @@ public class CommonControllerSliceTest {
 
         FixedStandaloneMockMvcBuilder configureArgumentResolvers() {
             builder.setCustomArgumentResolvers(
-                    new AuthAccountInfoArgumentResolver(store, new StubAccountRepository()),
-                    new GuestAccountInfoArgumentResolver(store, new StubAccountRepository()),
+                    new AuthAccountArgumentResolver(store, new StubAccountRepository()),
+                    new GuestAccountArgumentResolver(store, new StubAccountRepository()),
                     new WordPageableArgumentResolver(),
                     new CommentPageableArgumentResolver(),
                     new GradedAnswerPageableArgumentResolver(),

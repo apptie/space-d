@@ -1,6 +1,6 @@
 package com.dnd.spaced.core.word.infrastructure.persistence;
 
-import com.dnd.spaced.core.word.application.DeletedWordIdRepository;
+import com.dnd.spaced.core.word.application.repository.DeletedWordIdRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Set;

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dnd.spaced.config.common.CommonControllerSliceTest;
-import com.dnd.spaced.core.comment.application.CommentService;
+import com.dnd.spaced.core.comment.application.CommentServiceFacade;
 import com.dnd.spaced.core.comment.application.dto.request.CreateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.request.UpdateCommentRequest;
 import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionResponse;
@@ -33,7 +33,6 @@ import com.dnd.spaced.core.comment.application.dto.response.CommentCollectionRes
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,7 +44,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class CommentControllerTest extends CommonControllerSliceTest {
 
     @Autowired
-    CommentService commentService;
+    CommentServiceFacade commentServiceFacade;
 
     @Test
     @WithMockUser("1")
@@ -63,7 +62,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 header().string("Location", "/words/1")
         );
 
-        verify(commentService).createComment(anyLong(), anyLong(), any(CreateCommentRequest.class));
+        verify(commentServiceFacade).createComment(anyLong(), anyLong(), any(CreateCommentRequest.class));
 
         댓글_작성_요청_문서화(resultActions);
     }
@@ -94,7 +93,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(commentService).deleteComment(anyLong(), anyLong());
+        verify(commentServiceFacade).deleteComment(anyLong(), anyLong());
 
         댓글_삭제_요청_문서화(resultActions);
     }
@@ -127,7 +126,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 status().isNoContent()
         );
 
-        verify(commentService).updateComment(anyLong(), anyLong(), any(UpdateCommentRequest.class));
+        verify(commentServiceFacade).updateComment(anyLong(), anyLong(), any(UpdateCommentRequest.class));
 
         댓글_수정_요청_문서화(resultActions);
     }
@@ -156,7 +155,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
         CommentResponse commentResponse = new CommentResponse(commentContentResponse, commentWriterResponse, false);
         CommentCollectionResponse response = new CommentCollectionResponse(List.of(commentResponse), 1L);
 
-        given(commentService.readComments(anyLong(), anyLong(), eq(null), any())).willReturn(response);
+        given(commentServiceFacade.readComments(anyLong(), anyLong(), eq(null), any())).willReturn(response);
 
         // when & then
         ResultActions resultActions = mockMvc.perform(
@@ -177,7 +176,7 @@ class CommentControllerTest extends CommonControllerSliceTest {
                 jsonPath("lastCommentId", is(1L), Long.class)
         );
 
-        verify(commentService).readComments(any(), anyLong(), any(), any(Pageable.class));
+        verify(commentServiceFacade).readComments(any(), anyLong(), any(), any(Pageable.class));
 
         댓글_전체_조회_문서화(resultActions);
     }

@@ -11,13 +11,13 @@ public interface WordRepository {
 
     boolean existsBy(Long wordId);
 
-    void updateViewCount(Long wordId);
+    void addViewCount(Long wordId);
 
-    void updateViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos);
+    void addViewCount(List<WordViewCountStatisticsDto> wordViewCountStatisticsDtos);
 
     void addBookmarkCount(Long wordId);
 
-    void updateSubtractBookmarkCount(Long wordId);
+    void subtractBookmarkCount(Long wordId);
 
     List<String> findNameAllBy(Long[] wordIds);
 

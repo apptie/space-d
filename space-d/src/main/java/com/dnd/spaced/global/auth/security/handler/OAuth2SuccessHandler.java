@@ -1,8 +1,8 @@
 package com.dnd.spaced.global.auth.security.handler;
 
-import com.dnd.spaced.core.auth.application.internal.GenerateTokenService;
-import com.dnd.spaced.core.auth.application.internal.LoginService;
-import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountInfoDto;
+import com.dnd.spaced.core.auth.application.GenerateTokenService;
+import com.dnd.spaced.core.auth.application.LoginService;
+import com.dnd.spaced.core.auth.application.dto.response.LoggedInAccountDto;
 import com.dnd.spaced.core.auth.application.dto.response.TokenDto;
 import com.dnd.spaced.global.auth.exception.InvalidResponseWriteException;
 import com.dnd.spaced.global.auth.security.dto.response.LoginResponse;
@@ -45,7 +45,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String socialIdentifier = (String) oAuth2User.getAttributes()
                                                      .get(StandardClaimNames.SUB);
         String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
-        LoggedInAccountInfoDto accountInfoDto = loginService.login(registrationId, socialIdentifier);
+        LoggedInAccountDto accountInfoDto = loginService.login(registrationId, socialIdentifier);
         TokenDto tokenDto = generateTokenService.generate(accountInfoDto.id(), accountInfoDto.roleName());
 
         writeResponse(response, tokenDto, accountInfoDto.isSignUp());

@@ -5,6 +5,10 @@ import com.dnd.spaced.global.exception.code.BookmarkErrorCode;
 
 public class BookmarkLockException extends BookmarkServerException {
 
+    public BookmarkLockException(String message) {
+        super(BookmarkErrorCode.BOOKMARK_LOCK_EXCEPTION, message);
+    }
+
     public BookmarkLockException(String message, Throwable e) {
         super(BookmarkErrorCode.BOOKMARK_LOCK_EXCEPTION, message, e);
     }
