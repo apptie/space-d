@@ -4,7 +4,7 @@ SPACE D는 여백, 간격, 우주를 의미하는 **SPACE** 와 ‘Designer, Dev
 
 ---
 
-해당 리포지토리는 2024.07.01 ~ 2024.08.24일까지 진행한 팀 프로젝트 [SPACE D](https://github.com/dnd-side-project/dnd-11th-10-backend)를 혼자 리팩터링한 리포지토리 입니다.
+해당 레포지토리는 2024.07.01 ~ 2024.08.24일까지 진행한 팀 프로젝트 [SPACE D](https://github.com/dnd-side-project/dnd-11th-10-backend)를 혼자 고도화한 레포지토리 입니다.
 
 ---
 
@@ -22,7 +22,7 @@ SPACE D는 여백, 간격, 우주를 의미하는 **SPACE** 와 ‘Designer, Dev
 - Swagger 공통 설정
 - 담당 파트 문서화
 
-## 리팩터링 내용
+## 고도화 내용
 
 - 쿼리 최적화 및 DB 인덱스 추가
 - 불필요한 트랜잭션 제거
